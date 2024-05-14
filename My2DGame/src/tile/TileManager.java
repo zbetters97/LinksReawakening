@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -18,26 +19,72 @@ public class TileManager {
 	
 	public int mapTileNum[][];
 	
+	ArrayList<String> fileNames = new ArrayList<>();
+	ArrayList<String> collisionStatus = new ArrayList<>();
+	
 	/** CONSTRUCTOR **/
 	public TileManager(GamePanel gp) {
 		
 		this.gp = gp;
 		
-		tile = new Tile[10]; // total number of all tile types 
+		// IMPORT TILE DATA		
+		InputStream is = getClass().getResourceAsStream("/maps/tiledata.txt");
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		
-		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // store numbered tiles for map
+		try {
+			String line;
+			while ((line = br.readLine()) != null) { // add tile data to arrays
+				fileNames.add(line);
+				collisionStatus.add(br.readLine());	
+			}						
+			br.close();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		getTileImage();
-		loadMap("/maps/world01.txt");
+		tile = new Tile[fileNames.size()]; // total number of all tile types 
+		getTileImage(); // assign collision to tiles and setup
+		
+		// IMPORT MAP SIZE
+		is = getClass().getResourceAsStream("/maps/worldmap.txt");	
+		br = new BufferedReader(new InputStreamReader(is));
+
+		try {
+			String line = br.readLine();
+			String maxTile[] = line.split(" ");
+			
+			gp.maxWorldCol = maxTile.length; // max world width
+			gp.maxWorldRow = maxTile.length; // max world height
+			mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+			
+			br.close();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}		
+		
+		loadMap("/maps/worldmap.txt");
 	}
 	
 	public void getTileImage() {		
-		setup(0, "grass", false);
-		setup(1, "wall", true);
-		setup(2, "water", true);
-		setup(3, "sand", false);
-		setup(4, "tree", true);
-		setup(5, "earth", false);
+		
+		// loop through all tile data in fileNames
+		for (int i = 0; i< fileNames.size(); i++) {
+			
+			String fileName;
+			boolean collision;
+						
+			fileName = fileNames.get(i); // assign each name to fileName
+			
+			// assign tile collision status
+			if (collisionStatus.get(i).equals("true")) 
+				collision = true;
+			else
+				collision = false;
+						
+			setup(i, fileName, collision);
+		}
 	}
 	
 	public void setup(int index, String imageName, boolean collision) {
@@ -46,7 +93,7 @@ public class TileManager {
 		
 		try {
 			tile[index] = new Tile();
-			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/"+imageName+".png"));
+			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/"+imageName));
 			tile[index].image = utility.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
 			tile[index].collision = collision;
 		}
@@ -64,19 +111,19 @@ public class TileManager {
 			
 			int col = 0;
 			int row = 0;
-			
+						
 			// loop until map boundaries are hit
 			while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
-				
+								
 				String line = br.readLine(); // read entire row
-				
+			
 				while (col < gp.maxWorldCol) {
 					
 					String numbers[] = line.split(" "); // space is separator
 					int num = Integer.parseInt(numbers[col]); // convert txt to int
-					
+									
 					mapTileNum[col][row] = num; // store tile # from map in array
-					col++; // advance to next column
+					col++; // advance to next column					
 				}
 				
 				if (col == gp.maxWorldCol) {
@@ -98,7 +145,7 @@ public class TileManager {
 		int worldRow = 0;
 		
 		while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-			
+									
 			int tileNum = mapTileNum[worldCol][worldRow]; // get number from map txt data
 			
 			int worldX = worldCol * gp.tileSize; // where player is on map
