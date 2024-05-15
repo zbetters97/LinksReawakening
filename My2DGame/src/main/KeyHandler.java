@@ -25,22 +25,24 @@ public class KeyHandler implements KeyListener{
 		
 		// TITLE STATE
 		if (gp.gameState == gp.titleState) {
-			
+						
 			// MAIN MENU
 			if (gp.ui.titleScreenState == 0) {
 				
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+					gp.playSE(2);
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0)
 						gp.ui.commandNum = 0;
 				}
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.playSE(2);
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 2)
 						gp.ui.commandNum = 2;
 				}
 				if (code == KeyEvent.VK_SPACE) { 
-					
+					gp.playSE(3);
 					// NEW GAME OPTION
 					if (gp.ui.commandNum == 0) {
 						gp.ui.titleScreenState = 1;
@@ -64,34 +66,21 @@ public class KeyHandler implements KeyListener{
 				
 				for (int i = 0; i < keyboardLetters.length(); i++) 
 					keyboard.put(i, String.valueOf(keyboardLetters.charAt(i)));
-															
-				if (code == KeyEvent.VK_LEFT) {
-					gp.ui.commandNum--;
-					
-					if (gp.ui.commandNum < 0)
-						gp.ui.commandNum = 0;
-				}
-				if (code == KeyEvent.VK_RIGHT) {
-					gp.ui.commandNum++;
-					
-					// STOP PLAYER FROM STARTING IF NO LETTERS
-					if (gp.ui.commandNum == 28 && gp.playerName.length() < 1) 
-						gp.ui.commandNum = 27;
-									
-					if (gp.ui.commandNum > 28)
-						gp.ui.commandNum = 28;
-				}				
+								
 				// NAVIGATE THROUGH ON-SCREEN KEYBOARD
-				if (code == KeyEvent.VK_UP) {
+				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+					gp.playSE(2);
 					if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
 						gp.ui.commandNum -= 10;					
 					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 25) 
 						gp.ui.commandNum -= 9;	
-					else if (gp.ui.commandNum >= 26)
+					else if (gp.ui.commandNum == 26)
+						gp.ui.commandNum = 18;
+					else if (gp.ui.commandNum >= 27)
 						gp.ui.commandNum = 19;
 				}
-				// NAVIGATE THROUGH ON-SCREEN KEYBOARD
-				if (code == KeyEvent.VK_DOWN) {					
+				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {	
+					gp.playSE(2);
 					if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
 						gp.ui.commandNum += 10;					
 					else if (gp.ui.commandNum >= 9 && gp.ui.commandNum <= 17) 
@@ -101,31 +90,65 @@ public class KeyHandler implements KeyListener{
 					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 26)
 						gp.ui.commandNum = 27;					
 				}
+				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.playSE(2);
+					gp.ui.commandNum--;
+					
+					if (gp.ui.commandNum < 0)
+						gp.ui.commandNum = 0;
+				}
+				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.playSE(2);
+					gp.ui.commandNum++;
+					
+					// STOP PLAYER FROM STARTING IF NO LETTERS
+					if (gp.ui.commandNum == 28 && gp.playerName.length() < 1) 
+						gp.ui.commandNum = 27;
+									
+					if (gp.ui.commandNum > 28)
+						gp.ui.commandNum = 28;
+				}				
 				if (code == KeyEvent.VK_SPACE) {
-						
 					// DEL BUTTON
 					if (gp.ui.commandNum == 26) {
-						if (gp.playerName.length() > 0)
+						if (gp.playerName.length() > 0) {
+							gp.playSE(3);
 							gp.playerName = gp.playerName.substring(
 								0, gp.playerName.length() - 1
-							); 
+							);							
+						}
+						else
+							gp.playSE(4);
 					}					
 					// BACK BUTTON
 					else if (gp.ui.commandNum == 27) {
+						gp.playSE(3);
 						gp.ui.commandNum = 0;
 						gp.ui.titleScreenState = 0;
 						gp.playerName = "";
 					}
 					// ENTER BUTTON
 					else if (gp.ui.commandNum == 28) {
+						gp.playSE(3);
 						gp.gameState = 1;
-						gp.playMusic(0);						
+						gp.stopMusic();
+						gp.playMusic(1);						
 					}
-					// SELECT A LETTER
+					// LETTER SELECT
+					// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
 					else {
-						// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
-						if (gp.playerName.length() <= 10)
+						gp.playSE(3);	
+						// name limit is 10 char
+						if (gp.playerName.length() <= 10) 
 							gp.playerName += keyboard.get(gp.ui.commandNum);
+						
+						// if name too long, replace last character with selected letter						
+						else {
+							gp.playerName = gp.playerName.substring(
+									0, gp.playerName.length() - 1
+								);	
+							gp.playerName += keyboard.get(gp.ui.commandNum);
+						}
 					}
 				}				
 				
