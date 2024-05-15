@@ -15,9 +15,10 @@ public class Entity {
 	GamePanel gp;
 	
 	public int worldX, worldY;
-	public int speed, animationSpeed;
+	public int speed, baseSpeed, runSpeed, animationSpeed;
 
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+	public BufferedImage sit, sing;
 	public String direction;
 	
 	public int spriteCounter = 0;
@@ -49,9 +50,13 @@ public class Entity {
 		switch (gp.player.direction) {
 		
 		case "up":
+		case "upleft":
+		case "upright":
 			direction = "down";
 			break;
 		case "down":
+		case "downleft":
+		case "downright":
 			direction = "up";
 			break;
 		case "left":

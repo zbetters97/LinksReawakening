@@ -266,7 +266,7 @@ public class CollisionChecker {
 				target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
 				
 				// find where entity will be after moving in a direction
-				// ask if object and entity intersect 
+				// ask if npc and entity intersect 
 				switch (entity.direction) {
 				case "up":
 					
@@ -300,6 +300,48 @@ public class CollisionChecker {
 					entity.solidArea.x += entity.speed;
 					
 					if (entity.solidArea.intersects(target[i].solidArea)) {							
+						entity.collisionOn = true;
+						index = i;			
+					}
+					break;
+					
+				case "upleft":
+					entity.solidArea.y -= entity.speed;
+					entity.solidArea.x -= entity.speed;
+					
+					if (entity.solidArea.intersects(target[i].solidArea)) {	
+						entity.collisionOn = true;
+						index = i;			
+					}
+					break;
+				case "upright":
+					entity.solidArea.y -= entity.speed;
+					entity.solidArea.x += entity.speed;
+					
+					if (entity.solidArea.intersects(target[i].solidArea)) {	
+						
+						entity.collisionOn = true;
+						index = i;			
+					}
+					break;
+				case "downleft":
+					
+					entity.solidArea.y += entity.speed;
+					entity.solidArea.x -= entity.speed;
+					
+					if (entity.solidArea.intersects(target[i].solidArea)) {	
+						
+						entity.collisionOn = true;
+						index = i;			
+					}
+					break;
+				case "downright":
+					
+					entity.solidArea.y += entity.speed;
+					entity.solidArea.x += entity.speed;
+					
+					if (entity.solidArea.intersects(target[i].solidArea)) {	
+						
 						entity.collisionOn = true;
 						index = i;			
 					}

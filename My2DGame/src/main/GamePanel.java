@@ -31,9 +31,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// GAME STATE
 	public int gameState;
+	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-	public final int dialogueState = 3;
+	public final int dialogueState = 3;	
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -64,12 +65,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = playState;
+		gameState = titleState;
 		
 		aSetter.setNPC();
 		aSetter.setObject();	
-		
-		playMusic(0);		
 	}
 
 	public void startGameThread() {
@@ -140,26 +139,33 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		Graphics2D g2 = (Graphics2D)g; // Graphics2D has more functionality than Graphics
 		
-		// TILES
-		tileM.draw(g2);	
-		
-		// NPC
-		for (int i = 0; i < npc.length; i++) {
-			if (npc[i] != null) 
-				npc[i].draw(g2);
+		// TITLE SCREEN
+		if (gameState == titleState) {
+			ui.draw(g2);
 		}
-		
-		// OBJECTS
-		for (int i = 0; i < obj.length; i++) {
-			if (obj[i] != null) 
-				obj[i].draw(g2, this);
-		}
-		
-		// PLAYER
-		player.draw(g2);
-		
-		// UI
-		ui.draw(g2);
+		// GAME START
+		else {
+			// TILES
+			tileM.draw(g2);	
+			
+			// NPC
+			for (int i = 0; i < npc.length; i++) {
+				if (npc[i] != null) 
+					npc[i].draw(g2);
+			}
+			
+			// OBJECTS
+			for (int i = 0; i < obj.length; i++) {
+				if (obj[i] != null) 
+					obj[i].draw(g2, this);
+			}
+			
+			// PLAYER
+			player.draw(g2);
+			
+			// UI
+			ui.draw(g2);	
+		}		
 		
 		// MEMORY DUMP
 		g2.dispose(); 

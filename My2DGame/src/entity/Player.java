@@ -44,7 +44,9 @@ public class Player extends Entity {
 		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;
-		speed = 3; 
+		speed = 3;
+		baseSpeed = speed;
+		runSpeed = 6;
 		animationSpeed = 10;
 		direction = "down";
 	}
@@ -54,15 +56,22 @@ public class Player extends Entity {
 		down1 = setup("/player/boy_down_1"); down2 = setup("/player/boy_down_2");
 		left1 = setup("/player/boy_left_1"); left2 = setup("/player/boy_left_2");
 		right1 = setup("/player/boy_right_1"); right2 = setup("/player/boy_right_2");
+		sit = setup("/player/boy_sit"); sing = setup("/npc/girl_sing_1");
 	}
 	
 	public void update() {
 		
 		// run button (increase sprite cycle)
-		if ( keyH.shiftPressed && canRun) { speed = 5; animationSpeed = 6; }
-		else { speed = 3; animationSpeed = 10; }
+		if ( keyH.shiftPressed && canRun) { speed = runSpeed; animationSpeed = 6; }
+		else { speed = baseSpeed; animationSpeed = 10; }
 		
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {			
+		if (keyH.spacePressed) {	
+			
+			// CHECK NPC COLLISION
+			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+			interactNPC(npcIndex);
+		}		
+		else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {			
 						
 			// find direction
 			if (keyH.upPressed) direction = "up";
@@ -119,14 +128,13 @@ public class Player extends Entity {
 	
 	public void interactNPC(int i) {
 		
-		if (i != -1) {
-			
+		// NPC IS NEAR
+		if (i != -1) {			
 			if (gp.keyH.spacePressed) {
 				gp.gameState = gp.dialogueState;
 				gp.npc[i].speak();
 			}
 		}
-		gp.keyH.spacePressed = false;
 	}
 	
 	public void pickUpObject(int i) {	
@@ -142,26 +150,26 @@ public class Player extends Entity {
 		
 		// change entity sprite based on which direction and which cycle
 		switch (direction) {
-		case "up":
-		case "upleft":
-		case "upright":
-			if (spriteNum == 1) image = up1;
-			if (spriteNum == 2) image = up2;
-			break;
-		case "down":
-		case "downleft":
-		case "downright":
-			if (spriteNum == 1) image = down1;
-			if (spriteNum == 2) image = down2;
-			break;
-		case "left":
-			if (spriteNum == 1) image = left1;
-			if (spriteNum == 2) image = left2;
-			break;
-		case "right":
-			if (spriteNum == 1) image = right1;
-			if (spriteNum == 2) image = right2;
-			break;
+			case "up":
+			case "upleft":
+			case "upright":
+				if (spriteNum == 1) image = up1;
+				if (spriteNum == 2) image = up2;
+				break;
+			case "down":
+			case "downleft":
+			case "downright":
+				if (spriteNum == 1) image = down1;
+				if (spriteNum == 2) image = down2;
+				break;
+			case "left":
+				if (spriteNum == 1) image = left1;
+				if (spriteNum == 2) image = left2;
+				break;
+			case "right":
+				if (spriteNum == 1) image = right1;
+				if (spriteNum == 2) image = right2;
+				break;
 		}
 		
 		// image, x y position, width, height
