@@ -28,9 +28,12 @@ public class Entity {
 	
 	// DEFAULT HITBOX
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
-	public int solidAreaDefaultX, solidAreaDefaultY;
-		
+	public int solidAreaDefaultX, solidAreaDefaultY;		
 	public boolean collisionOn = false;
+	
+	// CHARACTER STATUS
+	public int maxLife; // 1 life = half heart
+	public int life;
 	
 	String dialogues[] = new String[20];
 	int dialogueIndex = 0;

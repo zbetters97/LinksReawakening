@@ -26,6 +26,7 @@ public class KeyHandler implements KeyListener{
 		// TITLE STATE
 		if (gp.gameState == gp.titleState) {
 			
+			// MAIN MENU
 			if (gp.ui.titleScreenState == 0) {
 				
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -54,8 +55,10 @@ public class KeyHandler implements KeyListener{
 					}
 				}
 			}
+			// NEW GAME
 			else if (gp.ui.titleScreenState == 1) {
 				
+				// MAP VALUES TO ON-SCREEN KEYBOARD
 				String keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";			
 				Map<Integer, String> keyboard = new LinkedHashMap<>();
 				
@@ -71,12 +74,14 @@ public class KeyHandler implements KeyListener{
 				if (code == KeyEvent.VK_RIGHT) {
 					gp.ui.commandNum++;
 					
-					if (gp.ui.commandNum == 28 && gp.ui.playerName.length() < 1) 
+					// STOP PLAYER FROM STARTING IF NO LETTERS
+					if (gp.ui.commandNum == 28 && gp.playerName.length() < 1) 
 						gp.ui.commandNum = 27;
 									
 					if (gp.ui.commandNum > 28)
 						gp.ui.commandNum = 28;
 				}				
+				// NAVIGATE THROUGH ON-SCREEN KEYBOARD
 				if (code == KeyEvent.VK_UP) {
 					if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
 						gp.ui.commandNum -= 10;					
@@ -85,6 +90,7 @@ public class KeyHandler implements KeyListener{
 					else if (gp.ui.commandNum >= 26)
 						gp.ui.commandNum = 19;
 				}
+				// NAVIGATE THROUGH ON-SCREEN KEYBOARD
 				if (code == KeyEvent.VK_DOWN) {					
 					if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
 						gp.ui.commandNum += 10;					
@@ -93,29 +99,33 @@ public class KeyHandler implements KeyListener{
 					else if (gp.ui.commandNum == 18)
 						gp.ui.commandNum += 8;
 					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 26)
-						gp.ui.commandNum = 27;
-					
+						gp.ui.commandNum = 27;					
 				}
 				if (code == KeyEvent.VK_SPACE) {
 						
+					// DEL BUTTON
 					if (gp.ui.commandNum == 26) {
-						if (gp.ui.playerName.length() > 0)
-							gp.ui.playerName = gp.ui.playerName.substring(
-								0, gp.ui.playerName.length() - 1
+						if (gp.playerName.length() > 0)
+							gp.playerName = gp.playerName.substring(
+								0, gp.playerName.length() - 1
 							); 
 					}					
+					// BACK BUTTON
 					else if (gp.ui.commandNum == 27) {
 						gp.ui.commandNum = 0;
 						gp.ui.titleScreenState = 0;
-						gp.ui.playerName = "";
+						gp.playerName = "";
 					}
+					// ENTER BUTTON
 					else if (gp.ui.commandNum == 28) {
 						gp.gameState = 1;
 						gp.playMusic(0);						
 					}
+					// SELECT A LETTER
 					else {
-						if (gp.ui.playerName.length() < 11)
-							gp.ui.playerName += keyboard.get(gp.ui.commandNum);
+						// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
+						if (gp.playerName.length() <= 10)
+							gp.playerName += keyboard.get(gp.ui.commandNum);
 					}
 				}				
 				

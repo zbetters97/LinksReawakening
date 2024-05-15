@@ -44,12 +44,16 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	Thread gameThread;
 	
-	// TILE / OBJECT / PLAYER
+	// TILE / ENTITY / OBJECT 
 	public TileManager tileM = new TileManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);		
+	
 	public Player player = new Player(this, keyH);
+	public String playerName = "";
+	
 	public Entity npc[] = new Entity[10]; // total amount of different npc in game
 	public SuperObject obj[] = new SuperObject[10]; // total amount of different items in game	
+	
 	public AssetSetter aSetter = new AssetSetter(this);
 		
 	/** CONSTRUCTOR **/
