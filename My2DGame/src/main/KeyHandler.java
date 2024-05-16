@@ -9,7 +9,8 @@ import java.util.Map.Entry;
 public class KeyHandler implements KeyListener{
 
 	GamePanel gp;
-	public boolean upPressed, downPressed, leftPressed, rightPressed, spacePressed, shiftPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed;
+	public boolean spacePressed, shiftPressed;
 	
 	public KeyHandler(GamePanel gp) {
 		this.gp = gp;
@@ -79,7 +80,7 @@ public class KeyHandler implements KeyListener{
 					else if (gp.ui.commandNum >= 27)
 						gp.ui.commandNum = 19;
 				}
-				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {	
+				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 					gp.playSE(2);
 					if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
 						gp.ui.commandNum += 10;					
@@ -97,13 +98,16 @@ public class KeyHandler implements KeyListener{
 					if (gp.ui.commandNum < 0)
 						gp.ui.commandNum = 0;
 				}
-				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-					gp.playSE(2);
+				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {					
 					gp.ui.commandNum++;
 					
 					// STOP PLAYER FROM STARTING IF NO LETTERS
-					if (gp.ui.commandNum == 28 && gp.playerName.length() < 1) 
+					if (gp.ui.commandNum == 28 && gp.playerName.length() < 1) {
+						gp.playSE(4);
 						gp.ui.commandNum = 27;
+					}
+					else 
+						gp.playSE(2);
 									
 					if (gp.ui.commandNum > 28)
 						gp.ui.commandNum = 28;
@@ -155,9 +159,7 @@ public class KeyHandler implements KeyListener{
 			}
 		}
 		// PLAY STATE
-		else {		
-			
-			if (gp.gameState == gp.playState) {
+		else if (gp.gameState == gp.playState) {
 				
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = true;
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;	
@@ -167,12 +169,11 @@ public class KeyHandler implements KeyListener{
 				if (code == KeyEvent.VK_SPACE) spacePressed = true;
 				if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.pauseState;			
 			}
-			else if (gp.gameState == gp.pauseState) {
-				if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.playState;
-			}
-			else if (gp.gameState == gp.dialogueState) {
-				if (code == KeyEvent.VK_SPACE) gp.gameState = gp.playState;
-			}
+		else if (gp.gameState == gp.pauseState) {
+			if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.playState;
+		}
+		else if (gp.gameState == gp.dialogueState) {
+			if (code == KeyEvent.VK_SPACE) gp.gameState = gp.playState;
 		}
 	}
 

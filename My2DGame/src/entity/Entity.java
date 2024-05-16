@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -15,16 +16,31 @@ public class Entity {
 	GamePanel gp;
 	
 	public int worldX, worldY;
+	public int type; // 0 = PLAYER, 1 = NPC, 2 = ENEMY
 	public int speed, baseSpeed, runSpeed, animationSpeed;
-
+	
+	// SPRITES
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+	public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, 
+							attackLeft1, attackLeft2, attackRight1, attackRight2;
 	public BufferedImage sit, sing;
-	public String direction;
+	
+	public String direction = "down";
 	
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
 	
+	public int attackCounter = 0;
+	public int attackNum = 1;
+	
 	public int actionLockCounter = 0;
+	
+	public boolean invincible = false;
+	public int invincibleCounter = 0;
+	public boolean attacking;
+	
+	// ENTITY WEAPON AREA
+	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 	
 	// DEFAULT HITBOX
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
@@ -37,6 +53,11 @@ public class Entity {
 	
 	String dialogues[] = new String[20];
 	int dialogueIndex = 0;
+	
+	// OBJECT ATTRIBUTES
+	public BufferedImage image, image2, image3;
+	public String name;
+	public boolean collision = false;
 	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
@@ -79,9 +100,18 @@ public class Entity {
 		setAction();
 		
 		collisionOn = false;
-		gp.cChecker.checkTile(this);
-		gp.cChecker.checkObject(this, false);
-		gp.cChecker.checkPlayer(this);
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.enemy);
+		gp.cChecker.checkObject(this, false);		
+		boolean contactPlayer = gp.cChecker.checkPlayer(this);
+		
+		if (this.type == 2 && contactPlayer) {
+			if (!gp.player.invincible) {
+				gp.player.life--;
+				gp.player.invincible = true;
+			}
+		}
 		
 		// if no collision detected
 		if (!collisionOn) { 
@@ -109,6 +139,16 @@ public class Entity {
 				
 				spriteCounter = 0;
 			}	
+		}
+		// ENTITY SHIELD AFTER HIT
+		if (invincible) {
+			invincibleCounter++;
+			
+			// 1 SECOND REFRESH TIME 
+			if (invincibleCounter > 60) {
+				invincible = false;
+				invincibleCounter = 0;
+			}
 		}
 	}
 	
@@ -146,11 +186,24 @@ public class Entity {
 				break;
 			}
 			
+			// ENTITY IS HIT
+			if (invincible) {
+				
+				// FLASH OPACITY
+				if (invincibleCounter % 5 == 0)
+					g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+				else
+					g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+			}	
+			
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			
+			// RESET OPACITY
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		}
 	}
 	
-	public BufferedImage setup(String imagePath) {
+	public BufferedImage setup(String imagePath) {	
 		
 		UtilityTool utility = new UtilityTool();
 		BufferedImage image = null;
@@ -158,6 +211,21 @@ public class Entity {
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
 			image = utility.scaleImage(image, gp.tileSize, gp.tileSize);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return image;
+	}
+	public BufferedImage setup(String imagePath, int width, int height) {
+		
+		UtilityTool utility = new UtilityTool();
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+			image = utility.scaleImage(image, width, height);
 		}
 		catch (IOException e) {
 			e.printStackTrace();

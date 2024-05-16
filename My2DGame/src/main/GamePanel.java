@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import javax.swing.JPanel;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -44,15 +47,18 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	Thread gameThread;
 	
-	// TILE / ENTITY / OBJECT 
+	// TILE / COLLISION / EVENT
 	public TileManager tileM = new TileManager(this);
-	public CollisionChecker cChecker = new CollisionChecker(this);		
+	public CollisionChecker cChecker = new CollisionChecker(this);	
+	public EventHandler eHandler = new EventHandler(this);
 	
+	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);
-	public String playerName = "";
-	
-	public Entity npc[] = new Entity[10]; // total amount of different npc in game
-	public SuperObject obj[] = new SuperObject[10]; // total amount of different items in game	
+	public String playerName = "";	
+	public Entity npc[] = new Entity[10]; // total amount of npc displayed at once	
+	public Entity enemy[] = new Entity[20]; // total amount of enemies displayed at once
+	public Entity obj[] = new Entity[10]; // total amount of items displayed at once
+	ArrayList<Entity> entityList = new ArrayList<>();
 	
 	public AssetSetter aSetter = new AssetSetter(this);
 		
@@ -60,7 +66,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public GamePanel() {
 		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // screen size
-		this.setBackground(Color.black); // black background color
+		this.setBackground(Color.black);
 		this.setDoubleBuffered(true); // improves rendering performance
 		
 		this.addKeyListener(keyH);
@@ -69,10 +75,12 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = titleState;
+		//gameState = titleState;
+		gameState = playState;
 		playMusic(0);
 		
 		aSetter.setNPC();
+		aSetter.setEnemy();
 		aSetter.setObject();	
 	}
 
@@ -90,7 +98,7 @@ public class GamePanel extends JPanel implements Runnable {
 		double drawInterval = 1000000000 / FPS; // 1/60th of a second
 		double delta = 0;
 		long timer = 0;
-		int drawCount = 0;
+//		int drawCount = 0;
 		
 		// updates and repaints gameThread x times per second (x fps)
 		while(gameThread != null) {
@@ -109,12 +117,12 @@ public class GamePanel extends JPanel implements Runnable {
 				repaint(); // calls paintCompoment() method
 				
 				delta--;				
-				drawCount++;
+//				drawCount++;
 			}
 			// DISPLAY FPS (PER SEC)
 			if (timer >= 1000000000) {
 //				System.out.println("FPS: " + drawCount);
-				drawCount = 0;
+//				drawCount = 0;
 				timer = 0;
 			}
 		}
@@ -127,10 +135,9 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			player.update();	
 			
-			for (int i = 0; i < npc.length; i++) {
-				if (npc[i] != null)
-					npc[i].update();
-			}
+			for (Entity e : npc) { if (e != null) e.update(); }	
+			for (Entity e : enemy) { if (e != null) e.update(); }
+			for (Entity e : obj) { if (e != null) e.update(); }
 		}
 		// GAME PAUSED
 		if (gameState == pauseState) {
@@ -153,20 +160,26 @@ public class GamePanel extends JPanel implements Runnable {
 			// TILES
 			tileM.draw(g2);	
 			
-			// NPC
-			for (int i = 0; i < npc.length; i++) {
-				if (npc[i] != null) 
-					npc[i].draw(g2);
-			}
+			// ADD PLAYER, ENTITIES, AND OBJECTS TO LIST
+			entityList.add(player);			
+			for (Entity e : npc) { if (e != null) entityList.add(e); }
+			for (Entity e : enemy) { if (e != null) entityList.add(e); }
+			for (Entity o : obj) { if (o != null) entityList.add(o); }
 			
-			// OBJECTS
-			for (int i = 0; i < obj.length; i++) {
-				if (obj[i] != null) 
-					obj[i].draw(g2, this);
-			}
+			// SORT BY WORLD Y
+			Collections.sort(entityList, new Comparator<Entity>() {
+
+				public int compare(Entity e1, Entity e2) {					
+					int entityTop = Integer.compare(e1.worldY, e2.worldY);					
+					return entityTop;
+				}
+			});
 			
-			// PLAYER
-			player.draw(g2);
+			// DRAW ENTITIES
+			for (Entity e : entityList) { e.draw(g2); }
+			
+			// EMPTY ENTITY LIST
+			entityList.clear();
 			
 			// UI
 			ui.draw(g2);	
@@ -177,12 +190,12 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void playMusic(int i) {		
-		music.setFile(i);
-		music.play();
-		music.loop();
+		//music.setFile(i);
+		//music.play();
+		//music.loop();
 	}
 	public void stopMusic() {
-		music.stop();
+		//music.stop();
 	}
 	public void playSE(int i) {
 		se.setFile(i);

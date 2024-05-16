@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import object.*;
+import entity.*;
 
 public class UI {
 	
@@ -50,7 +51,7 @@ public class UI {
 		}
 		
 		// CREATE HUD
-		SuperObject heart = new OBJ_Heart(gp);
+		Entity heart = new OBJ_Heart(gp);
 		heart_full = heart.image;
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
