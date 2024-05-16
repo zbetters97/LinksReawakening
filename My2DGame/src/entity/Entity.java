@@ -26,18 +26,21 @@ public class Entity {
 	public BufferedImage sit, sing;
 	
 	public String direction = "down";
-	
+
 	public int spriteCounter = 0;
-	public int spriteNum = 1;
+	public int spriteNum = 1;	
+	public int actionLockCounter = 0;
 	
+	public boolean attacking;	
 	public int attackCounter = 0;
 	public int attackNum = 1;
 	
-	public int actionLockCounter = 0;
-	
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
-	public boolean attacking;
+	
+	public boolean alive = true;
+	public boolean dying = false;
+	public int dyingCounter = 0;
 	
 	// ENTITY WEAPON AREA
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
@@ -190,17 +193,39 @@ public class Entity {
 			if (invincible) {
 				
 				// FLASH OPACITY
-				if (invincibleCounter % 5 == 0)
-					g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-				else
-					g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+				if (invincibleCounter % 5 == 0) 
+					changeAlpha(g2, 0.3f);
+				else 
+					changeAlpha(g2, 1f);
 			}	
+			if (dying) {
+				dyingAnimation(g2);
+			}
 			
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			
 			// RESET OPACITY
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		}
+	}
+	
+	public void dyingAnimation(Graphics2D g2) {
+		
+		dyingCounter++;
+		
+		if (dyingCounter % 5 == 0 && dyingCounter <= 40) 
+			changeAlpha(g2, 0f);		
+		else
+			changeAlpha(g2, 1f);
+		
+		if (dyingCounter > 40) {
+			dying = false;
+			alive = false;
+		}
+	}
+	
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 	
 	public BufferedImage setup(String imagePath) {	

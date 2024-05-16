@@ -75,8 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		//gameState = titleState;
-		gameState = playState;
+		gameState = titleState;
 		playMusic(0);
 		
 		aSetter.setNPC();
@@ -133,15 +132,33 @@ public class GamePanel extends JPanel implements Runnable {
 		// GAME PLAYING
 		if (gameState == playState) {
 			
+			// UPDATE PLAYER
 			player.update();	
+				
+			// UPDATE NPCs
+			for (int i = 0; i < npc.length; i++) {
+				if (npc[i] != null)
+					npc[i].update();
+			}
 			
-			for (Entity e : npc) { if (e != null) e.update(); }	
-			for (Entity e : enemy) { if (e != null) e.update(); }
-			for (Entity e : obj) { if (e != null) e.update(); }
+			// UPDATE ENEMIES			
+			for (int i = 0; i < enemy.length; i++) {
+				if (enemy[i] != null) {
+					if (enemy[i].alive && !enemy[i].dying) 
+						enemy[i].update();					
+					if (!enemy[i].alive)
+						enemy[i] = null;					
+				}
+			}
+			
+			// UPDATE OBJECTS
+			for (int i = 0; i < obj.length; i++) {
+				if (obj[i] != null) obj[i].update();
+			}
 		}
+		
 		// GAME PAUSED
-		if (gameState == pauseState) {
-			
+		if (gameState == pauseState) {			
 		}
 	}
 	
@@ -190,12 +207,12 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void playMusic(int i) {		
-		//music.setFile(i);
-		//music.play();
-		//music.loop();
+		music.setFile(i);
+		music.play();
+		music.loop();
 	}
 	public void stopMusic() {
-		//music.stop();
+		music.stop();
 	}
 	public void playSE(int i) {
 		se.setFile(i);
