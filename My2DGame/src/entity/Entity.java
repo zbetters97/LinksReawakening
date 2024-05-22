@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -15,9 +16,28 @@ public class Entity {
 	
 	GamePanel gp;
 	
-	public int worldX, worldY;
+	public int worldX, worldY;	
+	
+	// OBJECT ATTRIBUTES
+	public BufferedImage image, image2, image3;
+	public String name;
+	public boolean collision = false;
+	
+	// CHARACTER ATTRIBUTES
 	public int type; // 0 = PLAYER, 1 = NPC, 2 = ENEMY
+	public int life, maxLife; // 1 life = half heart
 	public int speed, baseSpeed, runSpeed, animationSpeed;
+	public int level;
+	public int strength, dexterity;
+	public int attack, defense;
+	public int exp, nextLevelEXP;
+	public int coin;
+	public Entity currentWeapon;
+	public Entity currentShield;
+	
+	// ITEM ATTRIBUTES
+	public int attackValue, defenseValue;
+	public String description = "";
 	
 	// SPRITES
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
@@ -25,22 +45,31 @@ public class Entity {
 							attackLeft1, attackLeft2, attackRight1, attackRight2;
 	public BufferedImage sit, sing;
 	
+	// DEFAULT DIRECTION
 	public String direction = "down";
 
+	// SPRITE COUNTER
 	public int spriteCounter = 0;
 	public int spriteNum = 1;	
 	public int actionLockCounter = 0;
 	
+	// HP BAR
+	boolean hpBarOn = false;
+	int hpBarCounter = 0;
+	
+	// ATTACKING COUNTER
 	public boolean attacking;	
 	public int attackCounter = 0;
 	public int attackNum = 1;
 	
+	// INVINCIBLE COUNTER
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
 	
+	// ALIVE CHECKERS
 	public boolean alive = true;
 	public boolean dying = false;
-	public int dyingCounter = 0;
+	public int dyingCounter = 0;	
 	
 	// ENTITY WEAPON AREA
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
@@ -50,17 +79,8 @@ public class Entity {
 	public int solidAreaDefaultX, solidAreaDefaultY;		
 	public boolean collisionOn = false;
 	
-	// CHARACTER STATUS
-	public int maxLife; // 1 life = half heart
-	public int life;
-	
 	String dialogues[] = new String[20];
 	int dialogueIndex = 0;
-	
-	// OBJECT ATTRIBUTES
-	public BufferedImage image, image2, image3;
-	public String name;
-	public boolean collision = false;
 	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
@@ -97,6 +117,27 @@ public class Entity {
 	
 	public void setAction() { }
 	
+	public void damageReaction() { }
+	
+	public void dyingAnimation(Graphics2D g2) {
+		
+		dyingCounter++;
+		
+		if (dyingCounter % 5 == 0 && 40 >= dyingCounter) 
+			changeAlpha(g2, 0f);		
+		else
+			changeAlpha(g2, 1f);
+		
+		if (dyingCounter > 40) {
+			dying = false;
+			alive = false;
+		}
+	}
+	
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
+	}
+	
 	public void update() { 
 		
 		// calls child class method
@@ -111,7 +152,12 @@ public class Entity {
 		
 		if (this.type == 2 && contactPlayer) {
 			if (!gp.player.invincible) {
-				gp.player.life--;
+				gp.playSE(2, 0);
+				
+				int damage = attack - gp.player.defense;
+				if (damage < 0) damage = 0;	
+				gp.player.life -= damage;
+				
 				gp.player.invincible = true;
 			}
 		}
@@ -189,8 +235,31 @@ public class Entity {
 				break;
 			}
 			
-			// ENTITY IS HIT
+			// ENEMY HP BAR
+			if (type == 2 && hpBarOn) {		
+				double oneScale = (double)gp.tileSize / maxLife; // LENGTH OF HALF HEART
+				double hpBarValue = oneScale * life; // LENGTH OF ENEMY HEALTH
+				
+				g2.setColor(new Color(35,35,35)); // DARK GRAY OUTLINE
+				g2.fillRect(screenX-1, screenY - 16, gp.tileSize + 2, 10);
+				
+				g2.setColor(new Color(255,0,30)); // RED BAR
+				g2.fillRect(screenX, screenY - 15, (int)hpBarValue, 8);
+				
+				// REMOVE BAR AFTER 10 SECONDS
+				hpBarCounter++;
+				if (hpBarCounter > 600) {
+					hpBarCounter = 0;
+					hpBarOn = false;
+				}
+			}
+			
+			// ENEMY IS HIT
 			if (invincible) {
+				
+				// DISPLAY HP
+				hpBarOn = true;
+				hpBarCounter = 0;
 				
 				// FLASH OPACITY
 				if (invincibleCounter % 5 == 0) 
@@ -205,27 +274,8 @@ public class Entity {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			
 			// RESET OPACITY
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-		}
-	}
-	
-	public void dyingAnimation(Graphics2D g2) {
-		
-		dyingCounter++;
-		
-		if (dyingCounter % 5 == 0 && dyingCounter <= 40) 
-			changeAlpha(g2, 0f);		
-		else
 			changeAlpha(g2, 1f);
-		
-		if (dyingCounter > 40) {
-			dying = false;
-			alive = false;
 		}
-	}
-	
-	public void changeAlpha(Graphics2D g2, float alphaValue) {
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 	
 	public BufferedImage setup(String imagePath) {	

@@ -11,6 +11,6 @@ public class OBJ_Chest extends Entity {
 		super(gp);
 		
 		name = "Chest";
-		down1 = setup("/objects/chest");
+		down1 = setup("/objects/OBJ_CHEST");
 	}	
 }

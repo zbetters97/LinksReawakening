@@ -11,6 +11,7 @@ public class OBJ_Key extends Entity {
 		super(gp);	
 		
 		name = "Key";
-		down1 = setup("/objects/key");
+		description = "[" + name + "]\nThis can unlock a door.\nSingle-use only.";
+		down1 = setup("/objects/ITEM_KEY");
 	}	
 }

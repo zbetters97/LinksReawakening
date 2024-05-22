@@ -9,18 +9,37 @@ import javax.sound.sampled.Clip;
 public class Sound {
 	
 	Clip clip;
-	URL soundURL[] = new URL[30];
+	URL sounds[][] = new URL[5][];
+	URL music[] = new URL[30];
+	URL player[] = new URL[30];
+	URL enemy[] = new URL[30];	
+	URL objects[] = new URL[30];
+	URL misc[] = new URL[30];
 	
 	public Sound() {
-		soundURL[0] = getClass().getResource("/sound/Title-Screen.wav");
-		soundURL[1] = getClass().getResource("/sound/Dark-World.wav");
-		soundURL[2] = getClass().getResource("/sound/Menu_Cursor.wav");
-		soundURL[3] = getClass().getResource("/sound/Menu_Select.wav");
-		soundURL[4] = getClass().getResource("/sound/Menu_Error.wav");
+		music[0] = getClass().getResource("/sound/MUSIC_TITLESCREEN.wav");
+		music[1] = getClass().getResource("/sound/MUSIC_OVERWORLD.wav");
+		
+		misc[0] = getClass().getResource("/sound/MENU_CURSOR.wav");
+		misc[1] = getClass().getResource("/sound/MENU_SELECT.wav");
+		misc[2] = getClass().getResource("/sound/MENU_ERROR.wav");
+		misc[3] = getClass().getResource("/sound/MISC_LEVELUP.wav");
+		misc[4] = getClass().getResource("/sound/MISC_FAIRY.wav");
+		
+		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");
+		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");
+		
+		enemy[0] = getClass().getResource("/sound/EMY_NORMAL_HIT.wav");
+		enemy[1] = getClass().getResource("/sound/EMY_SMALL_HIT.wav");
+		enemy[2] = getClass().getResource("/sound/EMY_DIE.wav");
+		
+		sounds[0] = music; sounds[1] = misc; 
+		sounds[2] = player; sounds[3] = objects; 
+		sounds[4] = enemy;
 	}	
-	public void setFile(int i) {		
+	public void setFile(int category, int record) {		
 		try {			
-			AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
+			AudioInputStream ais = AudioSystem.getAudioInputStream(sounds[category][record]);
 			clip = AudioSystem.getClip();
 			clip.open(ais);
 		}

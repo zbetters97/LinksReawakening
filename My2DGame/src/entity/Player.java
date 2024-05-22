@@ -4,9 +4,11 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.*;
 
 public class Player extends Entity {
 
@@ -15,15 +17,18 @@ public class Player extends Entity {
 	public final int screenX;
 	public final int screenY;
 	
-	boolean canRun = false;	
+	public ArrayList<Entity> inventory = new ArrayList<>();
+	public final int maxInventorySize = 20;
 	
+	public boolean attackCanceled = false;
+		
 	/** CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
 		// pass GamePanel to Entity abstract class
 		super(gp);
 		
-		this.keyH = keyH;		
+		this.keyH = keyH;
 		
 		// PLAYER POSITION LOCKED TO CENTER
 		// push by half a tile
@@ -42,24 +47,44 @@ public class Player extends Entity {
 		
 		setDefaultValues();  
 		getPlayerImage();
-		getPlayerAttackImage();
+		setItems();
+		getPlayerAttackImage();		
 	}
 	
 	public void setDefaultValues() {
-		
+						
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;
 		
-		speed = 3;
-		baseSpeed = speed;
-		runSpeed = 6;		
-		animationSpeed = 10;
-		
 		direction = "down";
 		
-		// PLAYER STATUS
-		maxLife = 6; 
-		life = maxLife;
+		speed = 3; baseSpeed = speed;
+		runSpeed = 6; animationSpeed = 10;
+		
+		// PLAYER ATTRIBUTES
+		name = "LINK";
+		level = 1;
+		maxLife = 6; life = maxLife;
+		strength = 1; dexterity = 1; // helps attack, defense
+		exp = 0; nextLevelEXP = 5;
+		coin = 0;
+		currentWeapon = new OBJ_Sword(gp);
+		currentShield = new OBJ_Shield(gp);
+		attack = getAttack();
+		defense = getDefense();
+	}	
+	public int getAttack() {
+		return attack = strength * currentWeapon.attackValue;
+	}
+	public int getDefense() {
+		return defense = dexterity * currentShield.defenseValue;
+	}
+	public void setItems() {
+		inventory.add(currentWeapon);
+		inventory.add(currentShield);
+		
+		inventory.add(new OBJ_Boots(gp));
+		inventory.add(new OBJ_Key(gp));
 	}
 	
 	public void getPlayerImage() {		
@@ -89,6 +114,143 @@ public class Player extends Entity {
 		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}
 	
+	public void interactNPC(int i) {
+		
+		if (gp.keyH.spacePressed) {
+			
+			// TALKING TO NPC
+			if (i != -1) {		
+				attackCanceled = true;
+				gp.gameState = gp.dialogueState;
+				gp.npc[i].speak();
+			}
+		}				
+	}
+	
+	public void attacking() {
+		
+		attackCounter++;
+		
+		// 3 FRAMES: ATTACK IMAGE 1
+		if (3 >= attackCounter) {	
+			attackNum = 1;
+		}		
+		// 12 FRAMES: ATTACK IMAGE 2
+		if (15 >= attackCounter && attackCounter > 3) {
+			attackNum = 2;
+			
+			// CHECK IF WEAPON HITS TARGET	
+			int currentWorldX = worldX;
+			int currentWorldY = worldY;
+			int solidAreaWidth = solidArea.width;
+			int solidAreaHeight = solidArea.height;
+			
+			// ADJUST PLAYER'S X/Y 
+			switch (direction) {
+				case "up": worldY -= attackArea.height; break; 
+				case "upleft": worldY -= attackArea.height; worldX -= attackArea.width; break; 
+				case "upright": worldY -= attackArea.height; worldX += attackArea.width; break; 
+				case "down": worldY += attackArea.height; break;
+				case "downleft": worldY += attackArea.height; worldX -= attackArea.width; break;
+				case "downright": worldY += attackArea.height; worldX += attackArea.width; break;					
+				case "left": worldX -= attackArea.width; break;
+				case "right": worldX += attackArea.width; break;
+			}
+			
+			// CHANGE SIZE OF HIT BOX 
+			solidArea.width = attackArea.width;
+			solidArea.height = attackArea.height;
+			
+			// CHECK IF ATTACK LANDS ON ENEMY
+			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+			damageEnemy(enemyIndex);			
+			
+			// RESTORE PLAYER HITBOX
+			worldX = currentWorldX;
+			worldY = currentWorldY;
+			solidArea.width = solidAreaWidth;
+			solidArea.height = solidAreaHeight;
+		}
+		
+		// RESET IMAGE
+		if (attackCounter > 15) {
+			attackNum = 1;
+			attackCounter = 0;
+			attacking = false;
+		}
+	}
+	
+	public void contactEnemy(int i) {
+		
+		// PLAYER HIT BY ENEMY
+		if (i != -1) {					
+			if (!invincible) {
+				gp.playSE(2, 0);
+				
+				int damage = gp.enemy[i].attack - defense;
+				if (damage < 0) damage = 0;				
+				this.life -= damage;
+				
+				invincible = true;
+			}
+		}
+	}
+	
+	public void damageEnemy(int i) {
+		
+		// ATTACK LANDS
+		if (i != -1) {
+			
+			// HURT ENEMY
+			if (!gp.enemy[i].invincible) {
+				gp.playSE(4, 1);
+				
+				int damage = attack - gp.enemy[i].defense;
+				if (damage < 0) damage = 0;				
+				gp.enemy[i].life -= damage;			
+				
+				gp.enemy[i].invincible = true;
+				gp.enemy[i].damageReaction();
+				
+				// KILL ENEMY
+				if (gp.enemy[i].life <= 0) {
+					gp.enemy[i].dying = true;
+					
+					gp.playSE(4, 2);
+													
+					exp += gp.enemy[i].exp;
+					gp.ui.addMessage("+" + gp.enemy[i].exp + " EXP!");	
+					
+					checkLevelUp();
+				}
+			}
+		}
+	}
+	
+	public void checkLevelUp() {
+		
+		if (exp >= nextLevelEXP) {
+			gp.playSE(1, 3);
+			level++;
+			nextLevelEXP *= 2;
+			maxLife += 2;
+			life = maxLife;
+			strength++;
+			dexterity++;
+			attack = getAttack();
+			defense = getDefense();
+			
+			gp.ui.addMessage("Leveled up to level " + level + "!");
+		}
+	}
+	
+	public void pickUpObject(int i) {	
+		
+		// object is interacted with by entity
+		if (i != -1) {			
+		}
+	}
+	
 	public void update() {
 		
 		// RUN BUTTON
@@ -99,8 +261,8 @@ public class Player extends Entity {
 			attacking();
 		}
 		else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed 
-				|| keyH.spacePressed) {			
-						
+				|| keyH.spacePressed) {	
+									
 			// find direction
 			if (keyH.upPressed) direction = "up";
 			if (keyH.downPressed) direction = "down";
@@ -149,12 +311,20 @@ public class Player extends Entity {
 				}
 			}
 			
+			// SWING SWORD VALID
+			if (keyH.spacePressed && !attackCanceled) {
+				gp.playSE(3, 0);
+				attacking = true;
+				spriteCounter = 0;
+			}
+			
+			attackCanceled = false;			
 			gp.keyH.spacePressed = false;
-				
+			
 			// WALKING ANIMATION
 			spriteCounter++;
 			if (spriteCounter > animationSpeed) { // speed of sprite change
-				
+
 				if (spriteNum == 1) spriteNum = 2;
 				else if (spriteNum == 2) spriteNum = 1;
 				
@@ -171,109 +341,6 @@ public class Player extends Entity {
 				invincible = false;
 				invincibleCounter = 0;
 			}
-		}
-	}
-	
-	public void interactNPC(int i) {
-		
-		if (gp.keyH.spacePressed) {
-			
-			// TALKING TO NPC
-			if (i != -1) {			
-				gp.gameState = gp.dialogueState;
-				gp.npc[i].speak();
-			}
-			else {
-				attacking = true;	
-			}
-		}				
-	}
-	
-	public void contactEnemy(int i) {
-		
-		// PLAYER HIT BY ENEMY
-		if (i != -1) {					
-			if (!invincible) {
-				this.life--;
-				invincible = true;
-			}
-		}
-	}
-	
-	public void attacking() {
-		
-		attackCounter++;
-		
-		// 5 FRAMES: ATTACK IMAGE 1
-		if (attackCounter <= 5) {
-			attackNum = 1;
-		}		
-		// 20 FRAMES: ATTACK IMAGE 2
-		if (attackCounter > 5 && attackCounter <= 25) {
-			attackNum = 2;
-			
-			// CHECK IF WEAPON HITS TARGET	
-			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			int solidAreaWidth = solidArea.width;
-			int solidAreaHeight = solidArea.height;
-			
-			// ADJUST PLAYER'S X/Y 
-			switch (direction) {
-				case "up": worldY -= attackArea.height; break; 
-				case "upleft": worldY -= attackArea.height; worldX -= attackArea.width; break; 
-				case "upright": worldY -= attackArea.height; worldX += attackArea.width; break; 
-				case "down": worldY += attackArea.height; break;
-				case "downleft": worldY += attackArea.height; worldX -= attackArea.width; break;
-				case "downright": worldY += attackArea.height; worldX += attackArea.width; break;					
-				case "left": worldX -= attackArea.width; break;
-				case "right": worldX += attackArea.width; break;
-			}
-			
-			// CHANGE SIZE OF HIT BOX 
-			solidArea.width = attackArea.width;
-			solidArea.height = attackArea.height;
-			
-			// CHECK IF ATTACK LANDS ON ENEMY
-			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			damageEnemy(enemyIndex);			
-			
-			// RESTORE PLAYER HITBOX
-			worldX = currentWorldX;
-			worldY = currentWorldY;
-			solidArea.width = solidAreaWidth;
-			solidArea.height = solidAreaHeight;
-		}
-		
-		// RESET IMAGE
-		if (attackCounter > 25) {
-			attackNum = 1;
-			attackCounter = 0;
-			attacking = false;
-		}
-	}
-	
-	public void damageEnemy(int i) {
-		
-		// ATTACK LANDS
-		if (i != -1) {
-			
-			// HURT ENEMY
-			if (!gp.enemy[i].invincible) {
-				gp.enemy[i].life--;
-				gp.enemy[i].invincible = true;
-			}
-			
-			// KILL ENEMY
-			if (gp.enemy[i].life <= 0)
-				gp.enemy[i].dying = true;
-		}
-	}
-	
-	public void pickUpObject(int i) {	
-		
-		// object is interacted with by entity
-		if (i != -1) {			
 		}
 	}
 	
@@ -312,7 +379,7 @@ public class Player extends Entity {
 					if (spriteNum == 1) image = down1;
 					if (spriteNum == 2) image = down2;	
 				}
-				else {
+				else {		
 					if (attackNum == 1) image = attackDown1;
 					if (attackNum == 2) image = attackDown2;	
 				}		
@@ -345,13 +412,13 @@ public class Player extends Entity {
 				}		
 				break;
 		}
-				
+						
 		// PLAYER IS HIT
 		if (invincible) {
 			
 			// FLASH OPACITY
 			if (invincibleCounter % 5 == 0)
-				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
 			else
 				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		}	
@@ -362,13 +429,3 @@ public class Player extends Entity {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 	}
 }
-
-
-
-
-
-
-
-
-
-

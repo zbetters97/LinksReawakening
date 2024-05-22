@@ -32,5 +32,9 @@ public class AssetSetter {
 		gp.enemy[1] = new EMY_GreenSlime(gp);
 		gp.enemy[1].worldX = gp.tileSize * 24;
 		gp.enemy[1].worldY = gp.tileSize * 37;
+		
+		gp.enemy[2] = new EMY_Bat(gp);
+		gp.enemy[2].worldX = gp.tileSize * 25;
+		gp.enemy[2].worldY = gp.tileSize * 39;
 	}
 }

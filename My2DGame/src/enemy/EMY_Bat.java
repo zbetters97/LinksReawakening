@@ -5,25 +5,25 @@ import java.util.Random;
 import entity.Entity;
 import main.GamePanel;
 
-public class EMY_GreenSlime extends Entity {
+public class EMY_Bat extends Entity {
 
 	GamePanel gp;
 	
-	public EMY_GreenSlime(GamePanel gp) {
+	public EMY_Bat(GamePanel gp) {
 		super(gp);		
 		
 		this.gp = gp;
 		
 		type = 2;
-		name = "Green Slime";
-		speed = 1;
+		name = "Bat";
+		speed = 2;
 		baseSpeed = speed;
-		animationSpeed = 15;
-		maxLife = 4;
+		animationSpeed = 5;
+		maxLife = 2;
 		life = maxLife;
-		attack = 3;
+		attack = 2;
 		defense = 0;
-		exp = 4;
+		exp = 2;
 		
 		// HIT BOX
 		solidArea.x = 2;
@@ -37,21 +37,21 @@ public class EMY_GreenSlime extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/greenslime_down_1");
-		up2 = setup("/enemy/greenslime_down_2");
-		down1 = setup("/enemy/greenslime_down_1");
-		down2 = setup("/enemy/greenslime_down_2");
-		left1 = setup("/enemy/greenslime_down_1");
-		left2 = setup("/enemy/greenslime_down_2");
-		right1 = setup("/enemy/greenslime_down_1");
-		right2 = setup("/enemy/greenslime_down_2");
+		up1 = setup("/enemy/bat_down_1");
+		up2 = setup("/enemy/bat_down_2");
+		down1 = setup("/enemy/bat_down_1");
+		down2 = setup("/enemy/bat_down_2");
+		left1 = setup("/enemy/bat_down_1");
+		left2 = setup("/enemy/bat_down_2");
+		right1 = setup("/enemy/bat_down_1");
+		right2 = setup("/enemy/bat_down_2");
 	}
 	
 	public void setAction() {
 
 		actionLockCounter++;
 		
-		if (actionLockCounter == 120) {		
+		if (actionLockCounter == 25) {		
 						
 			Random random = new Random();
 			int i = random.nextInt(100) + 1; // random number 1-100

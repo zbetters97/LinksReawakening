@@ -49,7 +49,7 @@ public class EventHandler {
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
 			if (hit(27, 16, "right")) damagePit(27, 16,gp.dialogueState);		
-			if (hit(23, 12, "any")) healingPool(23, 12, gp.dialogueState);
+			if (hit(23, 12, "up")) healingPool(23, 12, gp.dialogueState);
 		}
 	}
 	
@@ -91,6 +91,7 @@ public class EventHandler {
 	
 	public void damagePit(int col, int row, int gameState) {		
 		gp.gameState = gameState;
+		gp.playSE(2, 0);
 		gp.ui.currentDialogue = "Ouch! You got stung by a bee!";
 		gp.player.life--;
 		canTouchEvent = false;
@@ -98,23 +99,12 @@ public class EventHandler {
 	
 	public void healingPool(int col, int row, int gameState) {
 		if (gp.keyH.spacePressed) {
+			gp.player.attackCanceled = true;
 			gp.gameState = gameState;
 			gp.ui.currentDialogue = "Ah... The water is pure and heals you.";
-			gp.player.life++;		
+			gp.playSE(1, 4);
+			gp.player.life = gp.player.maxLife;	
+			gp.aSetter.setEnemy();
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

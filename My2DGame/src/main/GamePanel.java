@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int playState = 1;
 	public final int pauseState = 2;
 	public final int dialogueState = 3;	
+	public final int characterState = 4;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -53,8 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public EventHandler eHandler = new EventHandler(this);
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
-	public Player player = new Player(this, keyH);
-	public String playerName = "";	
+	public Player player = new Player(this, keyH);	
 	public Entity npc[] = new Entity[10]; // total amount of npc displayed at once	
 	public Entity enemy[] = new Entity[20]; // total amount of enemies displayed at once
 	public Entity obj[] = new Entity[10]; // total amount of items displayed at once
@@ -78,13 +79,15 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = titleState;
 		playMusic(0);
 		
+//		gameState = playState;;
+//		playMusic(1);
+		
 		aSetter.setNPC();
 		aSetter.setEnemy();
 		aSetter.setObject();	
 	}
 
-	public void startGameThread() {
-		
+	public void startGameThread() {		
 		gameThread = new Thread(this); // new Thread with GamePanel class
 		gameThread.start(); // calls run() method
 	}
@@ -202,20 +205,34 @@ public class GamePanel extends JPanel implements Runnable {
 			ui.draw(g2);	
 		}		
 		
+		if (keyH.debug) {			
+			g2.setFont(new Font("Arial", Font.PLAIN, 20));
+			g2.setColor(Color.white);
+			int x = 10, y = 500, lineHeight = 20;
+			
+			g2.drawString("WorldX: " + player.worldX, x , y); 
+			y += lineHeight;
+			g2.drawString("WorldY: " + player.worldY, x , y); 
+			y += lineHeight;
+			g2.drawString("Column: " + (player.worldX + player.solidArea.x) / tileSize, x , y);
+			y += lineHeight;
+			g2.drawString("Row: " + (player.worldY + player.solidArea.y) / tileSize, x , y);
+		}
+		
 		// MEMORY DUMP
 		g2.dispose(); 
 	}
 	
-	public void playMusic(int i) {		
-		music.setFile(i);
+	public void playMusic(int c) {		
+		music.setFile(0, c);
 		music.play();
 		music.loop();
 	}
 	public void stopMusic() {
 		music.stop();
 	}
-	public void playSE(int i) {
-		se.setFile(i);
+	public void playSE(int i, int c) {
+		se.setFile(i, c);
 		se.play();
 	}
 }
