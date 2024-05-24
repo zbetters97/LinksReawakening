@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class KeyHandler implements KeyListener{
 
@@ -12,6 +11,8 @@ public class KeyHandler implements KeyListener{
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
 	public boolean spacePressed, shiftPressed;
 	public boolean debug = false;
+	public String keyboardLetters;
+	public boolean isCapital = true;
 	
 	public KeyHandler(GamePanel gp) {
 		this.gp = gp;
@@ -84,57 +85,70 @@ public class KeyHandler implements KeyListener{
 		else if (gp.ui.titleScreenState == 1) {
 			
 			// MAP VALUES TO ON-SCREEN KEYBOARD
-			String keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";			
 			Map<Integer, String> keyboard = new LinkedHashMap<>();
+			
+			if (isCapital) keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";	
+			else keyboardLetters = "qwertyuiopasdfghjklzxcvbnm";				
 			
 			for (int i = 0; i < keyboardLetters.length(); i++) 
 				keyboard.put(i, String.valueOf(keyboardLetters.charAt(i)));
 							
 			// NAVIGATE THROUGH ON-SCREEN KEYBOARD
-			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-				gp.playSE(1, 0);
-				if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
-					gp.ui.commandNum -= 10;					
-				else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 25) 
-					gp.ui.commandNum -= 9;	
-				else if (gp.ui.commandNum == 26)
-					gp.ui.commandNum = 18;
-				else if (gp.ui.commandNum >= 27)
-					gp.ui.commandNum = 19;
+			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {				
+				if (gp.ui.commandNum >= 10) {
+					gp.playSE(1, 0);
+					if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
+						gp.ui.commandNum -= 10;					
+					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 25) 
+						gp.ui.commandNum -= 9;	
+					else if (gp.ui.commandNum == 26)
+						gp.ui.commandNum = 17;
+					else if (gp.ui.commandNum == 27)
+						gp.ui.commandNum = 18;
+					else if (gp.ui.commandNum >= 28)
+						gp.ui.commandNum = 19;
+				}
 			}
 			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-				gp.playSE(1, 0);
-				if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
-					gp.ui.commandNum += 10;					
-				else if (gp.ui.commandNum >= 9 && gp.ui.commandNum <= 17) 
-					gp.ui.commandNum += 9;	
-				else if (gp.ui.commandNum == 18)
-					gp.ui.commandNum += 8;
-				else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 26)
-					gp.ui.commandNum = 27;					
+				if (gp.ui.commandNum <= 27) {
+					gp.playSE(1, 0);
+					if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
+						gp.ui.commandNum += 10;					
+					else if (gp.ui.commandNum >= 9 && gp.ui.commandNum <= 17) 
+						gp.ui.commandNum += 9;	
+					else if (gp.ui.commandNum == 18)
+						gp.ui.commandNum += 9;
+					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 27)
+						gp.ui.commandNum = 28;		
+				}
 			}
 			if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-				gp.playSE(1, 0);
-				gp.ui.commandNum--;
-				
-				if (gp.ui.commandNum < 0)
-					gp.ui.commandNum = 0;
-			}
-			if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {					
-				gp.ui.commandNum++;
-				
-				// STOP PLAYER FROM STARTING IF NO LETTERS
-				if (gp.ui.commandNum == 28 && gp.player.name.length() < 1) {
-					gp.playSE(1, 2);
-					gp.ui.commandNum = 27;
-				}
-				else 
+				if (gp.ui.commandNum > 0) {
 					gp.playSE(1, 0);
-								
-				if (gp.ui.commandNum > 28)
-					gp.ui.commandNum = 28;
+					gp.ui.commandNum--;
+					
+					if (gp.ui.commandNum < 0)
+						gp.ui.commandNum = 0;
+				}
+			}
+			if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {		
+				if (gp.ui.commandNum <= 28) {
+					gp.ui.commandNum++;
+					
+					// STOP PLAYER FROM STARTING IF NO LETTERS
+					if (gp.ui.commandNum == 29 && gp.player.name.length() < 1) {
+						gp.playSE(1, 2);
+						gp.ui.commandNum = 28;
+					}
+					else 
+						gp.playSE(1, 0);
+									
+					if (gp.ui.commandNum > 29)
+						gp.ui.commandNum = 29;
+				}
 			}				
 			if (code == KeyEvent.VK_SPACE) {
+				
 				// DEL BUTTON
 				if (gp.ui.commandNum == 26) {
 					if (gp.player.name.length() > 0) {
@@ -145,16 +159,22 @@ public class KeyHandler implements KeyListener{
 					}
 					else
 						gp.playSE(1, 2);
-				}					
-				// BACK BUTTON
+				}			
+				// CAPS BUTTON
 				else if (gp.ui.commandNum == 27) {
+					gp.playSE(1, 1);
+					if (isCapital) isCapital = false;
+					else isCapital = true;
+				}
+				// BACK BUTTON
+				else if (gp.ui.commandNum == 28) {
 					gp.playSE(1, 1);
 					gp.ui.commandNum = 0;
 					gp.ui.titleScreenState = 0;
-					gp.player.name = "";
+					gp.player.name = "Link";
 				}
 				// ENTER BUTTON
-				else if (gp.ui.commandNum == 28) {
+				else if (gp.ui.commandNum == 29) {
 					gp.playSE(1, 1);
 					gp.gameState = 1;
 					gp.stopMusic();
@@ -163,6 +183,7 @@ public class KeyHandler implements KeyListener{
 				// LETTER SELECT
 				// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
 				else {
+					
 					gp.playSE(1, 1);	
 					// name limit is 10 char
 					if (gp.player.name.length() <= 10) 
@@ -228,7 +249,9 @@ public class KeyHandler implements KeyListener{
 				gp.ui.slotCol++; 
 			}
 		}
-		if (code == KeyEvent.VK_SPACE) spacePressed = true;
+		if (code == KeyEvent.VK_SPACE) {
+			gp.player.selectItem();
+		}
 	}
 
 	@Override

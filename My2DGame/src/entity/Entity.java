@@ -24,7 +24,7 @@ public class Entity {
 	public boolean collision = false;
 	
 	// CHARACTER ATTRIBUTES
-	public int type; // 0 = PLAYER, 1 = NPC, 2 = ENEMY
+	public int type;
 	public int life, maxLife; // 1 life = half heart
 	public int speed, baseSpeed, runSpeed, animationSpeed;
 	public int level;
@@ -38,6 +38,15 @@ public class Entity {
 	// ITEM ATTRIBUTES
 	public int attackValue, defenseValue;
 	public String description = "";
+	
+	// TYPES
+	public final int type_player = 0;
+	public final int type_npc = 1;
+	public final int type_enemy = 2;
+	public final int type_sword = 3;
+	public final int type_axe = 4;
+	public final int type_shield = 5;
+	public final int type_consumable = 6;
 	
 	// SPRITES
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
@@ -115,24 +124,11 @@ public class Entity {
 		}		
 	}
 	
+	public void use(Entity entity) { }	
+	
 	public void setAction() { }
 	
 	public void damageReaction() { }
-	
-	public void dyingAnimation(Graphics2D g2) {
-		
-		dyingCounter++;
-		
-		if (dyingCounter % 5 == 0 && 40 >= dyingCounter) 
-			changeAlpha(g2, 0f);		
-		else
-			changeAlpha(g2, 1f);
-		
-		if (dyingCounter > 40) {
-			dying = false;
-			alive = false;
-		}
-	}
 	
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
@@ -150,7 +146,7 @@ public class Entity {
 		gp.cChecker.checkObject(this, false);		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
-		if (this.type == 2 && contactPlayer) {
+		if (this.type == type_enemy && contactPlayer) {
 			if (!gp.player.invincible) {
 				gp.playSE(2, 0);
 				
@@ -262,19 +258,37 @@ public class Entity {
 				hpBarCounter = 0;
 				
 				// FLASH OPACITY
-				if (invincibleCounter % 5 == 0) 
-					changeAlpha(g2, 0.3f);
-				else 
-					changeAlpha(g2, 1f);
+				if (invincible) 
+					hurtAnimation(g2);
 			}	
-			if (dying) {
-				dyingAnimation(g2);
-			}
+			if (dying) 				
+				dyingAnimation(g2);			
 			
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			
 			// RESET OPACITY
 			changeAlpha(g2, 1f);
+		}
+	}
+	
+	public void hurtAnimation(Graphics2D g2) {
+		
+		invincibleCounter++;	
+		
+		if (invincibleCounter % 5 == 0) 
+			changeAlpha(g2, 0.2f);
+	}
+	
+	public void dyingAnimation(Graphics2D g2) {
+		
+		dyingCounter++;	
+		
+		if (dyingCounter % 5 == 0) 
+			changeAlpha(g2, 0.2f);
+		
+		if (dyingCounter > 40) {
+			dying = false;
+			alive = false;
 		}
 	}
 	

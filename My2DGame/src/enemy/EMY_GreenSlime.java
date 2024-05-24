@@ -14,7 +14,7 @@ public class EMY_GreenSlime extends Entity {
 		
 		this.gp = gp;
 		
-		type = 2;
+		type = type_enemy;
 		name = "Green Slime";
 		speed = 1;
 		baseSpeed = speed;

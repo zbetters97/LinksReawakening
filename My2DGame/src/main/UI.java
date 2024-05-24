@@ -194,11 +194,9 @@ public class UI {
 		// NEW GAME SELECTED
 		else if (titleScreenState == 1) {
 						
-			y = gp.tileSize * 3;
-			
+			y = gp.tileSize * 3;			
 			int width = gp.screenWidth - (gp.tileSize * 4);
-			int height = gp.screenHeight - (gp.tileSize * 4);
-			
+			int height = gp.screenHeight - (gp.tileSize * 4);			
 			drawSubWindow(x, y, width, height);
 			
 			// TEXT COLOR
@@ -223,11 +221,20 @@ public class UI {
 			// DISPLAY ON-SCREEN KEYBOARD
 			x = gp.tileSize * 3;
 			y += gp.tileSize;			
-			String keyboard = "QWERTYUIOPASDFGHJKLZXCVBNM";
+			
+			String keyboard = "";
+			
+			if (gp.keyH.isCapital) keyboard = "QWERTYUIOPASDFGHJKLZXCVBNM";	
+			else keyboard = "qwertyuiopasdfghjklzxcvbnm";
+			
 			for (int i = 0; i < keyboard.length(); i++) {	
 				
 				// NEW LINE (RESET X)
 				if (keyboard.charAt(i) == 'A' || keyboard.charAt(i) == 'Z') {
+					x = gp.tileSize * 3;
+					y+= gp.tileSize;
+				}
+				if (keyboard.charAt(i) == 'a' || keyboard.charAt(i) == 'z') {
 					x = gp.tileSize * 3;
 					y+= gp.tileSize;
 				}
@@ -241,22 +248,28 @@ public class UI {
 			} 	
 			
 			// DEL BUTTON (SAME Y AS KEYBOARD)
-			x += gp.tileSize;		
+			x += gp.tileSize - 10;		
 			if (commandNum == 26) 
 				g2.drawString("(DEL)", x, y);	
 			else
 				g2.drawString(" DEL ", x, y);	
+			
+			x += gp.tileSize + 20;		
+			if (commandNum == 27) 
+				g2.drawString("(CAP)", x, y);	
+			else
+				g2.drawString(" CAP ", x, y);	
 
 			// BACK / ENTER BUTTONS
 			x = gp.screenWidth / 3;
 			y += gp.tileSize * 1.8;
 			g2.drawString("GO BACK", x, y);
-			if (commandNum == 27) 
+			if (commandNum == 28) 
 				g2.drawString(">", x - gp.tileSize / 2, y);	
 			
 			x += gp.tileSize * 4;		
 			g2.drawString("ENTER", x, y);
-			if (commandNum == 28 && gp.player.name.length() > 0) 
+			if (commandNum == 29 && gp.player.name.length() > 0) 
 				g2.drawString(">", x - gp.tileSize / 2, y);	
 		}
 	}
@@ -308,8 +321,7 @@ public class UI {
 		int x = gp.tileSize * 2;
 		int y = gp.screenWidth / 2;
 		int width = gp.screenWidth - (gp.tileSize * 4);
-		int height = gp.tileSize * 4;
-		
+		int height = gp.tileSize * 4;		
 		drawSubWindow(x, y, width, height);
 		
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
@@ -329,8 +341,7 @@ public class UI {
 		final int frameX = gp.tileSize;
 		final int frameY = gp.tileSize;
 		final int frameWidth = gp.tileSize * 5;
-		final int frameHeight = gp.tileSize * 10;
-		
+		final int frameHeight = gp.tileSize * 10;		
 		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 		
 		// TEXT
@@ -383,7 +394,7 @@ public class UI {
 		int frameX = gp.tileSize * 9;
 		int frameY = gp.tileSize;
 		int frameWidth = gp.tileSize * 6;
-		int frameHeight = gp.tileSize * 5;
+		int frameHeight = gp.tileSize * 5;		
 		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 				
 		// SLOTS
@@ -401,6 +412,14 @@ public class UI {
 		
 		// DRAW PLAYER ITEMS
 		for (int i = 0; i < gp.player.inventory.size(); i++) {
+						
+			// EQUIP CURSOR
+			if (gp.player.inventory.get(i) == gp.player.currentWeapon || 
+					gp.player.inventory.get(i) == gp.player.currentShield) {
+				
+				g2.setColor(new Color(240,190,90));
+				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+			}
 			
 			g2.drawImage(gp.player.inventory.get(i).down1, slotX, slotY, null);
 			slotX += slotSize;
@@ -421,7 +440,6 @@ public class UI {
 		int dFrameY = frameY + frameHeight;
 		int dFrameWidth = frameWidth;
 		int dFrameHeight = gp.tileSize * 3;
-		drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
 		
 		// DESCRIPTION TEXT
 		int textX = dFrameX + 20;
@@ -431,6 +449,8 @@ public class UI {
 		
 		int itemIndex = getItemIndexOnSlot();
 		if (itemIndex < gp.player.inventory.size()) {
+			
+			drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
 			
 			for (String line : gp.player.inventory.get(itemIndex).description.split("\n")) {
 				g2.drawString(line, textX, textY);	

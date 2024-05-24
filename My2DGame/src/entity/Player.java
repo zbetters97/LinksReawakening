@@ -62,18 +62,21 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		name = "LINK";
+		name = "Link";
 		level = 1;
 		maxLife = 6; life = maxLife;
 		strength = 1; dexterity = 1; // helps attack, defense
 		exp = 0; nextLevelEXP = 5;
 		coin = 0;
+		
 		currentWeapon = new OBJ_Sword(gp);
 		currentShield = new OBJ_Shield(gp);
+		
 		attack = getAttack();
 		defense = getDefense();
 	}	
 	public int getAttack() {
+		attackArea = currentWeapon.attackArea;
 		return attack = strength * currentWeapon.attackValue;
 	}
 	public int getDefense() {
@@ -82,9 +85,6 @@ public class Player extends Entity {
 	public void setItems() {
 		inventory.add(currentWeapon);
 		inventory.add(currentShield);
-		
-		inventory.add(new OBJ_Boots(gp));
-		inventory.add(new OBJ_Key(gp));
 	}
 	
 	public void getPlayerImage() {		
@@ -102,16 +102,19 @@ public class Player extends Entity {
 	}
 	
 	public void getPlayerAttackImage() {
-		attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);		
-		attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);
 		
-		attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);
-		
-		attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
+		if (currentWeapon.type == type_sword || currentWeapon.type == type_axe) {
+			attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);		
+			attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);
+			
+			attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);
+			
+			attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
+		}
 	}
 	
 	public void interactNPC(int i) {
@@ -244,10 +247,45 @@ public class Player extends Entity {
 		}
 	}
 	
+	public void selectItem() {
+		
+		int itemIndex = gp.ui.getItemIndexOnSlot();
+		if (itemIndex < inventory.size()) { // selecting an item
+									
+			Entity selectedItem = inventory.get(itemIndex);
+			if (selectedItem.type == type_sword || selectedItem.type == type_axe) {
+				currentWeapon = selectedItem;
+				attack = getAttack();
+			}
+			if (selectedItem.type == type_shield) {
+				currentShield = selectedItem;
+				defense = getDefense();
+			}
+			if (selectedItem.type == type_consumable) {
+				selectedItem.use(this);
+				inventory.remove(itemIndex);
+			}
+			
+			getPlayerAttackImage();
+		}
+	}
+	
 	public void pickUpObject(int i) {	
 		
-		// object is interacted with by entity
-		if (i != -1) {			
+		// OBJECT INTERACTION
+		if (i != -1) {
+			
+			String text;
+			
+			if (inventory.size() != maxInventorySize) {				
+				inventory.add(gp.obj[i]);				
+				text = "You found the " + gp.obj[i].name + "!";
+			}
+			else
+				text = "You cannot carry any more items!";
+			
+			gp.ui.addMessage(text);
+			gp.obj[i] = null;
 		}
 	}
 	
@@ -418,14 +456,18 @@ public class Player extends Entity {
 			
 			// FLASH OPACITY
 			if (invincibleCounter % 5 == 0)
-				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+				changeAlpha(g2, 0.2f);
 			else
-				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+				changeAlpha(g2, 1f);
 		}	
 		
 		g2.drawImage(image, tempScreenX, tempScreenY, null); 
 		
 		// RESET OPACITY
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+		changeAlpha(g2, 1f);
+	}
+	
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 }

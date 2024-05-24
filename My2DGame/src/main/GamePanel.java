@@ -76,10 +76,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = titleState;
-		playMusic(0);
+//		gameState = titleState;
+//		playMusic(0);
 		
-//		gameState = playState;;
+		gameState = playState;;
 //		playMusic(1);
 		
 		aSetter.setNPC();
@@ -156,7 +156,8 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// UPDATE OBJECTS
 			for (int i = 0; i < obj.length; i++) {
-				if (obj[i] != null) obj[i].update();
+				if (obj[i] != null) 
+					obj[i].update();
 			}
 		}
 		

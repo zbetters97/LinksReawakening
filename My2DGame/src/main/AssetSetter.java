@@ -12,9 +12,14 @@ public class AssetSetter {
 		this.gp = gp;
 	}
 	
-	public void setObject() {		
-		// CREATE NEW OBJECT
-		// ASSIGN X, Y COORD (n * tileSize, n = # of tiles to location)
+	public void setObject() {	
+		gp.obj[0] = new OBJ_Boots(gp);
+		gp.obj[0].worldX = gp.tileSize * 25;
+		gp.obj[0].worldY = gp.tileSize * 23;
+		
+		gp.obj[1] = new OBJ_Shovel(gp);
+		gp.obj[1].worldX = gp.tileSize * 24;
+		gp.obj[1].worldY = gp.tileSize * 20;
 	}
 	
 	public void setNPC() {

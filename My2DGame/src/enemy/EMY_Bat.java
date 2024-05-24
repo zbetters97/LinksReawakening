@@ -14,7 +14,7 @@ public class EMY_Bat extends Entity {
 		
 		this.gp = gp;
 		
-		type = 2;
+		type = type_enemy;
 		name = "Bat";
 		speed = 2;
 		baseSpeed = speed;
