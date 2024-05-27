@@ -9,6 +9,7 @@ public class OBJ_Chest extends Entity {
 	
 	public OBJ_Chest(GamePanel gp) {
 		super(gp);
+		this.gp = gp;
 		
 		name = "Chest";
 		down1 = setup("/objects/OBJ_CHEST");

@@ -14,5 +14,7 @@ public class OBJ_Sword extends Entity {
 		down1 = setup("/objects/ITEM_SWORD", gp.tileSize, gp.tileSize);
 		
 		attackValue = 1;
+		attackArea.width = 36;
+		attackArea.height = 36;
 	}
 }

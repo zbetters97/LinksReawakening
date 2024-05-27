@@ -4,6 +4,7 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
+import object.*;
 
 public class EMY_GreenSlime extends Entity {
 
@@ -24,6 +25,7 @@ public class EMY_GreenSlime extends Entity {
 		attack = 3;
 		defense = 0;
 		exp = 4;
+		projectile = new OBJ_Fireball(gp);
 		
 		// HIT BOX
 		solidArea.x = 2;
@@ -62,6 +64,18 @@ public class EMY_GreenSlime extends Entity {
 			if (i > 75) direction = "right";
 			
 			actionLockCounter = 0;
+		}		
+
+		// ~1 SHOT/2 SECONDS (120 frames)
+		int i = new Random().nextInt(120) + 1;
+		if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
+			
+			projectile.set(worldX, worldY, direction, true, this);
+			gp.projectileList.add(projectile);
+			
+			shotAvailableCounter = 0;
+			
+			gp.playSE(3, 3);
 		}
 	}
 	
@@ -69,5 +83,18 @@ public class EMY_GreenSlime extends Entity {
 	public void damageReaction() {
 		actionLockCounter = 0;
 		direction = gp.player.direction; 
+	}
+	
+	// DROPPED ITEM
+	public void checkDrop() {
+		
+		int i = new Random().nextInt(100) + 1;
+		
+		if (i < 50) 
+			dropItem(new OBJ_Heart(gp));
+		if (i >= 50 && i < 75)
+			dropItem(new OBJ_Arrows(gp));
+		if (i >= 75 && i <= 100)
+			dropItem(new OBJ_Rupee_Blue(gp));
 	}
 }

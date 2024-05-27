@@ -9,9 +9,12 @@ public class OBJ_Boots extends Entity {
 	
 	public OBJ_Boots(GamePanel gp) {
 		super(gp);
+		this.gp = gp;
 		
+		type = type_item;
 		name = "Running Shoes";
 		description = "[" + name + "]\nHold SHIFT to run!";
 		down1 = setup("/objects/ITEM_BOOTS");
+		down2 = down1;
 	}	
 }

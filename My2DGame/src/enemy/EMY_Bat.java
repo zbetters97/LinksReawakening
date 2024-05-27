@@ -4,6 +4,9 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Arrows;
+import object.OBJ_Heart;
+import object.OBJ_Rupee_Blue;
 
 public class EMY_Bat extends Entity {
 
@@ -69,5 +72,16 @@ public class EMY_Bat extends Entity {
 	public void damageReaction() {
 		actionLockCounter = 0;
 		direction = gp.player.direction; 
+	}
+	
+	// DROPPED ITEM
+	public void checkDrop() {
+		
+		int i = new Random().nextInt(100) + 1;
+		
+		if (i < 50) 
+			dropItem(new OBJ_Heart(gp));
+		if (i >= 50)
+			dropItem(new OBJ_Arrows(gp));
 	}
 }

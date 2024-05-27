@@ -9,7 +9,7 @@ public class KeyHandler implements KeyListener{
 
 	GamePanel gp;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean spacePressed, shiftPressed;
+	public boolean spacePressed, shiftPressed, itemPressed;
 	public boolean debug = false;
 	public String keyboardLetters;
 	public boolean isCapital = true;
@@ -209,9 +209,11 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE) spacePressed = true;
 		if (code == KeyEvent.VK_SHIFT) shiftPressed = true;	
-		if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.pauseState;
-		if (code == KeyEvent.VK_CONTROL) gp.gameState = gp.characterState;
-		if (code == KeyEvent.VK_Q) debug = true;
+		if (code == KeyEvent.VK_F) itemPressed = true;
+		//if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.pauseState;
+		if (code == KeyEvent.VK_ESCAPE) System.exit(0);
+		if (code == KeyEvent.VK_E) gp.gameState = gp.characterState;
+		if (code == KeyEvent.VK_Q) if (debug) debug = false; else debug = true;
 		if (code == KeyEvent.VK_R) gp.tileM.loadMap("/maps/worldmap.txt");
 	}
 	
@@ -224,7 +226,8 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	public void characterState(int code) { 
-		if (code == KeyEvent.VK_CONTROL) gp.gameState = gp.playState;
+		
+		if (code == KeyEvent.VK_E) gp.gameState = gp.playState;
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.slotRow != 0) {
 				gp.playSE(1, 1); 
@@ -265,5 +268,6 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SHIFT) shiftPressed = false;
 		if (code == KeyEvent.VK_SPACE) spacePressed = false;
+		if (code == KeyEvent.VK_F) itemPressed = false;
 	}
 }

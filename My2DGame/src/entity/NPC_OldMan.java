@@ -6,10 +6,14 @@ import main.GamePanel;
 
 public class NPC_OldMan extends Entity{
 	
-	public NPC_OldMan(GamePanel gp) {
-		
+	GamePanel gp;
+	
+	public NPC_OldMan(GamePanel gp) {		
 		super(gp);
+		this.gp = gp;		
 		
+		type = type_npc;
+		name = "Old Man";
 		direction = "down";
 		speed = 1;
 		animationSpeed = 15; 

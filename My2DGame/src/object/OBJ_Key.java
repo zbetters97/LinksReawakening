@@ -9,6 +9,7 @@ public class OBJ_Key extends Entity {
 
 	public OBJ_Key(GamePanel gp) {		
 		super(gp);	
+		this.gp = gp;
 		
 		name = "Key";
 		description = "[" + name + "]\nThis can unlock a door.\nSingle-use only.";

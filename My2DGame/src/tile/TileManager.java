@@ -22,7 +22,6 @@ public class TileManager {
 	ArrayList<String> fileNames = new ArrayList<>();
 	ArrayList<String> collisionStatus = new ArrayList<>();
 	
-	/** CONSTRUCTOR **/
 	public TileManager(GamePanel gp) {
 		
 		this.gp = gp;
@@ -174,17 +173,3 @@ public class TileManager {
 		
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

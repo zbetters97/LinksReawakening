@@ -21,6 +21,10 @@ public class Player extends Entity {
 	public final int maxInventorySize = 20;
 	
 	public boolean attackCanceled = false;
+	
+	public boolean canRun = false;
+//	public boolean canRun = true;
+	public boolean canShoot = false;
 		
 	/** CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
@@ -67,10 +71,14 @@ public class Player extends Entity {
 		maxLife = 6; life = maxLife;
 		strength = 1; dexterity = 1; // helps attack, defense
 		exp = 0; nextLevelEXP = 5;
-		coin = 0;
+		rupee = 0;
 		
 		currentWeapon = new OBJ_Sword(gp);
-		currentShield = new OBJ_Shield(gp);
+		currentShield = new OBJ_Shield(gp);		
+		projectile = new OBJ_Arrow(gp);
+		projectile_sword = new OBJ_Sword_Beam(gp);
+		
+		maxArrows = 5; arrows = maxArrows;
 		
 		attack = getAttack();
 		defense = getDefense();
@@ -166,7 +174,11 @@ public class Player extends Entity {
 			
 			// CHECK IF ATTACK LANDS ON ENEMY
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			damageEnemy(enemyIndex);			
+			damageEnemy(enemyIndex, attack);			
+			
+			// CHECK INTERACTIVE TILE
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+			damageInteractiveTile(iTileIndex);
 			
 			// RESTORE PLAYER HITBOX
 			worldX = currentWorldX;
@@ -187,7 +199,7 @@ public class Player extends Entity {
 		
 		// PLAYER HIT BY ENEMY
 		if (i != -1) {					
-			if (!invincible) {
+			if (!invincible && !gp.enemy[i].dying) {
 				gp.playSE(2, 0);
 				
 				int damage = gp.enemy[i].attack - defense;
@@ -199,7 +211,7 @@ public class Player extends Entity {
 		}
 	}
 	
-	public void damageEnemy(int i) {
+	public void damageEnemy(int i, int attack) {
 		
 		// ATTACK LANDS
 		if (i != -1) {
@@ -227,6 +239,22 @@ public class Player extends Entity {
 					checkLevelUp();
 				}
 			}
+		}
+	}
+	
+	public void damageInteractiveTile(int i) {
+		
+		if (i != -1 && gp.iTile[i].destructible && 
+				gp.iTile[i].isCorrectItem(this) && !gp.iTile[i].invincible) {
+			
+			gp.iTile[i].playSE();
+			gp.iTile[i].life--;
+			gp.iTile[i].invincible = true;
+					
+			generateParticle(gp.iTile[i], gp.iTile[i]);
+			
+			if (gp.iTile[i].life == 0)
+				gp.iTile[i] = gp.iTile[i].getDestroyedForm();
 		}
 	}
 	
@@ -275,30 +303,52 @@ public class Player extends Entity {
 		// OBJECT INTERACTION
 		if (i != -1) {
 			
-			String text;
-			
-			if (inventory.size() != maxInventorySize) {				
-				inventory.add(gp.obj[i]);				
-				text = "You found the " + gp.obj[i].name + "!";
+			// COLLECTABLES
+			if (gp.obj[i].type == type_collectable) {
+				
+				gp.obj[i].use(this);
+				gp.obj[i] = null;
+			}			
+			// INVENTORY ITEMS
+			else {
+				String text;
+				
+				if (inventory.size() != maxInventorySize) {		
+					gp.playSE(3, 1);
+					inventory.add(gp.obj[i]);				
+					text = "You found the " + gp.obj[i].name + "!";
+					
+					if (gp.obj[i].name.equals("Running Shoes")) 
+						canRun = true;
+					
+					if (gp.obj[i].name.equals("Hylian Bow")) 
+						canShoot = true;
+				}
+				else
+					text = "You cannot carry any more items!";
+				
+				gp.ui.addMessage(text);
+				gp.obj[i] = null;
 			}
-			else
-				text = "You cannot carry any more items!";
-			
-			gp.ui.addMessage(text);
-			gp.obj[i] = null;
 		}
 	}
 	
 	public void update() {
 		
 		// RUN BUTTON
-		if ( keyH.shiftPressed) { speed = runSpeed; animationSpeed = 6; }
-		else { speed = baseSpeed; animationSpeed = 10; }
-		
-		if (attacking) {
-			attacking();
+		if (keyH.shiftPressed && canRun) { 
+			speed = runSpeed; 
+			animationSpeed = 6; 
 		}
-		else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed 
+		else { 
+			speed = baseSpeed; 
+			animationSpeed = 10; 
+		}
+		
+		if (attacking)
+			attacking();	
+		
+		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed 
 				|| keyH.spacePressed) {	
 									
 			// find direction
@@ -328,6 +378,9 @@ public class Player extends Entity {
 			int objIndex = gp.cChecker.checkObject(this, true);
 			pickUpObject(objIndex);
 			
+			// CHECK INTERACTIVE TILE COLLISION
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+			
 			// CHECK EVENT
 			gp.eHandler.checkEvent();
 			
@@ -351,9 +404,24 @@ public class Player extends Entity {
 			
 			// SWING SWORD VALID
 			if (keyH.spacePressed && !attackCanceled) {
+				
 				gp.playSE(3, 0);
 				attacking = true;
 				spriteCounter = 0;
+				
+				// SHOOT SWORD BEAM
+				if (currentWeapon.type == type_sword && !projectile_sword.alive && 
+						shotAvailableCounter == 30 && projectile_sword.haveResource(this)) { 	
+											
+					projectile_sword.set(worldX, worldY, direction, true, this);			
+					gp.projectileList.add(projectile_sword);			
+					
+					projectile_sword.subtractResource(this);
+					
+					shotAvailableCounter = 0;		
+					
+					gp.playSE(3, 4);
+				}
 			}
 			
 			attackCanceled = false;			
@@ -368,7 +436,25 @@ public class Player extends Entity {
 				
 				spriteCounter = 0;
 			}	
-		}		
+		}
+		
+		// SHOOT ONE PROJECTILE AT A TIME (0.5 SEC REFRESH TIME)
+		if (gp.keyH.itemPressed && !projectile.alive && shotAvailableCounter == 30 
+				&& projectile.haveResource(this) && canShoot) { 			
+									
+			projectile.set(worldX, worldY, direction, true, this);			
+			gp.projectileList.add(projectile);			
+			
+			projectile.subtractResource(this);
+			
+			shotAvailableCounter = 0;		
+			
+			gp.playSE(3, 2);
+		}
+		
+		// PROJECTILE REFRESH TIME
+		if (shotAvailableCounter < 30) 
+			shotAvailableCounter++;	
 		
 		// PLAYER SHIELD AFTER HIT
 		if (invincible) {
@@ -380,6 +466,12 @@ public class Player extends Entity {
 				invincibleCounter = 0;
 			}
 		}
+				
+		// KEEP HEARTS WITHIN MAX
+		if (life > maxLife) life = maxLife;
+		
+		// KEEP ARROWS WITHIN MAX
+		if (arrows > maxArrows)	arrows = maxArrows;
 	}
 	
 	public void draw(Graphics2D g2) {

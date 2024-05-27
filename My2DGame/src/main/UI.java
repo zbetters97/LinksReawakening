@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import object.*;
 import entity.*;
+import object.*;
 
 public class UI {
 	
@@ -38,7 +38,8 @@ public class UI {
 	public boolean messageOn = false;
 	public String currentDialogue = "";
 	
-	BufferedImage heart_full, heart_half, heart_empty;
+	BufferedImage heart_full, heart_half, heart_empty, arrow_full, arrow_empty, rupee_hud, boots_hud;
+	public String arrow_count, rupee_count = "0";
 	
 	public UI(GamePanel gp) {
 		
@@ -60,6 +61,16 @@ public class UI {
 		heart_full = heart.image;
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
+		
+		Entity arrows = new OBJ_Arrows(gp);
+		arrow_full = arrows.image;
+		arrow_empty = arrows.image2;
+		
+		Entity rupees = new OBJ_Rupee_Blue(gp);
+		rupee_hud = rupees.down1;
+		
+		Entity boots = new OBJ_Boots(gp);
+		boots_hud = boots.down1;		
 	}
 	
 	public void addMessage(String text) {
@@ -107,17 +118,17 @@ public class UI {
 		}		
 		// PLAY STATE
 		if (gp.gameState == gp.playState) {
-			drawPlayerLife();
+			drawHUD();
 			drawMessage();
 		}		
 		// PAUSE STATE
 		if (gp.gameState == gp.pauseState) {
-			drawPlayerLife();
+			drawHUD();
 			drawPauseScreen();
 		}		
 		// DIALOGUE STATE
 		if (gp.gameState == gp.dialogueState) {
-			drawPlayerLife();
+			drawHUD();
 			drawDialogueScreen();
 		}
 		// CHARACTER STATE
@@ -274,7 +285,7 @@ public class UI {
 		}
 	}
 	
-	public void drawPlayerLife() {
+	public void drawHUD() {
 		
 		int x = gp.tileSize / 2;
 		int y = gp.tileSize / 2;
@@ -287,7 +298,6 @@ public class UI {
 			x += gp.tileSize / 1.7;
 		}
 		
-		// RESET
 		x = gp.tileSize / 2;
 		y = gp.tileSize / 2;
 		i = 0;
@@ -303,6 +313,45 @@ public class UI {
 			i++;
 			x += gp.tileSize / 1.7;
 		}
+		
+		// DRAW RUPEES
+		x = (gp.tileSize * gp.maxScreenCol) - (gp.tileSize * 4);
+		y = gp.tileSize / 2;
+		
+		g2.drawImage(rupee_hud, x, y, gp.tileSize -  10, gp.tileSize - 10, null);	
+		
+		x += 35;
+		y += gp.tileSize - 17;	
+		
+		rupee_count = Integer.toString(gp.player.rupee);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 40F));
+		g2.drawString(rupee_count, x, y);	
+
+		// DRAW ARROWS
+		x += 30;
+		y = gp.tileSize / 2;
+		
+		if (gp.player.arrows != 0 && gp.player.canShoot) {
+			g2.drawImage(arrow_full, x, y, null);
+			
+			x += 30;
+			y += gp.tileSize - 17;	
+			
+			arrow_count = Integer.toString(gp.player.arrows);
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 40F));
+			g2.drawString(arrow_count, x, y);	
+		}
+		else {
+			g2.drawImage(arrow_empty, x, y, null);
+			x += 30;
+		}
+		
+		// DRAW BOOTS
+		x += 25;
+		y = gp.tileSize / 2;
+		
+		if (gp.player.canRun)
+			g2.drawImage(boots_hud, x, y, gp.tileSize - 10, gp.tileSize - 10, null);
 	}
 	
 	public void drawPauseScreen() {
@@ -381,7 +430,7 @@ public class UI {
 		drawCharacterText(gp.player.defense, tailX, textY); textY += lineHeight;
 		drawCharacterText(gp.player.exp, tailX, textY); textY += lineHeight;
 		drawCharacterText(gp.player.nextLevelEXP, tailX, textY); textY += lineHeight;
-		drawCharacterText(gp.player.coin, tailX, textY); textY += lineHeight;
+		drawCharacterText(gp.player.rupee, tailX, textY); textY += lineHeight;
 		
 		g2.drawImage(gp.player.currentWeapon.down1, tailX - 31, textY - 10, null);
 		textY += gp.tileSize + 5;

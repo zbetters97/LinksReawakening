@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
 
@@ -26,18 +28,23 @@ public class Entity {
 	// CHARACTER ATTRIBUTES
 	public int type;
 	public int life, maxLife; // 1 life = half heart
+	public int arrows, maxArrows;
 	public int speed, baseSpeed, runSpeed, animationSpeed;
 	public int level;
 	public int strength, dexterity;
 	public int attack, defense;
 	public int exp, nextLevelEXP;
-	public int coin;
+	public int rupee;
 	public Entity currentWeapon;
 	public Entity currentShield;
+	public Projectile projectile;
+	public Projectile projectile_sword;
 	
 	// ITEM ATTRIBUTES
+	public int value;
 	public int attackValue, defenseValue;
 	public String description = "";
+	public int useCost;
 	
 	// TYPES
 	public final int type_player = 0;
@@ -47,6 +54,8 @@ public class Entity {
 	public final int type_axe = 4;
 	public final int type_shield = 5;
 	public final int type_consumable = 6;
+	public final int type_item = 7;
+	public final int type_collectable = 8;
 	
 	// SPRITES
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
@@ -70,6 +79,7 @@ public class Entity {
 	public boolean attacking;	
 	public int attackCounter = 0;
 	public int attackNum = 1;
+	public int shotAvailableCounter;
 	
 	// INVINCIBLE COUNTER
 	public boolean invincible = false;
@@ -124,11 +134,41 @@ public class Entity {
 		}		
 	}
 	
+	// CHILD ONLY	
 	public void use(Entity entity) { }	
+	public void setAction() { }	
+	public void damageReaction() { }	
+	public void checkDrop() { }
+	public Color getParticleColor() {
+		Color color = new Color(0,0,0);
+		return color;
+	}	
+	public int getParticleSize() {		
+		int size = 0; // 0px
+		return size;
+	}	
+	public int getParticleSpeed() {
+		int speed = 0;
+		return speed;		
+	}	
+	public int getParticleMaxLife() {
+		int maxLife = 0;
+		return maxLife;
+	}
 	
-	public void setAction() { }
-	
-	public void damageReaction() { }
+	public void generateParticle(Entity generator, Entity target) {
+
+		Color color = generator.getParticleColor();
+		int size = generator.getParticleSize();
+		int speed = generator.getParticleSpeed();
+		int maxLife = generator.getParticleMaxLife();
+		
+		Particle p1 = new Particle(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle p2 = new Particle(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle p3 = new Particle(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle p4 = new Particle(gp, generator, color, size, speed, maxLife, 2, 1);
+		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
+	}
 	
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
@@ -141,21 +181,14 @@ public class Entity {
 		
 		collisionOn = false;
 		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkObject(this, false);		
+		gp.cChecker.checkObject(this, false);
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
 		if (this.type == type_enemy && contactPlayer) {
-			if (!gp.player.invincible) {
-				gp.playSE(2, 0);
-				
-				int damage = attack - gp.player.defense;
-				if (damage < 0) damage = 0;	
-				gp.player.life -= damage;
-				
-				gp.player.invincible = true;
-			}
+			damagePlayer(attack);  
 		}
 		
 		// if no collision detected
@@ -175,6 +208,8 @@ public class Entity {
 				case "right": worldX += speed; break;
 			}
 			
+			if (type == type_npc || type == type_enemy) {
+			
 			// WALKING ANIMATION (only if no collision)
 			spriteCounter++;
 			if (spriteCounter > animationSpeed) { // speed of sprite change
@@ -183,8 +218,10 @@ public class Entity {
 				else if (spriteNum == 2) spriteNum = 1;
 				
 				spriteCounter = 0;
-			}	
+			}
+			}
 		}
+		 
 		// ENTITY SHIELD AFTER HIT
 		if (invincible) {
 			invincibleCounter++;
@@ -194,6 +231,23 @@ public class Entity {
 				invincible = false;
 				invincibleCounter = 0;
 			}
+		}
+		
+		// PROJECTILE REFRESH TIME
+		if (shotAvailableCounter < 30) {
+			shotAvailableCounter++;
+		}
+	}
+	
+	public void damagePlayer (int attack) {
+		if (!gp.player.invincible) {
+			gp.playSE(2, 0);
+			
+			int damage = attack - gp.player.defense;
+			if (damage < 0) damage = 0;	
+			gp.player.life -= damage;
+			
+			gp.player.invincible = true;
 		}
 	}
 	
@@ -264,7 +318,7 @@ public class Entity {
 			if (dying) 				
 				dyingAnimation(g2);			
 			
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.drawImage(image, screenX, screenY, null);
 			
 			// RESET OPACITY
 			changeAlpha(g2, 1f);
@@ -286,9 +340,20 @@ public class Entity {
 		if (dyingCounter % 5 == 0) 
 			changeAlpha(g2, 0.2f);
 		
-		if (dyingCounter > 40) {
-			dying = false;
-			alive = false;
+		if (dyingCounter > 40) 
+			alive = false;		
+	}
+	
+	// CALLED BY CHILD WHEN NOT ALIVE
+	public void dropItem(Entity droppedItem) { 
+		
+		for (int i = 0; i < gp.obj.length; i++) {			
+			if (gp.obj[i] == null) {
+				gp.obj[i] = droppedItem;
+				gp.obj[i].worldX = worldX;
+				gp.obj[i].worldY = worldY;
+				break;
+			}
 		}
 	}
 	
