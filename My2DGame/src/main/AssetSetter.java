@@ -32,7 +32,7 @@ public class AssetSetter {
 		gp.obj[2].worldX = gp.tileSize * 22;
 		gp.obj[2].worldY = gp.tileSize * 20;
 		
-		gp.obj[3] = new OBJ_Rupee_Blue(gp);
+		gp.obj[3] = new OBJ_Hookshot(gp);
 		gp.obj[3].worldX = gp.tileSize * 22;
 		gp.obj[3].worldY = gp.tileSize * 21;
 	}	

@@ -117,7 +117,7 @@ public class UI {
 			drawTitleScreen();
 		}		
 		// PLAY STATE
-		if (gp.gameState == gp.playState) {
+		if (gp.gameState == gp.playState || gp.gameState == gp.itemState) {
 			drawHUD();
 			drawMessage();
 		}		

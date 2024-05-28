@@ -4,8 +4,6 @@ import java.awt.Color;
 
 import entity.Projectile;
 import main.GamePanel;
-import tile_interactive.IT_Trunk;
-import tile_interactive.InteractiveTile;
 
 public class OBJ_Fireball extends Projectile {
 

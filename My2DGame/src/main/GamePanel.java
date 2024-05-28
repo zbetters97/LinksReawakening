@@ -49,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int pauseState = 2;
 	public final int dialogueState = 3;	
 	public final int characterState = 4;
+	public final int itemState = 5;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -91,7 +92,7 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = titleState;
 		playMusic(0);
 		
-//		gameState = playState;;
+//		gameState = playState;
 //		playMusic(1);
 		
 		aSetter.setInteractiveTiles();
@@ -167,7 +168,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public void update() {
 		
 		// GAME PLAYING
-		if (gameState == playState) {
+		if (gameState == playState || gameState == itemState) {
 			
 			// UPDATE PLAYER
 			player.update();	
@@ -211,7 +212,7 @@ public class GamePanel extends JPanel implements Runnable {
 						projectileList.get(i).update();	
 				
 					if (!projectileList.get(i).alive)
-						projectileList.remove(i);	
+						projectileList.remove(i);
 				}
 			}
 			

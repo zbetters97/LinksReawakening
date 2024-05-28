@@ -25,7 +25,9 @@ public class Player extends Entity {
 	public boolean canRun = false;
 //	public boolean canRun = true;
 	public boolean canShoot = false;
-		
+	public boolean canGrab = false;
+//	public boolean canGrab = true;
+	
 	/** CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
@@ -76,6 +78,7 @@ public class Player extends Entity {
 		currentWeapon = new OBJ_Sword(gp);
 		currentShield = new OBJ_Shield(gp);		
 		projectile = new OBJ_Arrow(gp);
+		projectile_item = new PRJ_Hookshot(gp);
 		projectile_sword = new OBJ_Sword_Beam(gp);
 		
 		maxArrows = 5; arrows = maxArrows;
@@ -125,17 +128,155 @@ public class Player extends Entity {
 		}
 	}
 	
-	public void interactNPC(int i) {
+	public void update() {
 		
-		if (gp.keyH.spacePressed) {
+		// RUN BUTTON
+		if (keyH.shiftPressed && canRun) { 
+			speed = runSpeed; 
+			animationSpeed = 6; 
+		}
+		else { 
+			speed = baseSpeed; 
+			animationSpeed = 10; 
+		}
+		
+		if (attacking)
+			attacking();	
+		
+		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.spacePressed) {	
+									
+			// find direction
+			if (keyH.upPressed) direction = "up";
+			if (keyH.downPressed) direction = "down";
+			if (keyH.leftPressed) direction = "left";
+			if (keyH.rightPressed) direction = "right";			
 			
-			// TALKING TO NPC
-			if (i != -1) {		
-				attackCanceled = true;
-				gp.gameState = gp.dialogueState;
-				gp.npc[i].speak();
+			if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
+			if (keyH.upPressed && keyH.rightPressed) direction = "upright";
+			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
+			if (keyH.downPressed && keyH.rightPressed) direction = "downright";			
+			
+			// CHECK TILE COLLISION
+			collisionOn = false;
+			gp.cChecker.checkTile(this);
+			
+			// CHECK NPC COLLISION
+			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+			interactNPC(npcIndex);
+			
+			// CHECK ENEMY COLLISION
+			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+			contactEnemy(enemyIndex);
+						
+			// CHECK OBJECT COLLISION
+			int objIndex = gp.cChecker.checkObject(this, true);
+			pickUpObject(objIndex);
+			
+			// CHECK INTERACTIVE TILE COLLISION
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+			
+			// CHECK EVENT
+			gp.eHandler.checkEvent();
+			
+			// MOVE IF NO COLLISION
+			if (!collisionOn && !keyH.spacePressed) { 
+				
+				// move player in direction pressed
+				switch (direction) {
+					case "up": worldY -= speed; break;
+					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+					
+					case "down": worldY += speed; break;
+					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+					case "downright": worldY += speed; worldX += speed - 0.5; break;
+					
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
+				}
 			}
-		}				
+			
+			// SWING SWORD VALID
+			if (keyH.spacePressed && !attackCanceled) {
+				
+				gp.playSE(3, 0);
+				attacking = true;
+				spriteCounter = 0;
+				
+				// SHOOT SWORD BEAM
+				if (currentWeapon.type == type_sword && !projectile_sword.alive && 
+						shotAvailableCounter == 30 && projectile_sword.haveResource(this)) { 	
+											
+					projectile_sword.set(worldX, worldY, direction, true, this);			
+					gp.projectileList.add(projectile_sword);			
+					
+					projectile_sword.subtractResource(this);
+					
+					shotAvailableCounter = 0;		
+					
+					gp.playSE(3, 4);
+				}
+			}
+			
+			attackCanceled = false;			
+			gp.keyH.spacePressed = false;
+			
+			// WALKING ANIMATION
+			spriteCounter++;
+			if (spriteCounter > animationSpeed) { // speed of sprite change
+
+				if (spriteNum == 1) spriteNum = 2;
+				else if (spriteNum == 2) spriteNum = 1;
+				
+				spriteCounter = 0;
+			}	
+		}
+		
+		// SHOOT ARROW
+		if (gp.keyH.itemPressed && !projectile.alive && shotAvailableCounter == 30 
+				&& projectile.haveResource(this) && canShoot) { 			
+									
+			projectile.set(worldX, worldY, direction, true, this);			
+			gp.projectileList.add(projectile);			
+			
+			projectile.subtractResource(this);
+			
+			shotAvailableCounter = 0;		
+			
+			gp.playSE(3, 2);
+		}
+		
+		// SHOOT HOOK SHOT
+		if (gp.keyH.hookPressed && !projectile_item.alive && shotAvailableCounter == 30 && canGrab) { 			
+									
+			projectile_item.set(worldX, worldY, direction, true, this);			
+			gp.projectileList.add(projectile_item);	
+						
+			shotAvailableCounter = 0;	
+			
+			gp.playSE(3, 5);
+		}
+				
+		// PROJECTILE REFRESH TIME
+		if (shotAvailableCounter < 30) 
+			shotAvailableCounter++;	
+		
+		// PLAYER SHIELD AFTER HIT
+		if (invincible) {
+			invincibleCounter++;
+			
+			// 1 SECOND REFRESH TIME 
+			if (invincibleCounter > 60) {
+				invincible = false;
+				invincibleCounter = 0;
+			}
+		}
+				
+		// KEEP HEARTS WITHIN MAX
+		if (life > maxLife) life = maxLife;
+		
+		// KEEP ARROWS WITHIN MAX
+		if (arrows > maxArrows)	arrows = maxArrows;
 	}
 	
 	public void attacking() {
@@ -244,8 +385,8 @@ public class Player extends Entity {
 	
 	public void damageInteractiveTile(int i) {
 		
-		if (i != -1 && gp.iTile[i].destructible && 
-				gp.iTile[i].isCorrectItem(this) && !gp.iTile[i].invincible) {
+		if (i != -1 && gp.iTile[i].destructible && !gp.iTile[i].invincible &&
+				gp.iTile[i].isCorrectItem(this)) {
 			
 			gp.iTile[i].playSE();
 			gp.iTile[i].life--;
@@ -275,27 +416,17 @@ public class Player extends Entity {
 		}
 	}
 	
-	public void selectItem() {
+	public void interactNPC(int i) {
 		
-		int itemIndex = gp.ui.getItemIndexOnSlot();
-		if (itemIndex < inventory.size()) { // selecting an item
-									
-			Entity selectedItem = inventory.get(itemIndex);
-			if (selectedItem.type == type_sword || selectedItem.type == type_axe) {
-				currentWeapon = selectedItem;
-				attack = getAttack();
-			}
-			if (selectedItem.type == type_shield) {
-				currentShield = selectedItem;
-				defense = getDefense();
-			}
-			if (selectedItem.type == type_consumable) {
-				selectedItem.use(this);
-				inventory.remove(itemIndex);
-			}
+		if (gp.keyH.spacePressed) {
 			
-			getPlayerAttackImage();
-		}
+			// TALKING TO NPC
+			if (i != -1) {		
+				attackCanceled = true;
+				gp.gameState = gp.dialogueState;
+				gp.npc[i].speak();
+			}
+		}				
 	}
 	
 	public void pickUpObject(int i) {	
@@ -323,6 +454,9 @@ public class Player extends Entity {
 					
 					if (gp.obj[i].name.equals("Hylian Bow")) 
 						canShoot = true;
+					
+					if (gp.obj[i].name.equals("Hookshot")) 
+						canGrab = true;
 				}
 				else
 					text = "You cannot carry any more items!";
@@ -333,145 +467,27 @@ public class Player extends Entity {
 		}
 	}
 	
-	public void update() {
+	public void selectItem() {
 		
-		// RUN BUTTON
-		if (keyH.shiftPressed && canRun) { 
-			speed = runSpeed; 
-			animationSpeed = 6; 
-		}
-		else { 
-			speed = baseSpeed; 
-			animationSpeed = 10; 
-		}
-		
-		if (attacking)
-			attacking();	
-		
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed 
-				|| keyH.spacePressed) {	
+		int itemIndex = gp.ui.getItemIndexOnSlot();
+		if (itemIndex < inventory.size()) { // selecting an item
 									
-			// find direction
-			if (keyH.upPressed) direction = "up";
-			if (keyH.downPressed) direction = "down";
-			if (keyH.leftPressed) direction = "left";
-			if (keyH.rightPressed) direction = "right";			
-			
-			if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
-			if (keyH.upPressed && keyH.rightPressed) direction = "upright";
-			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
-			if (keyH.downPressed && keyH.rightPressed) direction = "downright";			
-			
-			// CHECK TILE COLLISION
-			collisionOn = false;
-			gp.cChecker.checkTile(this);
-			
-			// CHECK NPC COLLISION
-			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
-			interactNPC(npcIndex);
-			
-			// CHECK ENEMY COLLISION
-			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			contactEnemy(enemyIndex);
-						
-			// CHECK OBJECT COLLISION
-			int objIndex = gp.cChecker.checkObject(this, true);
-			pickUpObject(objIndex);
-			
-			// CHECK INTERACTIVE TILE COLLISION
-			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-			
-			// CHECK EVENT
-			gp.eHandler.checkEvent();
-			
-			// MOVE IF NO COLLISION
-			if (!collisionOn && !keyH.spacePressed) { 
-				
-				// move player in direction pressed
-				switch (direction) {
-					case "up": worldY -= speed; break;
-					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-					
-					case "down": worldY += speed; break;
-					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-					case "downright": worldY += speed; worldX += speed - 0.5; break;
-					
-					case "left": worldX -= speed; break;
-					case "right": worldX += speed; break;
-				}
+			Entity selectedItem = inventory.get(itemIndex);
+			if (selectedItem.type == type_sword || selectedItem.type == type_axe) {
+				currentWeapon = selectedItem;
+				attack = getAttack();
+			}
+			if (selectedItem.type == type_shield) {
+				currentShield = selectedItem;
+				defense = getDefense();
+			}
+			if (selectedItem.type == type_consumable) {
+				selectedItem.use(this);
+				inventory.remove(itemIndex);
 			}
 			
-			// SWING SWORD VALID
-			if (keyH.spacePressed && !attackCanceled) {
-				
-				gp.playSE(3, 0);
-				attacking = true;
-				spriteCounter = 0;
-				
-				// SHOOT SWORD BEAM
-				if (currentWeapon.type == type_sword && !projectile_sword.alive && 
-						shotAvailableCounter == 30 && projectile_sword.haveResource(this)) { 	
-											
-					projectile_sword.set(worldX, worldY, direction, true, this);			
-					gp.projectileList.add(projectile_sword);			
-					
-					projectile_sword.subtractResource(this);
-					
-					shotAvailableCounter = 0;		
-					
-					gp.playSE(3, 4);
-				}
-			}
-			
-			attackCanceled = false;			
-			gp.keyH.spacePressed = false;
-			
-			// WALKING ANIMATION
-			spriteCounter++;
-			if (spriteCounter > animationSpeed) { // speed of sprite change
-
-				if (spriteNum == 1) spriteNum = 2;
-				else if (spriteNum == 2) spriteNum = 1;
-				
-				spriteCounter = 0;
-			}	
+			getPlayerAttackImage();
 		}
-		
-		// SHOOT ONE PROJECTILE AT A TIME (0.5 SEC REFRESH TIME)
-		if (gp.keyH.itemPressed && !projectile.alive && shotAvailableCounter == 30 
-				&& projectile.haveResource(this) && canShoot) { 			
-									
-			projectile.set(worldX, worldY, direction, true, this);			
-			gp.projectileList.add(projectile);			
-			
-			projectile.subtractResource(this);
-			
-			shotAvailableCounter = 0;		
-			
-			gp.playSE(3, 2);
-		}
-		
-		// PROJECTILE REFRESH TIME
-		if (shotAvailableCounter < 30) 
-			shotAvailableCounter++;	
-		
-		// PLAYER SHIELD AFTER HIT
-		if (invincible) {
-			invincibleCounter++;
-			
-			// 1 SECOND REFRESH TIME 
-			if (invincibleCounter > 60) {
-				invincible = false;
-				invincibleCounter = 0;
-			}
-		}
-				
-		// KEEP HEARTS WITHIN MAX
-		if (life > maxLife) life = maxLife;
-		
-		// KEEP ARROWS WITHIN MAX
-		if (arrows > maxArrows)	arrows = maxArrows;
 	}
 	
 	public void draw(Graphics2D g2) {
