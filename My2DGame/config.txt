@@ -1,0 +1,10 @@
+Player name
+Zach
+Fullscreen
+False
+Music volume
+1
+Sound effects volume
+4
+Debug
+False

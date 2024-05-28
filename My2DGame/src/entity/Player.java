@@ -23,10 +23,8 @@ public class Player extends Entity {
 	public boolean attackCanceled = false;
 	
 	public boolean canRun = false;
-//	public boolean canRun = true;
 	public boolean canShoot = false;
 	public boolean canGrab = false;
-//	public boolean canGrab = true;
 	
 	/** CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
@@ -68,7 +66,6 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		name = "Link";
 		level = 1;
 		maxLife = 6; life = maxLife;
 		strength = 1; dexterity = 1; // helps attack, defense
@@ -141,9 +138,10 @@ public class Player extends Entity {
 		}
 		
 		if (attacking)
-			attacking();	
-		
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.spacePressed) {	
+			attacking();
+						
+		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || 
+				keyH.spacePressed) {	
 									
 			// find direction
 			if (keyH.upPressed) direction = "up";
@@ -167,11 +165,11 @@ public class Player extends Entity {
 			// CHECK ENEMY COLLISION
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			contactEnemy(enemyIndex);
-						
+			
 			// CHECK OBJECT COLLISION
 			int objIndex = gp.cChecker.checkObject(this, true);
 			pickUpObject(objIndex);
-			
+							
 			// CHECK INTERACTIVE TILE COLLISION
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
 			
@@ -181,7 +179,6 @@ public class Player extends Entity {
 			// MOVE IF NO COLLISION
 			if (!collisionOn && !keyH.spacePressed) { 
 				
-				// move player in direction pressed
 				switch (direction) {
 					case "up": worldY -= speed; break;
 					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
@@ -230,9 +227,23 @@ public class Player extends Entity {
 				
 				spriteCounter = 0;
 			}	
+		}		
+		// SHOOT HOOKSHOT (STOP PLAYER MOVEMENT)
+		if (gp.keyH.hookPressed && !projectile_item.alive && 
+				shotAvailableCounter == 30 && canGrab) { 			
+									
+			keyH.upPressed = false; keyH.downPressed  = false;
+			keyH.leftPressed  = false; keyH.rightPressed  = false;
+			
+			projectile_item.set(worldX, worldY, direction, true, this);			
+			gp.projectileList.add(projectile_item);	
+						
+			shotAvailableCounter = 0;	
+			
+			gp.playSE(3, 5);
 		}
 		
-		// SHOOT ARROW
+		// SHOOT ARROW (CAN SHOOT WHILE MOVING)
 		if (gp.keyH.itemPressed && !projectile.alive && shotAvailableCounter == 30 
 				&& projectile.haveResource(this) && canShoot) { 			
 									
@@ -245,23 +256,12 @@ public class Player extends Entity {
 			
 			gp.playSE(3, 2);
 		}
-		
-		// SHOOT HOOK SHOT
-		if (gp.keyH.hookPressed && !projectile_item.alive && shotAvailableCounter == 30 && canGrab) { 			
-									
-			projectile_item.set(worldX, worldY, direction, true, this);			
-			gp.projectileList.add(projectile_item);	
-						
-			shotAvailableCounter = 0;	
-			
-			gp.playSE(3, 5);
-		}
 				
 		// PROJECTILE REFRESH TIME
 		if (shotAvailableCounter < 30) 
 			shotAvailableCounter++;	
 		
-		// PLAYER SHIELD AFTER HIT
+		// PLAYER SHIELD AFTER DAMAGE
 		if (invincible) {
 			invincibleCounter++;
 			
@@ -273,10 +273,12 @@ public class Player extends Entity {
 		}
 				
 		// KEEP HEARTS WITHIN MAX
-		if (life > maxLife) life = maxLife;
+		if (life > maxLife) 
+			life = maxLife;
 		
 		// KEEP ARROWS WITHIN MAX
-		if (arrows > maxArrows)	arrows = maxArrows;
+		if (arrows > maxArrows)	
+			arrows = maxArrows;
 	}
 	
 	public void attacking() {
@@ -429,14 +431,13 @@ public class Player extends Entity {
 		}				
 	}
 	
-	public void pickUpObject(int i) {	
+	public void pickUpObject(int i) {
 		
 		// OBJECT INTERACTION
 		if (i != -1) {
 			
 			// COLLECTABLES
-			if (gp.obj[i].type == type_collectable) {
-				
+			if (gp.obj[i].type == type_collectable) {				
 				gp.obj[i].use(this);
 				gp.obj[i] = null;
 			}			

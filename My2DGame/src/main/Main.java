@@ -14,11 +14,15 @@ public class Main {
 		window.setTitle("2D Adventure");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(false);
-		window.setUndecorated(true);
-//		window.setUndecorated(false);
 		
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel);
+		
+		// LOAD SETTINGS
+		gamePanel.config.loadConfig();
+		if (gamePanel.fullScreenOn) {
+			window.setUndecorated(true);	
+		}
 		
 		window.pack(); // resizes window relative to its contents	
 		window.setLocationRelativeTo(null);

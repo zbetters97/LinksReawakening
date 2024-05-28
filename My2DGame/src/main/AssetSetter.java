@@ -17,32 +17,33 @@ public class AssetSetter {
 		
 		for (int i = 0; i < 7; i++)
 			gp.iTile[i] = new IT_DryTree(gp, 27 + i, 12);
+		
+		gp.iTile[0] = new IT_DryTree(gp, 23, 17);
 	}
 	
-	public void setObject() {	
-		gp.obj[0] = new OBJ_Axe(gp);
-		gp.obj[0].worldX = gp.tileSize * 23;
-		gp.obj[0].worldY = gp.tileSize * 17;
+	public void setObject() {		
+		gp.obj[0] = new OBJ_Bow(gp);
+		gp.obj[0].worldX = gp.tileSize * 20;
+		gp.obj[0].worldY = gp.tileSize * 21;
 		
-		gp.obj[1] = new OBJ_Bow(gp);
-		gp.obj[1].worldX = gp.tileSize * 20;
-		gp.obj[1].worldY = gp.tileSize * 21;
+		gp.obj[1] = new OBJ_Boots(gp);
+		gp.obj[1].worldX = gp.tileSize * 22;
+		gp.obj[1].worldY = gp.tileSize * 20;
 		
-		gp.obj[2] = new OBJ_Boots(gp);
+		gp.obj[2] = new OBJ_Hookshot(gp);
 		gp.obj[2].worldX = gp.tileSize * 22;
-		gp.obj[2].worldY = gp.tileSize * 20;
+		gp.obj[2].worldY = gp.tileSize * 21;
 		
-		gp.obj[3] = new OBJ_Hookshot(gp);
+		gp.obj[3] = new OBJ_Axe(gp);
 		gp.obj[3].worldX = gp.tileSize * 22;
-		gp.obj[3].worldY = gp.tileSize * 21;
+		gp.obj[3].worldY = gp.tileSize * 22;
 	}	
 	public void setNPC() {
 		gp.npc[0] = new NPC_OldMan(gp);
 		gp.npc[0].worldX = gp.tileSize * 21;
 		gp.npc[0].worldY = gp.tileSize * 21;
 	}	
-	public void setEnemy() {
-		
+	public void setEnemy() {		
 		gp.enemy[0] = new EMY_GreenSlime(gp);
 		gp.enemy[0].worldX = gp.tileSize * 23;
 		gp.enemy[0].worldY = gp.tileSize * 36;

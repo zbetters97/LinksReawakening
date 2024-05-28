@@ -39,6 +39,9 @@ public class GamePanel extends JPanel implements Runnable {
 	BufferedImage tempScreen;
 	Graphics2D g2;
 	
+	public boolean fullScreenOn = false;
+	Config config = new Config(this);
+	
 	// FPS
 	int FPS = 60;
 	
@@ -71,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Entity obj[] = new Entity[20]; // total amount of items displayed at once
 	public InteractiveTile iTile[] = new InteractiveTile[50];
 	public ArrayList<Entity> particleList = new ArrayList<>();
-	public ArrayList<Entity> projectileList = new ArrayList<>();	
+	public ArrayList<Entity> projectileList = new ArrayList<>();
 	public ArrayList<Entity> entityList = new ArrayList<>();	
 	
 	public AssetSetter aSetter = new AssetSetter(this);
@@ -89,11 +92,11 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = titleState;
-		playMusic(0);
+		if (gameState == titleState)
+			playMusic(0);	
 		
-//		gameState = playState;
-//		playMusic(1);
+		else if (gameState == playState) 
+			playMusic(1);
 		
 		aSetter.setInteractiveTiles();
 		aSetter.setNPC();
@@ -104,7 +107,8 @@ public class GamePanel extends JPanel implements Runnable {
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		g2 = (Graphics2D)tempScreen.getGraphics();
 		
-		setFullScreen();
+		if (fullScreenOn)
+			setFullScreen();
 	}
 	
 	public void setFullScreen() {

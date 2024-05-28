@@ -176,6 +176,8 @@ public class KeyHandler implements KeyListener{
 				// ENTER BUTTON
 				else if (gp.ui.commandNum == 29) {
 					gp.playSE(1, 1);
+					gp.ui.titleScreenState = 0;
+					gp.ui.commandNum = 0;
 					gp.gameState = 1;
 					gp.stopMusic();
 					gp.playMusic(1);						
@@ -211,15 +213,65 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_SHIFT) shiftPressed = true;	
 		if (code == KeyEvent.VK_F) itemPressed = true;
 		if (code == KeyEvent.VK_G) hookPressed = true;
-		//if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.pauseState;
-		if (code == KeyEvent.VK_ESCAPE) System.exit(0);
+		if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.pauseState;
 		if (code == KeyEvent.VK_E) gp.gameState = gp.characterState;
 		if (code == KeyEvent.VK_Q) if (debug) debug = false; else debug = true;
 		if (code == KeyEvent.VK_R) gp.tileM.loadMap("/maps/worldmap.txt");
 	}
 	
 	public void pauseState(int code) { 
+		
+		int maxCommandNum = 0;
+		switch (gp.ui.subState) {
+			case 0: maxCommandNum = 5; break;
+			case 3: maxCommandNum = 1; break;
+		}
+		
+		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
+			if (gp.ui.commandNum != 0) {
+				gp.playSE(1, 0); 
+				gp.ui.commandNum--; 
+			}
+		}
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+			if (gp.ui.commandNum != maxCommandNum) { 
+				gp.playSE(1, 0); 
+				gp.ui.commandNum++; 
+			}
+		}
+		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+			
+			if (gp.ui.subState == 0) {
+				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
+					gp.music.volumeScale--;
+					gp.music.checkVolume();
+					gp.playSE(1, 0);
+				}
+				if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
+					gp.se.volumeScale--;
+					gp.playSE(1, 0);
+				}
+			}
+		}
+		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+			if (gp.ui.subState == 0) {
+				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
+					gp.music.volumeScale++;
+					gp.music.checkVolume();
+					gp.playSE(1, 0);
+				}
+				if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {
+					gp.se.volumeScale++;
+					gp.playSE(1, 0);
+				}
+			}
+		}
+		
 		if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.playState;
+		if (code == KeyEvent.VK_SPACE) {
+			gp.playSE(1, 1);
+			spacePressed = true;
+		}
 	}
 	
 	public void dialogueState(int code) { 
