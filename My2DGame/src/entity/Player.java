@@ -25,7 +25,7 @@ public class Player extends Entity {
 	public boolean canRun = false;
 	public boolean canShoot = false;
 	public boolean canGrab = false;
-	
+		
 	/** CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
@@ -35,16 +35,14 @@ public class Player extends Entity {
 		this.keyH = keyH;
 		
 		// PLAYER POSITION LOCKED TO CENTER
-		// push by half a tile
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2); 
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 						
-		// collision area (x, y, width, height)
-		// collision box smaller than player
-		solidArea = new Rectangle(8, 16, 32, 32); 
+		// HITBOX (x, y, width, height)
+		hitBox = new Rectangle(8, 16, 32, 32); 
 		
-		solidAreaDefaultX = solidArea.x;
-		solidAreaDefaultY = solidArea.y;
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 		
 		attackArea.width = 36;
 		attackArea.height = 36;
@@ -57,10 +55,7 @@ public class Player extends Entity {
 	
 	public void setDefaultValues() {
 						
-		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;
-		
-		direction = "down";
+		setDefaultPosition();
 		
 		speed = 3; baseSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
@@ -74,9 +69,9 @@ public class Player extends Entity {
 		
 		currentWeapon = new OBJ_Sword(gp);
 		currentShield = new OBJ_Shield(gp);		
-		projectile = new OBJ_Arrow(gp);
+		projectile = new PRJ_Arrow(gp);
 		projectile_item = new PRJ_Hookshot(gp);
-		projectile_sword = new OBJ_Sword_Beam(gp);
+		projectile_sword = new PRJ_Sword_Beam(gp);
 		
 		maxArrows = 5; arrows = maxArrows;
 		
@@ -94,6 +89,16 @@ public class Player extends Entity {
 		inventory.add(currentWeapon);
 		inventory.add(currentShield);
 	}
+	public void setDefaultPosition() {		
+		worldX = gp.tileSize * 23;
+		worldY = gp.tileSize * 21;
+		direction = "down";
+		speed = baseSpeed;
+	}
+	public void restoreHearts() {
+		life = maxLife;
+		invincible = false;
+	}
 	
 	public void getPlayerImage() {		
 		up1 = setup("/player/boy_up_1"); 
@@ -105,8 +110,15 @@ public class Player extends Entity {
 		right1 = setup("/player/boy_right_1"); 
 		right2 = setup("/player/boy_right_2");
 		
+		itemGet = setup("/player/boy_item_get");
+		
 		sit = setup("/player/boy_sit"); 
 		sing = setup("/npc/girl_sing_1");
+		
+		die1 = setup("/player/boy_die_1"); 
+		die2 = setup("/player/boy_die_2");
+		die3 = setup("/player/boy_die_3"); 
+		die4 = setup("/player/boy_die_4");
 	}
 	
 	public void getPlayerAttackImage() {
@@ -171,7 +183,7 @@ public class Player extends Entity {
 			pickUpObject(objIndex);
 							
 			// CHECK INTERACTIVE TILE COLLISION
-			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+			gp.cChecker.checkEntity(this, gp.iTile);
 			
 			// CHECK EVENT
 			gp.eHandler.checkEvent();
@@ -202,7 +214,7 @@ public class Player extends Entity {
 				
 				// SHOOT SWORD BEAM
 				if (currentWeapon.type == type_sword && !projectile_sword.alive && 
-						shotAvailableCounter == 30 && projectile_sword.haveResource(this)) { 	
+						shotAvailableCounter == 30 && projectile_sword.hasResource(this)) { 	
 											
 					projectile_sword.set(worldX, worldY, direction, true, this);			
 					gp.projectileList.add(projectile_sword);			
@@ -239,13 +251,11 @@ public class Player extends Entity {
 			gp.projectileList.add(projectile_item);	
 						
 			shotAvailableCounter = 0;	
-			
-			gp.playSE(3, 5);
 		}
 		
 		// SHOOT ARROW (CAN SHOOT WHILE MOVING)
 		if (gp.keyH.itemPressed && !projectile.alive && shotAvailableCounter == 30 
-				&& projectile.haveResource(this) && canShoot) { 			
+				&& projectile.hasResource(this) && canShoot) { 			
 									
 			projectile.set(worldX, worldY, direction, true, this);			
 			gp.projectileList.add(projectile);			
@@ -279,6 +289,14 @@ public class Player extends Entity {
 		// KEEP ARROWS WITHIN MAX
 		if (arrows > maxArrows)	
 			arrows = maxArrows;
+		
+		// PLAYER DIES
+		if (life <= 0) {
+			gp.stopMusic();
+			gp.playSE(2, 1);
+			alive = false;
+			gp.gameState = gp.gameOverState;		
+		}
 	}
 	
 	public void attacking() {
@@ -296,8 +314,8 @@ public class Player extends Entity {
 			// CHECK IF WEAPON HITS TARGET	
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
-			int solidAreaWidth = solidArea.width;
-			int solidAreaHeight = solidArea.height;
+			int hitBoxWidth = hitBox.width;
+			int hitBoxHeight = hitBox.height;
 			
 			// ADJUST PLAYER'S X/Y 
 			switch (direction) {
@@ -312,8 +330,8 @@ public class Player extends Entity {
 			}
 			
 			// CHANGE SIZE OF HIT BOX 
-			solidArea.width = attackArea.width;
-			solidArea.height = attackArea.height;
+			hitBox.width = attackArea.width;
+			hitBox.height = attackArea.height;
 			
 			// CHECK IF ATTACK LANDS ON ENEMY
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
@@ -326,8 +344,8 @@ public class Player extends Entity {
 			// RESTORE PLAYER HITBOX
 			worldX = currentWorldX;
 			worldY = currentWorldY;
-			solidArea.width = solidAreaWidth;
-			solidArea.height = solidAreaHeight;
+			hitBox.width = hitBoxWidth;
+			hitBox.height = hitBoxHeight;
 		}
 		
 		// RESET IMAGE
@@ -342,10 +360,10 @@ public class Player extends Entity {
 		
 		// PLAYER HIT BY ENEMY
 		if (i != -1) {					
-			if (!invincible && !gp.enemy[i].dying) {
+			if (!invincible && !gp.enemy[gp.currentMap][i].dying) {
 				gp.playSE(2, 0);
 				
-				int damage = gp.enemy[i].attack - defense;
+				int damage = gp.enemy[gp.currentMap][i].attack - defense;
 				if (damage < 0) damage = 0;				
 				this.life -= damage;
 				
@@ -360,24 +378,24 @@ public class Player extends Entity {
 		if (i != -1) {
 			
 			// HURT ENEMY
-			if (!gp.enemy[i].invincible) {
+			if (!gp.enemy[gp.currentMap][i].invincible) {
 				gp.playSE(4, 1);
 				
-				int damage = attack - gp.enemy[i].defense;
+				int damage = attack - gp.enemy[gp.currentMap][i].defense;
 				if (damage < 0) damage = 0;				
-				gp.enemy[i].life -= damage;			
+				gp.enemy[gp.currentMap][i].life -= damage;			
 				
-				gp.enemy[i].invincible = true;
-				gp.enemy[i].damageReaction();
+				gp.enemy[gp.currentMap][i].invincible = true;
+				gp.enemy[gp.currentMap][i].damageReaction();
 				
 				// KILL ENEMY
-				if (gp.enemy[i].life <= 0) {
-					gp.enemy[i].dying = true;
+				if (gp.enemy[gp.currentMap][i].life <= 0) {
+					gp.enemy[gp.currentMap][i].dying = true;
 					
 					gp.playSE(4, 2);
 													
-					exp += gp.enemy[i].exp;
-					gp.ui.addMessage("+" + gp.enemy[i].exp + " EXP!");	
+					exp += gp.enemy[gp.currentMap][i].exp;
+					gp.ui.addMessage("+" + gp.enemy[gp.currentMap][i].exp + " EXP!");	
 					
 					checkLevelUp();
 				}
@@ -387,17 +405,17 @@ public class Player extends Entity {
 	
 	public void damageInteractiveTile(int i) {
 		
-		if (i != -1 && gp.iTile[i].destructible && !gp.iTile[i].invincible &&
-				gp.iTile[i].isCorrectItem(this)) {
+		if (i != -1 && gp.iTile[gp.currentMap][i].destructible && !gp.iTile[gp.currentMap][i].invincible &&
+				gp.iTile[gp.currentMap][i].isCorrectItem(this)) {
 			
-			gp.iTile[i].playSE();
-			gp.iTile[i].life--;
-			gp.iTile[i].invincible = true;
+			gp.iTile[gp.currentMap][i].playSE();
+			gp.iTile[gp.currentMap][i].life--;
+			gp.iTile[gp.currentMap][i].invincible = true;
 					
-			generateParticle(gp.iTile[i], gp.iTile[i]);
+			generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
 			
-			if (gp.iTile[i].life == 0)
-				gp.iTile[i] = gp.iTile[i].getDestroyedForm();
+			if (gp.iTile[gp.currentMap][i].life == 0)
+				gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();
 		}
 	}
 	
@@ -426,7 +444,7 @@ public class Player extends Entity {
 			if (i != -1) {		
 				attackCanceled = true;
 				gp.gameState = gp.dialogueState;
-				gp.npc[i].speak();
+				gp.npc[gp.currentMap][i].speak();
 			}
 		}				
 	}
@@ -437,9 +455,9 @@ public class Player extends Entity {
 		if (i != -1) {
 			
 			// COLLECTABLES
-			if (gp.obj[i].type == type_collectable) {				
-				gp.obj[i].use(this);
-				gp.obj[i] = null;
+			if (gp.obj[gp.currentMap][i].type == type_collectable) {				
+				gp.obj[gp.currentMap][i].use(this);
+				gp.obj[gp.currentMap][i] = null;
 			}			
 			// INVENTORY ITEMS
 			else {
@@ -447,23 +465,23 @@ public class Player extends Entity {
 				
 				if (inventory.size() != maxInventorySize) {		
 					gp.playSE(3, 1);
-					inventory.add(gp.obj[i]);				
-					text = "You found the " + gp.obj[i].name + "!";
+					inventory.add(gp.obj[gp.currentMap][i]);				
+					text = "You found the " + gp.obj[gp.currentMap][i].name + "!";
 					
-					if (gp.obj[i].name.equals("Running Shoes")) 
+					if (gp.obj[gp.currentMap][i].name.equals("Running Shoes")) 
 						canRun = true;
 					
-					if (gp.obj[i].name.equals("Hylian Bow")) 
+					if (gp.obj[gp.currentMap][i].name.equals("Hylian Bow")) 
 						canShoot = true;
 					
-					if (gp.obj[i].name.equals("Hookshot")) 
+					if (gp.obj[gp.currentMap][i].name.equals("Hookshot")) 
 						canGrab = true;
 				}
 				else
 					text = "You cannot carry any more items!";
 				
 				gp.ui.addMessage(text);
-				gp.obj[i] = null;
+				gp.obj[gp.currentMap][i] = null;
 			}
 		}
 	}
@@ -490,86 +508,87 @@ public class Player extends Entity {
 			getPlayerAttackImage();
 		}
 	}
-	
+
 	public void draw(Graphics2D g2) {
-		
-		BufferedImage image = null;
-		
+						
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
 		
-		// change entity sprite based on which direction and which cycle
-		switch (direction) {
-			case "up":
-			case "upleft":
-			case "upright":
-				if (!attacking) {
-					if (spriteNum == 1) image = up1;
-					if (spriteNum == 2) image = up2;	
-				}
-				else {
-					if (attackNum == 1) {
+		if (alive) {
+			
+			// change entity sprite based on which direction and which cycle
+			switch (direction) {
+				case "up":
+				case "upleft":
+				case "upright":
+					if (!attacking) {
+						if (spriteNum == 1) image = up1;
+						if (spriteNum == 2) image = up2;	
+					}
+					else {
+						if (attackNum == 1) {
+							tempScreenX -= gp.tileSize;
+							tempScreenY -= gp.tileSize;
+							image = attackUp1;
+						}
+						if (attackNum == 2) {
+							tempScreenY -= gp.tileSize;
+							image = attackUp2;	
+						}
+					}				
+					break;
+				case "down":
+				case "downleft":
+				case "downright":
+					if (!attacking) {
+						if (spriteNum == 1) image = down1;
+						if (spriteNum == 2) image = down2;	
+					}
+					else {		
+						if (attackNum == 1) image = attackDown1;
+						if (attackNum == 2) image = attackDown2;	
+					}		
+					break;
+				case "left":
+					if (!attacking) {
+						if (spriteNum == 1) image = left1;
+						if (spriteNum == 2) image = left2;	
+					}
+					else {
 						tempScreenX -= gp.tileSize;
-						tempScreenY -= gp.tileSize;
-						image = attackUp1;
+						if (attackNum == 1) {
+							tempScreenY -= gp.tileSize;
+							image = attackLeft1;
+						}
+						if (attackNum == 2) image = attackLeft2;	
+					}		
+					break;
+				case "right":
+					if (!attacking) {
+						if (spriteNum == 1) image = right1;
+						if (spriteNum == 2) image = right2;	
 					}
-					if (attackNum == 2) {
-						tempScreenY -= gp.tileSize;
-						image = attackUp2;	
-					}
-				}				
-				break;
-			case "down":
-			case "downleft":
-			case "downright":
-				if (!attacking) {
-					if (spriteNum == 1) image = down1;
-					if (spriteNum == 2) image = down2;	
-				}
-				else {		
-					if (attackNum == 1) image = attackDown1;
-					if (attackNum == 2) image = attackDown2;	
-				}		
-				break;
-			case "left":
-				if (!attacking) {
-					if (spriteNum == 1) image = left1;
-					if (spriteNum == 2) image = left2;	
-				}
-				else {
-					tempScreenX -= gp.tileSize;
-					if (attackNum == 1) {
-						tempScreenY -= gp.tileSize;
-						image = attackLeft1;
-					}
-					if (attackNum == 2) image = attackLeft2;	
-				}		
-				break;
-			case "right":
-				if (!attacking) {
-					if (spriteNum == 1) image = right1;
-					if (spriteNum == 2) image = right2;	
-				}
-				else {
-					if (attackNum == 1) {
-						tempScreenY -= gp.tileSize;
-						image = attackRight1;
-					}
-					if (attackNum == 2) image = attackRight2;
-				}		
-				break;
+					else {
+						if (attackNum == 1) {
+							tempScreenY -= gp.tileSize;
+							image = attackRight1;
+						}
+						if (attackNum == 2) image = attackRight2;
+					}		
+					break;
+			}
+							
+			// PLAYER IS HIT
+			if (invincible) {
+				
+				// FLASH OPACITY
+				if (invincibleCounter % 5 == 0)
+					changeAlpha(g2, 0.2f);
+				else
+					changeAlpha(g2, 1f);
+			}	
 		}
 						
-		// PLAYER IS HIT
-		if (invincible) {
-			
-			// FLASH OPACITY
-			if (invincibleCounter % 5 == 0)
-				changeAlpha(g2, 0.2f);
-			else
-				changeAlpha(g2, 1f);
-		}	
-		
 		g2.drawImage(image, tempScreenX, tempScreenY, null); 
 		
 		// RESET OPACITY

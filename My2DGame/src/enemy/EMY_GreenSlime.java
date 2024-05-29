@@ -20,20 +20,20 @@ public class EMY_GreenSlime extends Entity {
 		speed = 1;
 		baseSpeed = speed;
 		animationSpeed = 15;
-		maxLife = 4;
+		maxLife = 2;
 		life = maxLife;
 		attack = 3;
 		defense = 0;
 		exp = 4;
-		projectile = new OBJ_Fireball(gp);
+		projectile = new PRJ_Fireball(gp);
 		
 		// HIT BOX
-		solidArea.x = 2;
-		solidArea.y = 18;
-		solidArea.width = 44;
-		solidArea.height = 30;
-		solidAreaDefaultX = solidArea.x;
-		solidAreaDefaultY = solidArea.y;
+		hitBox.x = 2;
+		hitBox.y = 18;
+		hitBox.width = 44;
+		hitBox.height = 30;
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 		
 		getImage();
 	}
@@ -93,7 +93,7 @@ public class EMY_GreenSlime extends Entity {
 		if (i < 50) 
 			dropItem(new OBJ_Heart(gp));
 		if (i >= 50 && i < 75)
-			dropItem(new OBJ_Arrows(gp));
+			dropItem(new OBJ_Arrow(gp));
 		if (i >= 75 && i <= 100)
 			dropItem(new OBJ_Rupee_Blue(gp));
 	}

@@ -33,6 +33,10 @@ public class GamePanel extends JPanel implements Runnable {
 	public int maxWorldCol;
 	public int maxWorldRow;
 	
+	// AMOUNT OF TOTAL MAPS
+	public final int maxMap = 10;
+	public int currentMap = 0;
+	
 	// FULL SCREEN SETTINGS
 	int screenWidth2 = screenWidth;
 	int screenHeight2 = screenHeight;
@@ -53,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int dialogueState = 3;	
 	public final int characterState = 4;
 	public final int itemState = 5;
+	public final int gameOverState = 6;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -69,10 +74,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
-	public Entity npc[] = new Entity[10]; // total amount of npc displayed at once	
-	public Entity enemy[] = new Entity[20]; // total amount of enemies displayed at once
-	public Entity obj[] = new Entity[20]; // total amount of items displayed at once
-	public InteractiveTile iTile[] = new InteractiveTile[50];
+	public Entity npc[][] = new Entity[maxMap][10]; // total amount of npc displayed at once	
+	public Entity enemy[][] = new Entity[maxMap][20]; // total amount of enemies displayed at once
+	public Entity obj[][] = new Entity[maxMap][20]; // total amount of items displayed at once
+	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
 	public ArrayList<Entity> particleList = new ArrayList<>();
 	public ArrayList<Entity> projectileList = new ArrayList<>();
 	public ArrayList<Entity> entityList = new ArrayList<>();	
@@ -98,9 +103,11 @@ public class GamePanel extends JPanel implements Runnable {
 		else if (gameState == playState) 
 			playMusic(1);
 		
-		aSetter.setInteractiveTiles();
+		//gameState = playState;
+				
 		aSetter.setNPC();
 		aSetter.setEnemy();
+		aSetter.setInteractiveTiles();
 		aSetter.setObject();
 		
 		// TEMP GAME WINDOW (before drawing to window)
@@ -110,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
 		if (fullScreenOn)
 			setFullScreen();
 	}
-	
+		
 	public void setFullScreen() {
 		
 		// GET SYSTEM SCREEN
@@ -126,6 +133,43 @@ public class GamePanel extends JPanel implements Runnable {
 	public void startGameThread() {		
 		gameThread = new Thread(this); // new Thread with GamePanel class
 		gameThread.start(); // calls run() method
+	}
+	
+	public void retry() {	
+		stopMusic();		
+		
+		player.alive = true;		
+		player.setDefaultPosition();
+		player.restoreHearts();
+		
+		ui.deathSprite = 0;
+		ui.deathCounter = 0;
+		
+		aSetter.setNPC();
+		aSetter.setEnemy();
+						
+		playMusic(1);
+	}
+	
+	public void restart() {	
+		stopMusic();
+		
+		player.alive = true;
+		player.setDefaultPosition();
+		player.restoreHearts();
+		player.setDefaultValues();
+		player.inventory.clear();
+		player.setItems();
+		
+		ui.deathSprite = 0;
+		ui.deathCounter = 0;
+		
+		aSetter.setNPC();
+		aSetter.setEnemy();
+		aSetter.setInteractiveTiles();
+		aSetter.setObject();		
+		
+		playMusic(1);
 	}
 	
 	@Override
@@ -178,35 +222,35 @@ public class GamePanel extends JPanel implements Runnable {
 			player.update();	
 				
 			// UPDATE NPCs
-			for (int i = 0; i < npc.length; i++) {
-				if (npc[i] != null)
-					npc[i].update();
+			for (int i = 0; i < npc[1].length; i++) {
+				if (npc[currentMap][i] != null)
+					npc[currentMap][i].update();
 			}
 			
 			// UPDATE ENEMIES			
-			for (int i = 0; i < enemy.length; i++) {
-				if (enemy[i] != null) {
+			for (int i = 0; i < enemy[1].length; i++) {
+				if (enemy[currentMap][i] != null) {
 					
-					if (enemy[i].alive && !enemy[i].dying) 
-						enemy[i].update();			
+					if (enemy[currentMap][i].alive && !enemy[currentMap][i].dying) 
+						enemy[currentMap][i].update();			
 					
-					if (!enemy[i].alive) {
-						enemy[i].checkDrop();
-						enemy[i] = null;	
+					if (!enemy[currentMap][i].alive) {
+						enemy[currentMap][i].checkDrop();
+						enemy[currentMap][i] = null;	
 					}
 				}
 			}
 			
-			// UPDATE INTERACTIVE TILES
-			for (int i = 0; i < iTile.length; i++) {
-				if (iTile[i] != null) 
-					iTile[i].update();
+			// UPDATE OBJECTS
+			for (int i = 0; i < obj[1].length; i++) {
+				if (obj[currentMap][i] != null) 
+					obj[currentMap][i].update();
 			}
 			
-			// UPDATE OBJECTS
-			for (int i = 0; i < obj.length; i++) {
-				if (obj[i] != null) 
-					obj[i].update();
+			// UPDATE INTERACTIVE TILES
+			for (int i = 0; i < iTile[1].length; i++) {
+				if (iTile[currentMap][i] != null) 
+					iTile[currentMap][i].update();
 			}
 			
 			// UPDATE PROJECTILES			
@@ -248,16 +292,16 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// TILES
 			tileM.draw(g2);	
-			for (int i = 0; i < iTile.length; i++) {
-				if (iTile[i] != null) 
-					iTile[i].draw(g2);
+			for (int i = 0; i < iTile[1].length; i++) {
+				if (iTile[currentMap][i] != null) 
+					iTile[currentMap][i].draw(g2);
 			}
 			
 			// ADD TO ENTITY LIST
 			entityList.add(player);			
-			for (Entity n : npc) { if (n != null) entityList.add(n); }
-			for (Entity e : enemy) { if (e != null) entityList.add(e); }
-			for (Entity o : obj) { if (o != null) entityList.add(o); }
+			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
+			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
+			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
 			for (Entity p : projectileList) { if (p != null) entityList.add(p); }
 			for (Entity a : particleList) { if (a != null) entityList.add(a); }
 			
@@ -290,9 +334,9 @@ public class GamePanel extends JPanel implements Runnable {
 			y += lineHeight;
 			g2.drawString("WorldY: " + player.worldY, x , y); 
 			y += lineHeight;
-			g2.drawString("Column: " + (player.worldX + player.solidArea.x) / tileSize, x , y);
+			g2.drawString("Column: " + (player.worldX + player.hitBox.x) / tileSize, x , y);
 			y += lineHeight;
-			g2.drawString("Row: " + (player.worldY + player.solidArea.y) / tileSize, x , y);
+			g2.drawString("Row: " + (player.worldY + player.hitBox.y) / tileSize, x , y);
 		}
 	}
 	

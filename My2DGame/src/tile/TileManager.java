@@ -17,7 +17,8 @@ public class TileManager {
 	GamePanel gp;
 	public Tile[] tile;
 	
-	public int mapTileNum[][];
+	// [MAP NUMBER][ROW][COL]
+	public int mapTileNum[][][];
 	
 	ArrayList<String> fileNames = new ArrayList<>();
 	ArrayList<String> collisionStatus = new ArrayList<>();
@@ -30,9 +31,10 @@ public class TileManager {
 		InputStream is = getClass().getResourceAsStream("/maps/tiledata.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		
+		// ADD TILE DATA TO ARRAYS
 		try {
 			String line;
-			while ((line = br.readLine()) != null) { // add tile data to arrays
+			while ((line = br.readLine()) != null) {
 				fileNames.add(line);
 				collisionStatus.add(br.readLine());	
 			}						
@@ -42,8 +44,9 @@ public class TileManager {
 			e.printStackTrace();
 		}
 		
-		tile = new Tile[fileNames.size()]; // total number of all tile types 
-		getTileImage(); // assign collision to tiles and setup
+		// ASSIGN TILE COLLISION
+		tile = new Tile[fileNames.size()];
+		getTileImage(); 
 		
 		// IMPORT MAP SIZE
 		is = getClass().getResourceAsStream("/maps/worldmap.txt");	
@@ -53,9 +56,9 @@ public class TileManager {
 			String line = br.readLine();
 			String maxTile[] = line.split(" ");
 			
-			gp.maxWorldCol = maxTile.length; // max world width
-			gp.maxWorldRow = maxTile.length; // max world height
-			mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+			gp.maxWorldCol = maxTile.length;
+			gp.maxWorldRow = maxTile.length;
+			mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 			
 			br.close();
 		} 
@@ -63,7 +66,8 @@ public class TileManager {
 			e.printStackTrace();
 		}		
 		
-		loadMap("/maps/worldmap.txt");
+		loadMap("/maps/worldmap.txt", 0);
+		loadMap("/maps/indoor01.txt", 1);
 	}
 	
 	public void getTileImage() {		
@@ -101,7 +105,7 @@ public class TileManager {
 		}
 	}
 	
-	public void loadMap(String filePath) {
+	public void loadMap(String filePath, int mapNum) {
 		
 		try {			
 			InputStream is = getClass().getResourceAsStream(filePath); // import map txt file
@@ -120,7 +124,7 @@ public class TileManager {
 					String numbers[] = line.split(" "); // space is separator
 					int num = Integer.parseInt(numbers[col]); // convert txt to int
 									
-					mapTileNum[col][row] = num; // store tile # from map in array
+					mapTileNum[mapNum][col][row] = num; // store tile # from map in array
 					col++; // advance to next column					
 				}
 				
@@ -144,16 +148,18 @@ public class TileManager {
 		
 		while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 									
-			int tileNum = mapTileNum[worldCol][worldRow]; // get number from map txt data
+			// TILE NUMBERS FROM MAP TXT
+			int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
 			
-			int worldX = worldCol * gp.tileSize; // where player is on map
-			int worldY = worldRow * gp.tileSize; // where player is on map
+			// WORLD X,Y
+			int worldX = worldCol * gp.tileSize;
+			int worldY = worldRow * gp.tileSize;
 			
-			// screen coordinates added to world coordinates to shift player to center 
-			int screenX = worldX - gp.player.worldX + gp.player.screenX; // where player is on screen
-			int screenY = worldY - gp.player.worldY + gp.player.screenY; // where player is on screen
-						
-			// only draw tiles within player boundary
+			// PLAYER SCREEN POSITION X,Y OFFSET TO CENTER
+			int screenX = worldX - gp.player.worldX + gp.player.screenX; 
+			int screenY = worldY - gp.player.worldY + gp.player.screenY;
+			
+			// DRAW TILES WITHIN PLAYER BOUNDARY
 			if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
 				worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
 				worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
@@ -161,14 +167,15 @@ public class TileManager {
 				
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}
-								
-			worldCol++; // advance to next column
+						
+			// TO NEXT COLUMN
+			worldCol++;
 			
+			// TO NEXT ROW
 			if (worldCol == gp.maxWorldCol) { 
-				worldCol = 0; // do not advance column
-				worldRow++; // advance row
+				worldCol = 0;
+				worldRow++; 
 			}
 		}
-		
 	}
 }

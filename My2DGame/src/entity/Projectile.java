@@ -27,7 +27,7 @@ public class Projectile extends Entity {
 			useHookshot();
 		}
 		// NON-HOOKSHOT PROJECTILE
-		else {			
+		else {		
 			useProjectile();
 		}
 	}
@@ -49,7 +49,7 @@ public class Projectile extends Entity {
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, attack);
-				generateParticle(user.projectile, gp.enemy[enemyIndex]);
+				generateParticle(user.projectile, gp.enemy[gp.currentMap][enemyIndex]);
 				alive = false;
 			}
 		}
@@ -97,7 +97,7 @@ public class Projectile extends Entity {
 				
 		// PAUSE PLAYER INPUT
 		gp.gameState = gp.itemState;
-		
+						
 		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
@@ -112,14 +112,17 @@ public class Projectile extends Entity {
 		// OBJECT IS NOT GRABBABLE, RETURN
 		if (collisionOn && iTileIndex == -1) 
 			life = 0;
-		
-		// PULL PLAYER TOWARDS GRABBALE TILE
-		if (iTileIndex != -1 && gp.iTile[iTileIndex].grabbale) {
 				
+		// PULL PLAYER TOWARDS GRABBALE TILE
+		if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbale) {
 			switch (direction) {
 				case "up": 
 				case "upleft": 
 				case "upright": 
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldY >= gp.player.worldY) 
+							gp.particleList.get(i).alive = false;
+					}
 					if (gp.player.worldY >= worldY) 
 						gp.player.worldY -= 5;
 					else {
@@ -132,17 +135,25 @@ public class Projectile extends Entity {
 				case "down":
 				case "downleft": 
 				case "downright":
-					 if (gp.player.worldY <= worldY) {		
-						gp.player.worldY += 5;														
-					 }
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldY <= gp.player.worldY) 
+							gp.particleList.get(i).alive = false;
+					}					
+					if (gp.player.worldY <= worldY) {		
+						 gp.player.worldY += 5;														
+					}
 					else {
 						gp.player.worldX = worldX;
 						gp.player.worldY = worldY;
 						alive = false; 
 						gp.gameState = gp.playState;
-					}	
-					 break;			
-				case "left": 
+					}					
+					break;			
+				case "left": 					
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldX >= gp.player.worldX) 
+							gp.particleList.get(i).alive = false;
+					}
 					if (gp.player.worldX >= worldX)			
 						gp.player.worldX -= 5;
 					else {
@@ -150,9 +161,13 @@ public class Projectile extends Entity {
 						gp.player.worldY = worldY;
 						alive = false;
 						gp.gameState = gp.playState;
-					}	
+					}						
 					break;
 				case "right": 
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldX <= gp.player.worldX) 
+							gp.particleList.get(i).alive = false;
+					}
 					if (gp.player.worldX <= worldX) 			
 						gp.player.worldX += 5;						
 					else {
@@ -160,60 +175,76 @@ public class Projectile extends Entity {
 						gp.player.worldY = worldY;
 						alive = false;							
 						gp.gameState = gp.playState;
-					}	
+					}						
 					break;
 			}				
 		}
 		// MAX LENGTH REACHED OR OBJECT GRABBED
-		else if (life <= 0 || objectIndex != -1) {				
+		else if (life <= 0 || objectIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER
-			if (objectIndex != -1) {					
+			if (objectIndex != -1) {
 				hookGrab = true;					
-				gp.obj[objectIndex].worldX = worldX;
-				gp.obj[objectIndex].worldY = worldY;
+				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
+				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
 			}			
 			
 			switch (direction) {
 				case "up":
-				case "upLeft": 
-				case "upright":
-					 if (worldY <= gp.player.worldY) 				
+				case "upleft": 
+				case "upright":					
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldY <= worldY) 
+							gp.particleList.get(i).alive = false;
+					}
+					if (worldY + gp.tileSize / 2 <= gp.player.worldY) 				
 							worldY += 5;				
 					else {
 						alive = false;
 						hookGrab = false;
 						gp.gameState = gp.playState;
-					}	
-					 break;			
+					}					
+					break;			
 				case "down": 
 				case "downleft": 
-				case "downright": 
-					if (worldY >= gp.player.worldY) 
+				case "downright": 					
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldY >= worldY) 
+							gp.particleList.get(i).alive = false;
+					}
+					if (worldY - gp.tileSize / 2 >= gp.player.worldY) 
 						worldY -= 5;						
 					else {
 						alive = false;
 						hookGrab = false;
 						gp.gameState = gp.playState;
-					}	
+					}						
 					break;	
-				case "left": 
-					if (worldX <= gp.player.worldX) 				
+				case "left": 										
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldX <= worldX) 
+							gp.particleList.get(i).alive = false;
+					}
+					if (worldX + gp.tileSize / 2 <= gp.player.worldX) 				
 						worldX += 5;			
 					else {						
 						alive = false;	
 						hookGrab = false;
 						gp.gameState = gp.playState;
-					}	
+					}						
 					break;	
 				case "right": 
-					if (worldX >= gp.player.worldX) 				
+					for (int i = 0; i < gp.particleList.size(); i++) {
+						if (gp.particleList.get(i).worldX >= worldX)
+							gp.particleList.get(i).alive = false;
+					}
+					if (worldX - gp.tileSize / 2 >= gp.player.worldX) 				
 						worldX -= 5;				
 					else {
 						alive = false;
 						hookGrab = false;
 						gp.gameState = gp.playState;
-					}	
+					}						
 					break;				
 			}		
 		}
@@ -233,11 +264,17 @@ public class Projectile extends Entity {
 			}	
 			
 			life--;
+			
+			// DRAW CHAIN AND PLAY SOUND
+			if (life % 5 == 0) {
+				generateParticle(this, this);
+				gp.playSE(3, 5);
+			}
 		}
 	}
 	
 	// NOT CALLED
-	public boolean haveResource(Entity user) {		
+	public boolean hasResource(Entity user) {		
 		boolean hasResource = false;		
 		return hasResource;
 	}

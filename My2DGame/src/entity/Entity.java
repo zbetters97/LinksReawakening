@@ -59,9 +59,10 @@ public class Entity {
 	
 	// SPRITES
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+	public BufferedImage die1, die2, die3, die4;
 	public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, 
 							attackLeft1, attackLeft2, attackRight1, attackRight2;
-	public BufferedImage sit, sing;
+	public BufferedImage itemGet, sit, sing;
 	
 	// DEFAULT DIRECTION
 	public String direction = "down";
@@ -94,8 +95,8 @@ public class Entity {
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 	
 	// DEFAULT HITBOX
-	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
-	public int solidAreaDefaultX, solidAreaDefaultY;		
+	public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
+	public int hitBoxDefaultX, hitBoxDefaultY;		
 	public boolean collisionOn = false;
 	
 	String dialogues[] = new String[20];
@@ -272,10 +273,14 @@ public class Entity {
 				// change entity sprite based on which direction and which cycle
 				switch (direction) {
 				case "up":
+				case "upleft":
+				case "upright":				
 					if (spriteNum == 1) image = up1;
 					if (spriteNum == 2) image = up2;
 					break;
 				case "down":
+				case "downleft":
+				case "downright":
 					if (spriteNum == 1) image = down1;
 					if (spriteNum == 2) image = down2;
 					break;
@@ -352,11 +357,11 @@ public class Entity {
 	// CALLED BY CHILD WHEN NOT ALIVE
 	public void dropItem(Entity droppedItem) { 
 		
-		for (int i = 0; i < gp.obj.length; i++) {			
-			if (gp.obj[i] == null) {
-				gp.obj[i] = droppedItem;
-				gp.obj[i].worldX = worldX;
-				gp.obj[i].worldY = worldY;
+		for (int i = 0; i < gp.obj[1].length; i++) {			
+			if (gp.obj[gp.currentMap][i] == null) {
+				gp.obj[gp.currentMap][i] = droppedItem;
+				gp.obj[gp.currentMap][i].worldX = worldX;
+				gp.obj[gp.currentMap][i].worldY = worldY;
 				break;
 			}
 		}

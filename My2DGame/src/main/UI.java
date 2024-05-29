@@ -19,9 +19,7 @@ public class UI {
 	Graphics2D g2;
 	
 	Font PK_DS;
-	
-	public boolean gameFinished = false;
-	
+		
 	// TITLE SCREEN STATE
 	public int titleScreenState = 0;
 	
@@ -30,8 +28,7 @@ public class UI {
 	
 	// OPTIONS MEU
 	int subState = 0;
-	
-	
+		
 	// ITEM MENU
 	public int slotCol = 0;
 	public int slotRow = 0;
@@ -45,6 +42,10 @@ public class UI {
 	// HUD
 	BufferedImage heart_full, heart_half, heart_empty, arrow_full, arrow_empty, rupee_hud, boots_hud;
 	public String arrow_count, rupee_count = "0";
+	
+	// GAME OVER
+	public int deathSprite = 0;
+	public int deathCounter = 0;
 	
 	public UI(GamePanel gp) {
 		
@@ -67,7 +68,7 @@ public class UI {
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
 		
-		Entity arrows = new OBJ_Arrows(gp);
+		Entity arrows = new OBJ_Arrow(gp);
 		arrow_full = arrows.image;
 		arrow_empty = arrows.image2;
 		
@@ -140,6 +141,9 @@ public class UI {
 		if (gp.gameState == gp.characterState) {
 			drawCharacterScreen();
 			drawInventory();
+		}
+		if (gp.gameState == gp.gameOverState) {
+			drawGameOverScreen();
 		}
 	}
 	
@@ -291,7 +295,7 @@ public class UI {
 	}
 		
 	public void drawPauseScreen() {
-		
+						
 		g2.setColor(Color.white);
 		g2.setFont(g2.getFont().deriveFont(32F));
 
@@ -361,27 +365,27 @@ public class UI {
 				commandNum = 0;
 			}
 		}
-		
-		// QUIT GAME
-		textY += gp.tileSize;
-		g2.drawString("Quit", textX, textY);
-		if (commandNum == 4) {
-			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.spacePressed) {
-				subState = 3;
-				commandNum = 0;
-			}
-		}
-		
+				
 		// BACK
 		textY += gp.tileSize * 2;
-		g2.drawString("Save and Exit", textX, textY);
-		if (commandNum == 5) {
+		g2.drawString("Save and Close", textX, textY);
+		if (commandNum == 4) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.spacePressed) {				
 				commandNum = 0;
 				subState = 0;
 				gp.gameState = gp.playState;
+			}
+		}
+
+		// QUIT GAME
+		textY += gp.tileSize;
+		g2.drawString("Quit to Title Screen", textX, textY);
+		if (commandNum == 5) {
+			g2.drawString(">", textX - 25, textY);
+			if (gp.keyH.spacePressed) {
+				subState = 3;
+				commandNum = 0;
 			}
 		}
 				
@@ -477,7 +481,7 @@ public class UI {
 	public void options_quitGameConfirm(int frameX, int frameY) {
 		
 		// TITLE
-		String text = "Go back to the title screen?";
+		String text = "Return to the title screen?";
 		int textX = getXforCenteredText(text);
 		int textY = frameX + gp.tileSize * 2;		
 		g2.drawString(text, textX, textY);
@@ -507,7 +511,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.spacePressed) {
-				commandNum = 4;
+				commandNum = 5;
 				subState = 0;
 			}
 		}
@@ -583,7 +587,7 @@ public class UI {
 	}
 	
 	public void drawDialogueScreen() {
-		
+				
 		int x = gp.tileSize * 2;
 		int y = gp.screenWidth / 2;
 		int width = gp.screenWidth - (gp.tileSize * 4);
@@ -598,7 +602,7 @@ public class UI {
 		for (String line : currentDialogue.split("\n")) { 
 			g2.drawString(line, x, y);	
 			y += 40;
-		}
+		} 
 	}
 	
 	public void drawCharacterScreen() {
@@ -752,6 +756,78 @@ public class UI {
 		g2.setColor(c);
 		g2.setStroke(new BasicStroke(5));
 		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
+	}
+	
+	public void drawGameOverScreen() {
+				
+		if (deathSprite < 18)
+			playerDeathAnimation();		
+		else {
+						
+			if (!gp.music.clip.isActive())
+				gp.playMusic(0);
+			
+			g2.setColor(new Color(0,0,0,200)); // REDUCED OPACITY BLACK
+			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+			
+			String text;
+			int x;
+			int y;		
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 80F));
+			
+			text = "Game Over";
+			
+			// TITLE SHADOW
+			g2.setColor(Color.BLACK);
+			x = getXforCenteredText(text);
+			y = gp.tileSize * 4;
+			g2.drawString(text, x, y);
+			
+			// TITLE
+			g2.setColor(new Color(190,0,25));
+			g2.drawString(text, x - 4, y - 4);
+			
+			// CONTINUE
+			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(40F));
+			text = "Continue";
+			x = getXforCenteredText(text);
+			y += gp.tileSize * 3;
+			g2.drawString(text, x, y);
+			if (commandNum == 0) {
+				g2.drawString(">", x - 40, y);
+			}
+			
+			// QUIT
+			text = "Save and Quit";
+			x = getXforCenteredText(text);
+			y += gp.tileSize;
+			g2.drawString(text, x, y);
+			if (commandNum == 1) {
+				g2.drawString(">", x - 40, y);
+			}
+		}
+	}
+	public void playerDeathAnimation() {
+						
+		// CHANGE IMAGE EVERY 6 FRAMES
+		deathCounter++;
+		if (deathCounter > 6) {
+			
+			// SPIN PLAYER SPRITE 3 TIMES
+			if (deathSprite == 0 || deathSprite == 3 || deathSprite == 6) 
+				gp.player.image = gp.player.die1;		
+			else if (deathSprite == 1 || deathSprite == 4 || deathSprite == 7) 
+				gp.player.image = gp.player.die2;		
+			else if (deathSprite == 2 || deathSprite == 5 || deathSprite == 8) 
+				gp.player.image = gp.player.die3;		
+			else if (deathSprite == 9) 
+				gp.player.image = gp.player.die4;
+			
+			// RESET FRAME COUNTER
+			deathCounter = 0;
+			deathSprite++;
+		}
 	}
 	
 	public int getXforCenteredText(String text) {

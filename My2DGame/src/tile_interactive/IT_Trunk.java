@@ -15,11 +15,11 @@ public class IT_Trunk extends InteractiveTile {
 		
 		down1 = setup("/tiles_interactive/trunk", gp.tileSize, gp.tileSize);
 	
-		solidArea.x = 0;
-		solidArea.y = 0;
-		solidArea.width = 0;
-		solidArea.height = 0;
-		solidAreaDefaultX = solidArea.x;
-		solidAreaDefaultY = solidArea.y;
+		hitBox.x = 0;
+		hitBox.y = 0;
+		hitBox.width = 0;
+		hitBox.height = 0;
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 	}
 }

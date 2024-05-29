@@ -42,9 +42,13 @@ public class KeyHandler implements KeyListener{
 		else if (gp.gameState == gp.dialogueState) {
 			dialogueState(code);
 		}
-		//CHARACTER STATE
+		// CHARACTER STATE
 		else if (gp.gameState == gp.characterState) {
 			characterState(code);
+		}
+		// GAME OVER STATE
+		else if (gp.gameState == gp.gameOverState) {
+			gameOverState(code);
 		}
 	}
 	
@@ -65,15 +69,15 @@ public class KeyHandler implements KeyListener{
 				if (gp.ui.commandNum > 2)
 					gp.ui.commandNum = 2;
 			}
-			if (code == KeyEvent.VK_SPACE) { 
-				gp.playSE(1, 1);
+			if (code == KeyEvent.VK_SPACE) { 				
 				// NEW GAME OPTION
 				if (gp.ui.commandNum == 0) {
+					gp.playSE(1, 1);
 					gp.ui.titleScreenState = 1;
 				}
 				// LOAD GAME OPTION
 				else if (gp.ui.commandNum == 1) {
-					
+					gp.playSE(1, 1);					
 				}
 				// QUIT GAME OPTION
 				else if (gp.ui.commandNum == 2) {
@@ -177,15 +181,13 @@ public class KeyHandler implements KeyListener{
 				else if (gp.ui.commandNum == 29) {
 					gp.playSE(1, 1);
 					gp.ui.titleScreenState = 0;
-					gp.ui.commandNum = 0;
+					gp.ui.commandNum = 0;					
 					gp.gameState = 1;
-					gp.stopMusic();
-					gp.playMusic(1);						
+					gp.restart();
 				}
 				// LETTER SELECT
 				// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
-				else {
-					
+				else {					
 					gp.playSE(1, 1);	
 					// name limit is 10 char
 					if (gp.player.name.length() <= 10) 
@@ -213,10 +215,24 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_SHIFT) shiftPressed = true;	
 		if (code == KeyEvent.VK_F) itemPressed = true;
 		if (code == KeyEvent.VK_G) hookPressed = true;
-		if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.pauseState;
-		if (code == KeyEvent.VK_E) gp.gameState = gp.characterState;
-		if (code == KeyEvent.VK_Q) if (debug) debug = false; else debug = true;
-		if (code == KeyEvent.VK_R) gp.tileM.loadMap("/maps/worldmap.txt");
+		if (code == KeyEvent.VK_ESCAPE) {
+			gp.playSE(1, 8);
+			gp.gameState = gp.pauseState;
+		}
+		if (code == KeyEvent.VK_E) { 
+			gp.playSE(1, 8);
+			gp.gameState = gp.characterState;
+		}
+		if (code == KeyEvent.VK_Q) {
+			if (debug) debug = false; 
+			else debug = true;
+		}
+		if (code == KeyEvent.VK_R) {			
+			switch(gp.currentMap) {
+				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
+				case 1: gp.tileM.loadMap("/maps/interior01.txt", 1); break;
+			}			
+		}
 	}
 	
 	public void pauseState(int code) { 
@@ -267,7 +283,10 @@ public class KeyHandler implements KeyListener{
 			}
 		}
 		
-		if (code == KeyEvent.VK_ESCAPE) gp.gameState = gp.playState;
+		if (code == KeyEvent.VK_ESCAPE) {
+			gp.playSE(1, 9);
+			gp.gameState = gp.playState;
+		}
 		if (code == KeyEvent.VK_SPACE) {
 			gp.playSE(1, 1);
 			spacePressed = true;
@@ -275,12 +294,17 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	public void dialogueState(int code) { 
-		if (code == KeyEvent.VK_SPACE) gp.gameState = gp.playState;
+		if (code == KeyEvent.VK_SPACE) {
+			gp.gameState = gp.playState;
+		}
 	}
 	
 	public void characterState(int code) { 
 		
-		if (code == KeyEvent.VK_E) gp.gameState = gp.playState;
+		if (code == KeyEvent.VK_E) {
+			gp.playSE(1, 9);
+			gp.gameState = gp.playState;
+		}
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.slotRow != 0) {
 				gp.playSE(1, 1); 
@@ -310,6 +334,38 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 
+	public void gameOverState(int code) {
+		
+		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
+			if (gp.ui.commandNum != 0) {
+				gp.playSE(1, 0); 
+				gp.ui.commandNum = 0;
+			}			
+		}
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+			if (gp.ui.commandNum != 1) {
+				gp.playSE(1, 0); 
+				gp.ui.commandNum = 1;
+			}
+		}
+		if (code == KeyEvent.VK_SPACE) {
+
+			gp.playSE(1, 1);
+			
+			if (gp.ui.commandNum == 0) {
+				gp.gameState = gp.playState;
+				gp.ui.commandNum = 0;
+				gp.retry();
+			}
+			else {
+				gp.gameState = gp.titleState;
+				gp.ui.commandNum = 0;
+				gp.ui.deathSprite = 0;
+				gp.ui.deathCounter = 0;
+			}			
+		}
+	}
+	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		

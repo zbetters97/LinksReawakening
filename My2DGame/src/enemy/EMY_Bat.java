@@ -4,9 +4,8 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
-import object.OBJ_Arrows;
+import object.OBJ_Arrow;
 import object.OBJ_Heart;
-import object.OBJ_Rupee_Blue;
 
 public class EMY_Bat extends Entity {
 
@@ -22,19 +21,19 @@ public class EMY_Bat extends Entity {
 		speed = 2;
 		baseSpeed = speed;
 		animationSpeed = 5;
-		maxLife = 2;
+		maxLife = 1;
 		life = maxLife;
 		attack = 2;
 		defense = 0;
 		exp = 2;
 		
 		// HIT BOX
-		solidArea.x = 2;
-		solidArea.y = 18;
-		solidArea.width = 44;
-		solidArea.height = 30;
-		solidAreaDefaultX = solidArea.x;
-		solidAreaDefaultY = solidArea.y;
+		hitBox.x = 2;
+		hitBox.y = 18;
+		hitBox.width = 44;
+		hitBox.height = 30;
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 		
 		getImage();
 	}
@@ -82,6 +81,6 @@ public class EMY_Bat extends Entity {
 		if (i < 50) 
 			dropItem(new OBJ_Heart(gp));
 		if (i >= 50)
-			dropItem(new OBJ_Arrows(gp));
+			dropItem(new OBJ_Arrow(gp));
 	}
 }

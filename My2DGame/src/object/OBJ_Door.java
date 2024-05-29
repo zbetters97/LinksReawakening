@@ -16,11 +16,11 @@ public class OBJ_Door extends Entity {
 		
 		collision = true;
 		
-		solidArea.x = 0;
-		solidArea.y = 16;
-		solidArea.width = 48;
-		solidArea.height = 32;
-		solidAreaDefaultX = solidArea.x;
-		solidAreaDefaultY = solidArea.y;
+		hitBox.x = 0;
+		hitBox.y = 16;
+		hitBox.width = 48;
+		hitBox.height = 32;
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 	}	
 }

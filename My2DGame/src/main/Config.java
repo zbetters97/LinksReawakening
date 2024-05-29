@@ -73,13 +73,6 @@ public class Config {
 			s = br.readLine();
 			gp.se.volumeScale = Integer.parseInt(s);
 			
-			// DEBUG MODE
-			br.readLine();
-			s = br.readLine();
-			if (s.equals("True")) {
-				gp.gameState = gp.playState;
-			}
-			
 			br.close();			
 		} 
 		catch (Exception e) {

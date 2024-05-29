@@ -39,9 +39,12 @@ public class Sound {
 		misc[5] = getClass().getResource("/sound/COL_RUPEE.wav");
 		misc[6] = getClass().getResource("/sound/COL_HEART.wav");
 		misc[7] = getClass().getResource("/sound/MISC_TREE_CUT.wav");
+		misc[8] = getClass().getResource("/sound/MENU_OPEN.wav");
+		misc[9] = getClass().getResource("/sound/MENU_CLOSE.wav");
 		
 		// 2
 		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");
+		player[1] = getClass().getResource("/sound/PLAYER_DIE.wav");
 		
 		// 3
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");
