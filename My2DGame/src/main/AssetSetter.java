@@ -22,24 +22,23 @@ public class AssetSetter {
 		
 		gp.iTile[mapNum][0] = new IT_DryTree(gp, 31, 21);
 	}
-	
 	public void setObject() {		
 		
 		int mapNum = 0;
 		
-		gp.obj[mapNum][0] = new OBJ_Bow(gp);
-		gp.obj[mapNum][0].worldX = gp.tileSize * 20;
-		gp.obj[mapNum][0].worldY = gp.tileSize * 21;
+		gp.obj[mapNum][0] = new ITM_Bow(gp);
+		gp.obj[mapNum][0].worldX = gp.tileSize * 24;
+		gp.obj[mapNum][0].worldY = gp.tileSize * 20;
 		
-		gp.obj[mapNum][1] = new OBJ_Boots(gp);
-		gp.obj[mapNum][1].worldX = gp.tileSize * 22;
-		gp.obj[mapNum][1].worldY = gp.tileSize * 20;
+		gp.obj[mapNum][1] = new ITM_Boots(gp);
+		gp.obj[mapNum][1].worldX = gp.tileSize * 24;
+		gp.obj[mapNum][1].worldY = gp.tileSize * 22;
 		
-		gp.obj[mapNum][2] = new OBJ_Hookshot(gp);
+		gp.obj[mapNum][2] = new ITM_Hookshot(gp);
 		gp.obj[mapNum][2].worldX = gp.tileSize * 22;
-		gp.obj[mapNum][2].worldY = gp.tileSize * 21;
+		gp.obj[mapNum][2].worldY = gp.tileSize * 20;
 		
-		gp.obj[mapNum][3] = new OBJ_Axe(gp);
+		gp.obj[mapNum][3] = new ITM_Axe(gp);
 		gp.obj[mapNum][3].worldX = gp.tileSize * 22;
 		gp.obj[mapNum][3].worldY = gp.tileSize * 22;
 	}	

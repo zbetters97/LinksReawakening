@@ -56,7 +56,7 @@ public class EventHandler {
 		if (canTouchEvent) {
 			if (hit(0, 27, 16, "right")) damagePit(gp.dialogueState);		
 			else if (hit(0, 23, 12, "up")) healingPool(gp.dialogueState);
-			else if (hit(0, 10, 39, "any")) teleport(1, 12, 13);
+			else if (hit(0, 10, 39, "any")) teleport(1, 12, 13);			
 			else if (hit(1, 12, 13, "any")) teleport(0, 10, 39);
 		}
 	}
@@ -100,7 +100,8 @@ public class EventHandler {
 		return hit;		
 	}
 	
-	public void teleport(int map, int col, int row) {		
+	public void teleport(int map, int col, int row) {	
+		gp.stopMusic();
 		gp.currentMap = map;
 		gp.player.worldX = gp.tileSize * col;
 		gp.player.worldY = gp.tileSize * row;
@@ -109,6 +110,7 @@ public class EventHandler {
 		previousEventX = gp.player.worldX;
 		previousEventY = gp.player.worldY;
 		canTouchEvent = false;
+		gp.setupMusic();
 	}
 	
 	public void damagePit(int gameState) {		

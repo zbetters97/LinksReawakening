@@ -3,9 +3,9 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Sword extends Entity {
+public class EQP_Sword extends Entity {
 
-	public OBJ_Sword(GamePanel gp) {
+	public EQP_Sword(GamePanel gp) {
 		super(gp);
 		
 		type = type_sword;		

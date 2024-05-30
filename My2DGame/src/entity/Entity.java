@@ -36,8 +36,8 @@ public class Entity {
 	public int rupee;
 	public Entity currentWeapon;
 	public Entity currentShield;
-	public Projectile projectile, projectile_item;
-	public Projectile projectile_sword;
+	public Entity currentItem;
+	public Projectile projectile;
 	
 	// ITEM ATTRIBUTES
 	public int value;

@@ -49,7 +49,7 @@ public class Projectile extends Entity {
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, attack);
-				generateParticle(user.projectile, gp.enemy[gp.currentMap][enemyIndex]);
+				//generateParticle(user.projectile, gp.enemy[gp.currentMap][enemyIndex]);
 				alive = false;
 			}
 		}

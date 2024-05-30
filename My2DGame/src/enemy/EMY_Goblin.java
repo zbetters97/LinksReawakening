@@ -102,10 +102,10 @@ public class EMY_Goblin extends Entity {
 		int i = new Random().nextInt(100) + 1;
 		
 		if (i < 50) 
-			dropItem(new OBJ_Heart(gp));
+			dropItem(new COL_Heart(gp));
 		if (i >= 50 && i < 75)
-			dropItem(new OBJ_Arrow(gp));
+			dropItem(new COL_Arrow(gp));
 		if (i >= 75 && i <= 100)
-			dropItem(new OBJ_Rupee_Blue(gp));
+			dropItem(new COL_Rupee_Blue(gp));
 	}
 }

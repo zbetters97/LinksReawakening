@@ -3,9 +3,9 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Shield extends Entity {
+public class EQP_Shield extends Entity {
 
-	public OBJ_Shield(GamePanel gp) {
+	public EQP_Shield(GamePanel gp) {
 		super(gp);
 
 		type = type_shield;

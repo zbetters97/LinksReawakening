@@ -40,8 +40,8 @@ public class UI {
 	public String currentDialogue = "";
 	
 	// HUD
-	BufferedImage heart_full, heart_half, heart_empty, arrow_full, arrow_empty, rupee_hud, boots_hud;
-	public String arrow_count, rupee_count = "0";
+	BufferedImage heart_full, heart_half, heart_empty, rupee_hud, boots_hud;
+	public String rupee_count = "0";
 	
 	// GAME OVER
 	public int deathSprite = 0;
@@ -63,20 +63,13 @@ public class UI {
 		}
 		
 		// CREATE HUD
-		Entity heart = new OBJ_Heart(gp);
+		Entity heart = new COL_Heart(gp);
 		heart_full = heart.image;
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
 		
-		Entity arrows = new OBJ_Arrow(gp);
-		arrow_full = arrows.image;
-		arrow_empty = arrows.image2;
-		
-		Entity rupees = new OBJ_Rupee_Blue(gp);
-		rupee_hud = rupees.down1;
-		
-		Entity boots = new OBJ_Boots(gp);
-		boots_hud = boots.down1;		
+		Entity rupees = new COL_Rupee_Blue(gp);
+		rupee_hud = rupees.down1;	
 	}
 	
 	public void addMessage(String text) {
@@ -154,7 +147,7 @@ public class UI {
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 		
 		// SUBTITLE NAME
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28F));
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
 		String text = "The Legend of Zelda";
 		int x = getXforCenteredText(text);
 		int y = gp.tileSize / 2;
@@ -165,17 +158,17 @@ public class UI {
 		
 		// TITLE NAME
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 90F));
-		text = "LINK'S AWAKENING";
+		text = "LINK'S REAWAKENING";
 		x = getXforCenteredText(text);
 		y += gp.tileSize * 1.5;
 		
 		// TEXT SHADOW
 		g2.setColor(Color.BLACK);
-		g2.drawString(text, x+5, y+5);
+		g2.drawString(text, x+10, y+5);
 		
 		// TEXT COLOR
 		g2.setColor(Color.WHITE);
-		g2.drawString(text, x, y);
+		g2.drawString(text, x+10, y);
 					
 		// MAIN TITLE SCREEN
 		if (titleScreenState == 0) {			
@@ -217,7 +210,7 @@ public class UI {
 			y = gp.tileSize * 3;			
 			int width = gp.screenWidth - (gp.tileSize * 4);
 			int height = gp.screenHeight - (gp.tileSize * 4);			
-			drawSubWindow(x, y, width, height);
+			drawSubWindow(x+40, y, width, height);
 			
 			// TEXT COLOR
 			g2.setColor(Color.WHITE);
@@ -239,7 +232,7 @@ public class UI {
 			g2.drawString(text, x, y);			
 			
 			// DISPLAY ON-SCREEN KEYBOARD
-			x = gp.tileSize * 3;
+			x = gp.tileSize * 2;
 			y += gp.tileSize;			
 			
 			String keyboard = "";
@@ -251,11 +244,11 @@ public class UI {
 				
 				// NEW LINE (RESET X)
 				if (keyboard.charAt(i) == 'A' || keyboard.charAt(i) == 'Z') {
-					x = gp.tileSize * 3;
+					x = gp.tileSize * 2;
 					y+= gp.tileSize;
 				}
 				if (keyboard.charAt(i) == 'a' || keyboard.charAt(i) == 'z') {
-					x = gp.tileSize * 3;
+					x = gp.tileSize * 2;
 					y+= gp.tileSize;
 				}
 				
@@ -268,13 +261,13 @@ public class UI {
 			} 	
 			
 			// DEL BUTTON (SAME Y AS KEYBOARD)
-			x += gp.tileSize - 10;		
+			x += gp.tileSize + 10;		
 			if (commandNum == 26) 
 				g2.drawString("(DEL)", x, y);	
 			else
 				g2.drawString(" DEL ", x, y);	
 			
-			x += gp.tileSize + 20;		
+			x += gp.tileSize + 30;		
 			if (commandNum == 27) 
 				g2.drawString("(CAP)", x, y);	
 			else
@@ -442,25 +435,29 @@ public class UI {
 		int textX;
 		int textY;
 		
+		// TITLE
 		String text = "CONTROLS";
 		textX = getXforCenteredText(text);
 		textY = frameY + gp.tileSize;
 		g2.drawString(text, textX, textY);
 		
+		// LABELS
 		textX = frameX + gp.tileSize;
-		textY = frameY + gp.tileSize * 2;
-		
+		textY = frameY + gp.tileSize * 2;		
 		g2.drawString("MOVE", textX, textY); textY += gp.tileSize;
 		g2.drawString("ACTION", textX, textY); textY += gp.tileSize;
 		g2.drawString("USE ITEM", textX, textY); textY += gp.tileSize;
+		g2.drawString("CYCLE ITEMS", textX, textY); textY += gp.tileSize;
 		g2.drawString("CHARACTER SCREEN", textX, textY); textY += gp.tileSize;
 		g2.drawString("OPTIONS", textX, textY); textY += gp.tileSize;
 		
+		// VALUES
 		textX = frameX + gp.tileSize * 6;
 		textY = frameY + gp.tileSize * 2;
 		g2.drawString("WASD / ARROW KEYS", textX, textY); textY += gp.tileSize;
 		g2.drawString("SPACEBAR", textX, textY); textY += gp.tileSize;
-		g2.drawString("F / G / SHIFT", textX, textY); textY += gp.tileSize;
+		g2.drawString("SHIFT", textX, textY); textY += gp.tileSize;
+		g2.drawString("T", textX, textY); textY += gp.tileSize;
 		g2.drawString("E", textX, textY); textY += gp.tileSize;
 		g2.drawString("ESC", textX, textY); textY += gp.tileSize;
 		
@@ -546,44 +543,31 @@ public class UI {
 			x += gp.tileSize / 1.7;
 		}
 		
+		// DRAW ITEM SLOT
+		x = gp.tileSize * 14;
+		g2.setColor(new Color(240,190,90));
+		g2.fillRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);		
+		g2.setColor(Color.WHITE);
+		g2.setStroke(new BasicStroke(3));
+		g2.drawRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);	
+		
+		// DRAW ITEM
+		if (gp.player.currentItem != null) {			
+			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
+		}
+		
 		// DRAW RUPEES
-		x = (gp.tileSize * gp.maxScreenCol) - (gp.tileSize * 4);
-		y = gp.tileSize / 2;
+		x = gp.tileSize * 14 - 20;
+		y = gp.tileSize * 10 + 20;		
+		g2.drawImage(rupee_hud, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
 		
-		g2.drawImage(rupee_hud, x, y, gp.tileSize -  10, gp.tileSize - 10, null);	
-		
-		x += 35;
-		y += gp.tileSize - 17;	
+		x += gp.tileSize - 8;
+		y += gp.tileSize - 12;	
 		
 		rupee_count = Integer.toString(gp.player.rupee);
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 40F));
-		g2.drawString(rupee_count, x, y);	
-
-		// DRAW ARROWS
-		x += 30;
-		y = gp.tileSize / 2;
-		
-		if (gp.player.arrows != 0 && gp.player.canShoot) {
-			g2.drawImage(arrow_full, x, y, null);
-			
-			x += 30;
-			y += gp.tileSize - 17;	
-			
-			arrow_count = Integer.toString(gp.player.arrows);
-			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 40F));
-			g2.drawString(arrow_count, x, y);	
-		}
-		else {
-			g2.drawImage(arrow_empty, x, y, null);
-			x += 30;
-		}
-		
-		// DRAW BOOTS
-		x += 25;
-		y = gp.tileSize / 2;
-		
-		if (gp.player.canRun)
-			g2.drawImage(boots_hud, x, y, gp.tileSize - 10, gp.tileSize - 10, null);
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
+		g2.drawString(rupee_count, x, y);				
 	}
 	
 	public void drawDialogueScreen() {
@@ -611,21 +595,22 @@ public class UI {
 		final int frameX = gp.tileSize;
 		final int frameY = gp.tileSize;
 		final int frameWidth = gp.tileSize * 5;
-		final int frameHeight = gp.tileSize * 10;		
+		final int frameHeight = gp.tileSize * 9;		
 		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 		
 		// TEXT
 		g2.setColor(Color.white);
+		g2.setFont(g2.getFont().deriveFont(40F));
+		
+		int textX = gp.tileSize * 2 + 23;
+		int textY = frameY + gp.tileSize - 10;
+		final int lineHeight = 40;		
+		
+		g2.drawString("- " + gp.player.name + " -", textX, textY); textY += lineHeight + 10;
+		
+		// LABELS
 		g2.setFont(g2.getFont().deriveFont(32F));
-		
-		int textX = gp.tileSize * 3 + 5;
-		int textY = frameY + gp.tileSize - 15;
-		final int lineHeight = 35;		
-		
-		g2.drawString(gp.player.name, textX, textY); textY += lineHeight;
-		
-		// NAMES
-		textX = frameX + 20;
+		textX = frameX + 30;
 		g2.drawString("Level", textX, textY); textY += lineHeight;
 		g2.drawString("Life", textX, textY); textY += lineHeight;
 		g2.drawString("Strength", textX, textY); textY += lineHeight;
@@ -634,13 +619,10 @@ public class UI {
 		g2.drawString("Defense", textX, textY); textY += lineHeight;
 		g2.drawString("EXP", textX, textY);	textY += lineHeight;
 		g2.drawString("Next Level", textX, textY); textY += lineHeight;
-		g2.drawString("Rupees", textX, textY); textY += lineHeight + 25;
-		g2.drawString("Weapon", textX, textY); textY += lineHeight + 10;
-		g2.drawString("Shield", textX, textY);
 		
 		// VALUES
 		int tailX = (frameX + frameWidth) - 30; // right-aligned
-		textY = frameY + gp.tileSize - 15 + lineHeight; // reset Y
+		textY = frameY + gp.tileSize + lineHeight; // reset Y
 		
 		drawCharacterText(gp.player.level, tailX, textY); textY += lineHeight;
 		String life = gp.player.life + " / " + gp.player.maxLife; 
@@ -650,12 +632,7 @@ public class UI {
 		drawCharacterText(gp.player.attack, tailX, textY); textY += lineHeight;
 		drawCharacterText(gp.player.defense, tailX, textY); textY += lineHeight;
 		drawCharacterText(gp.player.exp, tailX, textY); textY += lineHeight;
-		drawCharacterText(gp.player.nextLevelEXP, tailX, textY); textY += lineHeight;
-		drawCharacterText(gp.player.rupee, tailX, textY); textY += lineHeight;
-		
-		g2.drawImage(gp.player.currentWeapon.down1, tailX - 31, textY - 10, null);
-		textY += gp.tileSize + 5;
-		g2.drawImage(gp.player.currentShield.down1, tailX - 31, textY - 15, null);
+		drawCharacterText(gp.player.nextLevelEXP, tailX, textY);
 	}
 	
 	public void drawInventory() {
@@ -681,17 +658,23 @@ public class UI {
 		int cursorHeight = gp.tileSize;		
 		
 		// DRAW PLAYER ITEMS
-		for (int i = 0; i < gp.player.inventory.size(); i++) {
+		for (int i = 0; i < gp.player.item_inventory.size(); i++) {
 						
 			// EQUIP CURSOR
-			if (gp.player.inventory.get(i) == gp.player.currentWeapon || 
-					gp.player.inventory.get(i) == gp.player.currentShield) {
+			if (gp.player.item_inventory.get(i) == gp.player.currentWeapon || 
+					gp.player.item_inventory.get(i) == gp.player.currentShield) {
 				
 				g2.setColor(new Color(240,190,90));
 				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
 			}
+			// EQUIP CURSOR
+			if (gp.player.item_inventory.get(i) == gp.player.currentItem) {
+				
+				g2.setColor(new Color(190,240,90));
+				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+			}
 			
-			g2.drawImage(gp.player.inventory.get(i).down1, slotX, slotY, null);
+			g2.drawImage(gp.player.item_inventory.get(i).down1, slotX, slotY, null);
 			slotX += slotSize;
 			
 			if (i == 4 || i == 9 || i == 14) {
@@ -718,11 +701,11 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(28F));
 		
 		int itemIndex = getItemIndexOnSlot();
-		if (itemIndex < gp.player.inventory.size()) {
+		if (itemIndex < gp.player.item_inventory.size()) {
 			
 			drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
 			
-			for (String line : gp.player.inventory.get(itemIndex).description.split("\n")) {
+			for (String line : gp.player.item_inventory.get(itemIndex).description.split("\n")) {
 				g2.drawString(line, textX, textY);	
 				textY += 32;
 			}

@@ -3,11 +3,11 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Heart extends Entity {
+public class COL_Heart extends Entity {
 	
 	GamePanel gp;
 	
-	public OBJ_Heart(GamePanel gp) {
+	public COL_Heart(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		

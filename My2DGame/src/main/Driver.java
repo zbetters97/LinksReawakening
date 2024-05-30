@@ -2,7 +2,7 @@ package main;
 
 import javax.swing.JFrame;
 
-public class Main {
+public class Driver {
 	
 	public static JFrame window;
 	
@@ -11,7 +11,7 @@ public class Main {
 		window = new JFrame();		
 		
 		// WINDOW PROPERTIES
-		window.setTitle("2D Adventure");
+		window.setTitle("Link's Reawakening");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(false);
 		
@@ -24,10 +24,12 @@ public class Main {
 			window.setUndecorated(true);	
 		}
 		
-		window.pack(); // resizes window relative to its contents	
+		// RESIZE WINDOW
+		window.pack(); 
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);		
 		
+		// START
 		gamePanel.setupGame();
 		gamePanel.startGameThread();
 	}

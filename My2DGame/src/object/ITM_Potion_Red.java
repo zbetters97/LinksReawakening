@@ -3,11 +3,11 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Potion_Red extends Entity {
+public class ITM_Potion_Red extends Entity {
 
 	GamePanel gp;
 	
-	public OBJ_Potion_Red(GamePanel gp) {
+	public ITM_Potion_Red(GamePanel gp) {
 		super(gp);		
 		this.gp = gp;
 		
@@ -15,7 +15,7 @@ public class OBJ_Potion_Red extends Entity {
 		name = "Red Potion";
 		value = 5;
 		description = "[" + name + "]\nHeals two hearts.";
-		down1 = setup("objects/potion_red", gp.tileSize, gp.tileSize);
+		down1 = setup("/objects/potion_red", gp.tileSize, gp.tileSize);
 	}
 	
 	public void use(Entity entity) {

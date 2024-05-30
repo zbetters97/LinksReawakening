@@ -9,7 +9,7 @@ public class KeyHandler implements KeyListener{
 
 	GamePanel gp;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean spacePressed, shiftPressed, itemPressed, hookPressed;
+	public boolean spacePressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	public String keyboardLetters;
 	public boolean isCapital = true;
@@ -185,10 +185,10 @@ public class KeyHandler implements KeyListener{
 					gp.gameState = 1;
 					gp.restart();
 				}
-				// LETTER SELECT
-				// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
+				// LETTER SELECT				
 				else {					
 					gp.playSE(1, 1);	
+					
 					// name limit is 10 char
 					if (gp.player.name.length() <= 10) 
 						gp.player.name += keyboard.get(gp.ui.commandNum);
@@ -196,8 +196,9 @@ public class KeyHandler implements KeyListener{
 					// if name too long, replace last character with selected letter						
 					else {
 						gp.player.name = gp.player.name.substring(
-								0, gp.player.name.length() - 1
-							);	
+								0, gp.player.name.length() - 1);	
+						
+						// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
 						gp.player.name += keyboard.get(gp.ui.commandNum);
 					}
 				}
@@ -212,9 +213,8 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE) spacePressed = true;
-		if (code == KeyEvent.VK_SHIFT) shiftPressed = true;	
-		if (code == KeyEvent.VK_F) itemPressed = true;
-		if (code == KeyEvent.VK_G) hookPressed = true;
+		if (code == KeyEvent.VK_SHIFT) itemPressed = true;
+		if (code == KeyEvent.VK_T) tabPressed = true;
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.playSE(1, 8);
 			gp.gameState = gp.pauseState;
@@ -307,29 +307,29 @@ public class KeyHandler implements KeyListener{
 		}
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.slotRow != 0) {
-				gp.playSE(1, 1); 
+				gp.playSE(1, 0); 
 				gp.ui.slotRow--; 
 			}
 		}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.slotRow != 3) { 
-				gp.playSE(1, 1); 
+				gp.playSE(1, 0); 
 				gp.ui.slotRow++; 
 			}
 		}
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { 
 			if (gp.ui.slotCol != 0) { 
-				gp.playSE(1, 1);
+				gp.playSE(1, 0);
 				gp.ui.slotCol--; 
 			}
 		}
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { 
 			if (gp.ui.slotCol != 4) {
-				gp.playSE(1, 1); 
+				gp.playSE(1, 0); 
 				gp.ui.slotCol++; 
 			}
 		}
-		if (code == KeyEvent.VK_SPACE) {
+		if (code == KeyEvent.VK_SPACE) {			
 			gp.player.selectItem();
 		}
 	}
@@ -340,7 +340,7 @@ public class KeyHandler implements KeyListener{
 			if (gp.ui.commandNum != 0) {
 				gp.playSE(1, 0); 
 				gp.ui.commandNum = 0;
-			}			
+			}
 		}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.commandNum != 1) {
@@ -349,15 +349,15 @@ public class KeyHandler implements KeyListener{
 			}
 		}
 		if (code == KeyEvent.VK_SPACE) {
-
-			gp.playSE(1, 1);
 			
 			if (gp.ui.commandNum == 0) {
+				gp.playSE(1, 1);
 				gp.gameState = gp.playState;
 				gp.ui.commandNum = 0;
 				gp.retry();
 			}
-			else {
+			else if (gp.ui.commandNum == 1){
+				gp.playSE(1, 1);
 				gp.gameState = gp.titleState;
 				gp.ui.commandNum = 0;
 				gp.ui.deathSprite = 0;
@@ -375,9 +375,8 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = false;	
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
-		if (code == KeyEvent.VK_SHIFT) shiftPressed = false;
 		if (code == KeyEvent.VK_SPACE) spacePressed = false;
-		if (code == KeyEvent.VK_F) itemPressed = false;
-		if (code == KeyEvent.VK_G) hookPressed = false;
+		if (code == KeyEvent.VK_SHIFT) { itemPressed = false; gp.player.running = false; }	
+		if (code == KeyEvent.VK_T) tabPressed = false;
 	}
 }

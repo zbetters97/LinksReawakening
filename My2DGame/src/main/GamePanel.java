@@ -97,14 +97,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		if (gameState == titleState)
-			playMusic(0);	
+		gameState = playState;
 		
-		else if (gameState == playState) 
-			playMusic(1);
-		
-		//gameState = playState;
-				
+		setupMusic();
+												
 		aSetter.setNPC();
 		aSetter.setEnemy();
 		aSetter.setInteractiveTiles();
@@ -123,11 +119,11 @@ public class GamePanel extends JPanel implements Runnable {
 		// GET SYSTEM SCREEN
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getDefaultScreenDevice();
-		gd.setFullScreenWindow(Main.window);
+		gd.setFullScreenWindow(Driver.window);
 		
 		// GET FULL SCREEN WIDTH AND HEIGHT
-		screenWidth2 = Main.window.getWidth();
-		screenHeight2 = Main.window.getHeight();
+		screenWidth2 = Driver.window.getWidth();
+		screenHeight2 = Driver.window.getHeight();
 	}
 
 	public void startGameThread() {		
@@ -148,7 +144,7 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setNPC();
 		aSetter.setEnemy();
 						
-		playMusic(1);
+		setupMusic();
 	}
 	
 	public void restart() {	
@@ -168,8 +164,8 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setEnemy();
 		aSetter.setInteractiveTiles();
 		aSetter.setObject();		
-		
-		playMusic(1);
+
+		setupMusic();
 	}
 	
 	@Override
@@ -346,6 +342,15 @@ public class GamePanel extends JPanel implements Runnable {
 		g.dispose();
 	}
 	
+	public void setupMusic() {
+		if (gameState == titleState) {
+			playMusic(0);		
+		}
+		else {			
+			if (currentMap == 0) playMusic(1);
+			else if (currentMap == 1) playMusic(3);
+		}
+	}	
 	public void playMusic(int c) {		
 		music.setFile(0, c);
 		music.play();

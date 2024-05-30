@@ -4,8 +4,8 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
-import object.OBJ_Arrow;
-import object.OBJ_Heart;
+import object.COL_Arrow;
+import object.COL_Heart;
 
 public class EMY_Bat extends Entity {
 
@@ -79,8 +79,8 @@ public class EMY_Bat extends Entity {
 		int i = new Random().nextInt(100) + 1;
 		
 		if (i < 50) 
-			dropItem(new OBJ_Heart(gp));
+			dropItem(new COL_Heart(gp));
 		if (i >= 50)
-			dropItem(new OBJ_Arrow(gp));
+			dropItem(new COL_Arrow(gp));
 	}
 }
