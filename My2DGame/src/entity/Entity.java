@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
@@ -33,18 +34,24 @@ public class Entity {
 	public int strength, dexterity;
 	public int attack, defense;
 	public int exp, nextLevelEXP;
-	public int rupee;
+	public int rupees;
 	public Entity currentWeapon;
 	public Entity currentShield;
 	public Entity currentItem;
 	public Projectile projectile;
+	public boolean hasItem;
 	
 	// ITEM ATTRIBUTES
 	public int value;
 	public int attackValue, defenseValue;
 	public String description = "";
 	public int useCost;
-	public boolean hookGrab = false;
+	public int price;
+	public boolean hookGrab = false;	
+	
+	// INVENTORY
+	public ArrayList<Entity> inventory = new ArrayList<>();
+	public final int maxInventorySize = 20;
 	
 	// TYPES
 	public final int type_player = 0;
@@ -99,7 +106,7 @@ public class Entity {
 	public int hitBoxDefaultX, hitBoxDefaultY;		
 	public boolean collisionOn = false;
 	
-	String dialogues[] = new String[20];
+	public String dialogues[] = new String[20];
 	int dialogueIndex = 0;
 	
 	public Entity(GamePanel gp) {
@@ -108,30 +115,31 @@ public class Entity {
 	
 	public void speak() { 
 		
+		gp.keyH.spacePressed = false;
+		
 		if (dialogues[dialogueIndex] == null) 
 			dialogueIndex = 0;
 		
 		gp.ui.currentDialogue = dialogues[dialogueIndex];
 		dialogueIndex++;	
 		
-		switch (gp.player.direction) {
-		
-		case "up":
-		case "upleft":
-		case "upright":
-			direction = "down";
-			break;
-		case "down":
-		case "downleft":
-		case "downright":
-			direction = "up";
-			break;
-		case "left":
-			direction = "right";
-			break;
-		case "right":
-			direction = "left";
-			break;		
+		switch (gp.player.direction) {		
+			case "up":
+			case "upleft":
+			case "upright":
+				direction = "down";
+				break;
+			case "down":
+			case "downleft":
+			case "downright":
+				direction = "up";
+				break;
+			case "left":
+				direction = "right";
+				break;
+			case "right":
+				direction = "left";
+				break;		
 		}		
 	}
 	
@@ -241,7 +249,8 @@ public class Entity {
 	}
 	
 	public void damagePlayer (int attack) {
-		if (!gp.player.invincible) {
+				
+		if (!gp.player.invincible && gp.player.alive) {
 			gp.playSE(2, 0);
 			
 			int damage = attack - gp.player.defense;

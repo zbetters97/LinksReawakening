@@ -3,6 +3,6 @@ Link
 Fullscreen
 False
 Music volume
-5
+0
 Sound effects volume
-5
+3

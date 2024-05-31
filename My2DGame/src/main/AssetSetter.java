@@ -41,6 +41,10 @@ public class AssetSetter {
 		gp.obj[mapNum][3] = new ITM_Axe(gp);
 		gp.obj[mapNum][3].worldX = gp.tileSize * 22;
 		gp.obj[mapNum][3].worldY = gp.tileSize * 22;
+		
+		gp.obj[mapNum][4] = new ITM_Boomerang(gp);
+		gp.obj[mapNum][4].worldX = gp.tileSize * 21;
+		gp.obj[mapNum][4].worldY = gp.tileSize * 20;
 	}	
 	public void setNPC() {
 		
@@ -52,9 +56,9 @@ public class AssetSetter {
 		
 		mapNum = 1;
 		
-		gp.npc[mapNum][0] = new NPC_OldMan(gp);
+		gp.npc[mapNum][0] = new NPC_Merchant(gp);
 		gp.npc[mapNum][0].worldX = gp.tileSize * 12;
-		gp.npc[mapNum][0].worldY = gp.tileSize * 9;
+		gp.npc[mapNum][0].worldY = gp.tileSize * 7;
 	}	
 	public void setEnemy() {		
 		

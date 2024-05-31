@@ -3,6 +3,7 @@ package entity;
 import java.util.Random;
 
 import main.GamePanel;
+import object.EQP_Sword;
 
 public class NPC_OldMan extends Entity{
 	
@@ -12,6 +13,7 @@ public class NPC_OldMan extends Entity{
 		super(gp);
 		this.gp = gp;		
 		
+		hasItem = true;
 		type = type_npc;
 		name = "Old Man";
 		direction = "down";
@@ -19,6 +21,7 @@ public class NPC_OldMan extends Entity{
 		animationSpeed = 15; 
 		
 		getImage();
+		setItems();
 		setDialogue();
 	}
 	
@@ -28,6 +31,9 @@ public class NPC_OldMan extends Entity{
 		left1 = setup("/npc/oldman_left_1"); left2 = setup("/npc/oldman_left_2");
 		right1 = setup("/npc/oldman_right_1"); right2 = setup("/npc/oldman_right_2");
 	}
+	public void setItems() {		
+		inventory.add(new EQP_Sword(gp));
+	}
 	
 	public void setDialogue() {
 		dialogues[0] = "It's dangerous to go alone!\nTake this!";
@@ -35,18 +41,19 @@ public class NPC_OldMan extends Entity{
 		dialogues[2] = "You are winner";
 	}
 	
-	public void speak() {
-		super.speak();		
+	public void speak() {		
+		super.speak();
+		gp.ui.npc = this;		
 	}
 	
 	public void setAction() {
 		
+		// MOVE EVERY 3 SECONDS
 		actionLockCounter++;
-		
-		if (actionLockCounter == 120) {		
+		if (actionLockCounter == 180) {		
 						
 			Random random = new Random();
-			int i = random.nextInt(100) + 1; // random number 1-100
+			int i = random.nextInt(100) + 1;
 						
 			if (i <= 25) direction = "up";
 			if (i > 25 && i <= 50) direction = "down";

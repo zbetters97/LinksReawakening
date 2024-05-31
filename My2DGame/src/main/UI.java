@@ -26,23 +26,32 @@ public class UI {
 	// MENU OPTION SELECTION
 	public int commandNum = 0;
 	
+	// HUD
+	BufferedImage heart_full, heart_half, heart_empty, rupee, boots_hud;
+	public String rupee_count = "0";
+	
 	// OPTIONS MEU
 	int subState = 0;
 		
 	// ITEM MENU
-	public int slotCol = 0;
-	public int slotRow = 0;
-
+	public int playerSlotCol = 0;
+	public int playerSlotRow = 0;
+	
+	public int npcSlotCol = 0;
+	public int npcSlotRow = 0;
+	
 	// DIALOGUE HANDLER	
 	ArrayList<String> message = new ArrayList<>();
 	ArrayList<Integer> messageCounter = new ArrayList<>();
 	public boolean messageOn = false;
 	public String currentDialogue = "";
 	
-	// HUD
-	BufferedImage heart_full, heart_half, heart_empty, rupee_hud, boots_hud;
-	public String rupee_count = "0";
+	// TRANSITION
+	int counter = 0;
 	
+	public Entity npc;
+	public Entity newItem;
+		
 	// GAME OVER
 	public int deathSprite = 0;
 	public int deathCounter = 0;
@@ -69,39 +78,7 @@ public class UI {
 		heart_empty = heart.image3;
 		
 		Entity rupees = new COL_Rupee_Blue(gp);
-		rupee_hud = rupees.down1;	
-	}
-	
-	public void addMessage(String text) {
-		message.add(text);		
-		messageCounter.add(0);
-	}
-	
-	public void drawMessage() {
-		
-		int messageX = gp.tileSize;
-		int messageY = gp.tileSize * 4;
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 32F));
-		
-		for (int i = 0; i< message.size(); i++) {
-			
-			if (message.get(i) != null) {
-				
-				g2.setColor(Color.black);
-				g2.drawString(message.get(i), messageX+2, messageY+2);
-				g2.setColor(Color.white);
-				g2.drawString(message.get(i), messageX, messageY);
-				
-				int counter = messageCounter.get(i) + 1;
-				messageCounter.set(i, counter);
-				messageY += gp.tileSize;
-				
-				if (messageCounter.get(i) > 180) {
-					message.remove(i);
-					messageCounter.remove(i);
-				}
-			}
-		}
+		rupee = rupees.down1;	
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -130,13 +107,26 @@ public class UI {
 			drawHUD();
 			drawDialogueScreen();
 		}
-		// CHARACTER STATE
+		// CHARACTER INVENTORY STATE
 		if (gp.gameState == gp.characterState) {
 			drawCharacterScreen();
-			drawInventory();
+			drawInventory(gp.player, true);
 		}
+		// GAME OVER STATE
 		if (gp.gameState == gp.gameOverState) {
 			drawGameOverScreen();
+		}
+		// TRANSITION STATE
+		if (gp.gameState == gp.transitionState) {
+			drawTransition();
+		}
+		// TRADE STATE
+		if (gp.gameState == gp.tradeState) {
+			drawTradeScreen();
+		}
+		if (gp.gameState == gp.itemGetState) {
+			drawHUD();
+			drawItemDialogue();
 		}
 	}
 	
@@ -286,7 +276,102 @@ public class UI {
 				g2.drawString(">", x - gp.tileSize / 2, y);	
 		}
 	}
+	
+	public void drawHUD() {
 		
+		int x = gp.tileSize / 2;
+		int y = gp.tileSize / 2;
+		int i = 0;
+		
+		// DRAW MAX LIFE		
+		while (i < gp.player.maxLife / 2) {
+			g2.drawImage(heart_empty, x, y, null);
+			i++;
+			x += gp.tileSize / 1.6;
+		}
+		
+		x = gp.tileSize / 2;
+		y = gp.tileSize / 2;
+		i = 0;
+		
+		// DRAW CURRENT LIFE
+		while (i < gp.player.life) {			
+			g2.drawImage(heart_half, x, y, null);
+			i++;
+			
+			if (i < gp.player.life) 
+				g2.drawImage(heart_full, x, y, null);
+			
+			i++;
+			x += gp.tileSize / 1.6;
+		}
+		
+		// DRAW ITEM SLOT
+		x = gp.tileSize * 14;
+		y = gp.tileSize / 2;
+		g2.setColor(new Color(240,190,90));
+		g2.fillRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);		
+		g2.setColor(Color.WHITE);
+		g2.setStroke(new BasicStroke(3));
+		g2.drawRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);	
+		
+		// DRAW ITEM
+		if (gp.player.currentItem != null) {			
+			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
+			
+			// DRAW ARROW COUNT
+			if (gp.player.currentItem.name.equals("Hylian Bow")) {	
+				String arrowCount = Integer.toString(gp.player.arrows);		
+				g2.setColor(Color.BLACK);
+				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
+				g2.drawString(arrowCount, x + 35, y + gp.tileSize);
+			}
+		}
+		
+		// DRAW RUPEES
+		x = gp.tileSize * 14 - 20;
+		y = gp.tileSize * 10 + 20;		
+		g2.drawImage(rupee, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
+		
+		x += gp.tileSize - 8;
+		y += gp.tileSize - 12;	
+		
+		rupee_count = Integer.toString(gp.player.rupees);
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
+		g2.drawString(rupee_count, x, y);				
+	}
+	public void addMessage(String text) {
+		message.add(text);		
+		messageCounter.add(0);
+	}
+	public void drawMessage() {
+		
+		int messageX = gp.tileSize;
+		int messageY = gp.tileSize * 4;
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 32F));
+		
+		for (int i = 0; i< message.size(); i++) {
+			
+			if (message.get(i) != null) {
+				
+				g2.setColor(Color.black);
+				g2.drawString(message.get(i), messageX+2, messageY+2);
+				g2.setColor(Color.white);
+				g2.drawString(message.get(i), messageX, messageY);
+				
+				int counter = messageCounter.get(i) + 1;
+				messageCounter.set(i, counter);
+				messageY += gp.tileSize;
+				
+				if (messageCounter.get(i) > 180) {
+					message.remove(i);
+					messageCounter.remove(i);
+				}
+			}
+		}
+	}
+	
 	public void drawPauseScreen() {
 						
 		g2.setColor(Color.white);
@@ -308,7 +393,6 @@ public class UI {
 		}
 		gp.keyH.spacePressed = false;
 	}
-	
 	public void options_top(int frameX, int frameY) {
 		
 		int textX;
@@ -404,7 +488,6 @@ public class UI {
 		
 		gp.config.saveConfig();
 	}
-	
 	public void options_fullscreenNotif(int frameX, int frameY) {
 		
 		int textX = frameX + gp.tileSize;
@@ -429,7 +512,6 @@ public class UI {
 			}
 		}
 	}
-	
 	public void options_controls(int frameX, int frameY) {
 		
 		int textX;
@@ -474,7 +556,6 @@ public class UI {
 			}
 		}
 	}
-	
 	public void options_quitGameConfirm(int frameX, int frameY) {
 		
 		// TITLE
@@ -512,81 +593,6 @@ public class UI {
 				subState = 0;
 			}
 		}
-	}
-	
-	public void drawHUD() {
-		
-		int x = gp.tileSize / 2;
-		int y = gp.tileSize / 2;
-		int i = 0;
-		
-		// DRAW MAX LIFE		
-		while (i < gp.player.maxLife / 2) {
-			g2.drawImage(heart_empty, x, y, null);
-			i++;
-			x += gp.tileSize / 1.7;
-		}
-		
-		x = gp.tileSize / 2;
-		y = gp.tileSize / 2;
-		i = 0;
-		
-		// DRAW CURRENT LIFE
-		while (i < gp.player.life) {			
-			g2.drawImage(heart_half, x, y, null);
-			i++;
-			
-			if (i < gp.player.life) 
-				g2.drawImage(heart_full, x, y, null);
-			
-			i++;
-			x += gp.tileSize / 1.7;
-		}
-		
-		// DRAW ITEM SLOT
-		x = gp.tileSize * 14;
-		g2.setColor(new Color(240,190,90));
-		g2.fillRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);		
-		g2.setColor(Color.WHITE);
-		g2.setStroke(new BasicStroke(3));
-		g2.drawRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);	
-		
-		// DRAW ITEM
-		if (gp.player.currentItem != null) {			
-			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
-		}
-		
-		// DRAW RUPEES
-		x = gp.tileSize * 14 - 20;
-		y = gp.tileSize * 10 + 20;		
-		g2.drawImage(rupee_hud, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
-		
-		x += gp.tileSize - 8;
-		y += gp.tileSize - 12;	
-		
-		rupee_count = Integer.toString(gp.player.rupee);
-		g2.setColor(Color.WHITE);
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
-		g2.drawString(rupee_count, x, y);				
-	}
-	
-	public void drawDialogueScreen() {
-				
-		int x = gp.tileSize * 2;
-		int y = gp.screenWidth / 2;
-		int width = gp.screenWidth - (gp.tileSize * 4);
-		int height = gp.tileSize * 4;		
-		drawSubWindow(x, y, width, height);
-		
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
-		x += gp.tileSize;
-		y += gp.tileSize;
-		
-		// DIALOGUE LINE BREAK
-		for (String line : currentDialogue.split("\n")) { 
-			g2.drawString(line, x, y);	
-			y += 40;
-		} 
 	}
 	
 	public void drawCharacterScreen() {
@@ -634,89 +640,6 @@ public class UI {
 		drawCharacterText(gp.player.exp, tailX, textY); textY += lineHeight;
 		drawCharacterText(gp.player.nextLevelEXP, tailX, textY);
 	}
-	
-	public void drawInventory() {
-		
-		// ITEM WINDOW
-		int frameX = gp.tileSize * 9;
-		int frameY = gp.tileSize;
-		int frameWidth = gp.tileSize * 6;
-		int frameHeight = gp.tileSize * 5;		
-		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
-				
-		// SLOTS
-		final int slotXStart = frameX + 20;
-		final int slotYStart = frameY + 20;
-		int slotX = slotXStart; 
-		int slotY = slotYStart;
-		int slotSize = gp.tileSize + 3;
-		
-		// CURSOR
-		int cursorX = slotXStart + (slotSize * slotCol);
-		int cursorY = slotYStart + (slotSize * slotRow);
-		int cursorWidth = gp.tileSize;
-		int cursorHeight = gp.tileSize;		
-		
-		// DRAW PLAYER ITEMS
-		for (int i = 0; i < gp.player.item_inventory.size(); i++) {
-						
-			// EQUIP CURSOR
-			if (gp.player.item_inventory.get(i) == gp.player.currentWeapon || 
-					gp.player.item_inventory.get(i) == gp.player.currentShield) {
-				
-				g2.setColor(new Color(240,190,90));
-				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}
-			// EQUIP CURSOR
-			if (gp.player.item_inventory.get(i) == gp.player.currentItem) {
-				
-				g2.setColor(new Color(190,240,90));
-				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}
-			
-			g2.drawImage(gp.player.item_inventory.get(i).down1, slotX, slotY, null);
-			slotX += slotSize;
-			
-			if (i == 4 || i == 9 || i == 14) {
-				slotX = slotXStart;
-				slotY += gp.tileSize;
-			}
-		}
-		
-		// DRAW CURSOR
-		g2.setColor(Color.white);
-		g2.setStroke(new BasicStroke(3));
-		g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
-		
-		// DESCRIPTION WINDOW
-		int dFrameX = frameX;
-		int dFrameY = frameY + frameHeight;
-		int dFrameWidth = frameWidth;
-		int dFrameHeight = gp.tileSize * 3;
-		
-		// DESCRIPTION TEXT
-		int textX = dFrameX + 20;
-		int textY = dFrameY + gp.tileSize;
-		
-		g2.setFont(g2.getFont().deriveFont(28F));
-		
-		int itemIndex = getItemIndexOnSlot();
-		if (itemIndex < gp.player.item_inventory.size()) {
-			
-			drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
-			
-			for (String line : gp.player.item_inventory.get(itemIndex).description.split("\n")) {
-				g2.drawString(line, textX, textY);	
-				textY += 32;
-			}
-		}
-	}
-	
-	public int getItemIndexOnSlot() {		
-		int itemIndex = slotCol + (slotRow * 5);
-		return itemIndex;
-	}
-	
 	public void drawCharacterText(int playerValue, int tailX, int textY) {
 		String value = String.valueOf(playerValue);
 		int textX = getXforRightAlignText(value, tailX);
@@ -727,18 +650,340 @@ public class UI {
 		g2.drawString(value, textX, textY);
 	}
 	
-	public void drawSubWindow(int x, int y, int width, int height) {
+	public void drawInventory(Entity entity, boolean cursor) {
 		
-		// BLACK COLOR (RGB, Transparency)
-		Color c = new Color(0,0,0,220);
-		g2.setColor(c);
-		g2.fillRoundRect(x, y, width, height, 25, 25); // 25px round corners
+		// ITEM WINDOW
+		int frameX = 0;
+		int frameY = 0;
+		int frameWidth = 0;
+		int frameHeight = 0;
+		int slotCol = 0;
+		int slotRow = 0;
+				
+		// PLAYER INVENTORY
+		if (entity == gp.player) {
+			frameX = gp.tileSize * 9;
+			frameY = gp.tileSize;
+			frameWidth = gp.tileSize * 6;
+			frameHeight = gp.tileSize * 5;		
+			slotCol = playerSlotCol;
+			slotRow = playerSlotRow;
+		}
+		// NPC INVENTORY
+		else {
+			frameX = gp.tileSize * 2;
+			frameY = gp.tileSize;
+			frameWidth = gp.tileSize * 6;
+			frameHeight = gp.tileSize * 5;		
+			slotCol = npcSlotCol;
+			slotRow = npcSlotRow;
+		}
 		
-		// WHITE COLOR (RGB)
-		c = new Color(255, 255, 255);
-		g2.setColor(c);
-		g2.setStroke(new BasicStroke(5));
-		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
+		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+				
+		// SLOTS
+		final int slotXStart = frameX + 20;
+		final int slotYStart = frameY + 20;
+		int slotX = slotXStart; 
+		int slotY = slotYStart;
+		int slotSize = gp.tileSize + 3;
+		
+		// DRAW ITEMS
+		for (int i = 0; i < entity.inventory.size(); i++) {
+			
+			// EQUIPPED CURSOR
+			if (entity.inventory.get(i) == entity.currentItem) {				
+				g2.setColor(new Color(240,190,90));
+				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+			}			
+			
+			g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
+			slotX += slotSize;
+			
+			if (i == 4 || i == 9 || i == 14) {
+				slotX = slotXStart;
+				slotY += gp.tileSize;
+			}
+		}
+		
+		if (cursor) {
+			
+			int cursorX = slotXStart + (slotSize * slotCol);
+			int cursorY = slotYStart + (slotSize * slotRow);
+			int cursorWidth = gp.tileSize;
+			int cursorHeight = gp.tileSize;		
+			
+			// DRAW CURSOR
+			g2.setColor(Color.white);
+			g2.setStroke(new BasicStroke(3));
+			g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+			
+			// DESCRIPTION WINDOW
+			int dFrameX = frameX;
+			int dFrameY = frameY + frameHeight;
+			int dFrameWidth = frameWidth;
+			int dFrameHeight = gp.tileSize * 3;
+			
+			// DESCRIPTION TEXT
+			int textX = dFrameX + 20;
+			int textY = dFrameY + gp.tileSize;
+			
+			g2.setFont(g2.getFont().deriveFont(28F));
+			
+			int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
+			if (itemIndex < entity.inventory.size()) {
+				
+				drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+				
+				for (String line : entity.inventory.get(itemIndex).description.split("\n")) {
+					g2.drawString(line, textX, textY);	
+					textY += 32;
+				}
+			}
+		}	
+		
+	}
+	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
+		int itemIndex = slotCol + (slotRow * 5);
+		return itemIndex;
+	}
+	
+	public void drawDialogueScreen() {
+		
+		int x = gp.tileSize * 2;
+		int y = gp.screenWidth / 2;
+		int width = gp.screenWidth - (gp.tileSize * 4);
+		int height = gp.tileSize * 4;		
+		drawSubWindow(x, y, width, height);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
+		x += gp.tileSize;
+		y += gp.tileSize;
+		
+		// DIALOGUE LINE BREAK
+		for (String line : currentDialogue.split("\n")) { 
+			g2.drawString(line, x, y);	
+			y += 40;
+		} 
+	}
+	public void drawItemDialogue() {
+		
+		int x = gp.tileSize * 2;
+		int y = gp.screenWidth / 2;
+		int width = gp.screenWidth - (gp.tileSize * 4);
+		int height = gp.tileSize * 4;		
+		drawSubWindow(x, y, width, height);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
+		x += gp.tileSize;
+		y += gp.tileSize;
+		
+		// DIALOGUE LINE BREAK
+		for (String line : currentDialogue.split("\n")) { 
+			g2.drawString(line, x, y);	
+			y += 40;
+		} 
+		g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
+		g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+	}
+	
+	public void drawTradeScreen() {
+					
+		switch (subState) {
+			case 0: trade_select(); break;
+			case 1: trade_buy(); break;
+			case 2: trade_sell(); break;
+		}
+		
+		gp.keyH.spacePressed = false;
+	}
+	public void trade_select() {
+				
+		drawDialogueScreen();
+		
+		// DRAW OPTIONS WINDOW
+		int x = gp.tileSize * 11;
+		int y = gp.tileSize * 4;
+		int width = gp.tileSize * 3;
+		int height =(gp.tileSize * 4);
+		drawSubWindow(x, y, width, height);
+				
+		// DRAW TRADE MENU OPTIONS
+		x += gp.tileSize;		
+		y += gp.tileSize * 1.2;
+		g2.drawString("Buy", x, y);
+		if (commandNum == 0) {
+			g2.drawString(">", x-24, y);
+			if (gp.keyH.spacePressed) 
+				subState = 1;
+		}
+		
+		y += gp.tileSize;
+		g2.drawString("Sell", x, y);
+		if (commandNum == 1) {
+			g2.drawString(">", x-24, y);
+			if (gp.keyH.spacePressed)
+				subState = 2;
+		}
+		
+		y += gp.tileSize;
+		g2.drawString("Leave", x, y);
+		if (commandNum == 2) {
+			g2.drawString(">", x-24, y);
+			if (gp.keyH.spacePressed) {
+				gp.gameState = gp.dialogueState;
+				gp.ui.commandNum = 0;
+				gp.ui.subState = 0;
+				gp.ui.currentDialogue = "Scram, kid!";
+			}	
+		}
+	}
+	public void trade_buy() {
+		
+		drawInventory(gp.player, false);
+		drawInventory(npc, true);
+		
+		// DRAW PRICE WINDOW
+		int x = gp.tileSize * 2;
+		int y = gp.tileSize * 9;
+		int width = gp.tileSize * 6;
+		int height = gp.tileSize * 2;
+		drawSubWindow(x, y, width, height);
+		g2.drawString("[ESC] Back", x+24, y+60);
+		
+		// DRAW PLAYER RUPEE WINDOW
+		x = gp.tileSize * 9;
+		y = gp.tileSize * 9;
+		width = gp.tileSize * 6;
+		height = gp.tileSize * 2;
+		drawSubWindow(x, y, width, height);
+		g2.drawString("Rupees: " + gp.player.rupees, x+24, y+60);
+		
+		// DRAW PRICE WINDOW
+		int itemIndex = getItemIndexOnSlot(npcSlotCol, npcSlotRow);
+		if (itemIndex < npc.inventory.size()) {
+
+			x = (int) (gp.tileSize * 5.7);
+			y = (int) (gp.tileSize * 5.5);
+			width = (int) (gp.tileSize * 2.3);
+			height = gp.tileSize;
+			drawSubWindow(x, y, width, height);
+			g2.drawImage(rupee, x+5, y+8, 32, 32, null);
+			
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 37F));
+			int price = npc.inventory.get(itemIndex).price;
+			String text = Integer.toString(price);
+			x = getXforRightAlignText(text, gp.tileSize * 7);
+			g2.drawString(text, x+32, y+35);	
+			
+			
+			// BUY AN ITEM
+			if (gp.keyH.spacePressed) {
+				
+				if (npc.inventory.get(itemIndex).price > gp.player.rupees) {
+					subState = 0;
+					gp.gameState = gp.dialogueState;
+					currentDialogue = "Hey! You don't have enough rupees!";
+					drawDialogueScreen();
+				}
+				else if (gp.player.inventory.size() == gp.player.maxInventorySize) {
+					subState = 0;
+					gp.gameState = gp.dialogueState;
+					currentDialogue = "Looks like you don't have enough room, kid!";
+					drawDialogueScreen();
+				}
+				else {
+					gp.player.rupees -= npc.inventory.get(itemIndex).price;
+					
+					if (gp.player.rupees < 0)
+						gp.player.rupees = 0;
+					
+					gp.player.inventory.add(npc.inventory.get(itemIndex));
+					
+					if (npc.inventory.get(itemIndex).type == gp.player.type_item) 
+						gp.player.items.add(npc.inventory.get(itemIndex));
+					npc.inventory.remove(itemIndex);					
+				}
+			}
+		}		
+	}
+	public void trade_sell() {
+		
+		// DRAW PLAYER INVENTORY
+		drawInventory(gp.player, true);
+		drawInventory(npc, false);
+				
+		// DRAW PRICE WINDOW
+		int x = gp.tileSize * 2;
+		int y = gp.tileSize * 9;
+		int width = gp.tileSize * 6;
+		int height = gp.tileSize * 2;
+		drawSubWindow(x, y, width, height);
+		g2.drawString("[ESC] Back", x+24, y+60);
+		
+		// DRAW PLAYER RUPEE WINDOW
+		x = gp.tileSize * 9;
+		y = gp.tileSize * 9;
+		width = gp.tileSize * 6;
+		height = gp.tileSize * 2;
+		drawSubWindow(x, y, width, height);
+		g2.drawString("Rupees: " + gp.player.rupees, x+24, y+60);
+		
+		// DRAW PRICE WINDOW
+		int itemIndex = getItemIndexOnSlot(playerSlotCol, playerSlotRow);
+		if (itemIndex < gp.player.inventory.size()) {
+
+			x = (int) (gp.tileSize * 12.7);
+			y = (int) (gp.tileSize * 5.5);
+			width = (int) (gp.tileSize * 2.3);
+			height = gp.tileSize;
+			drawSubWindow(x, y, width, height);
+			g2.drawImage(rupee, x+5, y+8, 32, 32, null);
+			
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 37F));
+			int price = gp.player.inventory.get(itemIndex).price;
+			String text = Integer.toString(price);
+			x = getXforRightAlignText(text, gp.tileSize * 14);
+			g2.drawString(text, x+32, y+35);	
+			
+			// SELL AN ITEM
+			if (gp.keyH.spacePressed) {
+				
+				// MAIN ITEM NOT SELLABLE
+				if (gp.player.inventory.get(itemIndex).type == gp.player.type_item) {
+					commandNum = 0;
+					subState = 0;
+					gp.gameState = gp.dialogueState;
+					currentDialogue = "I think you should hold onto that!";
+				}
+				else {
+					gp.player.rupees += price / 2;
+					npc.inventory.add(gp.player.inventory.get(itemIndex));
+					gp.player.inventory.remove(itemIndex);
+				}
+			}
+		}		
+	}
+		
+	public void drawTransition() {
+		
+		// DARKEN SCREEN
+		counter++;
+		g2.setColor(new Color(0,0,0, counter * 5)); 
+		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+		// STOP DARKENING SCREEN
+		if (counter == 50) {
+			counter = 0;			
+			gp.gameState = gp.playState;
+			
+			gp.currentMap = gp.eHandler.tempMap;
+			gp.player.worldX = gp.tileSize * gp.eHandler.tempCol;
+			gp.player.worldY = gp.tileSize * gp.eHandler.tempRow;
+			
+			gp.eHandler.previousEventX = gp.player.worldX;
+			gp.eHandler.previousEventY = gp.player.worldY;
+		}		
 	}
 	
 	public void drawGameOverScreen() {
@@ -812,7 +1057,20 @@ public class UI {
 			deathSprite++;
 		}
 	}
-	
+		
+	public void drawSubWindow(int x, int y, int width, int height) {
+		
+		// BLACK COLOR (RGB, Transparency)
+		Color c = new Color(0,0,0,220);
+		g2.setColor(c);
+		g2.fillRoundRect(x, y, width, height, 25, 25); // 25px round corners
+		
+		// WHITE COLOR (RGB)
+		c = new Color(255, 255, 255);
+		g2.setColor(c);
+		g2.setStroke(new BasicStroke(5));
+		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
+	}	
 	public int getXforCenteredText(String text) {
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		int x = (gp.screenWidth / 2) - (length / 2);

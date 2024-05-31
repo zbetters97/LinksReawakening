@@ -12,8 +12,9 @@ public class EQP_Sword extends Entity {
 		name = "Old Sword";
 		description = "[" + name + "]\nA humble starter sword.\n+1 ATK";
 		down1 = setup("/objects/ITEM_SWORD", gp.tileSize, gp.tileSize);
+		image = down1;
 		
-		attackValue = 1;
+		attackValue = 2;
 		attackArea.width = 36;
 		attackArea.height = 36;
 	}

@@ -22,13 +22,20 @@ public class Projectile extends Entity {
 	
 	public void update() {		
 		
-		// HOOKSHOT PROJECTILE
-		if (name.equals("Hookshot")) {
-			useHookshot();
-		}
-		// NON-HOOKSHOT PROJECTILE
-		else {		
-			useProjectile();
+		// PREVENT GLITCHED DEATH WHEN ITEM IS IN AIR
+		if (gp.gameState != gp.gameOverState) {
+			
+			// HOOKSHOT PROJECTILE
+			if (name.equals("Hookshot")) {
+				useHookshot();
+			}
+			else if (name.equals("Boomerang")) {
+				useBoomerang();
+			}
+			// NON-HOOKSHOT PROJECTILE
+			else {		
+				useProjectile();
+			}
 		}
 	}
 	
@@ -91,6 +98,106 @@ public class Projectile extends Entity {
 			
 			spriteCounter = 0;
 		}		
+	}
+	
+	public void useBoomerang() {
+		
+		// PAUSE PLAYER INPUT
+		gp.gameState = gp.itemState;
+		
+		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
+		collisionOn = false;		
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.enemy);
+		gp.cChecker.checkObject(this, false);	
+						
+		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+		if (enemyIndex != -1) {
+			gp.player.damageEnemy(enemyIndex, attack);
+			//alive = false;
+			//gp.gameState = gp.playState;
+		}
+		
+		// OBJECT IS NOT GRABBABLE, RETURN
+		int objectIndex = gp.cChecker.checkObject(this, true);
+		if (collisionOn) 
+			life = 0;
+		
+		// MAX LENGTH REACHED
+		if (life <= 0 || objectIndex != -1) {	
+			
+			// PULL OBJECT TOWARDS PLAYER
+			if (objectIndex != -1) {				
+				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
+				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
+			}		
+			
+			switch (direction) {
+				case "up":
+				case "upleft": 
+				case "upright":	
+					if (worldY + gp.tileSize / 2 <= gp.player.worldY) 				
+							worldY += 5;				
+					else {
+						alive = false;
+						gp.gameState = gp.playState;
+					}					
+					break;			
+				case "down": 
+				case "downleft": 
+				case "downright": 	
+					if (worldY - gp.tileSize / 2 >= gp.player.worldY) 
+						worldY -= 5;						
+					else {
+						alive = false;
+						gp.gameState = gp.playState;
+					}						
+					break;	
+				case "left": 
+					if (worldX + gp.tileSize / 2 <= gp.player.worldX) 				
+						worldX += 5;			
+					else {						
+						alive = false;	
+						gp.gameState = gp.playState;
+					}						
+					break;	
+				case "right": 
+					if (worldX - gp.tileSize / 2 >= gp.player.worldX) 				
+						worldX -= 5;				
+					else {
+						alive = false;
+						gp.gameState = gp.playState;
+					}						
+					break;				
+			}		
+		}
+		else {
+			// MOVE IN DIRECTION SHOT
+			switch (direction) {
+				case "up": 
+				case "upleft": 
+				case "upright": worldY -= speed; break;			
+				case "down":
+				case "downleft": 
+				case "downright": worldY += speed; break;			
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}	
+
+			life--;				
+		}			
+
+		// MOVING ANIMATION
+		spriteCounter++;
+		if (spriteCounter > animationSpeed) { // speed of sprite change
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}	
 	}
 	
 	public void useHookshot() {
