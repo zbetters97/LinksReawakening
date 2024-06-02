@@ -24,6 +24,7 @@ public class Entity {
 	public BufferedImage image, image2, image3;
 	public String name;
 	public boolean collision = false;
+	public boolean diggable = false;
 	
 	// CHARACTER ATTRIBUTES
 	public int type;
@@ -275,9 +276,8 @@ public class Entity {
 			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 			
-			if (hookGrab) {
-				image = this.image;
-			}
+			if (hookGrab) 
+				image = this.image;			
 			else {			
 				// change entity sprite based on which direction and which cycle
 				switch (direction) {
@@ -335,12 +335,18 @@ public class Entity {
 					hurtAnimation(g2);
 			}	
 			if (dying) 				
-				dyingAnimation(g2);			
+				dyingAnimation(g2);		
 			
-			g2.drawImage(image, screenX, screenY, null);
-			
+			g2.drawImage(image, screenX, screenY, null);			
+
+			// DRAW HITBOX
+			// DRAW HITBOX
+			if (gp.keyH.debug) {
+				g2.setColor(Color.RED);
+				g2.drawRect(screenX + hitBox.x, screenY + hitBox.y, hitBox.width, hitBox.height);
+			}
 			// RESET OPACITY
-			changeAlpha(g2, 1f);
+			changeAlpha(g2, 1f);			
 		}
 	}
 	

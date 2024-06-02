@@ -1,6 +1,7 @@
 package object;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 
 import entity.Projectile;
 import main.GamePanel;
@@ -20,6 +21,11 @@ public class PRJ_Fireball extends Projectile {
 		attack = 2; // damage dealt		
 		useCost = 1; // 1 arrow to shoot 1 arrow
 		alive = false;
+		
+		// SMALLER HITBOX
+		hitBox = new Rectangle(12, 12, 24, 24); 		
+		hitBoxDefaultX = hitBox.x;
+	    hitBoxDefaultY = hitBox.y;
 		
 		getImage();
 	}

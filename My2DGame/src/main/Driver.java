@@ -16,7 +16,7 @@ public class Driver {
 		window.setResizable(false);
 		
 		GamePanel gamePanel = new GamePanel();
-		window.add(gamePanel);
+		window.add(gamePanel); 
 		
 		// LOAD SETTINGS
 		gamePanel.config.loadConfig();

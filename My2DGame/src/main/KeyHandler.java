@@ -220,7 +220,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE) spacePressed = true;
-		if (code == KeyEvent.VK_SHIFT) itemPressed = true;
+		if (code == KeyEvent.VK_Q) itemPressed = true;
 		if (code == KeyEvent.VK_T) tabPressed = true;
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.playSE(1, 8);
@@ -230,7 +230,7 @@ public class KeyHandler implements KeyListener{
 			gp.playSE(1, 8);
 			gp.gameState = gp.characterState;
 		}
-		if (code == KeyEvent.VK_Q) {
+		if (code == KeyEvent.VK_SHIFT) {
 			if (debug) debug = false; 
 			else debug = true;
 		}
@@ -301,20 +301,23 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	public void dialogueState(int code) { 
-		if (code == KeyEvent.VK_SPACE) {			
-			if (gp.ui.npc.hasItem) 
-				gp.player.getObject(gp.ui.npc.inventory.get(0));			
-			else {
-				gp.ui.npc = null;
-				gp.ui.newItem = null;
-				gp.gameState = gp.playState;
-			}
+		if (code == KeyEvent.VK_SPACE) {
+			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
+				gp.player.getObject(gp.ui.npc.inventory.get(0));
+				gp.gameState = gp.itemGetState;
+			}		
+			else 
+				gp.gameState = gp.playState;			
 		}
 	}
 	
 	public void itemGetState(int code) { 
-		if (code == KeyEvent.VK_SPACE) {
-			gp.ui.newItem = null;
+		if (code == KeyEvent.VK_SPACE) {			
+			if (gp.ui.npc != null) {		
+				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);
+				gp.ui.npc = null;
+			}
+			gp.ui.newItem = null;			
 			gp.gameState = gp.playState;
 		}
 	}
@@ -409,10 +412,10 @@ public class KeyHandler implements KeyListener{
 		if (gp.ui.subState == 1) {
 			npcInventory(code);
 			if (code == KeyEvent.VK_ESCAPE)
-				gp.ui.subState = 0;			
+				gp.ui.subState = 0;						
 		}
 		if (gp.ui.subState == 2) {
-			playerInventory(code);
+			playerInventory(code); 
 			if (code == KeyEvent.VK_ESCAPE)
 				gp.ui.subState = 0;			
 		}
@@ -460,7 +463,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SPACE) spacePressed = false;
-		if (code == KeyEvent.VK_SHIFT) { itemPressed = false; gp.player.running = false; }	
+		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; }	
 		if (code == KeyEvent.VK_T) tabPressed = false;
 	}
 }

@@ -1,6 +1,7 @@
 package object;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 
 import entity.Entity;
 import entity.Particle;
@@ -20,8 +21,11 @@ public class PRJ_Hookshot extends Projectile {
 		maxLife = 35; // length of life (half length of screen)
 		life = maxLife;	
 		alive = false;
-		
-		//hitBox = new Rectangle(16, 16, 32, 32);
+
+		// SMALLER HITBOX
+		hitBox = new Rectangle(16, 16, 16, 16); 		
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 		
 		getImage();
 	}

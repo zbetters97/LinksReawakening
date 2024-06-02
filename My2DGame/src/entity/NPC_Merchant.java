@@ -2,8 +2,7 @@ package entity;
 
 import main.GamePanel;
 import object.ITM_Boomerang;
-import object.COL_Potion_Red;
-import object.ITM_Shovel;
+import object.ITM_Bow;
 
 public class NPC_Merchant extends Entity {
 	
@@ -30,8 +29,6 @@ public class NPC_Merchant extends Entity {
 	}	
 	
 	public void setItems() {		
-		inventory.add(new COL_Potion_Red(gp));
-		inventory.add(new ITM_Shovel(gp));
 		inventory.add(new ITM_Boomerang(gp));
 	}
 	public void setDialogue() {

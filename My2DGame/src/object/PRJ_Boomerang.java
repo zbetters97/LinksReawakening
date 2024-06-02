@@ -1,5 +1,7 @@
 package object;
 
+import java.awt.Rectangle;
+
 import entity.Projectile;
 import main.GamePanel;
 
@@ -19,7 +21,10 @@ public class PRJ_Boomerang extends Projectile {
 		attack = 1; // damage dealt	
 		alive = false;
 		
-		//hitBox = new Rectangle(16, 16, 32, 32);
+		// SMALLER HITBOX
+		hitBox = new Rectangle(12, 12, 24, 24); 		
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 		
 		getImage();
 	}

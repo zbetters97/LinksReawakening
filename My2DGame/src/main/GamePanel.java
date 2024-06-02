@@ -80,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Entity npc[][] = new Entity[maxMap][10]; // total amount of npc displayed at once	
 	public Entity enemy[][] = new Entity[maxMap][20]; // total amount of enemies displayed at once
 	public Entity obj[][] = new Entity[maxMap][20]; // total amount of items displayed at once
+	public Entity hiddenItems[][] = new Entity[maxMap][50];
 	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
 	public ArrayList<Entity> particleList = new ArrayList<>();
 	public ArrayList<Entity> projectileList = new ArrayList<>();
@@ -100,7 +101,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = playState;
+//		gameState = playState;
 		
 		setupMusic();
 												
@@ -346,12 +347,13 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void setupMusic() {
+		
 		if (gameState == titleState) {
 			playMusic(0);		
 		}
 		else {			
-			if (currentMap == 0) playMusic(1);
-			else if (currentMap == 1) playMusic(3);
+			if (currentMap == 0) playMusic(2);
+			else if (currentMap == 1) playMusic(4);
 		}
 	}	
 	public void playMusic(int c) {		

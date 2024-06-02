@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+
 import entity.*;
 import object.*;
 
@@ -51,6 +53,7 @@ public class UI {
 	
 	public Entity npc;
 	public Entity newItem;
+	public int newItemIndex;
 		
 	// GAME OVER
 	public int deathSprite = 0;
@@ -126,7 +129,7 @@ public class UI {
 		}
 		if (gp.gameState == gp.itemGetState) {
 			drawHUD();
-			drawItemDialogue();
+			drawDialogueScreen();
 		}
 	}
 	
@@ -135,6 +138,12 @@ public class UI {
 		// BACKGROUND
 		g2.setColor(new Color(65, 90, 255));
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+		// BACKGROUND IMAGE
+		BufferedImage image = null;		
+		try { image = ImageIO.read(getClass().getResourceAsStream("/objects/MENU_TITLE.png")); }
+		catch (IOException e) { }
+		g2.drawImage(image, 0, 0, gp.screenWidth, gp.screenHeight, null);
 		
 		// SUBTITLE NAME
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
@@ -153,24 +162,30 @@ public class UI {
 		y += gp.tileSize * 1.5;
 		
 		// TEXT SHADOW
-		g2.setColor(Color.BLACK);
+//		g2.setColor(Color.BLACK);
+		g2.setColor(Color.WHITE);
 		g2.drawString(text, x+10, y+5);
 		
 		// TEXT COLOR
-		g2.setColor(Color.WHITE);
+//		g2.setColor(Color.WHITE);
+		g2.setColor(Color.BLACK);
 		g2.drawString(text, x+10, y);
-					
+		g2.setColor(Color.WHITE);
+		
 		// MAIN TITLE SCREEN
 		if (titleScreenState == 0) {			
 			
-			// MARIN IMAGE
-			x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2; // center sprite
-			y += gp.tileSize - (gp.tileSize / 2);
-			g2.drawImage(gp.player.sing, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
+			// MARIN IMAGE			
+//		    x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2; // center sprite 
+//			y += gp.tileSize - (gp.tileSize / 2); 
+//			g2.drawImage(gp.player.sing, x, y, gp.tileSize * 2, gp.tileSize * 2, null);			 
 			
 			// LINK IMAGE
 			x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2; // center sprite
-			y += gp.tileSize * 4;
+			
+//			y += gp.tileSize * 4;			
+			y += gp.tileSize * 5;
+			
 			g2.drawImage(gp.player.sit, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
 			
 			// MENU OPTIONS
@@ -310,13 +325,18 @@ public class UI {
 		x = gp.tileSize * 14;
 		y = gp.tileSize / 2;
 		g2.setColor(new Color(240,190,90));
-		g2.fillRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);		
+		g2.fillRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);		
 		g2.setColor(Color.WHITE);
 		g2.setStroke(new BasicStroke(3));
-		g2.drawRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20);	
+		g2.drawRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);	
 		
 		// DRAW ITEM
-		if (gp.player.currentItem != null) {			
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 25F));
+		g2.setColor(Color.BLACK);
+		g2.drawString("Q", x-2, y+10);
+		
+		if (gp.player.currentItem != null) {	
+						
 			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
 			
 			// DRAW ARROW COUNT
@@ -536,9 +556,9 @@ public class UI {
 		// VALUES
 		textX = frameX + gp.tileSize * 6;
 		textY = frameY + gp.tileSize * 2;
-		g2.drawString("WASD / ARROW KEYS", textX, textY); textY += gp.tileSize;
+		g2.drawString("ARROW KEYS", textX, textY); textY += gp.tileSize;
 		g2.drawString("SPACEBAR", textX, textY); textY += gp.tileSize;
-		g2.drawString("SHIFT", textX, textY); textY += gp.tileSize;
+		g2.drawString("Q", textX, textY); textY += gp.tileSize;
 		g2.drawString("T", textX, textY); textY += gp.tileSize;
 		g2.drawString("E", textX, textY); textY += gp.tileSize;
 		g2.drawString("ESC", textX, textY); textY += gp.tileSize;
@@ -749,7 +769,7 @@ public class UI {
 	}
 	
 	public void drawDialogueScreen() {
-		
+				
 		int x = gp.tileSize * 2;
 		int y = gp.screenWidth / 2;
 		int width = gp.screenWidth - (gp.tileSize * 4);
@@ -765,26 +785,18 @@ public class UI {
 			g2.drawString(line, x, y);	
 			y += 40;
 		} 
-	}
-	public void drawItemDialogue() {
+				
+		String text = "[Press SPACE to continue]";
+		x = getXforCenteredText(text);
+		y = gp.tileSize * 11;
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
+		g2.drawString(text, x, y + 30);
 		
-		int x = gp.tileSize * 2;
-		int y = gp.screenWidth / 2;
-		int width = gp.screenWidth - (gp.tileSize * 4);
-		int height = gp.tileSize * 4;		
-		drawSubWindow(x, y, width, height);
-		
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
-		x += gp.tileSize;
-		y += gp.tileSize;
-		
-		// DIALOGUE LINE BREAK
-		for (String line : currentDialogue.split("\n")) { 
-			g2.drawString(line, x, y);	
-			y += 40;
-		} 
-		g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
-		g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+		// ITEM GOT, DISPLAY ABOVE PLAYER
+		if (newItem != null) {
+			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
+			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+		}		
 	}
 	
 	public void drawTradeScreen() {
@@ -835,6 +847,7 @@ public class UI {
 				gp.ui.commandNum = 0;
 				gp.ui.subState = 0;
 				gp.ui.currentDialogue = "Scram, kid!";
+				npc = null;
 			}	
 		}
 	}
@@ -885,24 +898,30 @@ public class UI {
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "Hey! You don't have enough rupees!";
 					drawDialogueScreen();
+					npc = null;
 				}
 				else if (gp.player.inventory.size() == gp.player.maxInventorySize) {
 					subState = 0;
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "Looks like you don't have enough room, kid!";
 					drawDialogueScreen();
+					npc = null;
 				}
 				else {
-					gp.player.rupees -= npc.inventory.get(itemIndex).price;
 					
+					gp.player.rupees -= npc.inventory.get(itemIndex).price;					
 					if (gp.player.rupees < 0)
 						gp.player.rupees = 0;
 					
-					gp.player.inventory.add(npc.inventory.get(itemIndex));
+					gp.playSE(3, 1);																							
+					gp.ui.currentDialogue = "You got the " + npc.inventory.get(itemIndex).name + "!";
+					newItem = npc.inventory.get(itemIndex);
+					newItemIndex = itemIndex;
+					gp.gameState = gp.itemGetState;
 					
+					gp.player.inventory.add(npc.inventory.get(itemIndex));					
 					if (npc.inventory.get(itemIndex).type == gp.player.type_item) 
-						gp.player.items.add(npc.inventory.get(itemIndex));
-					npc.inventory.remove(itemIndex);					
+						gp.player.items.add(npc.inventory.get(itemIndex));			
 				}
 			}
 		}		
@@ -950,11 +969,14 @@ public class UI {
 			if (gp.keyH.spacePressed) {
 				
 				// MAIN ITEM NOT SELLABLE
-				if (gp.player.inventory.get(itemIndex).type == gp.player.type_item) {
+				if (gp.player.inventory.get(itemIndex).type == gp.player.type_item || 
+						gp.player.inventory.get(itemIndex).type == gp.player.type_shield ||
+						gp.player.inventory.get(itemIndex).type == gp.player.type_sword) {
 					commandNum = 0;
 					subState = 0;
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "I think you should hold onto that!";
+					npc = null;
 				}
 				else {
 					gp.player.rupees += price / 2;
@@ -983,6 +1005,8 @@ public class UI {
 			
 			gp.eHandler.previousEventX = gp.player.worldX;
 			gp.eHandler.previousEventY = gp.player.worldY;
+
+			gp.setupMusic();
 		}		
 	}
 	

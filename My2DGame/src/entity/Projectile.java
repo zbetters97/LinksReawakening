@@ -222,6 +222,15 @@ public class Projectile extends Entity {
 				
 		// PULL PLAYER TOWARDS GRABBALE TILE
 		if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbale) {
+			
+			// PREVENT COLLISION WITH PLAYER
+			int playeriTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
+			if (playeriTileIndex != -1) {
+				alive = false;	
+				gp.gameState = gp.playState;	
+				return;
+			}
+			
 			switch (direction) {
 				case "up": 
 				case "upleft": 
@@ -294,8 +303,17 @@ public class Projectile extends Entity {
 				hookGrab = true;					
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
+				
+				// STOP COLLISION WITH PLAYER
+				int playerObjIndex = gp.cChecker.checkObject(gp.player, true);
+				if (playerObjIndex != -1) {
+					alive = false;			
+					hookGrab = false;
+					gp.gameState = gp.playState;	
+					return;
+				}
 			}			
-			
+						
 			switch (direction) {
 				case "up":
 				case "upleft": 

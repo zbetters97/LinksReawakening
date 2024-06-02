@@ -1,8 +1,10 @@
 package entity;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import main.GamePanel;
@@ -22,6 +24,13 @@ public class Player extends Entity {
 
 	public boolean attackCanceled = false;
 	public boolean running = false;
+	
+	public int digNum;
+	public int digCounter = 0;
+	public boolean digging = false;
+	
+	public BufferedImage digUp1, digUp2, digDown1, digDown2, digLeft1, digLeft2, digRight1, digRight2;
+	public BufferedImage titleScreen;
 	
 	public Projectile projectile_sword;
 	public Projectile projectile_arrow;
@@ -52,7 +61,8 @@ public class Player extends Entity {
 		setDefaultValues();  
 		getPlayerImage();
 		setItems();
-		getPlayerAttackImage();		
+		getPlayerAttackImage();	
+		getPlayerDigImage();
 	}
 	
 	public void setDefaultValues() {
@@ -67,7 +77,7 @@ public class Player extends Entity {
 		maxLife = 6; life = maxLife;
 		strength = 1; dexterity = 1; // helps attack, defense
 		exp = 0; nextLevelEXP = 5;
-		rupees = 50;
+		rupees = 0;
 		
 		currentShield = new EQP_Shield(gp);
 		projectile_sword = new PRJ_Sword_Beam(gp);
@@ -80,6 +90,16 @@ public class Player extends Entity {
 		attack = getAttack();
 		defense = getDefense();
 	}	
+	public void setDefaultPosition() {	
+		worldX = gp.tileSize * 23;
+		worldY = gp.tileSize * 21;
+		direction = "down";
+		speed = baseSpeed;
+	}
+	public void setItems() {
+		inventory.add(currentShield);
+	}
+	
 	public int getAttack() {
 		if (currentWeapon == null)
 			return 1;
@@ -91,21 +111,14 @@ public class Player extends Entity {
 	public int getDefense() {
 		return defense = dexterity * currentShield.defenseValue;
 	}
-	public void setItems() {
-		inventory.add(currentShield);
-	}
-	public void setDefaultPosition() {	
-		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;
-		direction = "down";
-		speed = baseSpeed;
-	}
+	
 	public void restoreHearts() {
 		life = maxLife;
 		invincible = false;
 	}
 	
-	public void getPlayerImage() {		
+	public void getPlayerImage() {	
+		
 		up1 = setup("/player/boy_up_1"); 
 		up2 = setup("/player/boy_up_2");
 		down1 = setup("/player/boy_down_1"); 
@@ -139,13 +152,25 @@ public class Player extends Entity {
 		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}
 	
+	public void getPlayerDigImage() {
+		digUp1 = setup("/player/boy_dig_up_1", gp.tileSize, gp.tileSize); 
+		digUp2 = setup("/player/boy_dig_up_2", gp.tileSize, gp.tileSize);		
+		digDown1 = setup("/player/boy_dig_down_1", gp.tileSize, gp.tileSize); 
+		digDown2 = setup("/player/boy_dig_down_2", gp.tileSize, gp.tileSize);
+		
+		digLeft1 = setup("/player/boy_dig_left_1", gp.tileSize, gp.tileSize); 
+		digLeft2 = setup("/player/boy_dig_left_2", gp.tileSize, gp.tileSize);
+		
+		digRight1 = setup("/player/boy_dig_right_1", gp.tileSize, gp.tileSize); 
+		digRight2 = setup("/player/boy_dig_right_2", gp.tileSize, gp.tileSize);		
+	}
+	
 	public void update() {
 				
-		if (attacking)
-			attacking();
-						
-		// PLAYER MOVES OR ATTACKS
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || 
+		if (attacking) attacking();		
+		if (digging) digging();			
+		
+		else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || 
 				keyH.spacePressed) {	
 			
 			// find direction
@@ -165,7 +190,7 @@ public class Player extends Entity {
 
 			// CHECK INTERACTIVE TILE COLLISION
 			gp.cChecker.checkEntity(this, gp.iTile);
-			
+						
 			// CHECK NPC COLLISION
 			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 			interactNPC(npcIndex);
@@ -219,6 +244,10 @@ public class Player extends Entity {
 					gp.playSE(3, 4);
 				}
 			}
+			if (currentWeapon == null && keyH.spacePressed) {
+				gp.gameState = gp.dialogueState;
+				gp.ui.currentDialogue = "\"I need to find a sword!\nBut where?...\"";
+			}
 			
 			attackCanceled = false;
 			
@@ -248,6 +277,10 @@ public class Player extends Entity {
 		if (keyH.itemPressed && currentItem != null) {		
 			useItem();
 		}			
+		if (keyH.itemPressed && currentItem == null) {
+			gp.gameState = gp.dialogueState;
+			gp.ui.currentDialogue = "\"I need to find an item!\nBut where?...\"";
+		}
 		
 		// CYCLES ITEMS
 		if (keyH.tabPressed && items.size() > 0 && currentItem != null) {
@@ -339,7 +372,11 @@ public class Player extends Entity {
 					gp.playSE(3, 0);
 					attacking = true;
 				}
-				break;				
+				break;		
+			case "Shovel":				
+				digging = true;
+				attackCanceled = true;
+				break;
 		}	
 	}
 	
@@ -415,6 +452,28 @@ public class Player extends Entity {
 			attackNum = 1;
 			attackCounter = 0;
 			attacking = false;
+		}
+	}
+	
+	public void digging() {
+		
+		digCounter++;
+				
+		if (12 >= digCounter) 
+			digNum = 1;
+		
+		if (24 > digCounter && digCounter > 12)
+			digNum = 2;
+		
+		if (digCounter > 24) {
+			
+			// CHECK INTERACTIVE TILE
+			int iTileIndex = gp.cChecker.checkDigging();
+			damageInteractiveTile(iTileIndex);
+
+			digNum = 1;
+			digCounter = 0;
+			digging = false;
 		}
 	}
 	
@@ -620,10 +679,14 @@ public class Player extends Entity {
 				case "up":
 				case "upleft":
 				case "upright":
-					if (!attacking) {
+					if (digging) {
+						if (digNum == 1) image = digUp1;
+						if (digNum == 2) image = digUp2;
+					}
+					else if (!attacking) {
 						if (spriteNum == 1) image = up1;
 						if (spriteNum == 2) image = up2;	
-					}
+					}					
 					else {
 						if (attackNum == 1) {
 							tempScreenX -= gp.tileSize;
@@ -639,17 +702,25 @@ public class Player extends Entity {
 				case "down":
 				case "downleft":
 				case "downright":
-					if (!attacking) {
+					if (digging) {
+						if (digNum == 1) image = digDown1;
+						if (digNum == 2) image = digDown2;
+					}
+					else if (!attacking) {
 						if (spriteNum == 1) image = down1;
 						if (spriteNum == 2) image = down2;	
-					}
+					}					
 					else {		
 						if (attackNum == 1) image = attackDown1;
 						if (attackNum == 2) image = attackDown2;	
 					}		
 					break;
 				case "left":
-					if (!attacking) {
+					if (digging) {
+						if (digNum == 1) image = digLeft1;
+						if (digNum == 2) image = digLeft2;
+					}
+					else if (!attacking) {
 						if (spriteNum == 1) image = left1;
 						if (spriteNum == 2) image = left2;	
 					}
@@ -663,10 +734,14 @@ public class Player extends Entity {
 					}		
 					break;
 				case "right":
-					if (!attacking) {
+					if (digging) {
+						if (digNum == 1) image = digRight1;
+						if (digNum == 2) image = digRight2;
+					}
+					else if (!attacking) {
 						if (spriteNum == 1) image = right1;
 						if (spriteNum == 2) image = right2;	
-					}
+					}					
 					else {
 						if (attackNum == 1) {
 							tempScreenY -= gp.tileSize;
@@ -689,6 +764,12 @@ public class Player extends Entity {
 		}	
 						
 		g2.drawImage(image, tempScreenX, tempScreenY, null); 
+
+		// DRAW HITBOX
+		if (gp.keyH.debug) {			
+			g2.setColor(Color.RED);
+			g2.drawRect(screenX + hitBox.x, screenY + hitBox.y, hitBox.width, hitBox.height);
+		}
 		
 		// RESET OPACITY
 		changeAlpha(g2, 1f);

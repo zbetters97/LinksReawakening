@@ -11,6 +11,7 @@ public class ITM_Axe extends Entity {
 		type = type_item;		
 		name = "Iron Axe";
 		description = "[" + name + "]\nEquip to chop down trees!";
+		price = 30;
 		down1 = setup("/objects/ITEM_AXE", gp.tileSize, gp.tileSize);
 	}
 }

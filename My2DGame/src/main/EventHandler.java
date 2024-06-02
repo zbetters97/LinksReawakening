@@ -20,7 +20,7 @@ public class EventHandler {
 		
 		int map = 0;
 		int col = 0;
-		int row = 0;		
+		int row = 0;
 		while (map < gp.maxMap && col < gp.maxWorldCol && row < gp.maxWorldRow) {
 			
 			// DRAW HIT BOX ON EACH EVENT
@@ -57,11 +57,14 @@ public class EventHandler {
 		
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
-			if (hit(0, 27, 16, "right")) damagePit(gp.dialogueState);		
-			else if (hit(0, 23, 12, "up")) healingPool(gp.dialogueState);
+			if (hit(0, 23, 12, "up")) healingPool(gp.dialogueState);
+			else if (hit(0, 18, 20, "any")) fall(20, 20);
+			else if (hit(0, 18, 21, "any")) fall(20, 21);
+			else if (hit(0, 18, 22, "any")) fall(20, 22);
 			else if (hit(0, 10, 39, "any")) teleport(1, 12, 13);			
 			else if (hit(1, 12, 13, "any")) teleport(0, 10, 39);
 			else if (hit(1, 12, 9, "up")) speak(gp.npc[1][0]);
+			else if (hit(0, 12, 9, "any")) win();	
 		}
 	}
 	
@@ -104,6 +107,11 @@ public class EventHandler {
 		return hit;		
 	}
 	
+	public void win() {
+		gp.gameState = gp.dialogueState;
+		gp.ui.currentDialogue = "You win!";
+	}
+	
 	public void speak(Entity npc) {		
 		if (gp.keyH.spacePressed) {
 			gp.gameState = gp.dialogueState;
@@ -111,17 +119,27 @@ public class EventHandler {
 			npc.speak();
 		}
 	}
-	
 	public void teleport(int map, int col, int row) {	
-		gp.stopMusic();		
 		gp.gameState = gp.transitionState;
+		
+		gp.stopMusic();		
+		gp.playSE(1,10);		
 		
 		tempMap = map;
 		tempCol = col;
 		tempRow = row;
 		
 		canTouchEvent = false;
-		gp.setupMusic();
+	}
+	public void fall(int x, int y) {		
+		
+		gp.playSE(2, 0);
+		
+		gp.player.life --;
+		gp.player.invincible = true;
+		
+		gp.player.worldX = x * gp.tileSize;
+		gp.player.worldY = y * gp.tileSize;
 	}
 	
 	public void damagePit(int gameState) {		

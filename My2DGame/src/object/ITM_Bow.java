@@ -14,6 +14,7 @@ public class ITM_Bow extends Entity {
 		type = type_item;
 		name = "Hylian Bow";
 		description = "[" + name + "]\nEquip to fire an arrow!";
+		price = 15;
 		down1 = setup("/objects/ITEM_BOW");
 	}
 }

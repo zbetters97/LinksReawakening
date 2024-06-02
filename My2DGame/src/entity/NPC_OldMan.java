@@ -1,13 +1,16 @@
 package entity;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import main.GamePanel;
 import object.EQP_Sword;
+import object.ITM_Hookshot;
 
 public class NPC_OldMan extends Entity{
 	
 	GamePanel gp;
+	int itemIndex = 0;
 	
 	public NPC_OldMan(GamePanel gp) {		
 		super(gp);
@@ -17,7 +20,7 @@ public class NPC_OldMan extends Entity{
 		type = type_npc;
 		name = "Old Man";
 		direction = "down";
-		speed = 1;
+		speed = 0;
 		animationSpeed = 15; 
 		
 		getImage();
@@ -43,7 +46,14 @@ public class NPC_OldMan extends Entity{
 	
 	public void speak() {		
 		super.speak();
-		gp.ui.npc = this;		
+		
+		// NPC HAS ITEM TO GIVE, REMOVE FIRST DIALOGUE STRING
+		if (inventory.size() > 0) {
+			gp.ui.npc = this;
+			dialogues = Arrays.copyOfRange(dialogues, 1, dialogues.length);
+			gp.ui.newItemIndex = itemIndex;
+			itemIndex++;
+		}
 	}
 	
 	public void setAction() {

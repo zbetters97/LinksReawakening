@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.Graphics2D;
+
 import entity.Entity;
 
 public class CollisionChecker {
@@ -23,7 +25,7 @@ public class CollisionChecker {
 		int entityRightCol = entityRightWorldX / gp.tileSize;
 		int entityTopRow = entityTopWorldY / gp.tileSize;
 		int entityBottomRow = entityBottomWorldY / gp.tileSize;
-		
+				
 		// detect the two tiles player is interacting with
 		int tileNum1 = 0, tileNum2 = 0;
 				
@@ -189,7 +191,7 @@ public class CollisionChecker {
 		
 		for (int i  = 0; i < target[1].length; i++) {
 			
-			if (target[gp.currentMap][i] != null) {
+			if (target[gp.currentMap][i] != null) {			
 				
 				// get entity's solid area position
 				entity.hitBox.x = entity.worldX + entity.hitBox.x;
@@ -204,8 +206,7 @@ public class CollisionChecker {
 				switch (entity.direction) {
 					case "up":					
 						entity.hitBox.y -= entity.speed;
-						break;
-					
+						break;					
 					case "upleft":
 						entity.hitBox.y -= entity.speed;
 						entity.hitBox.x -= entity.speed;
@@ -234,9 +235,11 @@ public class CollisionChecker {
 				}
 				
 				if (entity.hitBox.intersects(target[gp.currentMap][i].hitBox)) {	
-					if (target[gp.currentMap][i] != entity) {
-						entity.collisionOn = true;						
+					
+					if (target[gp.currentMap][i] != entity) {		
 						index = i;			
+						if (!target[gp.currentMap][i].diggable)
+							entity.collisionOn = true;
 					}
 				}
 				
@@ -247,6 +250,51 @@ public class CollisionChecker {
 				// reset object solid area
 				target[gp.currentMap][i].hitBox.x = target[gp.currentMap][i].hitBoxDefaultX;
 				target[gp.currentMap][i].hitBox.y = target[gp.currentMap][i].hitBoxDefaultY;
+			}
+		}		
+		return index;
+	}
+	
+	// DIGGING COLLISION
+	public int checkDigging() {
+		
+		int index = -1;
+		
+		for (int i  = 0; i < gp.iTile[1].length; i++) {
+			
+			if (gp.iTile[gp.currentMap][i] != null) {			
+				
+				// get player's solid area position
+				gp.player.hitBox.x = gp.player.worldX + gp.player.hitBox.x;
+				gp.player.hitBox.y = gp.player.worldY + gp.player.hitBox.y;
+				
+				// get iTile's solid area position
+				gp.iTile[gp.currentMap][i].hitBox.x = gp.iTile[gp.currentMap][i].worldX + gp.iTile[gp.currentMap][i].hitBox.x;
+				gp.iTile[gp.currentMap][i].hitBox.y = gp.iTile[gp.currentMap][i].worldY + gp.iTile[gp.currentMap][i].hitBox.y;
+				
+				// FIND iTILE WHERE SHOVEL WILL DIG ON (1 TILE OVER)
+				switch (gp.player.direction) {
+					case "up":											
+					case "upleft":
+					case "upright": gp.player.hitBox.y -= gp.tileSize;	break;	
+					case "down":						
+					case "downleft":	
+					case "downright": gp.player.hitBox.y += gp.tileSize; break;
+					case "left": gp.player.hitBox.x -= gp.tileSize; break;
+					case "right": gp.player.hitBox.x += gp.tileSize; break;	
+				}
+				
+				// IF iTile IS HIT BY PLAYER (1 TILE OVER)
+				if (gp.player.hitBox.intersects(gp.iTile[gp.currentMap][i].hitBox))					
+					index = i;	
+				
+				// reset player solid area
+				gp.player.hitBox.x = gp.player.hitBoxDefaultX;
+				gp.player.hitBox.y = gp.player.hitBoxDefaultY;
+				
+				// reset iTile solid area
+				gp.iTile[gp.currentMap][i].hitBox.x = gp.iTile[gp.currentMap][i].hitBoxDefaultX;
+				gp.iTile[gp.currentMap][i].hitBox.y = gp.iTile[gp.currentMap][i].hitBoxDefaultY;
 			}
 		}		
 		return index;

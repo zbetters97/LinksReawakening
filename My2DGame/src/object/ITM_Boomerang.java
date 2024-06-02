@@ -13,8 +13,8 @@ public class ITM_Boomerang extends Entity {
 
 		type = type_item;
 		name = "Boomerang";
-		description = "[" + name + "]\nIt'll always return to you!";
-		price = 100;
+		description = "[" + name + "]\nEquip to pull in far away\nitems!";
+		price = 40;
 		down1 = setup("/objects/ITEM_Boomerang");
 	}
 }
