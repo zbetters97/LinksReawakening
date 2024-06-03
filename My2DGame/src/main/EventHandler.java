@@ -57,23 +57,30 @@ public class EventHandler {
 		
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
-			if (hit(0, 23, 12, "up")) healingPool(gp.dialogueState);
-			else if (hit(0, 18, 20, "any")) fall(20, 20);
-			else if (hit(0, 18, 21, "any")) fall(20, 21);
-			else if (hit(0, 18, 22, "any")) fall(20, 22);
-			else if (hit(0, 10, 39, "any")) teleport(1, 12, 13);			
-			else if (hit(1, 12, 13, "any")) teleport(0, 10, 39);
-			else if (hit(1, 12, 9, "up")) speak(gp.npc[1][0]);
-			else if (hit(0, 12, 9, "any")) win();	
+			if (hit(0, 23, 12, "up", false)) healingPool(gp.dialogueState);
+			else if (hit(0, 18, 20, "any", true)) fall(20, 20);
+			else if (hit(0, 18, 21, "any", true)) fall(20, 21);
+			else if (hit(0, 18, 22, "any", true)) fall(20, 22);
+			else if (hit(0, 10, 39, "any", false)) teleport(1, 12, 13);			
+			else if (hit(1, 12, 13, "any", false)) teleport(0, 10, 39);
+			else if (hit(1, 12, 9, "up", true)) speak(gp.npc[1][0]);
+			else if (hit(0, 12, 9, "any", false)) win();	
 		}
 	}
 	
-	public boolean hit(int map, int col, int row, String reqDirection) {
+	public boolean hit(int map, int col, int row, String reqDirection, boolean fullTile) {
 		
 		boolean hit = false;
 		
 		if (map == gp.currentMap) {
 
+			if (fullTile) {
+				eventRect[map][col][row].x = 16;
+				eventRect[map][col][row].y = 16;
+				eventRect[map][col][row].width = 16;
+				eventRect[map][col][row].height = 16;
+			}
+			
 			// PLAYER HITBOX
 			gp.player.hitBox.x += gp.player.worldX;		
 			gp.player.hitBox.y += gp.player.worldY;

@@ -15,6 +15,6 @@ public class ITM_Boomerang extends Entity {
 		name = "Boomerang";
 		description = "[" + name + "]\nEquip to pull in far away\nitems!";
 		price = 40;
-		down1 = setup("/objects/ITEM_Boomerang");
+		down1 = setup("/objects/ITEM_BOOMERANG");
 	}
 }

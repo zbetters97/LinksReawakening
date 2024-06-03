@@ -14,6 +14,7 @@ import java.util.Comparator;
 
 import javax.swing.JPanel;
 
+import ai.PathFinder;
 import entity.*;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
@@ -85,9 +86,10 @@ public class GamePanel extends JPanel implements Runnable {
 	public ArrayList<Entity> particleList = new ArrayList<>();
 	public ArrayList<Entity> projectileList = new ArrayList<>();
 	public ArrayList<Entity> entityList = new ArrayList<>();	
-	
+			
 	public AssetSetter aSetter = new AssetSetter(this);
-		
+	public PathFinder pFinder = new PathFinder(this);
+	
 	/** CONSTRUCTOR **/
 	public GamePanel() {
 		

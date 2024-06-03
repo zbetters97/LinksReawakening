@@ -5,7 +5,10 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
-import object.*;
+import object.COL_Arrow;
+import object.COL_Heart;
+import object.COL_Rupee_Red;
+import object.PRJ_Arrow;
 
 public class EMY_Goblin extends Entity {
 
@@ -18,14 +21,12 @@ public class EMY_Goblin extends Entity {
 		
 		type = type_enemy;
 		name = "Goblin";
-		speed = 2;
-		baseSpeed = speed;
+		speed = 2; baseSpeed = speed; 
 		animationSpeed = 10;
-		maxLife = 4;
-		life = maxLife;
-		attack = 4;
-		defense = 0;
+		maxLife = 4; life = maxLife;
+		attack = 4; defense = 0;
 		exp = 8;
+		
 		projectile = new PRJ_Arrow(gp);
 		
 		// HIT BOX
@@ -45,9 +46,8 @@ public class EMY_Goblin extends Entity {
 		left2 = setup("/enemy/goblin_left_2");
 		right1 = setup("/enemy/goblin_right_1");
 		right2 = setup("/enemy/goblin_right_2");
-	}
-	
-	public void getGoblinAttackImage() {		
+	}	
+	public void getAttackImage() {		
 		attackUp1 = setup("/player/goblin_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
 		attackUp2 = setup("/player/goblin_attack_up_2", gp.tileSize, gp.tileSize * 2);		
 		attackDown1 = setup("/player/goblin_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
@@ -60,33 +60,60 @@ public class EMY_Goblin extends Entity {
 		attackRight2 = setup("/player/goblin_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}
 	
-	public void setAction() {
-
-		actionLockCounter++;
+	public void update() {
 		
-		if (actionLockCounter == 60) {		
-						
-			Random random = new Random();
-			int i = random.nextInt(100) + 1; // random number 1-100
-						
-			if (i <= 25) direction = "up";
-			if (i > 25 && i <= 50) direction = "down";
-			if (i > 50 && i <= 75) direction = "left";
-			if (i > 75) direction = "right";
+		super.update();
+		
+		// DISTANCE TO PLAYER (IN TILES)
+		int xDistance = Math.abs(worldX - gp.player.worldX);
+		int yDistance = Math.abs(worldY - gp.player.worldY);
+		int tileDistance = (xDistance + yDistance) / gp.tileSize;
+		
+		// FOLLOW PLAYER IF CLOSE		
+		if (!onPath && tileDistance < 5)			
+			onPath = true;		
+		
+		// STOP FOLLOWING IF TOO FAR
+		if (onPath && tileDistance > 10)
+			onPath = false;
+	}
+	
+	public void setAction() {
+		
+		if (onPath) {
 			
-			actionLockCounter = 0;
-		}		
+			int goalCol = (gp.player.worldX + gp.player.hitBox.x) / gp.tileSize;
+			int goalRow = (gp.player.worldY + gp.player.hitBox.y) / gp.tileSize;
+			
+			searchPath(goalCol, goalRow);
+			
+			// 1 SHOT/2 SECONDS (120 frames)
+			int i = new Random().nextInt(120) + 1;
+			if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
+				
+				projectile.set(worldX, worldY, direction, true, this);
+				gp.projectileList.add(projectile);
+				
+				shotAvailableCounter = 0;
+				
+				gp.playSE(3, 3);
+			}
+		}
+		else {
 
-		// 1 SHOT/2 SECONDS (120 frames)
-		int i = new Random().nextInt(120) + 1;
-		if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
-			
-			projectile.set(worldX, worldY, direction, true, this);
-			gp.projectileList.add(projectile);
-			
-			shotAvailableCounter = 0;
-			
-			gp.playSE(3, 3);
+			actionLockCounter++;			
+			if (actionLockCounter == 60) {		
+							
+				Random random = new Random();
+				int i = random.nextInt(100) + 1; // random number 1-100
+							
+				if (i <= 25) direction = "up";
+				if (i > 25 && i <= 50) direction = "down";
+				if (i > 50 && i <= 75) direction = "left";
+				if (i > 75) direction = "right";
+				
+				actionLockCounter = 0;
+			}
 		}
 	}
 	
@@ -101,11 +128,8 @@ public class EMY_Goblin extends Entity {
 		
 		int i = new Random().nextInt(100) + 1;
 		
-		if (i < 50) 
-			dropItem(new COL_Heart(gp));
-		if (i >= 50 && i < 75)
-			dropItem(new COL_Arrow(gp));
-		if (i >= 75 && i <= 100)
-			dropItem(new COL_Rupee_Blue(gp));
+		if (i < 50) dropItem(new COL_Heart(gp));
+		if (i >= 50 && i < 90) dropItem(new COL_Arrow(gp));
+		if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));
 	}
 }

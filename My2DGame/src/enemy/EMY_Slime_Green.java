@@ -1,37 +1,35 @@
 package enemy;
 
+import java.awt.Rectangle;
 import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
-import object.*;
+import object.COL_Heart;
+import object.COL_Rupee_Blue;
+import object.PRJ_Fireball;
 
-public class EMY_GreenSlime extends Entity {
+public class EMY_Slime_Green extends Entity {
 
 	GamePanel gp;
 	
-	public EMY_GreenSlime(GamePanel gp) {
+	public EMY_Slime_Green(GamePanel gp) {
 		super(gp);		
 		
 		this.gp = gp;
 		
 		type = type_enemy;
 		name = "Green Slime";
-		speed = 1;
-		baseSpeed = speed;
+		speed = 1; baseSpeed = speed;
 		animationSpeed = 15;
-		maxLife = 2;
-		life = maxLife;
-		attack = 3;
-		defense = 0;
+		maxLife = 2; life = maxLife;
+		attack = 3; defense = 0;
 		exp = 4;
+		
 		projectile = new PRJ_Fireball(gp);
 		
 		// HIT BOX
-		hitBox.x = 2;
-		hitBox.y = 18;
-		hitBox.width = 44;
-		hitBox.height = 30;
+		hitBox = new Rectangle(2, 18, 44, 30);
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
 		
@@ -79,7 +77,7 @@ public class EMY_GreenSlime extends Entity {
 		}
 	}
 	
-	// SLIME RUNS AWAY WHEN HIT
+	// RUN AWAY WHEN HIT
 	public void damageReaction() {
 		actionLockCounter = 0;
 		direction = gp.player.direction; 
@@ -90,11 +88,7 @@ public class EMY_GreenSlime extends Entity {
 		
 		int i = new Random().nextInt(100) + 1;
 		
-		if (i < 50) 
-			dropItem(new COL_Heart(gp));
-		if (i >= 50 && i < 75)
-			dropItem(new COL_Arrow(gp));
-		if (i >= 75 && i <= 100)
-			dropItem(new COL_Rupee_Blue(gp));
+		if (i < 50) dropItem(new COL_Heart(gp));
+		else dropItem(new COL_Rupee_Blue(gp));
 	}
 }

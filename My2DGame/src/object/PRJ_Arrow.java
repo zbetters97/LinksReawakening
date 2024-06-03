@@ -22,6 +22,8 @@ public class PRJ_Arrow extends Projectile {
 		alive = false;
 		
 		hitBox = new Rectangle(12, 16, 40, 32);
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
 		
 		getImage();
 	}

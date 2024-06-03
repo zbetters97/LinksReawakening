@@ -1,8 +1,8 @@
 Player name
-JENNA
+LINK
 Fullscreen
 False
 Music volume
-5
+3
 Sound effects volume
-5
+3

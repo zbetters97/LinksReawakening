@@ -1,11 +1,12 @@
 package enemy;
 
+import java.awt.Rectangle;
 import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
-import object.COL_Arrow;
 import object.COL_Heart;
+import object.COL_Rupee_Green;
 
 public class EMY_Bat extends Entity {
 
@@ -18,20 +19,14 @@ public class EMY_Bat extends Entity {
 		
 		type = type_enemy;
 		name = "Bat";
-		speed = 2;
-		baseSpeed = speed;
+		speed = 2; baseSpeed = speed;
 		animationSpeed = 5;
-		maxLife = 1;
-		life = maxLife;
-		attack = 2;
-		defense = 0;
+		maxLife = 2; life = maxLife;
+		attack = 2; defense = 0;
 		exp = 2;
 		
 		// HIT BOX
-		hitBox.x = 2;
-		hitBox.y = 18;
-		hitBox.width = 44;
-		hitBox.height = 30;
+		hitBox = new Rectangle(2, 18, 44, 30);
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
 		
@@ -49,28 +44,55 @@ public class EMY_Bat extends Entity {
 		right2 = setup("/enemy/bat_down_2");
 	}
 	
-	public void setAction() {
-
-		actionLockCounter++;
+	public void update() {
 		
-		if (actionLockCounter == 25) {		
-						
-			Random random = new Random();
-			int i = random.nextInt(100) + 1; // random number 1-100
-						
-			if (i <= 25) direction = "up";
-			if (i > 25 && i <= 50) direction = "down";
-			if (i > 50 && i <= 75) direction = "left";
-			if (i > 75) direction = "right";
+		super.update();
+		
+		// DISTANCE TO PLAYER (IN TILES)
+		int xDistance = Math.abs(worldX - gp.player.worldX);
+		int yDistance = Math.abs(worldY - gp.player.worldY);
+		int tileDistance = (xDistance + yDistance) / gp.tileSize;
+		
+		// FOLLOW PLAYER IF CLOSE		
+		if (!onPath && tileDistance < 5)			
+			onPath = true;		
+		
+		// STOP FOLLOWING IF TOO FAR
+		if (onPath && tileDistance > 10)
+			onPath = false;
+	}
+	
+	public void setAction() {
+		
+		if (onPath) {
 			
-			actionLockCounter = 0;
+			int goalCol = (gp.player.worldX + gp.player.hitBox.x) / gp.tileSize;
+			int goalRow = (gp.player.worldY + gp.player.hitBox.y) / gp.tileSize;
+			
+			searchPath(goalCol, goalRow);
+		}
+		else {
+			
+			actionLockCounter++;			
+			if (actionLockCounter == 25) {		
+							
+				Random random = new Random();
+				int i = random.nextInt(100) + 1; // random number 1-100
+							
+				if (i <= 25) direction = "up";
+				if (i > 25 && i <= 50) direction = "down";
+				if (i > 50 && i <= 75) direction = "left";
+				if (i > 75) direction = "right";
+				
+				actionLockCounter = 0;
+			}
 		}
 	}
 	
-	// SLIME RUNS AWAY WHEN HIT
+	// BAT CHASES PLAYER WHEN HIT
 	public void damageReaction() {
 		actionLockCounter = 0;
-		direction = gp.player.direction; 
+		onPath = true;
 	}
 	
 	// DROPPED ITEM
@@ -78,9 +100,7 @@ public class EMY_Bat extends Entity {
 		
 		int i = new Random().nextInt(100) + 1;
 		
-		if (i < 50) 
-			dropItem(new COL_Heart(gp));
-		if (i >= 50)
-			dropItem(new COL_Arrow(gp));
+		if (i < 50) dropItem(new COL_Heart(gp));
+		else dropItem(new COL_Rupee_Green(gp));
 	}
 }

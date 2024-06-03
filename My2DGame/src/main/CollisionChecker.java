@@ -1,6 +1,6 @@
 package main;
 
-import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 import entity.Entity;
 
@@ -12,7 +12,8 @@ public class CollisionChecker {
 	public CollisionChecker(GamePanel gp) {		
 		this.gp = gp;
 	}
-	
+
+	// TILE COLLISION
 	public void checkTile(Entity entity) {
 		
 		// COLLISION BOX (left side, right side, top, bottom)
@@ -111,11 +112,11 @@ public class CollisionChecker {
 		}		
 
 		// if tile 1 or 2 has collision, turn on collision		
-		if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision)
-			entity.collisionOn = true;		
+		if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) 
+			entity.collisionOn = true;				
 	}
 	
-	// if entity hits object, return index of object
+	// OBJECT COLLISION
 	public int checkObject(Entity entity, boolean player) {
 		
 		int index = -1;
@@ -253,6 +254,115 @@ public class CollisionChecker {
 			}
 		}		
 		return index;
+	}
+	
+	// EXPLOSION COLLISION
+	public ArrayList<Integer> checkExplosion(Entity entity, Entity[][] target) {
+		
+		ArrayList<Integer> tiles = new ArrayList<Integer>();
+		
+		for (int i  = 0; i < target[1].length; i++) {
+			
+			if (target[gp.currentMap][i] != null) {	
+				
+				// bomb hitbox 3x3 radius
+				entity.hitBox.x = entity.worldX - gp.tileSize;
+				entity.hitBox.y = entity.worldY - gp.tileSize;
+				entity.hitBox.width = gp.tileSize * 3;
+				entity.hitBox.height = gp.tileSize * 3;
+				
+				// get iTile's hitbox position
+				target[gp.currentMap][i].hitBox.x = target[gp.currentMap][i].worldX + target[gp.currentMap][i].hitBox.x;
+				target[gp.currentMap][i].hitBox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitBox.y;
+				
+				// IF iTile IS HIT BY BOMB
+				if (entity.hitBox.intersects(target[gp.currentMap][i].hitBox)) 			
+					tiles.add(i);				
+				
+				// reset bomb hitbox
+				entity.hitBox.x = entity.hitBoxDefaultX;
+				entity.hitBox.y = entity.hitBoxDefaultY;
+				entity.hitBox.width = entity.hitBoxDefaultWidth;
+				entity.hitBox.height = entity.hitBoxDefaultHeight;				
+				
+				// reset iTile hitbox
+				target[gp.currentMap][i].hitBox.x = target[gp.currentMap][i].hitBoxDefaultX;
+				target[gp.currentMap][i].hitBox.y = target[gp.currentMap][i].hitBoxDefaultY;
+			}
+		}		
+		return tiles;
+	}
+	
+	// EXPLOSION iTILE COLLISION
+	public ArrayList<Integer> checkiTileExplosion(Entity entity) {
+		
+		ArrayList<Integer> tiles = new ArrayList<Integer>();
+		
+		for (int i  = 0; i < gp.iTile[1].length; i++) {
+			
+			if (gp.iTile[gp.currentMap][i] != null) {	
+				
+				// bomb hitbox 3x3 radius
+				entity.hitBox.x = entity.worldX - gp.tileSize;
+				entity.hitBox.y = entity.worldY - gp.tileSize;
+				entity.hitBox.width = gp.tileSize * 3;
+				entity.hitBox.height = gp.tileSize * 3;
+				
+				// get iTile's hitbox position
+				gp.iTile[gp.currentMap][i].hitBox.x = gp.iTile[gp.currentMap][i].worldX + gp.iTile[gp.currentMap][i].hitBox.x;
+				gp.iTile[gp.currentMap][i].hitBox.y = gp.iTile[gp.currentMap][i].worldY + gp.iTile[gp.currentMap][i].hitBox.y;
+				
+				if (gp.iTile[gp.currentMap][i].bombable)
+				
+				// IF iTile IS HIT BY BOMB
+				if (entity.hitBox.intersects(gp.iTile[gp.currentMap][i].hitBox) && 
+						gp.iTile[gp.currentMap][i].bombable) 			
+					tiles.add(i);				
+				
+				// reset bomb hitbox
+				entity.hitBox.x = entity.hitBoxDefaultX;
+				entity.hitBox.y = entity.hitBoxDefaultY;
+				entity.hitBox.width = entity.hitBoxDefaultWidth;
+				entity.hitBox.height = entity.hitBoxDefaultHeight;				
+				
+				// reset iTile hitbox
+				gp.iTile[gp.currentMap][i].hitBox.x = gp.iTile[gp.currentMap][i].hitBoxDefaultX;
+				gp.iTile[gp.currentMap][i].hitBox.y = gp.iTile[gp.currentMap][i].hitBoxDefaultY;
+			}
+		}		
+		return tiles;
+	}
+	
+	// EXPLOSION PLAYER COLLISION
+	public boolean checkExplosion(Entity entity) {
+		
+		boolean contactPlayer = false;
+		
+		// get bomb's solid area position
+		entity.hitBox.x = entity.worldX - gp.tileSize;
+		entity.hitBox.y = entity.worldY - gp.tileSize;
+		entity.hitBox.width = gp.tileSize * 3;
+		entity.hitBox.height = gp.tileSize * 3;
+		
+		// get iTile's solid area position
+		gp.player.hitBox.x = gp.player.worldX + gp.player.hitBox.x;
+		gp.player.hitBox.y = gp.player.worldY + gp.player.hitBox.y;
+		
+		// IF iTile IS HIT BY PLAYER (1 TILE OVER)
+		if (entity.hitBox.intersects(gp.player.hitBox))					
+			contactPlayer = true;
+		
+		// reset bomb solid area
+		entity.hitBox.x = entity.hitBoxDefaultX;
+		entity.hitBox.y = entity.hitBoxDefaultY;
+		entity.hitBox.width = entity.hitBoxDefaultWidth;
+		entity.hitBox.height = entity.hitBoxDefaultHeight;				
+		
+		// reset iTile solid area
+		gp.player.hitBox.x = gp.player.hitBoxDefaultX;
+		gp.player.hitBox.y = gp.player.hitBoxDefaultY;
+				
+		return contactPlayer;
 	}
 	
 	// DIGGING COLLISION

@@ -30,6 +30,7 @@ public class Entity {
 	public int type;
 	public int life, maxLife; // 1 life = half heart
 	public int arrows, maxArrows;
+	public int bombs, maxBombs;
 	public int speed, baseSpeed, runSpeed, animationSpeed;
 	public int level;
 	public int strength, dexterity;
@@ -104,44 +105,17 @@ public class Entity {
 	
 	// DEFAULT HITBOX
 	public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
-	public int hitBoxDefaultX, hitBoxDefaultY;		
+	public int hitBoxDefaultX, hitBoxDefaultY, hitBoxDefaultWidth, hitBoxDefaultHeight;	
 	public boolean collisionOn = false;
 	
 	public String dialogues[] = new String[20];
 	int dialogueIndex = 0;
 	
+	public boolean onPath = false;
+	boolean pathCompleted = false;
+	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
-	}
-	
-	public void speak() { 
-		
-		gp.keyH.spacePressed = false;
-		
-		if (dialogues[dialogueIndex] == null) 
-			dialogueIndex = 0;
-		
-		gp.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;	
-		
-		switch (gp.player.direction) {		
-			case "up":
-			case "upleft":
-			case "upright":
-				direction = "down";
-				break;
-			case "down":
-			case "downleft":
-			case "downright":
-				direction = "up";
-				break;
-			case "left":
-				direction = "right";
-				break;
-			case "right":
-				direction = "left";
-				break;		
-		}		
 	}
 	
 	// CHILD ONLY	
@@ -149,59 +123,14 @@ public class Entity {
 	public void setAction() { }	
 	public void damageReaction() { }	
 	public void checkDrop() { }
-	public Color getParticleColor() {
-		Color color = new Color(0,0,0);
-		return color;
-	}	
-	public int getParticleSize() {		
-		int size = 0; // 0px
-		return size;
-	}	
-	public int getParticleSpeed() {
-		int speed = 0;
-		return speed;		
-	}	
-	public int getParticleMaxLife() {
-		int maxLife = 0;
-		return maxLife;
-	}
-	
-	public void generateParticle(Entity generator, Entity target) {
-
-		Color color = generator.getParticleColor();
-		int size = generator.getParticleSize();
-		int speed = generator.getParticleSpeed();
-		int maxLife = generator.getParticleMaxLife();
-		
-		Particle p1 = new Particle(gp, generator, color, size, speed, maxLife, -2, -1);
-		Particle p2 = new Particle(gp, generator, color, size, speed, maxLife, -2, 1);
-		Particle p3 = new Particle(gp, generator, color, size, speed, maxLife, 2, -1);
-		Particle p4 = new Particle(gp, generator, color, size, speed, maxLife, 2, 1);
-		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
-	}
-	
-	public void changeAlpha(Graphics2D g2, float alphaValue) {
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
-	}
 	
 	public void update() { 
 		
 		// calls child class method
 		setAction();
 		
-		collisionOn = false;
-		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
-		gp.cChecker.checkEntity(this, gp.npc);
-		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkObject(this, false);
-		boolean contactPlayer = gp.cChecker.checkPlayer(this);
-		
-		if (this.type == type_enemy && contactPlayer) {
-			damagePlayer(attack);  
-		}
-		
 		// if no collision detected
+		checkCollision();
 		if (!collisionOn) { 
 						
 			// move player in direction pressed
@@ -249,7 +178,124 @@ public class Entity {
 		}
 	}
 	
-	public void damagePlayer (int attack) {
+	public void checkCollision() {		
+		collisionOn = false;
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.enemy);
+		gp.cChecker.checkObject(this, false);
+		boolean contactPlayer = gp.cChecker.checkPlayer(this);
+		
+		if (this.type == type_enemy && contactPlayer) 
+			damagePlayer(attack);  	
+	}
+	
+	public void speak() { 
+		
+		gp.keyH.spacePressed = false;
+		
+		if (dialogues[dialogueIndex] == null) 
+			dialogueIndex = 0;
+		
+		gp.ui.currentDialogue = dialogues[dialogueIndex];
+		dialogueIndex++;	
+		
+		switch (gp.player.direction) {		
+			case "up":
+			case "upleft":
+			case "upright":
+				direction = "down";
+				break;
+			case "down":
+			case "downleft":
+			case "downright":
+				direction = "up";
+				break;
+			case "left":
+				direction = "right";
+				break;
+			case "right":
+				direction = "left";
+				break;		
+		}		
+	}
+	
+	public void searchPath(int goalCol, int goalRow) {
+		
+		int startCol = (worldX + hitBox.x) / gp.tileSize;
+		int startRow = (worldY + hitBox.y) / gp.tileSize;
+		
+		// SET PATH
+		gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
+		
+		// PATH FOUND
+		if (gp.pFinder.search()) {
+			
+			// NEXT WORLDX & WORLDY
+			int nextX = gp.pFinder.pathList.get(0).col * gp.tileSize;
+			int nextY = gp.pFinder.pathList.get(0).row * gp.tileSize;
+						
+			// ENTITY HITBOX
+			int eLeftX = worldX + hitBox.x;
+			int eRightX = worldX + hitBox.x + hitBox.width;
+			int eTopY = worldY + hitBox.y;
+			int eBottomY = worldY + hitBox.y + hitBox.height;
+			
+			// FIND DIRECTION TO NEXT NODE
+			// UP OR DOWN
+			if (eTopY > nextY && eLeftX >= nextX && eRightX < nextX + gp.tileSize) 
+				direction = "up";			
+			else if (eTopY < nextY && eLeftX >= nextX && eRightX < nextX + gp.tileSize)
+				direction = "down";			
+			// LEFT OR RIGHT
+			else if (eTopY >= nextY && eBottomY < nextY + gp.tileSize) {				
+				if (eLeftX > nextX) direction = "left";
+				if (eLeftX < nextX) direction = "right";
+			}
+			// UP OR LEFT
+			else if (eTopY > nextY && eLeftX > nextX) {				
+				direction = "up";				
+				checkCollision();
+				if (collisionOn) direction = "left";			
+			}
+			// UP OR RIGHT
+			else if (eTopY > nextY && eLeftX < nextX) {
+				direction = "up";
+				checkCollision();
+				if (collisionOn) direction = "right";		
+			}
+			// DOWN OR LEFT
+			else if (eTopY < nextY && eLeftX > nextX) {
+				direction = "down";
+				checkCollision();
+				if (collisionOn) direction = "left";
+			}
+			// DOWN OR RIGHT
+			else if (eTopY < nextY && eLeftX < nextX) {
+				direction = "down";
+				checkCollision();
+				if (collisionOn) direction = "right";
+			}
+		}
+		
+		
+		// GOAL REACHED (ONLY NPC)		
+		if (gp.pFinder.pathList.size() > 0) {		
+			int nextCol = gp.pFinder.pathList.get(0).col;
+			int nextRow = gp.pFinder.pathList.get(0).row;
+			if (nextCol == goalCol && nextRow == goalRow && type == type_npc) {
+				onPath = false;	
+				pathCompleted = true;
+			}
+		}
+		else {
+			onPath = false;	
+			speed = 0;
+		}
+	}
+	
+	public void damagePlayer(int attack) {
 				
 		if (!gp.player.invincible && gp.player.alive) {
 			gp.playSE(2, 0);
@@ -261,6 +307,67 @@ public class Entity {
 			gp.player.invincible = true;
 		}
 	}
+			
+	public void hurtAnimation(Graphics2D g2) {
+		
+		invincibleCounter++;	
+		
+		if (invincibleCounter % 5 == 0) 
+			changeAlpha(g2, 0.2f);
+	}
+	
+	public void dyingAnimation(Graphics2D g2) {
+		
+		dyingCounter++;	
+		
+		if (dyingCounter % 5 == 0) 
+			changeAlpha(g2, 0.2f);
+		
+		if (dyingCounter > 40) 
+			alive = false;		
+	}
+	
+	public void dropItem(Entity droppedItem) { 
+		
+		for (int i = 0; i < gp.obj[1].length; i++) {			
+			if (gp.obj[gp.currentMap][i] == null) {
+				gp.obj[gp.currentMap][i] = droppedItem;
+				gp.obj[gp.currentMap][i].worldX = worldX;
+				gp.obj[gp.currentMap][i].worldY = worldY;
+				break;
+			}
+		}
+	}
+	
+	public void generateParticle(Entity generator, Entity target) {
+
+		Color color = generator.getParticleColor();
+		int size = generator.getParticleSize();
+		int speed = generator.getParticleSpeed();
+		int maxLife = generator.getParticleMaxLife();
+		
+		Particle p1 = new Particle(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle p2 = new Particle(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle p3 = new Particle(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle p4 = new Particle(gp, generator, color, size, speed, maxLife, 2, 1);
+		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
+	}
+	public Color getParticleColor() {
+		Color color = new Color(0,0,0);
+		return color;
+	}	
+	public int getParticleSize() {		
+		int size = 0; // 0px
+		return size;
+	}	
+	public int getParticleSpeed() {
+		int speed = 0;
+		return speed;		
+	}	
+	public int getParticleMaxLife() {
+		int maxLife = 0;
+		return maxLife;
+	}	
 	
 	public void draw(Graphics2D g2) {
 		
@@ -340,46 +447,18 @@ public class Entity {
 			g2.drawImage(image, screenX, screenY, null);			
 
 			// DRAW HITBOX
-			// DRAW HITBOX
 			if (gp.keyH.debug) {
 				g2.setColor(Color.RED);
 				g2.drawRect(screenX + hitBox.x, screenY + hitBox.y, hitBox.width, hitBox.height);
 			}
+			
 			// RESET OPACITY
 			changeAlpha(g2, 1f);			
 		}
 	}
 	
-	public void hurtAnimation(Graphics2D g2) {
-		
-		invincibleCounter++;	
-		
-		if (invincibleCounter % 5 == 0) 
-			changeAlpha(g2, 0.2f);
-	}
-	
-	public void dyingAnimation(Graphics2D g2) {
-		
-		dyingCounter++;	
-		
-		if (dyingCounter % 5 == 0) 
-			changeAlpha(g2, 0.2f);
-		
-		if (dyingCounter > 40) 
-			alive = false;		
-	}
-	
-	// CALLED BY CHILD WHEN NOT ALIVE
-	public void dropItem(Entity droppedItem) { 
-		
-		for (int i = 0; i < gp.obj[1].length; i++) {			
-			if (gp.obj[gp.currentMap][i] == null) {
-				gp.obj[gp.currentMap][i] = droppedItem;
-				gp.obj[gp.currentMap][i].worldX = worldX;
-				gp.obj[gp.currentMap][i].worldY = worldY;
-				break;
-			}
-		}
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 	
 	public BufferedImage setup(String imagePath) {	

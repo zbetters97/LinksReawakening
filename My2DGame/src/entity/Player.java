@@ -34,6 +34,7 @@ public class Player extends Entity {
 	
 	public Projectile projectile_sword;
 	public Projectile projectile_arrow;
+	public Projectile projectile_bomb;
 	public Projectile projectile_hookshot;
 	public Projectile projectile_boomerang;
 			
@@ -50,8 +51,7 @@ public class Player extends Entity {
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 						
 		// HITBOX (x, y, width, height)
-		hitBox = new Rectangle(8, 16, 32, 32); 
-		
+		hitBox = new Rectangle(8, 16, 32, 32); 		
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
 		
@@ -82,22 +82,24 @@ public class Player extends Entity {
 		currentShield = new EQP_Shield(gp);
 		projectile_sword = new PRJ_Sword_Beam(gp);
 		projectile_arrow = new PRJ_Arrow(gp);
+		projectile_bomb = new PRJ_Bomb(gp);
 		projectile_hookshot = new PRJ_Hookshot(gp);
 		projectile_boomerang = new PRJ_Boomerang(gp);
 		
 		maxArrows = 5; arrows = maxArrows;
+		maxBombs = 5; bombs = maxBombs;
 		
 		attack = getAttack();
 		defense = getDefense();
 	}	
 	public void setDefaultPosition() {	
 		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;
+		worldY = gp.tileSize * 22;
 		direction = "down";
 		speed = baseSpeed;
 	}
 	public void setItems() {
-		inventory.add(currentShield);
+		inventory.add(currentShield);	
 	}
 	
 	public int getAttack() {
@@ -353,7 +355,7 @@ public class Player extends Entity {
 				break;	
 			case "Boomerang": 					
 				if (!projectile_boomerang.alive && shotAvailableCounter == 30) { 			
-								
+												
 					// STOP MOVEMENT
 					keyH.upPressed = false; keyH.downPressed  = false;
 					keyH.leftPressed  = false; keyH.rightPressed  = false;
@@ -376,6 +378,18 @@ public class Player extends Entity {
 			case "Shovel":				
 				digging = true;
 				attackCanceled = true;
+				break;
+			case "Bomb":
+				if (!projectile_bomb.alive && shotAvailableCounter == 30 && 
+						projectile_bomb.hasResource(this)) {
+					
+					projectile_bomb.set(worldX, worldY, direction, true, this);			
+					gp.projectileList.add(projectile_bomb);			
+					
+					projectile_bomb.subtractResource(this);
+					
+					shotAvailableCounter = 0;
+				}
 				break;
 		}	
 	}
@@ -546,8 +560,6 @@ public class Player extends Entity {
 			gp.playSE(1, 3);
 			level++;
 			nextLevelEXP *= 2;
-			maxLife += 2;
-			life = maxLife;
 			strength++;
 			dexterity++;
 			attack = getAttack();

@@ -1,17 +1,19 @@
 package entity;
 
+import java.util.ArrayList;
+
 import main.GamePanel;
 
 public class Projectile extends Entity {
 
 	Entity user;
+	public boolean active = false;
 	
 	public Projectile(GamePanel gp) {
 		super(gp);
 	}
 	
-	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {
-		
+	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {		
 		this.worldX = worldX;
 		this.worldY = worldY;
 		this.direction = direction;
@@ -32,9 +34,94 @@ public class Projectile extends Entity {
 			else if (name.equals("Boomerang")) {
 				useBoomerang();
 			}
+			else if (name.equals("Bomb")) {
+				useBomb();
+			}
 			// NON-HOOKSHOT PROJECTILE
 			else {		
 				useProjectile();
+			}
+		}
+	}
+	
+	public void useBomb() {
+		
+		if (!active) {
+						
+			// CHECK TILE COLLISION
+			collisionOn = false;		
+			gp.cChecker.checkTile(this);		
+			gp.cChecker.checkEntity(this, gp.iTile);
+			
+			if (!collisionOn) {
+				
+				// PLACED IN DIRECTION FACING
+				switch (direction) {
+					case "up": 
+					case "upleft": 
+					case "upright": worldY -= gp.tileSize / 1.5; break;			
+					case "down":
+					case "downleft": 
+					case "downright": worldY += gp.tileSize / 1.5; break;			
+					case "left": worldX -= gp.tileSize / 1.5; break;
+					case "right": worldX += gp.tileSize / 1.5; break;
+				}
+			}
+			else {
+				worldX = gp.player.worldX;
+				worldY = gp.player.worldY;
+			}
+			active = true;
+		}
+		else {
+			
+			// FUSE ANIMATION
+			spriteCounter++;
+			if (spriteCounter > animationSpeed) { // speed of sprite change
+				
+				if (spriteNum == 1) spriteNum = 2;
+				else if (spriteNum == 2) spriteNum = 1;
+				
+				spriteCounter = 0;
+			}
+			
+			// REMOVE AFTER X FRAMES
+			life--;
+			if (life <= 0) { 
+				
+				gp.playSE(3, 8);
+				generateParticle(this, this);
+				
+				// DAMAGE SURROUNDING ENEMIES
+				ArrayList<Integer> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
+				if (enemyIndexes.size() > 0) {
+					for (Integer e : enemyIndexes) 
+						gp.player.damageEnemy(e, attack);						
+				}
+				
+				// DAMAGE SURROUNDING iTILES
+				ArrayList<Integer> iTileIndexes = gp.cChecker.checkiTileExplosion(this);
+				if (iTileIndexes.size() > 0) {
+					for (Integer i : iTileIndexes) {
+
+						gp.iTile[gp.currentMap][i].playSE();
+						gp.iTile[gp.currentMap][i].life--;
+						gp.iTile[gp.currentMap][i].invincible = true;
+								
+						generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
+						
+						if (gp.iTile[gp.currentMap][i].life == 0)
+							gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();				
+					}
+				}			
+				
+				// DAMAGE PLAYER
+				boolean contactPlayer = gp.cChecker.checkExplosion(this);
+				if (contactPlayer && !gp.player.invincible) 
+					damagePlayer(attack);				
+				
+				active = false;
+				alive = false;				
 			}
 		}
 	}
@@ -192,6 +279,7 @@ public class Projectile extends Entity {
 		// MOVING ANIMATION
 		spriteCounter++;
 		if (spriteCounter > animationSpeed) { // speed of sprite change
+			gp.playSE(3, 9);
 			
 			if (spriteNum == 1) spriteNum = 2;
 			else if (spriteNum == 2) spriteNum = 1;

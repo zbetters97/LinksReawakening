@@ -5,6 +5,7 @@ import entity.*;
 import object.*;
 import tile_interactive.IT_DigSpot;
 import tile_interactive.IT_DryTree;
+import tile_interactive.IT_Wall;
 
 public class AssetSetter {
 	
@@ -24,6 +25,9 @@ public class AssetSetter {
 		gp.iTile[mapNum][3] = new IT_DryTree(gp, 10, 22);
 		gp.iTile[mapNum][4] = new IT_DigSpot(gp, mapNum, 30, 36);
 		gp.iTile[mapNum][5] = new IT_DigSpot(gp, mapNum, 27, 16);
+		
+		gp.iTile[mapNum][6] = new IT_Wall(gp, 30, 21);
+		gp.iTile[mapNum][7] = new IT_Wall(gp, 32, 21);
 	}
 	public void setObject() {		
 		
@@ -38,8 +42,8 @@ public class AssetSetter {
 		gp.obj[mapNum][1].worldY = gp.tileSize * 21;
 		
 		gp.obj[mapNum][2] = new ITM_Hookshot(gp);
-		gp.obj[mapNum][2].worldX = gp.tileSize * 35;
-		gp.obj[mapNum][2].worldY = gp.tileSize * 10;
+		gp.obj[mapNum][2].worldX = gp.tileSize * 31;
+		gp.obj[mapNum][2].worldY = gp.tileSize * 21;
 		
 		gp.obj[mapNum][3] = new ITM_Boots(gp);
 		gp.obj[mapNum][3].worldX = gp.tileSize * 18;
@@ -71,7 +75,7 @@ public class AssetSetter {
 		gp.enemy[mapNum][1].worldX = gp.tileSize * 21;
 		gp.enemy[mapNum][1].worldY = gp.tileSize * 37;
 		
-		gp.enemy[mapNum][2] = new EMY_GreenSlime(gp);
+		gp.enemy[mapNum][2] = new EMY_Slime_Green(gp);
 		gp.enemy[mapNum][2].worldX = gp.tileSize * 36;
 		gp.enemy[mapNum][2].worldY = gp.tileSize * 31;
 		

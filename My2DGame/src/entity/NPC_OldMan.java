@@ -1,11 +1,10 @@
 package entity;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.awt.Rectangle;
 
 import main.GamePanel;
 import object.EQP_Sword;
-import object.ITM_Hookshot;
+import object.ITM_Bomb;
 
 public class NPC_OldMan extends Entity{
 	
@@ -23,6 +22,10 @@ public class NPC_OldMan extends Entity{
 		speed = 0;
 		animationSpeed = 15; 
 		
+		hitBox = new Rectangle(8, 16, 32, 32); 		
+		hitBoxDefaultX = hitBox.x;
+		hitBoxDefaultY = hitBox.y;
+		
 		getImage();
 		setItems();
 		setDialogue();
@@ -36,41 +39,55 @@ public class NPC_OldMan extends Entity{
 	}
 	public void setItems() {		
 		inventory.add(new EQP_Sword(gp));
+		inventory.add(new ITM_Bomb(gp));
 	}
 	
 	public void setDialogue() {
 		dialogues[0] = "It's dangerous to go alone!\nTake this!";
-		dialogues[1] = "I took an arrow to the knee.";
-		dialogues[2] = "You are winner";
+		dialogues[1] = "The northeast region is where my home lies.\nIs it safe to walk there?";
+		dialogues[2] = "Thank you, kind boy. Here is a gift for you.";
+		dialogues[3] = "It's a secret to everyone.";
 	}
 	
 	public void speak() {		
-		super.speak();
 		
-		// NPC HAS ITEM TO GIVE, REMOVE FIRST DIALOGUE STRING
-		if (inventory.size() > 0) {
+		if (inventory.size() == 2) {
 			gp.ui.npc = this;
-			dialogues = Arrays.copyOfRange(dialogues, 1, dialogues.length);
 			gp.ui.newItemIndex = itemIndex;
-			itemIndex++;
+		}		
+		else if (inventory.size() == 1 && !pathCompleted) {			
+			onPath = true;
+		}	
+		
+		if (pathCompleted && inventory.size() > 0) {
+			gp.ui.npc = this;
+			gp.ui.newItemIndex = itemIndex;	
+			dialogueIndex = 2;
+
 		}
+		if (inventory.size() == 0) 
+			dialogueIndex = 3;			
+		
+//		dialogues = Arrays.copyOfRange(dialogues, 1, dialogues.length);
+		
+		super.speak();			
 	}
 	
 	public void setAction() {
 		
-		// MOVE EVERY 3 SECONDS
-		actionLockCounter++;
-		if (actionLockCounter == 180) {		
-						
-			Random random = new Random();
-			int i = random.nextInt(100) + 1;
-						
-			if (i <= 25) direction = "up";
-			if (i > 25 && i <= 50) direction = "down";
-			if (i > 50 && i <= 75) direction = "left";
-			if (i > 75) direction = "right";
+		if (pathCompleted) 
+			speed = 0;		
+		
+		// NPC IS MOVING TO LOCATION
+		if (onPath) {
 			
-			actionLockCounter = 0;
+			int goalCol = 37;
+			int goalRow = 9;
+			
+			speed = 2;
+			dialogueIndex = 1;
+			
+			searchPath(goalCol, goalRow);
 		}
 	}
 }

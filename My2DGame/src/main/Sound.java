@@ -57,6 +57,8 @@ public class Sound {
 		objects[5] = getClass().getResource("/sound/OBJ_HOOKSHOT.wav");
 		objects[6] = getClass().getResource("/sound/OBJ_BOOTS.wav");
 		objects[7] = getClass().getResource("/sound/OBJ_SHOVEL.wav");
+		objects[8] = getClass().getResource("/sound/OBJ_BOMB.wav");
+		objects[9] = getClass().getResource("/sound/OBJ_BOOMERANG.wav");
 		
 		// 4
 		enemy[0] = getClass().getResource("/sound/EMY_NORMAL_HIT.wav");

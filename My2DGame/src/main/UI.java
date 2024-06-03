@@ -29,7 +29,7 @@ public class UI {
 	public int commandNum = 0;
 	
 	// HUD
-	BufferedImage heart_full, heart_half, heart_empty, rupee, boots_hud;
+	BufferedImage heart_full, heart_half, heart_empty, rupee;
 	public String rupee_count = "0";
 	
 	// OPTIONS MEU
@@ -345,6 +345,13 @@ public class UI {
 				g2.setColor(Color.BLACK);
 				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
 				g2.drawString(arrowCount, x + 35, y + gp.tileSize);
+			}
+			// DRAW BOMB COUNT
+			else if (gp.player.currentItem.name.equals("Bomb")) {	
+				String bombCount = Integer.toString(gp.player.bombs);		
+				g2.setColor(Color.BLACK);
+				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
+				g2.drawString(bombCount, x + 35, y + gp.tileSize);
 			}
 		}
 		
