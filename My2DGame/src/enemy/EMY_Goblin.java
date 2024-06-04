@@ -7,7 +7,9 @@ import entity.Entity;
 import main.GamePanel;
 import object.COL_Arrow;
 import object.COL_Heart;
+import object.COL_Rupee_Blue;
 import object.COL_Rupee_Red;
+import object.ITM_Bow;
 import object.PRJ_Arrow;
 
 public class EMY_Goblin extends Entity {
@@ -21,18 +23,17 @@ public class EMY_Goblin extends Entity {
 		
 		type = type_enemy;
 		name = "Goblin";
-		speed = 2; baseSpeed = speed; 
+		speed = 2; defaultSpeed = speed; 
 		animationSpeed = 10;
-		maxLife = 4; life = maxLife;
 		attack = 4; defense = 0;
 		exp = 8;
-		
-		projectile = new PRJ_Arrow(gp);
-		
-		// HIT BOX
+		maxLife = 6; life = maxLife;
+						
 		hitBox = new Rectangle(8, 16, 32, 32); 
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
+		
+		projectile = new PRJ_Arrow(gp);
 		
 		getImage();
 	}
@@ -92,7 +93,7 @@ public class EMY_Goblin extends Entity {
 			if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
 				
 				projectile.set(worldX, worldY, direction, true, this);
-				gp.projectileList.add(projectile);
+				addProjectile(projectile);
 				
 				shotAvailableCounter = 0;
 				
@@ -128,8 +129,15 @@ public class EMY_Goblin extends Entity {
 		
 		int i = new Random().nextInt(100) + 1;
 		
-		if (i < 50) dropItem(new COL_Heart(gp));
-		if (i >= 50 && i < 90) dropItem(new COL_Arrow(gp));
-		if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));
+		if (gp.player.inventory.contains(new ITM_Bow(gp))) {
+			if (i < 50) dropItem(new COL_Heart(gp));
+			if (i >= 50 && i < 90) dropItem(new COL_Arrow(gp));
+			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));	
+		}
+		else {
+			if (i < 50) dropItem(new COL_Heart(gp));
+			if (i >= 50 && i < 90) dropItem(new COL_Rupee_Blue(gp));
+			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));
+		}
 	}
 }

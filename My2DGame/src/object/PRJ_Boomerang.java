@@ -14,14 +14,13 @@ public class PRJ_Boomerang extends Projectile {
 		this.gp = gp;
 		
 		name = "Boomerang";
-		speed = 8; // speed of travel
-		maxLife = 30; // length of life (half length of screen)
-		animationSpeed = 8;
-		life = maxLife;	
-		attack = 1; // damage dealt	
+		speed = 8; 		
+		animationSpeed = 8;	
+		knockbackPower = 1;
+		maxLife = 30; // length of life (1/2 second)
+		life = maxLife;			
 		alive = false;
 		
-		// SMALLER HITBOX
 		hitBox = new Rectangle(12, 12, 24, 24); 		
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;

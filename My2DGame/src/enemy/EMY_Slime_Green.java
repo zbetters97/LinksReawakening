@@ -20,18 +20,17 @@ public class EMY_Slime_Green extends Entity {
 		
 		type = type_enemy;
 		name = "Green Slime";
-		speed = 1; baseSpeed = speed;
+		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;
-		maxLife = 2; life = maxLife;
 		attack = 3; defense = 0;
 		exp = 4;
+		maxLife = 4; life = maxLife;
 		
-		projectile = new PRJ_Fireball(gp);
-		
-		// HIT BOX
 		hitBox = new Rectangle(2, 18, 44, 30);
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
+
+		projectile = new PRJ_Fireball(gp);
 		
 		getImage();
 	}
@@ -69,7 +68,7 @@ public class EMY_Slime_Green extends Entity {
 		if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
 			
 			projectile.set(worldX, worldY, direction, true, this);
-			gp.projectileList.add(projectile);
+			addProjectile(projectile);
 			
 			shotAvailableCounter = 0;
 			

@@ -14,11 +14,11 @@ public class PRJ_Arrow extends Projectile {
 		this.gp = gp;
 		
 		name = "Arrow";
-		speed = 12; // speed of travel
+		speed = 12; 		
+		attack = 2; 	
+		useCost = 1; // 1 arrow to shoot 1 arrow
 		maxLife = 60; // length of life (1 second)
 		life = maxLife;
-		attack = 2; // damage dealt		
-		useCost = 1; // 1 arrow to shoot 1 arrow
 		alive = false;
 		
 		hitBox = new Rectangle(12, 16, 40, 32);
@@ -47,8 +47,7 @@ public class PRJ_Arrow extends Projectile {
 			hasResource = true;		
 		
 		return hasResource;
-	}
-	
+	}	
 	public void subtractResource(Entity user) {
 		user.arrows -= useCost;
 	}

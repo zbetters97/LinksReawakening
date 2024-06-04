@@ -21,6 +21,8 @@ public class Player extends Entity {
 	public boolean hasItem;
 	public int itemIndex = 0;
 
+	public String enemyDirection;
+	
 	public boolean attackCanceled = false;
 	public boolean running = false;
 	
@@ -28,10 +30,9 @@ public class Player extends Entity {
 	public int digCounter = 0;
 	public boolean digging = false;
 	
-	public BufferedImage titleScreen, sit, sing, itemGet;
+	public BufferedImage titleScreen, sit, sing, itemGet;	
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
 							digLeft1, digLeft2, digRight1, digRight2;
-	
 	public Projectile projectile_sword, projectile_arrow, projectile_bomb, 
 						projectile_hookshot, projectile_boomerang;
 			
@@ -66,12 +67,12 @@ public class Player extends Entity {
 						
 		setDefaultPosition();
 		
-		speed = 3; baseSpeed = speed;
+		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
 		level = 1;
-		maxLife = 6; life = maxLife;
+		maxLife = 8; life = maxLife;
 		strength = 1; dexterity = 1; // helps attack, defense
 		exp = 0; nextLevelEXP = 5;
 		rupees = 0;
@@ -93,7 +94,7 @@ public class Player extends Entity {
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 22;
 		direction = "down";
-		speed = baseSpeed;
+		speed = defaultSpeed;
 	}
 	public void setItems() {		
 		inventory.add(currentShield);	
@@ -167,11 +168,10 @@ public class Player extends Entity {
 	public void update() {
 				
 		if (attacking) attacking();		
-		if (digging) digging();			
+		if (digging) digging();	
+		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || 
+			keyH.spacePressed) {	
 		
-		else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || 
-				keyH.spacePressed) {	
-			
 			// find direction
 			if (keyH.upPressed) direction = "up";
 			if (keyH.downPressed) direction = "down";
@@ -183,25 +183,9 @@ public class Player extends Entity {
 			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
 			if (keyH.downPressed && keyH.rightPressed) direction = "downright";			
 			
-			// CHECK TILE COLLISION
-			collisionOn = false;
-			gp.cChecker.checkTile(this);
-
-			// CHECK INTERACTIVE TILE COLLISION
-			gp.cChecker.checkEntity(this, gp.iTile);
+			// CHECK COLLISION
+			checkCollision();
 						
-			// CHECK NPC COLLISION
-			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
-			interactNPC(npcIndex);
-			
-			// CHECK ENEMY COLLISION
-			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			contactEnemy(enemyIndex);
-			
-			// CHECK OBJECT COLLISION
-			int objIndex = gp.cChecker.checkObject(this, true);
-			pickUpObject(objIndex);							
-			
 			// CHECK EVENT
 			gp.eHandler.checkEvent();
 			
@@ -234,8 +218,7 @@ public class Player extends Entity {
 						shotAvailableCounter == 30 ) { 	
 											
 					projectile_sword.set(worldX, worldY, direction, true, this);			
-					gp.projectileList.add(projectile_sword);			
-					
+					addProjectile(projectile_sword);					
 					projectile_sword.subtractResource(this);
 					
 					shotAvailableCounter = 0;		
@@ -265,7 +248,7 @@ public class Player extends Entity {
 					animationSpeed = 6;
 				}
 				else {
-					speed = baseSpeed; 
+					speed = defaultSpeed; 
 					animationSpeed = 10; 
 				}					
 				spriteCounter = 0;
@@ -319,6 +302,29 @@ public class Player extends Entity {
 		}
 	}
 	
+	public void checkCollision() {
+		
+		collisionOn = false;
+		
+		// CHECK TILE COLLISION
+		gp.cChecker.checkTile(this);
+
+		// CHECK INTERACTIVE TILE COLLISION
+		gp.cChecker.checkEntity(this, gp.iTile);
+					
+		// CHECK NPC COLLISION
+		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+		interactNPC(npcIndex);
+		
+		// CHECK ENEMY COLLISION
+		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+		contactEnemy(enemyIndex);
+		
+		// CHECK OBJECT COLLISION
+		int objIndex = gp.cChecker.checkObject(this, true);
+		pickUpObject(objIndex);	
+	}
+	
 	public void useItem() {
 		
 		switch (currentItem.name) {
@@ -328,7 +334,7 @@ public class Player extends Entity {
 						projectile_arrow.hasResource(this)) {							
 					
 					projectile_arrow.set(worldX, worldY, direction, true, this);			
-					gp.projectileList.add(projectile_arrow);			
+					addProjectile(projectile_arrow);	
 					
 					projectile_arrow.subtractResource(this);
 					
@@ -345,7 +351,7 @@ public class Player extends Entity {
 					keyH.leftPressed  = false; keyH.rightPressed  = false;
 					
 					projectile_hookshot.set(worldX, worldY, direction, true, this);			
-					gp.projectileList.add(projectile_hookshot);	
+					addProjectile(projectile_hookshot);
 								
 					shotAvailableCounter = 0;	
 				}					
@@ -358,7 +364,7 @@ public class Player extends Entity {
 					keyH.leftPressed  = false; keyH.rightPressed  = false;
 					
 					projectile_boomerang.set(worldX, worldY, direction, true, this);			
-					gp.projectileList.add(projectile_boomerang);	
+					addProjectile(projectile_boomerang);
 								
 					shotAvailableCounter = 0;	
 				}					
@@ -381,7 +387,7 @@ public class Player extends Entity {
 						projectile_bomb.hasResource(this)) {
 					
 					projectile_bomb.set(worldX, worldY, direction, true, this);			
-					gp.projectileList.add(projectile_bomb);			
+					addProjectile(projectile_bomb);	
 					
 					projectile_bomb.subtractResource(this);
 					
@@ -444,7 +450,11 @@ public class Player extends Entity {
 			
 			// CHECK IF ATTACK LANDS ON ENEMY
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			damageEnemy(enemyIndex, attack);			
+			damageEnemy(enemyIndex, attack, currentWeapon.knockbackPower);			
+			
+			// CHECK IF ATTACK LANDS ON PROJECTILE
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			damageProjectile(projectileIndex);
 			
 			// ONLY ITEMS CAN DAMAGE INTERACTIVE TILES
 			if (keyH.itemPressed) {		
@@ -492,7 +502,7 @@ public class Player extends Entity {
 			digging = false;
 		}
 	}
-	
+			
 	public void contactEnemy(int i) {
 		
 		// PLAYER HIT BY ENEMY
@@ -508,15 +518,18 @@ public class Player extends Entity {
 			}
 		}
 	}
-	
-	public void damageEnemy(int i, int attack) {
+			
+	public void damageEnemy(int i, int attack, int knockbackPower) {
 		
-		// ATTACK LANDS
+		// ATTACK HITS ENEMY
 		if (i != -1) {
 			
 			// HURT ENEMY
 			if (!gp.enemy[gp.currentMap][i].invincible) {
 				gp.playSE(4, 1);
+				
+				if (knockbackPower > 0) 
+					knockback(gp.enemy[gp.currentMap][i], knockbackPower);				
 				
 				int damage = attack - gp.enemy[gp.currentMap][i].defense;
 				if (damage < 0) damage = 0;				
@@ -536,6 +549,22 @@ public class Player extends Entity {
 					
 					checkLevelUp();
 				}
+			}
+		}
+	}
+	
+	public void damageProjectile(int i) {
+		
+		if (i != -1) {
+			Entity projectile = gp.projectile[gp.currentMap][i];
+			
+			if (projectile.name.equals("Sword Beam"))
+				return;
+			else if (projectile.name.equals("Bomb"))
+				projectile.explode();
+			else {
+				projectile.alive = false;
+				generateParticle(projectile, projectile);
 			}
 		}
 	}

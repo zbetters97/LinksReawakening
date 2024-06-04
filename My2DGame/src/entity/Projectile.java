@@ -1,7 +1,5 @@
 package entity;
 
-import java.util.ArrayList;
-
 import main.GamePanel;
 
 public class Projectile extends Entity {
@@ -88,40 +86,7 @@ public class Projectile extends Entity {
 			// REMOVE AFTER X FRAMES
 			life--;
 			if (life <= 0) { 
-				
-				gp.playSE(3, 8);
-				generateParticle(this, this);
-				
-				// DAMAGE SURROUNDING ENEMIES
-				ArrayList<Integer> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
-				if (enemyIndexes.size() > 0) {
-					for (Integer e : enemyIndexes) 
-						gp.player.damageEnemy(e, attack);						
-				}
-				
-				// DAMAGE SURROUNDING iTILES
-				ArrayList<Integer> iTileIndexes = gp.cChecker.checkiTileExplosion(this);
-				if (iTileIndexes.size() > 0) {
-					for (Integer i : iTileIndexes) {
-
-						gp.iTile[gp.currentMap][i].playSE();
-						gp.iTile[gp.currentMap][i].life--;
-						gp.iTile[gp.currentMap][i].invincible = true;
-								
-						generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
-						
-						if (gp.iTile[gp.currentMap][i].life == 0)
-							gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();				
-					}
-				}			
-				
-				// DAMAGE PLAYER
-				boolean contactPlayer = gp.cChecker.checkExplosion(this);
-				if (contactPlayer && !gp.player.invincible) 
-					damagePlayer(attack);				
-				
-				active = false;
-				alive = false;				
+				explode();			
 			}
 		}
 	}
@@ -142,8 +107,7 @@ public class Projectile extends Entity {
 			
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
-				gp.player.damageEnemy(enemyIndex, attack);
-				//generateParticle(user.projectile, gp.enemy[gp.currentMap][enemyIndex]);
+				gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
 				alive = false;
 			}
 		}
@@ -201,11 +165,8 @@ public class Projectile extends Entity {
 		gp.cChecker.checkObject(this, false);	
 						
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-		if (enemyIndex != -1) {
-			gp.player.damageEnemy(enemyIndex, attack);
-			//alive = false;
-			//gp.gameState = gp.playState;
-		}
+		if (enemyIndex != -1) 
+			gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
 		
 		// OBJECT IS NOT GRABBABLE, RETURN
 		int objectIndex = gp.cChecker.checkObject(this, true);

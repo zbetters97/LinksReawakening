@@ -15,6 +15,7 @@ public class EQP_Sword extends Entity {
 		image = down1;
 		
 		attackValue = 2;
+		knockbackPower = 1;
 		attackArea.width = 36;
 		attackArea.height = 36;
 	}

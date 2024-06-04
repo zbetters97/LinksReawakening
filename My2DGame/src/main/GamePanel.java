@@ -75,8 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Entity obj[][] = new Entity[maxMap][20]; // total amount of items displayed at once
 	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
 	public ArrayList<Entity> entityList = new ArrayList<>();
-//	public Entity projectile[][] = new Entity[maxMap][20];
-	public ArrayList<Entity> projectileList = new ArrayList<>();
+	public Entity projectile[][] = new Entity[maxMap][20];
 	public ArrayList<Entity> particleList = new ArrayList<>();
 
 	// HANDLERS
@@ -264,13 +263,13 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			
 			// UPDATE PROJECTILES			
-			for (int i = 0; i < projectileList.size(); i++) {
-				if (projectileList.get(i) != null) {
-					if (projectileList.get(i).alive) 
-						projectileList.get(i).update();	
+			for (int i = 0; i < projectile[1].length; i++) {
+				if (projectile[currentMap][i] != null) {
+					if (projectile[currentMap][i].alive) 
+						projectile[currentMap][i].update();	
 				
-					if (!projectileList.get(i).alive)
-						projectileList.remove(i);
+					if (!projectile[currentMap][i].alive)
+						projectile[currentMap][i] = null;
 				}
 			}
 			
@@ -304,14 +303,18 @@ public class GamePanel extends JPanel implements Runnable {
 				if (iTile[currentMap][i] != null) 
 					iTile[currentMap][i].draw(g2);
 			}
-			
+						
 			// POPULATE ENTITY LIST
 			entityList.add(player);			
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
-			for (Entity p : projectileList) { if (p != null) entityList.add(p); }
 			for (Entity a : particleList) { if (a != null) entityList.add(a); }
+			
+			for (int i = 0; i < projectile[1].length; i++) {
+				if (projectile[currentMap][i] != null)
+					entityList.add(projectile[currentMap][i]);
+			}
 			
 			// SORT DRAW ORDER BY Y COORD
 			Collections.sort(entityList, new Comparator<Entity>() {

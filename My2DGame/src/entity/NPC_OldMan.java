@@ -19,7 +19,7 @@ public class NPC_OldMan extends Entity{
 		type = type_npc;
 		name = "Old Man";
 		direction = "down";
-		speed = 0; baseSpeed = speed;
+		speed = 0; defaultSpeed = speed;
 		animationSpeed = 0; 
 		
 		hitBox = new Rectangle(8, 16, 32, 32); 		
@@ -80,7 +80,7 @@ public class NPC_OldMan extends Entity{
 		
 		// PATH NOT OPEN
 		if (onPath && !findPath(goalCol, goalRow)) {
-			speed = baseSpeed;
+			speed = defaultSpeed;
 			animationSpeed = 0;	
 			dialogueIndex = 1;
 			onPath = false;
@@ -94,7 +94,7 @@ public class NPC_OldMan extends Entity{
 		}		
 		// GOAL REACHED
 		if (pathCompleted) {
-			speed = baseSpeed;		
+			speed = defaultSpeed;		
 			animationSpeed = 0;
 			onPath = false;
 		}

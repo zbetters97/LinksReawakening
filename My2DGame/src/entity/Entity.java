@@ -18,20 +18,16 @@ public class Entity {
 	
 	GamePanel gp;
 	
-	public int worldX, worldY;	
-	
-	// OBJECT ATTRIBUTES
-	public BufferedImage image, image2, image3;
-	public String name;
-	public boolean collision = false;
-	public boolean diggable = false;
+	// GENERAL ATTRIBUTES
+	public int worldX, worldY;		
+	public String name;	
 	
 	// CHARACTER ATTRIBUTES
 	public int type;
 	public int life, maxLife; // 1 life = half heart
 	public int arrows, maxArrows;
 	public int bombs, maxBombs;
-	public int speed, baseSpeed, runSpeed, animationSpeed;
+	public int speed, defaultSpeed, runSpeed, animationSpeed;
 	public int level;
 	public int strength, dexterity;
 	public int attack, defense;
@@ -41,8 +37,9 @@ public class Entity {
 	public Projectile projectile;
 	public boolean hasItem;
 	public String direction = "down";
-	public boolean onPath = false;
 	public boolean collisionOn = false;
+	public boolean onPath = false;
+	public boolean pathCompleted = false;
 	
 	// SPRITES
 	public int spriteCounter = 0;
@@ -54,11 +51,13 @@ public class Entity {
 
 	// DIALOGUE
 	public String dialogues[] = new String[20];
-	int dialogueIndex = 0;
+	public int dialogueIndex = 0;
 	
 	// LIFE
-	boolean hpBarOn = false;
-	int hpBarCounter = 0;
+	public boolean hpBarOn = false;
+	public int hpBarCounter = 0;
+	public boolean knockback = false;
+	public int knockbackCounter = 0;
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
 	public boolean alive = true;
@@ -81,6 +80,7 @@ public class Entity {
 		
 	// ITEM ATTRIBUTES
 	public int value, attackValue, defenseValue;
+	public int knockbackPower = 0;
 	public String description = "";
 	public int price;
 	public int useCost;	
@@ -89,6 +89,11 @@ public class Entity {
 	// INVENTORY
 	public ArrayList<Entity> inventory = new ArrayList<>();
 	public final int maxInventorySize = 20;
+	
+	// OBJECT ATTRIBUTES
+	public BufferedImage image, image2, image3;	
+	public boolean collision = false;
+	public boolean diggable = false;
 	
 	// CHARACTER TYPES
 	public final int type_player = 0;
@@ -101,9 +106,7 @@ public class Entity {
 	public final int type_item = 5;
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
-	
-	boolean pathCompleted = false;
-	
+		
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 	}
@@ -113,40 +116,44 @@ public class Entity {
 	public void setAction() { }	
 	public void damageReaction() { }	
 	public void checkDrop() { }
+	public void explode() {	}
 	
 	public void update() { 
 		
-		// calls child class method
-		setAction();
-		
-		// if no collision detected
-		checkCollision();
-		if (!collisionOn) { 
+		if (knockback) 
+			knockbackEntity();		
+		else {
+			// CHILD CLASS
+			setAction();
+			
+			checkCollision();
+			if (!collisionOn) { 
+							
+				// move player in direction pressed
+				switch (direction) {
+					case "up": worldY -= speed; break;
+					case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
+					case "upright": worldY -= speed - 1; worldX += speed - 1; break;
+					
+					case "down": worldY += speed; break;
+					case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
+					case "downright": worldY += speed; worldX += speed - 1; break;
+					
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
+				}
+				
+				if (type == type_npc || type == type_enemy) {
+				
+					// WALKING ANIMATION (only if no collision)
+					spriteCounter++;
+					if (spriteCounter > animationSpeed && animationSpeed != 0) { // speed of sprite change
 						
-			// move player in direction pressed
-			switch (direction) {
-				case "up": worldY -= speed; break;
-				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
-				case "upright": worldY -= speed - 1; worldX += speed - 1; break;
-				
-				case "down": worldY += speed; break;
-				case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
-				case "downright": worldY += speed; worldX += speed - 1; break;
-				
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
-			}
-			
-			if (type == type_npc || type == type_enemy) {
-			
-				// WALKING ANIMATION (only if no collision)
-				spriteCounter++;
-				if (spriteCounter > animationSpeed && animationSpeed != 0) { // speed of sprite change
-					
-					if (spriteNum == 1) spriteNum = 2;
-					else if (spriteNum == 2) spriteNum = 1;
-					
-					spriteCounter = 0;
+						if (spriteNum == 1) spriteNum = 2;
+						else if (spriteNum == 2) spriteNum = 1;
+						
+						spriteCounter = 0;
+					}
 				}
 			}
 		}
@@ -155,26 +162,28 @@ public class Entity {
 		if (invincible) {
 			invincibleCounter++;
 			
-			// 1 SECOND REFRESH TIME 
+			// REFRESH TIME (1 SECOND)
 			if (invincibleCounter > 60) {
 				invincible = false;
 				invincibleCounter = 0;
 			}
 		}
 		
-		// PROJECTILE REFRESH TIME
+		// PROJECTILE REFRESH TIME (1/2 SECOND)
 		if (shotAvailableCounter < 30) {
 			shotAvailableCounter++;
 		}
 	}
 	
 	public void checkCollision() {		
+		
 		collisionOn = false;
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkObject(this, false);
+		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
 		if (this.type == type_enemy && contactPlayer) 
@@ -297,6 +306,43 @@ public class Entity {
 		return pathFound;
 	}
 	
+	public void knockback(Entity entity, int knockbackPower) {		
+		entity.direction = direction;
+		entity.speed += knockbackPower;
+		entity.knockback = true;
+	}
+	public void knockbackEntity() {
+		
+		// CANCEL IF TILE COLLISION
+		checkCollision();			
+		if (collisionOn) {
+			knockbackCounter = 0;
+			knockback = false;
+			speed = defaultSpeed;
+		}
+		else {
+			switch(gp.player.direction) {
+				case "up": worldY -= speed; break;
+				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
+				case "upright": worldY -= speed - 1; worldX += speed - 1; break;
+				
+				case "down": worldY += speed; break;
+				case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
+				case "downright": worldY += speed; worldX += speed - 1; break;
+				
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
+		}
+		
+		knockbackCounter++;
+		if (knockbackCounter == 10) {
+			knockbackCounter = 0;
+			knockback = false;
+			speed = defaultSpeed;						
+		}		
+	}
+	
 	public void damagePlayer(int attack) {
 				
 		if (!gp.player.invincible && gp.player.alive) {
@@ -336,6 +382,15 @@ public class Entity {
 				gp.obj[gp.currentMap][i] = droppedItem;
 				gp.obj[gp.currentMap][i].worldX = worldX;
 				gp.obj[gp.currentMap][i].worldY = worldY;
+				break;
+			}
+		}
+	}
+	
+	public void addProjectile(Projectile projectile) {
+		for (int i = 0; i < gp.projectile[1].length; i++) {
+			if (gp.projectile[gp.currentMap][i] == null) {
+				gp.projectile[gp.currentMap][i] = projectile;
 				break;
 			}
 		}

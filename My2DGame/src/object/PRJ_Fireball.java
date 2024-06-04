@@ -15,11 +15,11 @@ public class PRJ_Fireball extends Projectile {
 		this.gp = gp;
 		
 		name = "Fireball";
-		speed = 8; // speed of travel
+		speed = 8; 
 		maxLife = 60; // length of life (1 second)
 		life = maxLife;
-		attack = 2; // damage dealt		
-		useCost = 1; // 1 arrow to shoot 1 arrow
+		attack = 2;	
+		knockbackPower = 0;
 		alive = false;
 		
 		// SMALLER HITBOX
