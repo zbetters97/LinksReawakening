@@ -307,7 +307,7 @@ public class KeyHandler implements KeyListener{
 				gp.gameState = gp.itemGetState;
 			}		
 			else 
-				gp.gameState = gp.playState;			
+				gp.gameState = gp.playState;
 		}
 	}
 	

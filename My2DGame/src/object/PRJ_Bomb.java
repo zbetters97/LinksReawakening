@@ -17,7 +17,7 @@ public class PRJ_Bomb extends Projectile {
 		name = "Bomb";
 		animationSpeed = 15;
 		speed = (int)(gp.tileSize / 1.5); // for collision calculation (1 tile over)
-		maxLife = 60; // length of life (3 seconds)
+		maxLife = 180; // length of life (3 seconds)
 		life = maxLife;
 		attack = 2; // damage dealt		
 		useCost = 1; // 1 bomb to throw 1 bomb

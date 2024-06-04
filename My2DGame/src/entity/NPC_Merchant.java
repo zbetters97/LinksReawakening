@@ -2,7 +2,6 @@ package entity;
 
 import main.GamePanel;
 import object.ITM_Boomerang;
-import object.ITM_Bow;
 
 public class NPC_Merchant extends Entity {
 	

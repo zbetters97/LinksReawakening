@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 import main.GamePanel;
 import main.KeyHandler;
@@ -18,8 +17,8 @@ public class Player extends Entity {
 	public final int screenX;
 	public final int screenY;
 	
-	public ArrayList<Entity> items = new ArrayList<>();
 	public final int maxItemInventorySize = 10;
+	public boolean hasItem;
 	public int itemIndex = 0;
 
 	public boolean attackCanceled = false;
@@ -29,14 +28,12 @@ public class Player extends Entity {
 	public int digCounter = 0;
 	public boolean digging = false;
 	
-	public BufferedImage digUp1, digUp2, digDown1, digDown2, digLeft1, digLeft2, digRight1, digRight2;
-	public BufferedImage titleScreen;
+	public BufferedImage titleScreen, sit, sing, itemGet;
+	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
+							digLeft1, digLeft2, digRight1, digRight2;
 	
-	public Projectile projectile_sword;
-	public Projectile projectile_arrow;
-	public Projectile projectile_bomb;
-	public Projectile projectile_hookshot;
-	public Projectile projectile_boomerang;
+	public Projectile projectile_sword, projectile_arrow, projectile_bomb, 
+						projectile_hookshot, projectile_boomerang;
 			
 	/** CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
@@ -98,7 +95,7 @@ public class Player extends Entity {
 		direction = "down";
 		speed = baseSpeed;
 	}
-	public void setItems() {
+	public void setItems() {		
 		inventory.add(currentShield);	
 	}
 	
@@ -285,7 +282,7 @@ public class Player extends Entity {
 		}
 		
 		// CYCLES ITEMS
-		if (keyH.tabPressed && items.size() > 0 && currentItem != null) {
+		if (keyH.tabPressed && currentItem != null) {
 			cycleItems();
 		}		
 				
@@ -398,12 +395,17 @@ public class Player extends Entity {
 		gp.playSE(1, 0);
 		running = false;
 		keyH.tabPressed = false;
+				
+		if (hasItem) {
+			do {						
+				itemIndex++;
+				if (itemIndex >= inventory.size())
+					itemIndex = 0;
+			}
+			while (inventory.get(itemIndex).type != type_item);
+		}
 		
-		itemIndex++;			
-		if (itemIndex >= items.size())
-			itemIndex = 0;	
-		
-		currentItem = items.get(itemIndex);
+		currentItem = inventory.get(itemIndex);			
 	}
 	
 	public void attacking() {
@@ -598,7 +600,7 @@ public class Player extends Entity {
 				gp.playSE(3, 1);																							
 				gp.ui.currentDialogue = "You got the " + gp.obj[gp.currentMap][i].name + "!";
 					
-				items.add(gp.obj[gp.currentMap][i]);					
+				hasItem = true;
 				inventory.add(gp.obj[gp.currentMap][i]);		
 					
 				gp.gameState = gp.itemGetState;
@@ -637,7 +639,7 @@ public class Player extends Entity {
 			
 			// INVENTORY ITEMS
 			if (item.type == type_item) 
-				items.add(item);
+				hasItem = true;
 			if (item.type == type_sword) {
 				currentWeapon = item;
 				attack = getAttack();
@@ -658,7 +660,7 @@ public class Player extends Entity {
 			itemIndex = inventoryIndex;										
 									
 			Entity selectedItem = inventory.get(inventoryIndex);
-			if (selectedItem.type == type_sword || selectedItem.type == type_axe) {
+			if (selectedItem.type == type_sword) {
 				currentWeapon = selectedItem;
 				attack = getAttack();
 			}

@@ -366,7 +366,23 @@ public class UI {
 		rupee_count = Integer.toString(gp.player.rupees);
 		g2.setColor(Color.WHITE);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
-		g2.drawString(rupee_count, x, y);				
+		g2.drawString(rupee_count, x, y);		
+		
+		// DEBUG HUD
+		if (gp.keyH.debug) {			
+			
+			x = 10; y = 500; int lineHeight = 20;
+			g2.setFont(new Font("Arial", Font.PLAIN, 20));
+			g2.setColor(Color.white);
+			
+			g2.drawString("WorldX: " + gp.player.worldX, x , y); 
+			y += lineHeight;
+			g2.drawString("WorldY: " + gp.player.worldY, x , y); 
+			y += lineHeight;
+			g2.drawString("Column: " + (gp.player.worldX + gp.player.hitBox.x) / gp.tileSize, x , y);
+			y += lineHeight;
+			g2.drawString("Row: " + (gp.player.worldY + gp.player.hitBox.y) / gp.tileSize, x , y);
+		}
 	}
 	public void addMessage(String text) {
 		message.add(text);		
@@ -799,7 +815,7 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.drawString(text, x, y + 30);
 		
-		// ITEM GOT, DISPLAY ABOVE PLAYER
+		// ITEM RECIEVED, DISPLAY ABOVE PLAYER
 		if (newItem != null) {
 			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
 			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
@@ -914,7 +930,8 @@ public class UI {
 					drawDialogueScreen();
 					npc = null;
 				}
-				else {
+				else {					
+					subState = 0;
 					
 					gp.player.rupees -= npc.inventory.get(itemIndex).price;					
 					if (gp.player.rupees < 0)
@@ -928,7 +945,7 @@ public class UI {
 					
 					gp.player.inventory.add(npc.inventory.get(itemIndex));					
 					if (npc.inventory.get(itemIndex).type == gp.player.type_item) 
-						gp.player.items.add(npc.inventory.get(itemIndex));			
+						gp.player.hasItem = true;
 				}
 			}
 		}		
@@ -974,13 +991,14 @@ public class UI {
 			
 			// SELL AN ITEM
 			if (gp.keyH.spacePressed) {
-				
+												
 				// MAIN ITEM NOT SELLABLE
 				if (gp.player.inventory.get(itemIndex).type == gp.player.type_item || 
 						gp.player.inventory.get(itemIndex).type == gp.player.type_shield ||
 						gp.player.inventory.get(itemIndex).type == gp.player.type_sword) {
-					commandNum = 0;
+					
 					subState = 0;
+					commandNum = 0;					
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "I think you should hold onto that!";
 					npc = null;

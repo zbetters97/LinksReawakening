@@ -37,81 +37,71 @@ public class Entity {
 	public int attack, defense;
 	public int exp, nextLevelEXP;
 	public int rupees;
-	public Entity currentWeapon;
-	public Entity currentShield;
-	public Entity currentItem;
+	public Entity currentWeapon, currentShield, currentItem;
 	public Projectile projectile;
 	public boolean hasItem;
+	public String direction = "down";
+	public boolean onPath = false;
+	public boolean collisionOn = false;
 	
+	// SPRITES
+	public int spriteCounter = 0;
+	public int spriteNum = 1;
+	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+	public BufferedImage die1, die2, die3, die4;
+	public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, 
+							attackLeft1, attackLeft2, attackRight1, attackRight2;
+
+	// DIALOGUE
+	public String dialogues[] = new String[20];
+	int dialogueIndex = 0;
+	
+	// LIFE
+	boolean hpBarOn = false;
+	int hpBarCounter = 0;
+	public boolean invincible = false;
+	public int invincibleCounter = 0;
+	public boolean alive = true;
+	public boolean dying = false;
+	public int dyingCounter = 0;		
+
+	// DEFAULT HITBOX
+	public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
+	public int hitBoxDefaultX, hitBoxDefaultY, hitBoxDefaultWidth, hitBoxDefaultHeight;	
+	
+	// ATTACKING
+	public int actionLockCounter = 0;
+	public int shotAvailableCounter;
+	public boolean attacking;	
+	public int attackCounter = 0;
+	public int attackNum = 1;
+	
+	// WEAPON HITBOX
+	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
+		
 	// ITEM ATTRIBUTES
-	public int value;
-	public int attackValue, defenseValue;
+	public int value, attackValue, defenseValue;
 	public String description = "";
-	public int useCost;
 	public int price;
+	public int useCost;	
 	public boolean hookGrab = false;	
 	
 	// INVENTORY
 	public ArrayList<Entity> inventory = new ArrayList<>();
 	public final int maxInventorySize = 20;
 	
-	// TYPES
+	// CHARACTER TYPES
 	public final int type_player = 0;
 	public final int type_npc = 1;
 	public final int type_enemy = 2;
+	
+	// INVENTORY TYPES
 	public final int type_sword = 3;
-	public final int type_axe = 4;
-	public final int type_shield = 5;
-	public final int type_consumable = 6;
-	public final int type_item = 7;
-	public final int type_collectable = 8;
+	public final int type_shield = 4;	
+	public final int type_item = 5;
+	public final int type_collectable = 6;
+	public final int type_consumable = 7;
 	
-	// SPRITES
-	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-	public BufferedImage die1, die2, die3, die4;
-	public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, 
-							attackLeft1, attackLeft2, attackRight1, attackRight2;
-	public BufferedImage itemGet, sit, sing;
-	
-	// DEFAULT DIRECTION
-	public String direction = "down";
-
-	// SPRITE COUNTER
-	public int spriteCounter = 0;
-	public int spriteNum = 1;	
-	public int actionLockCounter = 0;
-	
-	// HP BAR
-	boolean hpBarOn = false;
-	int hpBarCounter = 0;
-	
-	// ATTACKING COUNTER
-	public boolean attacking;	
-	public int attackCounter = 0;
-	public int attackNum = 1;
-	public int shotAvailableCounter;
-	
-	// INVINCIBLE COUNTER
-	public boolean invincible = false;
-	public int invincibleCounter = 0;
-	
-	// ALIVE CHECKERS
-	public boolean alive = true;
-	public boolean dying = false;
-	public int dyingCounter = 0;	
-	
-	// ENTITY WEAPON AREA
-	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
-	
-	// DEFAULT HITBOX
-	public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
-	public int hitBoxDefaultX, hitBoxDefaultY, hitBoxDefaultWidth, hitBoxDefaultHeight;	
-	public boolean collisionOn = false;
-	
-	public String dialogues[] = new String[20];
-	int dialogueIndex = 0;
-	
-	public boolean onPath = false;
 	boolean pathCompleted = false;
 	
 	public Entity(GamePanel gp) {
@@ -151,7 +141,7 @@ public class Entity {
 			
 				// WALKING ANIMATION (only if no collision)
 				spriteCounter++;
-				if (spriteCounter > animationSpeed) { // speed of sprite change
+				if (spriteCounter > animationSpeed && animationSpeed != 0) { // speed of sprite change
 					
 					if (spriteNum == 1) spriteNum = 2;
 					else if (spriteNum == 2) spriteNum = 1;
@@ -278,21 +268,33 @@ public class Entity {
 				if (collisionOn) direction = "right";
 			}
 		}
+		// NO PATH FOUND
+		else {
+			onPath = false;
+		}
 		
-		
-		// GOAL REACHED (ONLY NPC)		
+		// GOAL REACHED
 		if (gp.pFinder.pathList.size() > 0) {		
 			int nextCol = gp.pFinder.pathList.get(0).col;
 			int nextRow = gp.pFinder.pathList.get(0).row;
-			if (nextCol == goalCol && nextRow == goalRow && type == type_npc) {
-				onPath = false;	
+			if (nextCol == goalCol && nextRow == goalRow)
 				pathCompleted = true;
-			}
 		}
-		else {
-			onPath = false;	
-			speed = 0;
-		}
+	}
+	public boolean findPath(int goalCol, int goalRow) {
+		
+		boolean pathFound = false;
+		
+		int startCol = (worldX + hitBox.x) / gp.tileSize;
+		int startRow = (worldY + hitBox.y) / gp.tileSize;
+		
+		// SET PATH
+		gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
+		
+		if (gp.pFinder.search()) 
+			pathFound = true;
+			
+		return pathFound;
 	}
 	
 	public void damagePlayer(int attack) {
@@ -457,10 +459,6 @@ public class Entity {
 		}
 	}
 	
-	public void changeAlpha(Graphics2D g2, float alphaValue) {
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
-	}
-	
 	public BufferedImage setup(String imagePath) {	
 		
 		UtilityTool utility = new UtilityTool();
@@ -490,5 +488,9 @@ public class Entity {
 		}
 		
 		return image;
+	}
+	
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 }

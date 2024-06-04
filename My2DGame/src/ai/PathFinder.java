@@ -15,7 +15,7 @@ public class PathFinder {
 	Node startNode, goalNode, currentNode;
 	
 	boolean goalReached = false;
-	int step = 0;
+	int steps = 0;
 	
 	public PathFinder(GamePanel gp) {
 		this.gp = gp;
@@ -63,7 +63,7 @@ public class PathFinder {
 		openList.clear();
 		pathList.clear();
 		goalReached = false;
-		step = 0;
+		steps = 0;
 	}
 	
 	public void setNodes(int startCol, int startRow, int goalCol, int goalRow) {
@@ -72,15 +72,18 @@ public class PathFinder {
 		
 		// SET START AND GOAL NODE
 		startNode = node[startCol][startRow];
+		goalNode = node[goalCol][goalRow];	
+		
 		currentNode = startNode;
-		goalNode = node[goalCol][goalRow];		
 		openList.add(currentNode);
 		
+		// LOOP THROUGH ALL TILES
 		int col = 0;
 		int row = 0;
 		while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
 			
-			// SET SOLID NODES
+			// SET SOLID NODE IF HAS COLLISION
+			
 			// CHECK TILES
 			int tileNum = gp.tileM.mapTileNum[gp.currentMap][col][row];
 			if (gp.tileM.tile[tileNum].collision) 
@@ -89,18 +92,19 @@ public class PathFinder {
 			// CHECK iTILES
 			for (int i = 0; i < gp.iTile[1].length; i++) {
 				
-				if (gp.iTile[gp.currentMap][i] != null && gp.iTile[gp.currentMap][i].destructible) {
+				// SOLID IF DESTRUCTIBLE BUT NOT DIGGABLE
+				if (gp.iTile[gp.currentMap][i] != null && gp.iTile[gp.currentMap][i].destructible &&
+						!gp.iTile[gp.currentMap][i].diggable) {
 					int iCol = gp.iTile[gp.currentMap][i].worldX / gp.tileSize;
 					int iRow = gp.iTile[gp.currentMap][i].worldY / gp.tileSize;
 					node[iCol][iRow].solid = true;
 				}
 			}
 			
-			// SET COST
-			getCost(node[col][row]);
+			// SET COST ON EACH NODE
+			setCost(node[col][row]);
 			
-			col++;
-			
+			col++;			
 			if (col == gp.maxWorldCol) {
 				col = 0;
 				row++;
@@ -108,59 +112,60 @@ public class PathFinder {
 		} 
 	}	
 	
-	public void getCost(Node node) {
+	public void setCost(Node node) {
 		
-		// G COST
+		// SET G COST
 		int xDistance = Math.abs(node.col - startNode.col);
 		int yDistance = Math.abs(node.row - startNode.row);
 		node.gCost = xDistance + yDistance;
 		
-		// H COST
+		// SET H COST
 		xDistance = Math.abs(node.col - goalNode.col);
 		yDistance = Math.abs(node.row - goalNode.row);
 		node.hCost = xDistance + yDistance;
 		
-		// F COST
+		// SET F COST
 		node.fCost = node.gCost + node.hCost;
 	}
 	
 	public boolean search() {
 		
 		// LOOP UNTIL FINISHED OR TOO MANY STEPS
-		while (!goalReached && step < 500) {
+		while (!goalReached && steps < 500) {
 			
 			int col = currentNode.col;
 			int row = currentNode.row;
 			
-			// CHECK CURRENT NODE
+			// CURRENT NODE CHECKED AND NOT OPEN
 			currentNode.checked = true;
 			openList.remove(currentNode);
 			
-			// OPEN NODES
-			// UP
+			// OPEN SURROUNDING NODES (WITHIN WORLD BOUNDARY)
+			// UP 
 			if (row - 1 >= 0) 
 				openNode(node[col][row - 1]);
-			// LEFT
-			if (col - 1 >= 0)
-				openNode(node[col - 1][row]);	
 			// DOWN
 			if (row + 1 < gp.maxWorldRow) 
-				openNode(node[col][row + 1]);					
+				openNode(node[col][row + 1]);	
+			// LEFT
+			if (col - 1 >= 0) 
+				openNode(node[col - 1][row]);					
 			// RIGHT
 			if (col + 1 < gp.maxWorldCol) 
 				openNode(node[col + 1][row]);		
 			
-			// FIND BEST NODE
+			// RESET BEST NODE (FIRST IS ALWAYS < 999)
 			int bestNodeIndex = 0;
-			int bestNodefCost = 999;			
+			int bestNodefCost = 999;
+			
+			// LOOP THROUGH EACH POTENTIAL NODE
 			for (int i = 0; i < openList.size(); i++) {
 				
 				// IF F COST IS BETTER
 				if (openList.get(i).fCost < bestNodefCost) {
 					bestNodeIndex = i;
 					bestNodefCost = openList.get(i).fCost;
-				}
-				
+				}				
 				// IF F COST IS EQUAL, CHECK G COST
 				else if (openList.get(i).fCost == bestNodefCost) {
 					if (openList.get(i).gCost < openList.get(bestNodeIndex).gCost) 
@@ -168,25 +173,30 @@ public class PathFinder {
 				}
 			}
 			
-			// IF NO NODE IN OPEN LIST, END LOOP
+			// IF NO NODE AVAILABLE, END SEARCH
 			if (openList.size() == 0)
 				break;			
 			
-			// NEXT STEP
+			// FIND NEXT BEST NODE
 			currentNode = openList.get(bestNodeIndex);
 			
+			// GOAL REACHED
 			if (currentNode == goalNode) {
 				goalReached = true;
 				trackThePath();
 			}
 			
-			step++;
+			// STEP TAKEN			
+			steps++;
 		}
 		
 		return goalReached;
 	}
 	
+	// NODES BEING EVALUATED
 	public void openNode(Node node) {		
+		
+		// NOT OPEN, CHECKED, OR SOLID
 		if (!node.open && !node.checked && !node.solid) {
 			node.open = true;
 			node.parent = currentNode;
@@ -196,14 +206,14 @@ public class PathFinder {
 	
 	public void trackThePath() {
 
-		// BACKTRACK FROM GOAL
-		Node current = goalNode;
+		// BACKTRACK FROM GOAL UNTIL START IS REACHED
+		Node current = goalNode;		
 		while (current != startNode) {
 			
-			// ADD TO FIRST SLOT, SLOTS SHIFT UP
+			// ADD TO FIRST SLOT
 			pathList.add(0, current);
 			
-			// GET NEXT NODE
+			// GET PREVIOUS NODE
 			current = current.parent;
 		}
 	}

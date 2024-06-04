@@ -19,8 +19,8 @@ public class NPC_OldMan extends Entity{
 		type = type_npc;
 		name = "Old Man";
 		direction = "down";
-		speed = 0;
-		animationSpeed = 15; 
+		speed = 0; baseSpeed = speed;
+		animationSpeed = 0; 
 		
 		hitBox = new Rectangle(8, 16, 32, 32); 		
 		hitBoxDefaultX = hitBox.x;
@@ -45,8 +45,9 @@ public class NPC_OldMan extends Entity{
 	public void setDialogue() {
 		dialogues[0] = "It's dangerous to go alone!\nTake this!";
 		dialogues[1] = "The northeast region is where my home lies.\nIs it safe to walk there?";
-		dialogues[2] = "Thank you, kind boy. Here is a gift for you.";
-		dialogues[3] = "It's a secret to everyone.";
+		dialogues[2] = "I don't have time to chat right now.";
+		dialogues[3] = "Thank you, kind boy. Here is a gift for you.";
+		dialogues[4] = "It's a secret to everyone.";
 	}
 	
 	public void speak() {		
@@ -54,19 +55,18 @@ public class NPC_OldMan extends Entity{
 		if (inventory.size() == 2) {
 			gp.ui.npc = this;
 			gp.ui.newItemIndex = itemIndex;
-		}		
-		else if (inventory.size() == 1 && !pathCompleted) {			
+			dialogueIndex = 0;
+		}				
+		else if (inventory.size() == 1 && !pathCompleted) {	
 			onPath = true;
-		}	
-		
-		if (pathCompleted && inventory.size() > 0) {
+		}			
+		else if (inventory.size() == 1 && pathCompleted) {
 			gp.ui.npc = this;
 			gp.ui.newItemIndex = itemIndex;	
-			dialogueIndex = 2;
-
-		}
-		if (inventory.size() == 0) 
-			dialogueIndex = 3;			
+			dialogueIndex = 3;
+		}		
+		else if (inventory.size() == 0) 
+			dialogueIndex = 4;			
 		
 //		dialogues = Arrays.copyOfRange(dialogues, 1, dialogues.length);
 		
@@ -74,20 +74,29 @@ public class NPC_OldMan extends Entity{
 	}
 	
 	public void setAction() {
+					
+		int goalCol = 37;
+		int goalRow = 9;
 		
-		if (pathCompleted) 
-			speed = 0;		
-		
-		// NPC IS MOVING TO LOCATION
-		if (onPath) {
-			
-			int goalCol = 37;
-			int goalRow = 9;
-			
-			speed = 2;
+		// PATH NOT OPEN
+		if (onPath && !findPath(goalCol, goalRow)) {
+			speed = baseSpeed;
+			animationSpeed = 0;	
 			dialogueIndex = 1;
-			
+			onPath = false;
+		}
+		// PATH OPEN
+		if (onPath && findPath(goalCol, goalRow)) {						
+			speed = 2;
+			animationSpeed = 15;
+			dialogueIndex = 2;			
 			searchPath(goalCol, goalRow);
+		}		
+		// GOAL REACHED
+		if (pathCompleted) {
+			speed = baseSpeed;		
+			animationSpeed = 0;
+			onPath = false;
 		}
 	}
 }
