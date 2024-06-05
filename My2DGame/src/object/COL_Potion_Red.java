@@ -13,17 +13,16 @@ public class COL_Potion_Red extends Entity {
 		
 		type = type_consumable;
 		name = "Red Potion";
-		value = 5;
 		description = "[" + name + "]\nHeals two hearts.";
+		value = 4;
 		price = 20;
+		
 		down1 = setup("/objects/potion_red", gp.tileSize, gp.tileSize);
 	}
 	
-	public void use(Entity entity) {
-		
+	public void use(Entity user) {		
 		gp.gameState = gp.dialogueState;
-		gp.ui.currentDialogue = "Ah... you feel regenerated a little bit!";
-		
-		entity.life += value;
+		gp.ui.currentDialogue = "Ah... you feel regenerated a little bit!";		
+		user.life += value;
 	}
 }

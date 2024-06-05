@@ -1,5 +1,7 @@
 package tile_interactive;
 
+import java.awt.Rectangle;
+
 import main.GamePanel;
 
 public class IT_Hole extends InteractiveTile {
@@ -12,14 +14,11 @@ public class IT_Hole extends InteractiveTile {
 		
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
-		
-		down1 = setup("/tiles/017", gp.tileSize, gp.tileSize);
 	
-		hitBox.x = 0;
-		hitBox.y = 0;
-		hitBox.width = 0;
-		hitBox.height = 0;
+		hitBox = new Rectangle(0,0,0,0);
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
+		
+		down1 = setup("/tiles/017");
 	}
 }

@@ -12,11 +12,10 @@ public class PRJ_Sword_Beam extends Projectile {
 		this.gp = gp;
 		
 		name = "Sword Beam";
-		speed = 8; // speed of travel
+		attack = 1; 
+		speed = 8; 
 		animationSpeed = 8;
-		maxLife = 60; // length of life (1 second)		
-		life = maxLife;
-		attack = 1; // damage dealt
+		maxLife = 60; life = maxLife;		
 		alive = false;
 		
 		getImage();

@@ -12,8 +12,16 @@ public class ITM_Boots extends Entity {
 		this.gp = gp;
 		
 		type = type_item;
-		name = "Running Shoes";
+		name = "Boots";
 		description = "[" + name + "]\nEquip to run fast!";
 		down1 = setup("/objects/ITEM_BOOTS");
 	}	
+	
+	public void use() {
+		gp.player.running = true;
+	}
+	
+	public void playSE() {
+		gp.playSE(3, 6);
+	}
 }

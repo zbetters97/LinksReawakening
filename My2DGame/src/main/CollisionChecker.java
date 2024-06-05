@@ -239,7 +239,8 @@ public class CollisionChecker {
 					
 					if (target[gp.currentMap][i] != entity) {		
 						index = i;			
-						if (!target[gp.currentMap][i].diggable)
+						// ONLY PLAYER CAN PUSH BOMBS
+						if (!target[gp.currentMap][i].diggable && !target[gp.currentMap][i].canExplode)
 							entity.collisionOn = true;
 					}
 				}

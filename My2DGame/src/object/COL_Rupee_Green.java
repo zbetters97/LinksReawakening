@@ -14,12 +14,13 @@ public class COL_Rupee_Green extends Entity {
 		type = type_collectable;
 		name = "Green Rupee";
 		value = 1;
+		
 		down1 = setup("/objects/COL_RUPEE_GREEN", gp.tileSize, gp.tileSize);
 	}
 	
-	public void use(Entity entity) {		
+	public void use(Entity user) {		
 		gp.playSE(1, 5);
 		gp.ui.addMessage("Rupees +" + value + "!");
-		entity.rupees += value;
+		user.rupees += value;
 	}
 }

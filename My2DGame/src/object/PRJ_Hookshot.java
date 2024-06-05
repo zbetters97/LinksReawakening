@@ -17,12 +17,10 @@ public class PRJ_Hookshot extends Projectile {
 		this.gp = gp;
 		
 		name = "Hookshot";
-		speed = 10; // speed of travel
-		maxLife = 35; // length of life (half length of screen)
-		life = maxLife;	
+		speed = 10;
+		maxLife = 30; life = maxLife;	
 		alive = false;
 
-		// SMALLER HITBOX
 		hitBox = new Rectangle(16, 16, 16, 16); 		
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
@@ -31,15 +29,15 @@ public class PRJ_Hookshot extends Projectile {
 	}
 	
 	public void getImage() {
-		image = setup("/projectile/hookshot_grab_1", gp.tileSize, gp.tileSize);
+		image1 = setup("/projectile/hookshot_grab_1", gp.tileSize, gp.tileSize);
 		up1 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		up2 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		down1 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		down2 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		left1 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		left2 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		right1 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
-		right2 = setup("/projectile/hookshot_down_1", gp.tileSize, gp.tileSize);
+		up2 = up1;
+		down1 = up1;
+		down2 = up1;
+		left1 = up1;
+		left2 = up1;
+		right1 = up1;
+		right2 = up1;
 	}
 	
 	public void generateParticle(Entity generator, Entity target) {
@@ -51,5 +49,9 @@ public class PRJ_Hookshot extends Projectile {
 		// CHAIN (does not move)
 		Particle p1 = new Particle(gp, generator, color, size, speed, 90, 0, 0);
 		gp.particleList.add(p1);
+	}
+	
+	public void playSE() {
+		gp.playSE(3, 5);
 	}
 }

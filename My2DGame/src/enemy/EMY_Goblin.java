@@ -10,11 +10,11 @@ import object.COL_Heart;
 import object.COL_Rupee_Blue;
 import object.COL_Rupee_Red;
 import object.ITM_Bow;
-import object.PRJ_Arrow;
 
 public class EMY_Goblin extends Entity {
 
 	GamePanel gp;
+	Entity item;
 	
 	public EMY_Goblin(GamePanel gp) {
 		super(gp);		
@@ -26,6 +26,7 @@ public class EMY_Goblin extends Entity {
 		speed = 2; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 4; defense = 0;
+		knockbackPower = 1;
 		exp = 8;
 		maxLife = 6; life = maxLife;
 						
@@ -33,7 +34,8 @@ public class EMY_Goblin extends Entity {
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
 		
-		projectile = new PRJ_Arrow(gp);
+		arrows = -1;
+		item = new ITM_Bow(gp);
 		
 		getImage();
 	}
@@ -90,15 +92,8 @@ public class EMY_Goblin extends Entity {
 			
 			// 1 SHOT/2 SECONDS (120 frames)
 			int i = new Random().nextInt(120) + 1;
-			if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
-				
-				projectile.set(worldX, worldY, direction, true, this);
-				addProjectile(projectile);
-				
-				shotAvailableCounter = 0;
-				
-				gp.playSE(3, 3);
-			}
+			if (i > 119) 
+				item.use(this);			
 		}
 		else {
 
@@ -122,6 +117,13 @@ public class EMY_Goblin extends Entity {
 	public void damageReaction() {
 		actionLockCounter = 0;
 		direction = gp.player.direction; 
+	}
+	
+	public void playHurtSE() {
+		gp.playSE(4, 1);
+	}
+	public void playDeathSE() {
+		gp.playSE(4, 2);
 	}
 	
 	// DROPPED ITEM

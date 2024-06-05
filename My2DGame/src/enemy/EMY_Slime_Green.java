@@ -23,6 +23,7 @@ public class EMY_Slime_Green extends Entity {
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;
 		attack = 3; defense = 0;
+		knockbackPower = 1;
 		exp = 4;
 		maxLife = 4; life = maxLife;
 		
@@ -72,7 +73,7 @@ public class EMY_Slime_Green extends Entity {
 			
 			shotAvailableCounter = 0;
 			
-			gp.playSE(3, 3);
+			projectile.playSE();
 		}
 	}
 	
@@ -80,6 +81,13 @@ public class EMY_Slime_Green extends Entity {
 	public void damageReaction() {
 		actionLockCounter = 0;
 		direction = gp.player.direction; 
+	}
+	
+	public void playHurtSE() {
+		gp.playSE(4, 1);
+	}
+	public void playDeathSE() {
+		gp.playSE(4, 2);
 	}
 	
 	// DROPPED ITEM

@@ -16,9 +16,8 @@ public class PRJ_Arrow extends Projectile {
 		name = "Arrow";
 		speed = 12; 		
 		attack = 2; 	
-		useCost = 1; // 1 arrow to shoot 1 arrow
-		maxLife = 60; // length of life (1 second)
-		life = maxLife;
+		useCost = 1;
+		maxLife = 60; life = maxLife;
 		alive = false;
 		
 		hitBox = new Rectangle(12, 16, 40, 32);
@@ -29,26 +28,35 @@ public class PRJ_Arrow extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/arrow_up_1", gp.tileSize, gp.tileSize);
-		up2 = setup("/projectile/arrow_up_2", gp.tileSize, gp.tileSize);
-		down1 = setup("/projectile/arrow_down_1", gp.tileSize, gp.tileSize);
-		down2 = setup("/projectile/arrow_down_2", gp.tileSize, gp.tileSize);
-		left1 = setup("/projectile/arrow_left_1", gp.tileSize, gp.tileSize);
-		left2 = setup("/projectile/arrow_left_2", gp.tileSize, gp.tileSize);
-		right1 = setup("/projectile/arrow_right_1", gp.tileSize, gp.tileSize);
-		right2 = setup("/projectile/arrow_right_2", gp.tileSize, gp.tileSize);		
+		up1 = setup("/projectile/arrow_up_1");
+		up2 = setup("/projectile/arrow_up_2");
+		down1 = setup("/projectile/arrow_down_1");
+		down2 = setup("/projectile/arrow_down_2");
+		left1 = setup("/projectile/arrow_left_1");
+		left2 = setup("/projectile/arrow_left_2");
+		right1 = setup("/projectile/arrow_right_1");
+		right2 = setup("/projectile/arrow_right_2");		
 	}
 	
 	public boolean hasResource(Entity user) {
 		
 		boolean hasResource = false;
 		
-		if (user.arrows >= useCost) 
+		if (user.arrows >= useCost || user.arrows == -1) 
 			hasResource = true;		
 		
 		return hasResource;
 	}	
 	public void subtractResource(Entity user) {
-		user.arrows -= useCost;
+		if (user.arrows != -1)
+			user.arrows -= useCost;
+	}
+	
+	// PICKUP ARROW IF NOT MOVING
+	public void interact() {
+		if (grabbable) {
+			gp.player.arrows++;
+			alive = false;
+		}
 	}
 }

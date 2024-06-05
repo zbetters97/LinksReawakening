@@ -14,11 +14,11 @@ public class PRJ_Boomerang extends Projectile {
 		this.gp = gp;
 		
 		name = "Boomerang";
-		speed = 8; 		
-		animationSpeed = 8;	
+		
 		knockbackPower = 1;
-		maxLife = 30; // length of life (1/2 second)
-		life = maxLife;			
+		speed = 8; 		
+		animationSpeed = 8;			
+		maxLife = 30; life = maxLife;			
 		alive = false;
 		
 		hitBox = new Rectangle(12, 12, 24, 24); 		
@@ -29,13 +29,17 @@ public class PRJ_Boomerang extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/boomerang_down_1", gp.tileSize, gp.tileSize);
-		up2 = setup("/projectile/boomerang_down_2", gp.tileSize, gp.tileSize);
-		down1 = setup("/projectile/boomerang_down_1", gp.tileSize, gp.tileSize);
-		down2 = setup("/projectile/boomerang_down_2", gp.tileSize, gp.tileSize);
-		left1 = setup("/projectile/boomerang_down_1", gp.tileSize, gp.tileSize);
-		left2 = setup("/projectile/boomerang_down_2", gp.tileSize, gp.tileSize);
-		right1 = setup("/projectile/boomerang_down_1", gp.tileSize, gp.tileSize);
-		right2 = setup("/projectile/boomerang_down_2", gp.tileSize, gp.tileSize);
+		up1 = setup("/projectile/boomerang_down_1");
+		up2 = setup("/projectile/boomerang_down_2");
+		down1 = up1;
+		down2 = up2;
+		left1 = up1;
+		left2 = up2;
+		right1 = up1;
+		right2 = up2;
+	}
+	
+	public void playSE() {
+		gp.playSE(3, 9);
 	}
 }

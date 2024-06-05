@@ -16,5 +16,17 @@ public class ITM_Boomerang extends Entity {
 		description = "[" + name + "]\nEquip to pull in far away\nitems!";
 		price = 40;
 		down1 = setup("/objects/ITEM_BOOMERANG");
+		
+		projectile = new PRJ_Boomerang(gp);
+	}
+	
+	public void use(Entity user) {
+		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
+						
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			addProjectile(projectile);
+						
+			user.shotAvailableCounter = 0;	
+		}			
 	}
 }

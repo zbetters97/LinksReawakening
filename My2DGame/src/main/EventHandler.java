@@ -127,10 +127,11 @@ public class EventHandler {
 		}
 	}
 	public void teleport(int map, int col, int row) {	
-		gp.gameState = gp.transitionState;
-		
+				
 		gp.stopMusic();		
 		gp.playSE(1,10);		
+		
+		gp.gameState = gp.transitionState;
 		
 		tempMap = map;
 		tempCol = col;
@@ -150,8 +151,10 @@ public class EventHandler {
 	}
 	
 	public void damagePit(int gameState) {		
-		gp.gameState = gameState;
+		
 		gp.playSE(2, 0);
+		gp.gameState = gameState;
+		
 		gp.ui.currentDialogue = "Ouch! You got stung by a bee!";
 		gp.player.life--;
 		canTouchEvent = false;

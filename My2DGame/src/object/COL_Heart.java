@@ -14,15 +14,16 @@ public class COL_Heart extends Entity {
 		type = type_collectable;		
 		name = "Heart";
 		value = 2;
+		
 		down1 = setup("/objects/heart_full", gp.tileSize / 2, gp.tileSize / 2);
-		image = setup("/objects/heart_full", gp.tileSize / 2, gp.tileSize / 2);
+		image1 = down1;
 		image2 = setup("/objects/heart_half", gp.tileSize / 2, gp.tileSize / 2);
 		image3 = setup("/objects/heart_empty", gp.tileSize / 2, gp.tileSize / 2);
 	}
 	
-	public void use(Entity entity) {
+	public void use(Entity user) {
 		gp.playSE(1, 6);
 		gp.ui.addMessage("Life +" + value + "!");
-		entity.life += value;
+		user.life += value;
 	}
 }

@@ -43,6 +43,7 @@ public class Sound {
 		misc[8] = getClass().getResource("/sound/MENU_OPEN.wav");
 		misc[9] = getClass().getResource("/sound/MENU_CLOSE.wav");
 		misc[10] = getClass().getResource("/sound/OBJ_DOOR_ENTER.wav");
+		misc[11] = getClass().getResource("/sound/MISC_DIALOGUE.wav");
 		
 		// 2
 		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");

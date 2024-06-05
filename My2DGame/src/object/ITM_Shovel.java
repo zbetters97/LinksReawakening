@@ -14,6 +14,11 @@ public class ITM_Shovel extends Entity {
 		type = type_item;
 		name = "Shovel";
 		description = "[" + name + "]\nEquip to dig for treasure!";
-		down1 = setup("/objects/ITEM_Shovel", gp.tileSize, gp.tileSize);
+		down1 = setup("/objects/ITEM_Shovel");
+	}
+	
+	public void use() {
+		gp.player.digging = true;
+		gp.player.attackCanceled = true;
 	}
 }

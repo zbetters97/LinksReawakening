@@ -3,9 +3,7 @@ package main;
 import enemy.*;
 import entity.*;
 import object.*;
-import tile_interactive.IT_DigSpot;
-import tile_interactive.IT_DryTree;
-import tile_interactive.IT_Wall;
+import tile_interactive.*;
 
 public class AssetSetter {
 	
@@ -14,21 +12,7 @@ public class AssetSetter {
 	public AssetSetter(GamePanel gp) {
 		this.gp = gp;
 	}
-	
-	public void setInteractiveTiles() {
 		
-		int mapNum = 0;
-		
-		gp.iTile[mapNum][0] = new IT_DryTree(gp, 13, 21);
-		gp.iTile[mapNum][1] = new IT_DryTree(gp, 36, 30);
-		gp.iTile[mapNum][2] = new IT_DryTree(gp, 21, 16);
-		gp.iTile[mapNum][3] = new IT_DryTree(gp, 10, 22);
-		gp.iTile[mapNum][4] = new IT_DigSpot(gp, mapNum, 30, 36);
-		gp.iTile[mapNum][5] = new IT_DigSpot(gp, mapNum, 27, 16);
-		
-		gp.iTile[mapNum][6] = new IT_Wall(gp, 30, 21);
-		gp.iTile[mapNum][7] = new IT_Wall(gp, 32, 21);
-	}
 	public void setObject() {		
 		
 		int mapNum = 0;
@@ -86,5 +70,23 @@ public class AssetSetter {
 		gp.enemy[mapNum][4] = new EMY_Goblin(gp);
 		gp.enemy[mapNum][4].worldX = gp.tileSize * 12;
 		gp.enemy[mapNum][4].worldY = gp.tileSize * 31;
+		
+		gp.enemy[mapNum][5] = new EMY_Goblin(gp);
+		gp.enemy[mapNum][5].worldX = gp.tileSize * 12;
+		gp.enemy[mapNum][5].worldY = gp.tileSize * 29;
+	}
+	public void setInteractiveTiles() {
+		
+		int mapNum = 0;
+		
+		gp.iTile[mapNum][0] = new IT_DryTree(gp, 13, 21);
+		gp.iTile[mapNum][1] = new IT_DryTree(gp, 36, 30);
+		gp.iTile[mapNum][2] = new IT_DryTree(gp, 21, 16);
+		gp.iTile[mapNum][3] = new IT_DryTree(gp, 10, 22);
+		gp.iTile[mapNum][4] = new IT_DigSpot(gp, mapNum, 30, 36);
+		gp.iTile[mapNum][5] = new IT_DigSpot(gp, mapNum, 27, 16);
+		
+		gp.iTile[mapNum][6] = new IT_Wall(gp, 30, 21);
+		gp.iTile[mapNum][7] = new IT_Wall(gp, 32, 21);
 	}
 }

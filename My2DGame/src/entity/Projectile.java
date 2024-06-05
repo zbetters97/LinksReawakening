@@ -4,8 +4,9 @@ import main.GamePanel;
 
 public class Projectile extends Entity {
 
-	Entity user;
+	public Entity user;
 	public boolean active = false;
+	public boolean grabbable = false;
 	
 	public Projectile(GamePanel gp) {
 		super(gp);
@@ -20,25 +21,15 @@ public class Projectile extends Entity {
 		this.life = this.maxLife; // RESET LIFE WHEN USED		
 	}
 	
-	public void update() {		
+	public void update() {
 		
 		// PREVENT GLITCHED DEATH WHEN ITEM IS IN AIR
 		if (gp.gameState != gp.gameOverState) {
 			
-			// HOOKSHOT PROJECTILE
-			if (name.equals("Hookshot")) {
-				useHookshot();
-			}
-			else if (name.equals("Boomerang")) {
-				useBoomerang();
-			}
-			else if (name.equals("Bomb")) {
-				useBomb();
-			}
-			// NON-HOOKSHOT PROJECTILE
-			else {		
-				useProjectile();
-			}
+			if (name.equals("Bomb")) useBomb();
+			else if (name.equals("Boomerang")) useBoomerang();
+			else if (name.equals("Hookshot")) useHookshot();
+			else useProjectile();
 		}
 	}
 	
@@ -69,6 +60,7 @@ public class Projectile extends Entity {
 				worldX = gp.player.worldX;
 				worldY = gp.player.worldY;
 			}
+			
 			active = true;
 		}
 		else {
@@ -81,74 +73,18 @@ public class Projectile extends Entity {
 				else if (spriteNum == 2) spriteNum = 1;
 				
 				spriteCounter = 0;
+				animationSpeed -= 3; // INCREASING SWAP SPEED
 			}
 			
 			// REMOVE AFTER X FRAMES
 			life--;
 			if (life <= 0) { 
-				explode();			
+				explode();
+				animationSpeed = 30;
+				active = false;
+				alive = false;				
 			}
 		}
-	}
-	
-	public void useProjectile() {
-		
-		// CHECK TILE COLLISION
-		collisionOn = false;		
-		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
-		
-		// NO COLLISION FOR SWORD BEAM
-		if (name.equals("Sword Beam")) 			
-			collisionOn = false;		
-		
-		// SHOT BY PLAYER
-		if (user == gp.player) {
-			
-			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			if (enemyIndex != -1) {
-				gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
-				alive = false;
-			}
-		}
-		// SHOT BY ENEMEY
-		else {
-			boolean contactPlayer = gp.cChecker.checkPlayer(this);
-			if (contactPlayer && !gp.player.invincible) {
-				damagePlayer(attack);
-				generateParticle(user.projectile, gp.player);
-				alive = false;
-			}
-		}
-		
-		if (!collisionOn) {
-		
-			// MOVE IN DIRECTION SHOT
-			switch (direction) {
-				case "up": 
-				case "upleft": 
-				case "upright": worldY -= speed; break;			
-				case "down":
-				case "downleft": 
-				case "downright": worldY += speed; break;			
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
-			}
-		}
-		
-		life--;
-		if (life <= 0) // REMOVE AFTER X FRAMES
-			alive = false; 
-		
-		// MOVING ANIMATION
-		spriteCounter++;
-		if (spriteCounter > animationSpeed) { // speed of sprite change
-			
-			if (spriteNum == 1) spriteNum = 2;
-			else if (spriteNum == 2) spriteNum = 1;
-			
-			spriteCounter = 0;
-		}		
 	}
 	
 	public void useBoomerang() {
@@ -240,7 +176,7 @@ public class Projectile extends Entity {
 		// MOVING ANIMATION
 		spriteCounter++;
 		if (spriteCounter > animationSpeed) { // speed of sprite change
-			gp.playSE(3, 9);
+			playSE();
 			
 			if (spriteNum == 1) spriteNum = 2;
 			else if (spriteNum == 2) spriteNum = 1;
@@ -442,9 +378,75 @@ public class Projectile extends Entity {
 			// DRAW CHAIN AND PLAY SOUND
 			if (life % 5 == 0) {
 				generateParticle(this, this);
-				gp.playSE(3, 5);
+				playSE();
 			}
 		}
+	}
+	
+	public void useProjectile() {
+		
+		// CHECK TILE COLLISION
+		collisionOn = false;		
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		
+		// NO COLLISION FOR SWORD BEAM
+		if (name.equals("Sword Beam")) 			
+			collisionOn = false;		
+		
+		// SHOT BY PLAYER
+		if (user == gp.player) {
+			
+			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+			if (enemyIndex != -1) {
+				gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
+				alive = false;
+			}
+		}
+		// SHOT BY ENEMEY
+		else {
+			boolean contactPlayer = gp.cChecker.checkPlayer(this);
+			if (contactPlayer && !gp.player.invincible) {
+				damagePlayer(attack);
+				alive = false;
+			}
+		}
+		
+		if (!collisionOn) {
+
+			grabbable = false;
+					
+			// MOVE IN DIRECTION SHOT
+			switch (direction) {
+				case "up": 
+				case "upleft": 
+				case "upright": worldY -= speed; break;			
+				case "down":
+				case "downleft": 
+				case "downright": worldY += speed; break;			
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
+		}
+		else {
+			grabbable = true;
+		}
+		
+		life--;
+		if (life <= 0) { // REMOVE AFTER X FRAMES
+			grabbable = false;
+			alive = false;
+		}
+		
+		// MOVING ANIMATION
+		spriteCounter++;
+		if (spriteCounter > animationSpeed) { // speed of sprite change
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}		
 	}
 	
 	// NOT CALLED
@@ -452,6 +454,6 @@ public class Projectile extends Entity {
 		boolean hasResource = false;		
 		return hasResource;
 	}
-	public void subtractResource(Entity user) {
-	}
+	public void subtractResource(Entity user) { }
+	public void interact() { }
 }

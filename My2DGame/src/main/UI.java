@@ -76,7 +76,7 @@ public class UI {
 		
 		// CREATE HUD
 		Entity heart = new COL_Heart(gp);
-		heart_full = heart.image;
+		heart_full = heart.image1;
 		heart_half = heart.image2;
 		heart_empty = heart.image3;
 		
@@ -340,7 +340,7 @@ public class UI {
 			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.currentItem.name.equals("Hylian Bow")) {	
+			if (gp.player.currentItem.name.equals("Bow")) {	
 				String arrowCount = Integer.toString(gp.player.arrows);		
 				g2.setColor(Color.BLACK);
 				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
@@ -803,23 +803,22 @@ public class UI {
 		x += gp.tileSize;
 		y += gp.tileSize;
 		
-		// DIALOGUE LINE BREAK
 		for (String line : currentDialogue.split("\n")) { 
 			g2.drawString(line, x, y);	
 			y += 40;
 		} 
-				
+		
 		String text = "[Press SPACE to continue]";
 		x = getXforCenteredText(text);
 		y = gp.tileSize * 11;
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.drawString(text, x, y + 30);
 		
-		// ITEM RECIEVED, DISPLAY ABOVE PLAYER
-		if (newItem != null) {
+		// DISPLAY ITEM ABOVE PLAYER
+		if (newItem != null) {			
 			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
 			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
-		}		
+		}
 	}
 	
 	public void drawTradeScreen() {
@@ -937,7 +936,7 @@ public class UI {
 					if (gp.player.rupees < 0)
 						gp.player.rupees = 0;
 					
-					gp.playSE(3, 1);																							
+					gp.player.playGetItemSE();																						
 					gp.ui.currentDialogue = "You got the " + npc.inventory.get(itemIndex).name + "!";
 					newItem = npc.inventory.get(itemIndex);
 					newItemIndex = itemIndex;
@@ -1093,20 +1092,24 @@ public class UI {
 			
 			// SPIN PLAYER SPRITE 3 TIMES
 			if (deathSprite == 0 || deathSprite == 3 || deathSprite == 6) 
-				gp.player.image = gp.player.die1;		
+				gp.player.image1 = gp.player.die1;		
 			else if (deathSprite == 1 || deathSprite == 4 || deathSprite == 7) 
-				gp.player.image = gp.player.die2;		
+				gp.player.image1 = gp.player.die2;		
 			else if (deathSprite == 2 || deathSprite == 5 || deathSprite == 8) 
-				gp.player.image = gp.player.die3;		
+				gp.player.image1 = gp.player.die3;		
 			else if (deathSprite == 9) 
-				gp.player.image = gp.player.die4;
+				gp.player.image1 = gp.player.die4;
 			
 			// RESET FRAME COUNTER
 			deathCounter = 0;
 			deathSprite++;
 		}
 	}
-		
+	
+	public void playDialogueSE() {
+		gp.playSE(1, 11);
+	}
+	
 	public void drawSubWindow(int x, int y, int width, int height) {
 		
 		// BLACK COLOR (RGB, Transparency)

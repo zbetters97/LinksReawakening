@@ -22,8 +22,9 @@ public class EMY_Bat extends Entity {
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
 		attack = 2; defense = 0;
+		knockbackPower = 1;
 		exp = 2;
-		maxLife = 2; life = maxLife;
+		maxLife = 6; life = maxLife;
 		
 		hitBox = new Rectangle(2, 18, 44, 30);
 		hitBoxDefaultX = hitBox.x;
@@ -92,6 +93,13 @@ public class EMY_Bat extends Entity {
 	public void damageReaction() {
 		actionLockCounter = 0;
 		onPath = true;
+	}
+	
+	public void playHurtSE() {
+		gp.playSE(4, 1);
+	}
+	public void playDeathSE() {
+		gp.playSE(4, 2);
 	}
 	
 	// DROPPED ITEM

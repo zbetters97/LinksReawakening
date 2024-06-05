@@ -15,17 +15,16 @@ public class PRJ_Bomb extends Projectile {
 		super(gp);
 		this.gp = gp;
 		
+		canExplode = true;
+		
 		name = "Bomb";
-		animationSpeed = 15;
-		speed = (int)(gp.tileSize / 1.5); // for collision calculation (1 tile over)
+		animationSpeed = 30;
+		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 
 		attack = 2;
-		knockbackPower = 5;
-		useCost = 1; // 1 bomb to throw 1 bomb
-		maxLife = 180; // length of life (3 seconds)
-		life = maxLife;
+		useCost = 1;
+		maxLife = 240; life = maxLife;
 		alive = false;
 		
-		// SMALLER HITBOX
 		hitBox = new Rectangle(12, 16, 24, 24); 		
 		hitBoxDefaultX = hitBox.x;
 	    hitBoxDefaultY = hitBox.y;
@@ -36,14 +35,14 @@ public class PRJ_Bomb extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/bomb_down_1", gp.tileSize, gp.tileSize);
-		up2 = setup("/projectile/bomb_down_2", gp.tileSize, gp.tileSize);
-		down1 = setup("/projectile/bomb_down_1", gp.tileSize, gp.tileSize);
-		down2 = setup("/projectile/bomb_down_2", gp.tileSize, gp.tileSize);
-		left1 = setup("/projectile/bomb_down_1", gp.tileSize, gp.tileSize);
-		left2 = setup("/projectile/bomb_down_2", gp.tileSize, gp.tileSize);
-		right1 = setup("/projectile/bomb_down_1", gp.tileSize, gp.tileSize);
-		right2 = setup("/projectile/bomb_down_2", gp.tileSize, gp.tileSize);		
+		up1 = setup("/projectile/bomb_down_1");
+		up2 = setup("/projectile/bomb_down_2");
+		down1 = up1;
+		down2 = up2;
+		left1 = up1;
+		left2 = up2;
+		right1 = up1;
+		right2 = up2;
 	}
 
 	public boolean hasResource(Entity user) {
@@ -59,8 +58,41 @@ public class PRJ_Bomb extends Projectile {
 		user.bombs -= useCost;
 	}
 	
+	// ONLY PLAYER CAN PUSH BOMB
+	public void interact() {
+		
+		// CHANGE BOMB ATTRIBUTES FOR COLLISION DETECTION
+		collisionOn = false;
+		direction = gp.player.direction;
+		speed = 15;				
+		
+		// IF PLAYER IS NOT TOUCHING BOMB				
+		boolean contactPlayer = gp.cChecker.checkPlayer(this);				
+		if (!contactPlayer) {					
+			
+			gp.cChecker.checkTile(this);				
+			gp.cChecker.checkEntity(this, gp.iTile);				
+			gp.cChecker.checkEntity(this, gp.npc);
+			gp.cChecker.checkEntity(this, gp.enemy);
+			
+			// PUSH BOMB IF NO COLLISION
+			if (!collisionOn) {
+				switch (gp.player.direction) {
+					case "up": 
+					case "upleft":
+					case "upright": worldY -= gp.tileSize / 3; break;
+					case "down": 
+					case "downleft":
+					case "downright": worldY += gp.tileSize / 3; break;
+					case "left": worldX -= gp.tileSize / 3; break;
+					case "right": worldX += gp.tileSize / 3; break;
+				}
+			}
+		}
+	}
+	
 	public void explode() {
-
+		
 		gp.playSE(3, 8);
 		generateParticle(this, this);
 		
@@ -92,6 +124,7 @@ public class PRJ_Bomb extends Projectile {
 		if (contactPlayer && !gp.player.invincible) 
 			damagePlayer(attack);				
 		
+		speed = defaultSpeed;
 		active = false;
 		alive = false;	
 	}

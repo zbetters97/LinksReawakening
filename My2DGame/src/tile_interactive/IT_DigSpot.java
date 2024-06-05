@@ -15,14 +15,15 @@ public class IT_DigSpot extends InteractiveTile {
 		super(gp, col, row);
 		this.gp = gp;
 		
+		destructible = true;
+		diggable = true;
+		life = 1;
+		
 		this.mapNum = mapNum;
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
 		down1 = setup("/tiles/003", gp.tileSize, gp.tileSize);
-		destructible = true;
-		diggable = true;
-		life = 1;
 	}
 	
 	public boolean isCorrectItem(Entity entity) {		
@@ -47,23 +48,19 @@ public class IT_DigSpot extends InteractiveTile {
 		gp.obj[mapNum][gp.obj.length + 1].worldY = worldY;
 		
 		return tile;
-	}
-	
+	}	
 	public Color getParticleColor() {
 		Color color = new Color(65,50,30); // BROWN
 		return color;
-	}
-	
+	}	
 	public int getParticleSize() {		
 		int size = 6; // 6px
 		return size;
-	}
-	
+	}	
 	public int getParticleSpeed() {
 		int speed = 1;
 		return speed;		
-	}
-	
+	}	
 	public int getParticleMaxLife() {
 		int maxLife = 20; // 20 frames
 		return maxLife;

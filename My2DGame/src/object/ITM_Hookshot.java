@@ -15,5 +15,21 @@ public class ITM_Hookshot extends Entity {
 		name = "Hookshot";
 		description = "[" + name + "]\nEquip to grab things!";
 		down1 = setup("/objects/ITEM_Hookshot");
+		
+		projectile = new PRJ_Hookshot(gp);
+	}
+	
+	
+	public void use(Entity user) {
+		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
+							
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			addProjectile(projectile);
+						
+			user.shotAvailableCounter = 0;	
+		}		
+	}
+	public void playSE() {
+		gp.playSE(3, 5);
 	}
 }

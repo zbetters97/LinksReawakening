@@ -24,20 +24,19 @@ public class Entity {
 	
 	// CHARACTER ATTRIBUTES
 	public int type;
+	public String direction = "down";
 	public int life, maxLife; // 1 life = half heart
 	public int arrows, maxArrows;
 	public int bombs, maxBombs;
 	public int speed, defaultSpeed, runSpeed, animationSpeed;
-	public int level;
 	public int strength, dexterity;
 	public int attack, defense;
-	public int exp, nextLevelEXP;
+	public int level, exp, nextLevelEXP;
 	public int rupees;
 	public Entity currentWeapon, currentShield, currentItem;
 	public Projectile projectile;
-	public boolean hasItem;
-	public String direction = "down";
 	public boolean collisionOn = false;
+	public boolean hasItem = false;
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
 	
@@ -51,13 +50,14 @@ public class Entity {
 
 	// DIALOGUE
 	public String dialogues[] = new String[20];
-	public int dialogueIndex = 0;
+	public int dialogueIndex = 0;	
 	
 	// LIFE
 	public boolean hpBarOn = false;
 	public int hpBarCounter = 0;
 	public boolean knockback = false;
 	public int knockbackCounter = 0;
+	public String knockbackDirection = "";
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
 	public boolean alive = true;
@@ -84,16 +84,17 @@ public class Entity {
 	public String description = "";
 	public int price;
 	public int useCost;	
-	public boolean hookGrab = false;	
+	public boolean hookGrab = false;
 	
 	// INVENTORY
 	public ArrayList<Entity> inventory = new ArrayList<>();
 	public final int maxInventorySize = 20;
 	
 	// OBJECT ATTRIBUTES
-	public BufferedImage image, image2, image3;	
+	public BufferedImage image1, image2, image3;	
 	public boolean collision = false;
 	public boolean diggable = false;
+	public boolean canExplode;
 	
 	// CHARACTER TYPES
 	public final int type_player = 0;
@@ -112,11 +113,16 @@ public class Entity {
 	}
 	
 	// CHILD ONLY	
-	public void use(Entity entity) { }	
 	public void setAction() { }	
 	public void damageReaction() { }	
 	public void checkDrop() { }
+	public void use() {	}
+	public void use(Entity user) { }
 	public void explode() {	}
+	public void playSE() { }
+	public void playAttackSE() { }
+	public void playHurtSE() { }
+	public void playDeathSE() { }
 	
 	public void update() { 
 		
@@ -305,12 +311,23 @@ public class Entity {
 			
 		return pathFound;
 	}
-	
-	public void knockback(Entity entity, int knockbackPower) {		
-		entity.direction = direction;
-		entity.speed += knockbackPower;
-		entity.knockback = true;
+		
+	public void damagePlayer(int attack) {
+				
+		if (!gp.player.invincible && gp.player.alive) {
+			gp.player.playHurtSE();
+			
+			if (knockbackPower > 0) 
+				knockback(gp.player, direction, knockbackPower);	
+			
+			int damage = attack - gp.player.defense;
+			if (damage < 0) damage = 0;	
+			gp.player.life -= damage;
+			
+			gp.player.invincible = true;
+		}
 	}
+	
 	public void knockbackEntity() {
 		
 		// CANCEL IF TILE COLLISION
@@ -322,14 +339,12 @@ public class Entity {
 		}
 		else {
 			switch(gp.player.direction) {
-				case "up": worldY -= speed; break;
-				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
-				case "upright": worldY -= speed - 1; worldX += speed - 1; break;
-				
-				case "down": worldY += speed; break;
-				case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
-				case "downright": worldY += speed; worldX += speed - 1; break;
-				
+				case "up": 
+				case "upleft": 
+				case "upright": worldY -= speed; break;				
+				case "down": 
+				case "downleft": 
+				case "downright": worldY += speed; break;				
 				case "left": worldX -= speed; break;
 				case "right": worldX += speed; break;
 			}
@@ -341,19 +356,12 @@ public class Entity {
 			knockback = false;
 			speed = defaultSpeed;						
 		}		
-	}
-	
-	public void damagePlayer(int attack) {
-				
-		if (!gp.player.invincible && gp.player.alive) {
-			gp.playSE(2, 0);
-			
-			int damage = attack - gp.player.defense;
-			if (damage < 0) damage = 0;	
-			gp.player.life -= damage;
-			
-			gp.player.invincible = true;
-		}
+	}	
+	public void knockback(Entity entity, String direction, int knockbackPower) {		
+		entity.knockbackDirection = entity.direction;
+		entity.direction = direction;		
+		entity.speed += knockbackPower;
+		entity.knockback = true;
 	}
 			
 	public void hurtAnimation(Graphics2D g2) {
@@ -426,6 +434,10 @@ public class Entity {
 		return maxLife;
 	}	
 	
+	public void playGetItemSE() {
+		gp.playSE(3, 1);
+	}
+	
 	public void draw(Graphics2D g2) {
 		
 		BufferedImage image = null;
@@ -441,7 +453,7 @@ public class Entity {
 			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 			
 			if (hookGrab) 
-				image = this.image;			
+				image = this.image1;			
 			else {			
 				// change entity sprite based on which direction and which cycle
 				switch (direction) {

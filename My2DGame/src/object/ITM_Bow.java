@@ -12,9 +12,30 @@ public class ITM_Bow extends Entity {
 		this.gp = gp;
 
 		type = type_item;
-		name = "Hylian Bow";
+		name = "Bow";
 		description = "[" + name + "]\nEquip to fire an arrow!";
-		price = 15;
 		down1 = setup("/objects/ITEM_BOW");
+		
+		projectile = new PRJ_Arrow(gp);
+	}
+	
+	public void use(Entity user) {
+				
+		if (!projectile.alive && user.shotAvailableCounter == 30 && 
+				projectile.hasResource(user)) {							
+			
+			playSE();
+			
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			addProjectile(projectile);	
+			
+			projectile.subtractResource(user);
+			
+			user.shotAvailableCounter = 0;	
+		}	
+	}	
+	
+	public void playSE() {
+		gp.playSE(3, 2);
 	}
 }

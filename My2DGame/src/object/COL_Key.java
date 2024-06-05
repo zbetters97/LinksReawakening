@@ -13,6 +13,7 @@ public class COL_Key extends Entity {
 		
 		name = "Key";
 		description = "[" + name + "]\nThis can unlock a door.\nSingle-use only.";
+		
 		down1 = setup("/objects/ITEM_KEY");
 	}	
 }

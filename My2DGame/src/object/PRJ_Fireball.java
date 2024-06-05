@@ -15,14 +15,11 @@ public class PRJ_Fireball extends Projectile {
 		this.gp = gp;
 		
 		name = "Fireball";
-		speed = 8; 
-		maxLife = 60; // length of life (1 second)
-		life = maxLife;
 		attack = 2;	
-		knockbackPower = 0;
+		speed = 8; 
+		maxLife = 60; life = maxLife;
 		alive = false;
 		
-		// SMALLER HITBOX
 		hitBox = new Rectangle(12, 12, 24, 24); 		
 		hitBoxDefaultX = hitBox.x;
 	    hitBoxDefaultY = hitBox.y;
@@ -31,33 +28,34 @@ public class PRJ_Fireball extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/fireball_down_1", gp.tileSize, gp.tileSize);
-		up2 = setup("/projectile/fireball_down_2", gp.tileSize, gp.tileSize);
-		down1 = setup("/projectile/fireball_down_1", gp.tileSize, gp.tileSize);
-		down2 = setup("/projectile/fireball_down_2", gp.tileSize, gp.tileSize);
-		left1 = setup("/projectile/fireball_down_1", gp.tileSize, gp.tileSize);
-		left2 = setup("/projectile/fireball_down_2", gp.tileSize, gp.tileSize);
-		right1 = setup("/projectile/fireball_down_1", gp.tileSize, gp.tileSize);
-		right2 = setup("/projectile/fireball_down_2", gp.tileSize, gp.tileSize);
+		up1 = setup("/projectile/fireball_down_1");
+		up2 = setup("/projectile/fireball_down_2");
+		down1 = up1;
+		down2 = up2;
+		left1 = up1;
+		left2 = up2;
+		right1 = up1;
+		right2 = up2;
 	}
 	
 	public Color getParticleColor() {
 		Color color = new Color(240,50,0); // RED
 		return color;
-	}
-	
+	}	
 	public int getParticleSize() {		
 		int size = 10; // 10px
 		return size;
-	}
-	
+	}	
 	public int getParticleSpeed() {
 		int speed = 1;
 		return speed;		
-	}
-	
+	}	
 	public int getParticleMaxLife() {
 		int maxLife = 20; // 20 frames
 		return maxLife;
+	}
+	
+	public void playSE() {
+		gp.playSE(3, 3);
 	}
 }

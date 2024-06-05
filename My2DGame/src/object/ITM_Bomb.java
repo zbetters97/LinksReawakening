@@ -15,5 +15,20 @@ public class ITM_Bomb extends Entity {
 		name = "Bomb";
 		description = "[" + name + "]\nEquip to blow things up!";
 		down1 = setup("/objects/ITEM_BOMB");
+		
+		projectile = new PRJ_Bomb(gp);
 	}	
+	
+	public void use(Entity user) {
+		if (!projectile.alive && user.shotAvailableCounter == 30 && 
+				projectile.hasResource(user)) {
+			
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			addProjectile(projectile);	
+			
+			projectile.subtractResource(user);
+			
+			user.shotAvailableCounter = 0;
+		}
+	}
 }

@@ -13,19 +13,20 @@ public class IT_DryTree extends InteractiveTile {
 		super(gp, col, row);
 		this.gp = gp;
 		
-		this.worldX = gp.tileSize * col;
-		this.worldY = gp.tileSize * row;
-		
-		down1 = setup("/tiles_interactive/drytree", gp.tileSize, gp.tileSize);
 		destructible = true;
 		grabbale = true;
 		life = 3;
+		
+		this.worldX = gp.tileSize * col;
+		this.worldY = gp.tileSize * row;
+		
+		down1 = setup("/tiles_interactive/drytree");
 	}
 	
 	public boolean isCorrectItem(Entity entity) {		
 		
 		boolean isCorrectItem = false;				
-		if (entity.currentItem.name.equals("Iron Axe")) {
+		if (entity.currentItem.name.equals("Axe")) {
 			isCorrectItem = true;
 		}
 		
@@ -39,23 +40,19 @@ public class IT_DryTree extends InteractiveTile {
 	public InteractiveTile getDestroyedForm() {
 		InteractiveTile tile = new IT_Trunk(gp, worldX / gp.tileSize, worldY / gp.tileSize);
 		return tile;
-	}
-	
+	}	
 	public Color getParticleColor() {
 		Color color = new Color(65,50,30); // BROWN
 		return color;
-	}
-	
+	}	
 	public int getParticleSize() {		
 		int size = 6; // 6px
 		return size;
-	}
-	
+	}	
 	public int getParticleSpeed() {
 		int speed = 1;
 		return speed;		
-	}
-	
+	}	
 	public int getParticleMaxLife() {
 		int maxLife = 20; // 20 frames
 		return maxLife;

@@ -65,13 +65,13 @@ public class KeyHandler implements KeyListener{
 		if (gp.ui.titleScreenState == 0) {
 			
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-				gp.playSE(1, 0);
+				playCursorSE();
 				gp.ui.commandNum--;
 				if (gp.ui.commandNum < 0)
 					gp.ui.commandNum = 0;
 			}
 			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-				gp.playSE(1, 0);
+				playCursorSE();
 				gp.ui.commandNum++;
 				if (gp.ui.commandNum > 2)
 					gp.ui.commandNum = 2;
@@ -79,12 +79,12 @@ public class KeyHandler implements KeyListener{
 			if (code == KeyEvent.VK_SPACE) { 				
 				// NEW GAME OPTION
 				if (gp.ui.commandNum == 0) {
-					gp.playSE(1, 1);
+					playSelectSE();
 					gp.ui.titleScreenState = 1;
 				}
 				// LOAD GAME OPTION
 				else if (gp.ui.commandNum == 1) {
-					gp.playSE(1, 1);					
+					playSelectSE();		
 				}
 				// QUIT GAME OPTION
 				else if (gp.ui.commandNum == 2) {
@@ -107,7 +107,7 @@ public class KeyHandler implements KeyListener{
 			// NAVIGATE THROUGH ON-SCREEN KEYBOARD
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {				
 				if (gp.ui.commandNum >= 10) {
-					gp.playSE(1, 0);
+					playCursorSE();
 					if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
 						gp.ui.commandNum -= 10;					
 					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 25) 
@@ -122,7 +122,7 @@ public class KeyHandler implements KeyListener{
 			}
 			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				if (gp.ui.commandNum <= 27) {
-					gp.playSE(1, 0);
+					playCursorSE();
 					if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
 						gp.ui.commandNum += 10;					
 					else if (gp.ui.commandNum >= 9 && gp.ui.commandNum <= 17) 
@@ -135,7 +135,7 @@ public class KeyHandler implements KeyListener{
 			}
 			if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 				if (gp.ui.commandNum > 0) {
-					gp.playSE(1, 0);
+					playCursorSE();
 					gp.ui.commandNum--;
 					
 					if (gp.ui.commandNum < 0)
@@ -152,7 +152,7 @@ public class KeyHandler implements KeyListener{
 						gp.ui.commandNum = 28;
 					}
 					else 
-						gp.playSE(1, 0);
+						playCursorSE();
 									
 					if (gp.ui.commandNum > 29)
 						gp.ui.commandNum = 29;
@@ -163,7 +163,7 @@ public class KeyHandler implements KeyListener{
 				// DEL BUTTON
 				if (gp.ui.commandNum == 26) {
 					if (gp.player.name.length() > 0) {
-						gp.playSE(1, 1);
+						playSelectSE();
 						gp.player.name = gp.player.name.substring(
 							0, gp.player.name.length() - 1
 						);							
@@ -173,20 +173,20 @@ public class KeyHandler implements KeyListener{
 				}			
 				// CAPS BUTTON
 				else if (gp.ui.commandNum == 27) {
-					gp.playSE(1, 1);
+					playSelectSE();
 					if (isCapital) isCapital = false;
 					else isCapital = true;
 				}
 				// BACK BUTTON
 				else if (gp.ui.commandNum == 28) {
-					gp.playSE(1, 1);
+					playSelectSE();
 					gp.ui.commandNum = 0;
 					gp.ui.titleScreenState = 0;
 					gp.player.name = "Link";
 				}
 				// ENTER BUTTON
 				else if (gp.ui.commandNum == 29) {
-					gp.playSE(1, 1);
+					playSelectSE();
 					gp.ui.titleScreenState = 0;
 					gp.ui.commandNum = 0;					
 					gp.gameState = 1;
@@ -194,7 +194,7 @@ public class KeyHandler implements KeyListener{
 				}
 				// LETTER SELECT				
 				else {					
-					gp.playSE(1, 1);	
+					playSelectSE();	
 					
 					// name limit is 10 char
 					if (gp.player.name.length() <= 10) 
@@ -252,13 +252,13 @@ public class KeyHandler implements KeyListener{
 		
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.commandNum != 0) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.commandNum--; 
 			}
 		}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.commandNum != maxCommandNum) { 
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.commandNum++; 
 			}
 		}
@@ -268,11 +268,11 @@ public class KeyHandler implements KeyListener{
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
 					gp.music.volumeScale--;
 					gp.music.checkVolume();
-					gp.playSE(1, 0);
+					playCursorSE();
 				}
 				if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
 					gp.se.volumeScale--;
-					gp.playSE(1, 0);
+					playCursorSE();
 				}
 			}
 		}
@@ -281,11 +281,11 @@ public class KeyHandler implements KeyListener{
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
 					gp.music.volumeScale++;
 					gp.music.checkVolume();
-					gp.playSE(1, 0);
+					playCursorSE();
 				}
 				if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {
 					gp.se.volumeScale++;
-					gp.playSE(1, 0);
+					playCursorSE();
 				}
 			}
 		}
@@ -295,13 +295,14 @@ public class KeyHandler implements KeyListener{
 			gp.gameState = gp.playState;
 		}
 		if (code == KeyEvent.VK_SPACE) {
-			gp.playSE(1, 1);
+			playSelectSE();
 			spacePressed = true;
 		}
 	}
 	
 	public void dialogueState(int code) { 
 		if (code == KeyEvent.VK_SPACE) {
+			
 			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
 				gp.player.getObject(gp.ui.npc.inventory.get(0));
 				gp.gameState = gp.itemGetState;
@@ -325,25 +326,25 @@ public class KeyHandler implements KeyListener{
 	public void playerInventory(int code) {
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.playerSlotRow != 0) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.playerSlotRow--; 
 			}
 		}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.playerSlotRow != 3) { 
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.playerSlotRow++; 
 			}
 		}
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { 
 			if (gp.ui.playerSlotCol != 0) { 
-				gp.playSE(1, 0);
+				playCursorSE();
 				gp.ui.playerSlotCol--; 
 			}
 		}
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { 
 			if (gp.ui.playerSlotCol != 4) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.playerSlotCol++; 
 			}
 		}
@@ -351,25 +352,25 @@ public class KeyHandler implements KeyListener{
 	public void npcInventory(int code) {
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.npcSlotRow != 0) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.npcSlotRow--; 
 			}
 		}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.npcSlotRow != 3) { 
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.npcSlotRow++; 
 			}
 		}
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { 
 			if (gp.ui.npcSlotCol != 0) { 
-				gp.playSE(1, 0);
+				playCursorSE();
 				gp.ui.npcSlotCol--; 
 			}
 		}
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { 
 			if (gp.ui.npcSlotCol != 4) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.npcSlotCol++; 
 			}
 		}
@@ -390,7 +391,7 @@ public class KeyHandler implements KeyListener{
 	public void tradeState(int code) {
 				
 		if (code == KeyEvent.VK_SPACE) {			
-			gp.playSE(1, 1);
+			playSelectSE();
 			spacePressed = true;
 		}
 		if (gp.ui.subState == 0) {
@@ -399,14 +400,14 @@ public class KeyHandler implements KeyListener{
 				if (gp.ui.commandNum < 0)					
 					gp.ui.commandNum = 0;
 				else
-					gp.playSE(1, 0); 
+					playCursorSE(); 
 			}
 			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 				gp.ui.commandNum++;
 				if (gp.ui.commandNum > 2)					
 					gp.ui.commandNum = 2;
 				else
-					gp.playSE(1, 0); 
+					playCursorSE(); 
 			}
 		}
 		if (gp.ui.subState == 1) {
@@ -425,26 +426,26 @@ public class KeyHandler implements KeyListener{
 		
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.commandNum != 0) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.commandNum = 0;
 			}
 		}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.commandNum != 1) {
-				gp.playSE(1, 0); 
+				playCursorSE(); 
 				gp.ui.commandNum = 1;
 			}
 		}
 		if (code == KeyEvent.VK_SPACE) {
 			
 			if (gp.ui.commandNum == 0) {
-				gp.playSE(1, 1);
+				playSelectSE();
 				gp.gameState = gp.playState;
 				gp.ui.commandNum = 0;
 				gp.retry();
 			}
 			else if (gp.ui.commandNum == 1){
-				gp.playSE(1, 1);
+				playSelectSE();	
 				gp.gameState = gp.titleState;
 				gp.ui.commandNum = 0;
 				gp.ui.deathSprite = 0;
@@ -465,5 +466,12 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_SPACE) spacePressed = false;
 		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; }	
 		if (code == KeyEvent.VK_T) tabPressed = false;
+	}
+	
+	public void playCursorSE() {
+		gp.playSE(1, 0);
+	}
+	public void playSelectSE() {
+		gp.playSE(1, 1);
 	}
 }

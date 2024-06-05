@@ -11,12 +11,13 @@ public class EQP_Sword extends Entity {
 		type = type_sword;		
 		name = "Old Sword";
 		description = "[" + name + "]\nA humble starter sword.\n+1 ATK";
-		down1 = setup("/objects/ITEM_SWORD", gp.tileSize, gp.tileSize);
-		image = down1;
-		
+				
 		attackValue = 2;
 		knockbackPower = 1;
 		attackArea.width = 36;
 		attackArea.height = 36;
+		
+		down1 = setup("/objects/ITEM_SWORD");
+		image1 = down1;
 	}
 }
