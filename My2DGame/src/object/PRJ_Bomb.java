@@ -77,6 +77,7 @@ public class PRJ_Bomb extends Projectile {
 			
 			// PUSH BOMB IF NO COLLISION
 			if (!collisionOn) {
+				playMoveObjectSE();
 				switch (gp.player.direction) {
 					case "up": 
 					case "upleft":
@@ -93,7 +94,7 @@ public class PRJ_Bomb extends Projectile {
 	
 	public void explode() {
 		
-		gp.playSE(3, 8);
+		gp.playSE(3, 9);
 		generateParticle(this, this);
 		
 		// DAMAGE SURROUNDING ENEMIES

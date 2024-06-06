@@ -20,22 +20,24 @@ public class PRJ_Arrow extends Projectile {
 		maxLife = 60; life = maxLife;
 		alive = false;
 		
-		hitBox = new Rectangle(12, 16, 40, 32);
+		hitBox = new Rectangle(12, 16, 32, 24);
 		hitBoxDefaultX = hitBox.x;
 		hitBoxDefaultY = hitBox.y;
+		hitBoxDefaultWidth = hitBox.width;
+		hitBoxDefaultHeight = hitBox.height;
 		
 		getImage();
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/arrow_up_1");
-		up2 = setup("/projectile/arrow_up_2");
-		down1 = setup("/projectile/arrow_down_1");
-		down2 = setup("/projectile/arrow_down_2");
-		left1 = setup("/projectile/arrow_left_1");
-		left2 = setup("/projectile/arrow_left_2");
-		right1 = setup("/projectile/arrow_right_1");
-		right2 = setup("/projectile/arrow_right_2");		
+		up1 = setup("/projectile/arrow_up_1", 35, 35);
+		up2 = up1;
+		down1 = setup("/projectile/arrow_down_1", 35, 35);
+		down2 = down1;
+		left1 = setup("/projectile/arrow_left_1", 35, 35);
+		left2 = left1;
+		right1 = setup("/projectile/arrow_right_1", 35, 35);
+		right2 = right1;	
 	}
 	
 	public boolean hasResource(Entity user) {

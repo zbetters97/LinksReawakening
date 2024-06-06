@@ -19,9 +19,11 @@ public class ITM_Bomb extends Entity {
 		projectile = new PRJ_Bomb(gp);
 	}	
 	
-	public void use(Entity user) {
+	public boolean use(Entity user) {
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {
+			
+			playSE();
 			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);	
@@ -30,5 +32,9 @@ public class ITM_Bomb extends Entity {
 			
 			user.shotAvailableCounter = 0;
 		}
+		return true;
+	}
+	public void playSE() {
+		gp.playSE(3, 8);
 	}
 }

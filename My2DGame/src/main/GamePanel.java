@@ -98,7 +98,8 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-//		gameState = playState;
+		gameState = playState;
+		player.name = "LINK";
 		
 		setupMusic();
 												

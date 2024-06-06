@@ -21,9 +21,10 @@ public class COL_Heart extends Entity {
 		image3 = setup("/objects/heart_empty", gp.tileSize / 2, gp.tileSize / 2);
 	}
 	
-	public void use(Entity user) {
+	public boolean use(Entity user) {
 		gp.playSE(1, 6);
 		gp.ui.addMessage("Life +" + value + "!");
 		user.life += value;
+		return true;
 	}
 }

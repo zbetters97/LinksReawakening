@@ -84,6 +84,8 @@ public class Entity {
 	public String description = "";
 	public int price;
 	public int useCost;	
+	public boolean stackable = false;
+	public int amount = 1;
 	public boolean hookGrab = false;
 	
 	// INVENTORY
@@ -107,6 +109,9 @@ public class Entity {
 	public final int type_item = 5;
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
+	
+	// MAP TYPES
+	public final int type_obstacle = 8;
 		
 	public Entity(GamePanel gp) {
 		this.gp = gp;
@@ -117,12 +122,13 @@ public class Entity {
 	public void damageReaction() { }	
 	public void checkDrop() { }
 	public void use() {	}
-	public void use(Entity user) { }
+	public boolean use(Entity user) { return true; }
+	public void interact() { }
 	public void explode() {	}
 	public void playSE() { }
 	public void playAttackSE() { }
 	public void playHurtSE() { }
-	public void playDeathSE() { }
+	public void playDeathSE() { }	
 	
 	public void update() { 
 		
@@ -196,10 +202,27 @@ public class Entity {
 			damagePlayer(attack);  	
 	}
 	
+	public int getLeftX() {
+		return worldX + hitBox.x;
+	}
+	public int getRightX() {
+		return worldX + hitBox.x + hitBox.width;
+	}
+	public int getTopY() {
+		return worldY + hitBox.y;
+	}
+	public int getBottomY() {
+		return worldY + hitBox.y + hitBox.height;
+	}
+	public int getCol() {
+		return (worldX + hitBox.x) / gp.tileSize;
+	}
+	public int getRow() {
+		return (worldY + hitBox.y) / gp.tileSize;
+	}
+
 	public void speak() { 
-		
-		gp.keyH.spacePressed = false;
-		
+				
 		if (dialogues[dialogueIndex] == null) 
 			dialogueIndex = 0;
 		
@@ -395,6 +418,41 @@ public class Entity {
 		}
 	}
 	
+	public int getDetected(Entity user, Entity target[][], String targetName) {
+		
+		int index = -1;
+		
+		int nextWorldX = user.getLeftX();
+		int nextWorldY = user.getTopY();
+		
+		// CHECK SURROUNDING OBJECTS
+		switch(user.direction) {
+			case "up":
+			case "upleft":
+			case "upright": nextWorldY = user.getTopY() - 1; break;
+			case "down":
+			case "downleft":
+			case "downright": nextWorldY = user.getBottomY() + 1; break;
+			case "left": nextWorldX = user.getLeftX() - 1; break;
+			case "right": nextWorldX = user.getRightX() + 1; break;
+		}
+		
+		// CHECK IF FOUND OBJECT IS TARGET
+		int col = nextWorldX / gp.tileSize;
+		int row = nextWorldY / gp.tileSize;			
+		for (int i = 0; i < target[1].length; i++) {
+			if (target[gp.currentMap][i] != null && 
+				target[gp.currentMap][i].getCol() == col && 
+				target[gp.currentMap][i].getRow() == row &&
+				target[gp.currentMap][i].name.equals(targetName)) {
+					index = i;
+					break;					
+			}
+		}
+		
+		return index;
+	}
+	
 	public void addProjectile(Projectile projectile) {
 		for (int i = 0; i < gp.projectile[1].length; i++) {
 			if (gp.projectile[gp.currentMap][i] == null) {
@@ -403,7 +461,6 @@ public class Entity {
 			}
 		}
 	}
-	
 	public void generateParticle(Entity generator, Entity target) {
 
 		Color color = generator.getParticleColor();
@@ -436,6 +493,9 @@ public class Entity {
 	
 	public void playGetItemSE() {
 		gp.playSE(3, 1);
+	}
+	public void playMoveObjectSE() {
+		gp.playSE(3, 12);
 	}
 	
 	public void draw(Graphics2D g2) {

@@ -61,6 +61,8 @@ public class EventHandler {
 			else if (hit(0, 18, 20, "any", true)) fall(20, 20);
 			else if (hit(0, 18, 21, "any", true)) fall(20, 21);
 			else if (hit(0, 18, 22, "any", true)) fall(20, 22);
+			else if (hit(0, 10, 22, "any", true)) fall(10, 23);
+			else if (hit(0, 10, 21, "any", true)) fall(10, 23);
 			else if (hit(0, 10, 39, "any", false)) teleport(1, 12, 13);			
 			else if (hit(1, 12, 13, "any", false)) teleport(0, 10, 39);
 			else if (hit(1, 12, 9, "up", true)) speak(gp.npc[1][0]);
@@ -139,15 +141,12 @@ public class EventHandler {
 		
 		canTouchEvent = false;
 	}
-	public void fall(int x, int y) {		
-		
-		gp.playSE(2, 0);
-		
-		gp.player.life --;
+	public void fall(int x, int y) {			
+		gp.playSE(2, 2);
+		gp.player.falling = true;
 		gp.player.invincible = true;
-		
-		gp.player.worldX = x * gp.tileSize;
-		gp.player.worldY = y * gp.tileSize;
+		gp.player.safeWorldX = x * gp.tileSize;
+		gp.player.safeWorldY = y * gp.tileSize;
 	}
 	
 	public void damagePit(int gameState) {		

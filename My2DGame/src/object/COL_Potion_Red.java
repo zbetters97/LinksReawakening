@@ -16,13 +16,15 @@ public class COL_Potion_Red extends Entity {
 		description = "[" + name + "]\nHeals two hearts.";
 		value = 4;
 		price = 20;
+		stackable = true;
 		
-		down1 = setup("/objects/potion_red", gp.tileSize, gp.tileSize);
+		down1 = setup("/objects/potion_red");
 	}
 	
-	public void use(Entity user) {		
+	public boolean use(Entity user) {		
 		gp.gameState = gp.dialogueState;
 		gp.ui.currentDialogue = "Ah... you feel regenerated a little bit!";		
 		user.life += value;
+		return true;
 	}
 }

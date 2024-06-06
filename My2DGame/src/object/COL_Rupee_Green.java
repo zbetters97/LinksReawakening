@@ -18,9 +18,10 @@ public class COL_Rupee_Green extends Entity {
 		down1 = setup("/objects/COL_RUPEE_GREEN", gp.tileSize, gp.tileSize);
 	}
 	
-	public void use(Entity user) {		
+	public boolean use(Entity user) {		
 		gp.playSE(1, 5);
 		gp.ui.addMessage("Rupees +" + value + "!");
 		user.rupees += value;
+		return true;
 	}
 }

@@ -120,7 +120,7 @@ public class EMY_Goblin extends Entity {
 	}
 	
 	public void playHurtSE() {
-		gp.playSE(4, 1);
+		gp.playSE(4, 0);
 	}
 	public void playDeathSE() {
 		gp.playSE(4, 2);

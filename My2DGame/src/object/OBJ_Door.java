@@ -13,8 +13,15 @@ public class OBJ_Door extends Entity {
 		super(gp);
 		this.gp = gp;
 		
+		type = type_obstacle;
 		name = "Door";
-		hitBox = new Rectangle(0, 16, 48, 32);
 		down1 = setup("/objects/OBJ_DOOR");
+		hitBox = new Rectangle(0, 16, 48, 32);
+		collision = true;
 	}	
+	
+	public void interact() {		
+		gp.gameState = gp.dialogueState;
+		gp.ui.currentDialogue = "It's locked...";		
+	}
 }

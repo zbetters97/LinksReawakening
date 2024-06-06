@@ -19,9 +19,10 @@ public class COL_Arrow extends Entity {
 		image2 = setup("/objects/arrows_empty", gp.tileSize - 15, gp.tileSize - 15);
 	}
 	
-	public void use(Entity user) {
+	public boolean use(Entity user) {
 		gp.playSE(1, 6);
 		gp.ui.addMessage("Arrows +" + value + "!");
 		user.arrows += value;
+		return true;
 	}
 }

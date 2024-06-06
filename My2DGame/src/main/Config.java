@@ -37,6 +37,10 @@ public class Config {
 			bw.write("Sound effects volume\n" + String.valueOf(gp.se.volumeScale));			
 			bw.newLine();
 			
+			// SOUND EFFECTS VOLUME
+			bw.write("Text speed\n" + String.valueOf(gp.ui.textSpeed));			
+			bw.newLine();
+			
 			// CLOSE FILE
 			bw.close();			
 		} 
@@ -72,6 +76,11 @@ public class Config {
 			// SOUND EFFECTS VOLUME
 			s = br.readLine();
 			gp.se.volumeScale = Integer.parseInt(s);
+			br.readLine();
+			
+			// TEXT SPEED
+			s = br.readLine();
+			gp.ui.textSpeed = Integer.parseInt(s);
 			
 			br.close();			
 		} 
@@ -80,13 +89,3 @@ public class Config {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-

@@ -17,10 +17,9 @@ public class ITM_Hookshot extends Entity {
 		down1 = setup("/objects/ITEM_Hookshot");
 		
 		projectile = new PRJ_Hookshot(gp);
-	}
+	}	
 	
-	
-	public void use(Entity user) {
+	public boolean use(Entity user) {
 		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
 							
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
@@ -28,6 +27,7 @@ public class ITM_Hookshot extends Entity {
 						
 			user.shotAvailableCounter = 0;	
 		}		
+		return true;
 	}
 	public void playSE() {
 		gp.playSE(3, 5);

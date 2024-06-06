@@ -36,10 +36,6 @@ public class IT_DigSpot extends InteractiveTile {
 		return isCorrectItem;
 	}
 	
-	public void playSE() {
-		gp.playSE(3, 7);
-	}
-	
 	public InteractiveTile getDestroyedForm() {
 		InteractiveTile tile = new IT_Hole(gp, worldX / gp.tileSize, worldY / gp.tileSize);
 

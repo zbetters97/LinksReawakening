@@ -25,49 +25,56 @@ public class Sound {
 	public Sound() {
 		
 		// 0
-		music[0] = getClass().getResource("/sound/MUSIC_TITLESCREEN.wav");
-		music[1] = getClass().getResource("/sound/MUSIC_LIGHT_WORLD.wav");
-		music[2] = getClass().getResource("/sound/MUSIC_DARK_WORLD.wav");		
-		music[3] = getClass().getResource("/sound/MUSIC_LIGHT_DUNGEON.wav");
-		music[4] = getClass().getResource("/sound/MUSIC_SHOP.wav");
+		music[0] = getClass().getResource("/sound/music/TITLESCREEN.wav");
+		music[1] = getClass().getResource("/sound/music/LIGHT_WORLD.wav");
+		music[2] = getClass().getResource("/sound/music/DARK_WORLD.wav");		
+		music[3] = getClass().getResource("/sound/music/LIGHT_DUNGEON.wav");
+		music[4] = getClass().getResource("/sound/music/SHOP.wav");
 		
 		// 1
-		misc[0] = getClass().getResource("/sound/MENU_CURSOR.wav");
-		misc[1] = getClass().getResource("/sound/MENU_SELECT.wav");
-		misc[2] = getClass().getResource("/sound/MENU_ERROR.wav");
-		misc[3] = getClass().getResource("/sound/MISC_LEVELUP.wav");
+		misc[0] = getClass().getResource("/sound/menu/MENU_CURSOR.wav");
+		misc[1] = getClass().getResource("/sound/menu/MENU_SELECT.wav");
+		misc[2] = getClass().getResource("/sound/menu/MENU_ERROR.wav");
+		misc[3] = getClass().getResource("/sound/player/PLAYER_LEVELUP.wav");
 		misc[4] = getClass().getResource("/sound/MISC_FAIRY.wav");
 		misc[5] = getClass().getResource("/sound/COL_RUPEE.wav");
 		misc[6] = getClass().getResource("/sound/COL_HEART.wav");
 		misc[7] = getClass().getResource("/sound/MISC_TREE_CUT.wav");
-		misc[8] = getClass().getResource("/sound/MENU_OPEN.wav");
-		misc[9] = getClass().getResource("/sound/MENU_CLOSE.wav");
+		misc[8] = getClass().getResource("/sound/menu/MENU_OPEN.wav");
+		misc[9] = getClass().getResource("/sound/menu/MENU_CLOSE.wav");
 		misc[10] = getClass().getResource("/sound/OBJ_DOOR_ENTER.wav");
-		misc[11] = getClass().getResource("/sound/MISC_DIALOGUE.wav");
+		misc[11] = getClass().getResource("/sound/npc/DIALOGUE.wav");
+		misc[12] = getClass().getResource("/sound/npc/DIALOGUE_FINISH.wav");
 		
 		// 2
-		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");
-		player[1] = getClass().getResource("/sound/PLAYER_DIE.wav");
+		player[0] = getClass().getResource("/sound/player/PLAYER_HURT.wav");
+		player[1] = getClass().getResource("/sound/player/PLAYER_DIE.wav");
+		player[2] = getClass().getResource("/sound/player/PLAYER_FALL.wav");
 		
 		// 3
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");
-		objects[1] = getClass().getResource("/sound/OBJ_ITEM_GET.wav");
-		objects[2] = getClass().getResource("/sound/OBJ_ARROW.wav");
+		objects[1] = getClass().getResource("/sound/player/PLAYER_ITEM_GET.wav");
+		objects[2] = getClass().getResource("/sound/items/ITM_ARROW.wav");
 		objects[3] = getClass().getResource("/sound/OBJ_FIREBALL.wav");
 		objects[4] = getClass().getResource("/sound/OBJ_SWORD_BEAM.wav");
-		objects[5] = getClass().getResource("/sound/OBJ_HOOKSHOT.wav");
-		objects[6] = getClass().getResource("/sound/OBJ_BOOTS.wav");
-		objects[7] = getClass().getResource("/sound/OBJ_SHOVEL.wav");
-		objects[8] = getClass().getResource("/sound/OBJ_BOMB.wav");
-		objects[9] = getClass().getResource("/sound/OBJ_BOOMERANG.wav");
+		objects[5] = getClass().getResource("/sound/items/ITM_HOOKSHOT.wav");
+		objects[6] = getClass().getResource("/sound/items/ITM_BOOTS.wav");
+		objects[7] = getClass().getResource("/sound/items/ITM_SHOVEL.wav");
+		objects[8] = getClass().getResource("/sound/items/ITM_BOMB_LAY.wav");
+		objects[9] = getClass().getResource("/sound/items/ITM_BOMB_EXPLODE.wav");
+		objects[10] = getClass().getResource("/sound/items/ITM_BOOMERANG.wav");
+		objects[11] = getClass().getResource("/sound/items/ITM_FEATHER.wav");
+		objects[12] = getClass().getResource("/sound/OBJ_MOVE.wav");
 		
 		// 4
-		enemy[0] = getClass().getResource("/sound/EMY_NORMAL_HIT.wav");
-		enemy[1] = getClass().getResource("/sound/EMY_SMALL_HIT.wav");
-		enemy[2] = getClass().getResource("/sound/EMY_DIE.wav");
+		enemy[0] = getClass().getResource("/sound/enemy/EMY_SMALL_HIT.wav");
+		enemy[1] = getClass().getResource("/sound/enemy/EMY_NORMAL_HIT.wav");		
+		enemy[2] = getClass().getResource("/sound/enemy/EMY_DIE.wav");
 		
-		sounds[0] = music; sounds[1] = misc; 
-		sounds[2] = player; sounds[3] = objects; 
+		sounds[0] = music; 
+		sounds[1] = misc; 
+		sounds[2] = player; 
+		sounds[3] = objects; 
 		sounds[4] = enemy;
 	}	
 	public void setFile(int category, int record) {		

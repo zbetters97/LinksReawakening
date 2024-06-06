@@ -19,8 +19,7 @@ public class ITM_Bow extends Entity {
 		projectile = new PRJ_Arrow(gp);
 	}
 	
-	public void use(Entity user) {
-				
+	public boolean use(Entity user) {				
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {							
 			
@@ -33,6 +32,7 @@ public class ITM_Bow extends Entity {
 			
 			user.shotAvailableCounter = 0;	
 		}	
+		return true;
 	}	
 	
 	public void playSE() {

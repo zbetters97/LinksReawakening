@@ -28,6 +28,8 @@ public class UI {
 	// MENU OPTION SELECTION
 	public int commandNum = 0;
 	
+	public int textSpeed = 1;
+	
 	// HUD
 	BufferedImage heart_full, heart_half, heart_empty, rupee;
 	public String rupee_count = "0";
@@ -47,6 +49,9 @@ public class UI {
 	ArrayList<Integer> messageCounter = new ArrayList<>();
 	public boolean messageOn = false;
 	public String currentDialogue = "";
+	public String dialogueText = "";
+	public int dialogueIndex = 0;
+	public int dialogueCounter = 0;	
 	
 	// TRANSITION
 	int counter = 0;
@@ -475,10 +480,21 @@ public class UI {
 		g2.drawString("Sound Effects", textX, textY);
 		if (commandNum == 2) g2.drawString(">", textX - 25, textY);
 		
+		// TEXT SPEED
+		textY += gp.tileSize;
+		g2.drawString("Text Speed", textX, textY);
+		if (commandNum == 3) {
+			g2.drawString(">", textX - 25, textY);
+			if (gp.keyH.spacePressed) {
+				textSpeed++;
+				if (textSpeed > 3) textSpeed = 1;
+			}
+		}
+		
 		// CONTROLS
 		textY += gp.tileSize;
 		g2.drawString("Controls", textX, textY);
-		if (commandNum == 3) {
+		if (commandNum == 4) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.spacePressed) {
 				subState = 2;
@@ -487,9 +503,9 @@ public class UI {
 		}
 				
 		// BACK
-		textY += gp.tileSize * 2;
+		textY += gp.tileSize;
 		g2.drawString("Save and Close", textX, textY);
-		if (commandNum == 4) {
+		if (commandNum == 5) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.spacePressed) {				
 				commandNum = 0;
@@ -501,7 +517,7 @@ public class UI {
 		// QUIT GAME
 		textY += gp.tileSize;
 		g2.drawString("Quit to Title Screen", textX, textY);
-		if (commandNum == 5) {
+		if (commandNum == 6) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.spacePressed) {
 				subState = 3;
@@ -528,6 +544,12 @@ public class UI {
 		g2.drawRect(textX, textY, 120, 24); // 120/5 = 24
 		volumeWidth = 24 * gp.se.volumeScale;
 		g2.fillRect(textX, textY, volumeWidth, 24);
+		
+		// TEXT SPEED OPTION
+		textY += gp.tileSize * 1.5;
+		if (textSpeed == 1) g2.drawString("FAST", textX, textY);
+		else if (textSpeed == 2) g2.drawString("MEDIUM", textX, textY);
+		else if (textSpeed == 3) g2.drawString("SLOW", textX, textY);
 		
 		gp.config.saveConfig();
 	}
@@ -594,7 +616,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.spacePressed) {
-				commandNum = 3;
+				commandNum = 4;
 				subState = 0;
 			}
 		}
@@ -632,7 +654,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.spacePressed) {
-				commandNum = 5;
+				commandNum = 6;
 				subState = 0;
 			}
 		}
@@ -740,6 +762,26 @@ public class UI {
 				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
 			}			
 			
+			// STACKABLE ITEMS
+			if (entity.inventory.get(i).amount > 1) {
+				
+				g2.setFont(g2.getFont().deriveFont(28F));				
+				int amountX;
+				int amountY;
+				
+				String s = "" + entity.inventory.get(i).amount;
+				amountX = getXforRightAlignText(s, slotX + gp.tileSize);
+				amountY = slotY + gp.tileSize;
+				
+				// SHADOW
+				g2.setColor(Color.BLACK);
+				g2.drawString(s, amountX, amountY);
+				
+				// NUMBER
+				g2.setColor(Color.WHITE);
+				g2.drawString(s, amountX - 3, amountY - 3);
+			}
+			
 			g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
 			slotX += slotSize;
 			
@@ -793,6 +835,8 @@ public class UI {
 	
 	public void drawDialogueScreen() {
 				
+		gp.player.attackCanceled = false;
+		
 		int x = gp.tileSize * 2;
 		int y = gp.screenWidth / 2;
 		int width = gp.screenWidth - (gp.tileSize * 4);
@@ -801,24 +845,46 @@ public class UI {
 		
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
 		x += gp.tileSize;
-		y += gp.tileSize;
-		
-		for (String line : currentDialogue.split("\n")) { 
-			g2.drawString(line, x, y);	
-			y += 40;
-		} 
-		
+		y += gp.tileSize;	
+					
+		if (newItem == null) {
+									
+			// PRINT ONE CHARACTER AT A TIME
+			if (dialogueCounter == textSpeed) {		
+				
+				if (dialogueIndex < currentDialogue.length()) {				
+					playDialogueSE();					
+					dialogueText += currentDialogue.charAt(dialogueIndex);					
+					dialogueIndex++;
+				}			
+				dialogueCounter = 0;
+			}			
+			dialogueCounter++;	
+			
+			// NEW LINE
+			for (String line : dialogueText.split("\n")) { 
+				g2.drawString(line, x, y);	
+				y += 40;
+			}
+		}
+		else {
+	  		for (String line : currentDialogue.split("\n")) { 
+				g2.drawString(line, x, y);	
+				y += 40;
+			} 
+	  		
+	  		// DISPLAY ITEM ABOVE PLAYER
+			if (newItem != null) {			
+				g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
+				g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+			}
+		}
+
 		String text = "[Press SPACE to continue]";
 		x = getXforCenteredText(text);
 		y = gp.tileSize * 11;
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.drawString(text, x, y + 30);
-		
-		// DISPLAY ITEM ABOVE PLAYER
-		if (newItem != null) {			
-			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
-			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
-		}
 	}
 	
 	public void drawTradeScreen() {
@@ -919,10 +985,18 @@ public class UI {
 					subState = 0;
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "Hey! You don't have enough rupees!";
+				}
+				else if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {					
+					gp.player.rupees -= npc.inventory.get(itemIndex).price;			
+				}
+				else {
+					subState = 0;
+					gp.gameState = gp.dialogueState;
+					currentDialogue = "Looks like you don't have enough room, kid!";
 					drawDialogueScreen();
 					npc = null;
 				}
-				else if (gp.player.inventory.size() == gp.player.maxInventorySize) {
+/*				else if (gp.player.inventory.size() == gp.player.maxInventorySize) {
 					subState = 0;
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "Looks like you don't have enough room, kid!";
@@ -945,8 +1019,8 @@ public class UI {
 					gp.player.inventory.add(npc.inventory.get(itemIndex));					
 					if (npc.inventory.get(itemIndex).type == gp.player.type_item) 
 						gp.player.hasItem = true;
-				}
-			}
+				} */
+			} 
 		}		
 	}
 	public void trade_sell() {
@@ -1108,6 +1182,9 @@ public class UI {
 	
 	public void playDialogueSE() {
 		gp.playSE(1, 11);
+	}
+	public void playDialogueFinishSE() {
+		gp.playSE(1, 12);
 	}
 	
 	public void drawSubWindow(int x, int y, int width, int height) {

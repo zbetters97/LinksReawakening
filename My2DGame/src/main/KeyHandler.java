@@ -8,6 +8,7 @@ import java.util.Map;
 public class KeyHandler implements KeyListener{
 
 	GamePanel gp;
+	public boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
 	public boolean spacePressed, itemPressed, tabPressed;
 	public boolean debug = false;
@@ -215,13 +216,14 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	public void playState(int code) { 
+		
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = true;
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;	
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
-		if (code == KeyEvent.VK_SPACE) spacePressed = true;
-		if (code == KeyEvent.VK_Q) itemPressed = true;
-		if (code == KeyEvent.VK_T) tabPressed = true;
+		if (code == KeyEvent.VK_SPACE && lock) { spacePressed = true; lock = false; }
+		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
+		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.playSE(1, 8);
 			gp.gameState = gp.pauseState;
@@ -239,14 +241,14 @@ public class KeyHandler implements KeyListener{
 				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
 				case 1: gp.tileM.loadMap("/maps/interior01.txt", 1); break;
 			}			
-		}
+		}		
 	}
 	
 	public void pauseState(int code) { 
 		
 		int maxCommandNum = 0;
 		switch (gp.ui.subState) {
-			case 0: maxCommandNum = 5; break;
+			case 0: maxCommandNum = 6; break;
 			case 3: maxCommandNum = 1; break;
 		}
 		
@@ -301,25 +303,40 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	public void dialogueState(int code) { 
-		if (code == KeyEvent.VK_SPACE) {
+		if (code == KeyEvent.VK_SPACE && lock) {
+									
+			gp.ui.dialogueText = "";
+			gp.ui.dialogueIndex = 0;
+			gp.ui.dialogueCounter = 0;	
 			
 			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
 				gp.player.getObject(gp.ui.npc.inventory.get(0));
 				gp.gameState = gp.itemGetState;
 			}		
-			else 
+			else {
+				gp.ui.playDialogueFinishSE();
 				gp.gameState = gp.playState;
+			}
+			
+			lock = false;
 		}
 	}
 	
 	public void itemGetState(int code) { 
-		if (code == KeyEvent.VK_SPACE) {			
+		if (code == KeyEvent.VK_SPACE && lock) {
+			
+			gp.ui.dialogueText = "";
+			gp.ui.dialogueIndex = 0;
+			gp.ui.dialogueCounter = 0;	
+			
 			if (gp.ui.npc != null) {		
 				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);
 				gp.ui.npc = null;
 			}
 			gp.ui.newItem = null;			
 			gp.gameState = gp.playState;
+			
+			lock = false;
 		}
 	}
 	
@@ -390,9 +407,10 @@ public class KeyHandler implements KeyListener{
 
 	public void tradeState(int code) {
 				
-		if (code == KeyEvent.VK_SPACE) {			
+		if (code == KeyEvent.VK_SPACE && lock) {			
 			playSelectSE();
 			spacePressed = true;
+			lock = false;
 		}
 		if (gp.ui.subState == 0) {
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 				
@@ -455,17 +473,16 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	@Override
-	public void keyReleased(KeyEvent e) {
-		
+	public void keyReleased(KeyEvent e) {	
 		int code = e.getKeyCode();
 		
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = false;
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = false;	
+		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = false; 
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = false;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
-		if (code == KeyEvent.VK_SPACE) spacePressed = false;
-		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; }	
-		if (code == KeyEvent.VK_T) tabPressed = false;
+		if (code == KeyEvent.VK_SPACE) { spacePressed = false; lock = true; }
+		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; lock = true; }	
+		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
 	}
 	
 	public void playCursorSE() {

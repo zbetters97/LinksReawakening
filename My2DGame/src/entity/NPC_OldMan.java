@@ -44,7 +44,7 @@ public class NPC_OldMan extends Entity{
 	
 	public void setDialogue() {
 		dialogues[0] = "It's dangerous to go alone!\nTake this!";
-		dialogues[1] = "The northeast region is where my home lies.\nIs it safe to walk there?";
+		dialogues[1] = "My home lies in the northeast region.\nIs it safe to walk there?";
 		dialogues[2] = "I don't have time to chat right now.";
 		dialogues[3] = "Thank you, kind boy. Here is a gift for you.";
 		dialogues[4] = "It's a secret to everyone.";
