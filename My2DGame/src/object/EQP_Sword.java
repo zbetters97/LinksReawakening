@@ -5,8 +5,11 @@ import main.GamePanel;
 
 public class EQP_Sword extends Entity {
 
+	GamePanel gp;
+	
 	public EQP_Sword(GamePanel gp) {
 		super(gp);
+		this.gp = gp;
 		
 		type = type_sword;		
 		name = "Old Sword";
@@ -19,5 +22,9 @@ public class EQP_Sword extends Entity {
 		
 		down1 = setup("/objects/ITEM_SWORD");
 		image1 = down1;
+	}
+	
+	public void playSE() {
+		gp.playSE(3, 0);
 	}
 }

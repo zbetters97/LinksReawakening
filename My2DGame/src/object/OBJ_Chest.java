@@ -23,9 +23,9 @@ public class OBJ_Chest extends Entity {
 		down1 = image1;
 		collision = true;
 		
-		hitBox = new Rectangle(4, 16, 40, 32);
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(4, 16, 40, 32);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 	}	
 	
 	public void interact() {		

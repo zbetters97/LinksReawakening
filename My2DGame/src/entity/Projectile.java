@@ -90,7 +90,7 @@ public class Projectile extends Entity {
 	public void useBoomerang() {
 		
 		// PAUSE PLAYER INPUT
-		gp.gameState = gp.itemState;
+		gp.gameState = gp.projectileState;
 		
 		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
 		collisionOn = false;		
@@ -188,7 +188,7 @@ public class Projectile extends Entity {
 	public void useHookshot() {
 				
 		// PAUSE PLAYER INPUT
-		gp.gameState = gp.itemState;
+		gp.gameState = gp.projectileState;
 						
 		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
 		collisionOn = false;		
@@ -401,6 +401,15 @@ public class Projectile extends Entity {
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
 				alive = false;
+			}
+			
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);			
+			if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].pressable && 
+					gp.iTile[gp.currentMap][iTileIndex].isCorrectItem(this)) {				
+				//PLAY SE
+				
+				gp.iTile[gp.currentMap][10] = null;
+				gp.iTile[gp.currentMap][11] = null;
 			}
 		}
 		// SHOT BY ENEMEY

@@ -10,10 +10,12 @@ public class IT_DigSpot extends InteractiveTile {
 
 	GamePanel gp;
 	int mapNum;
+	Entity item;
 	
-	public IT_DigSpot(GamePanel gp, int mapNum, int col, int row) {
+	public IT_DigSpot(GamePanel gp, int mapNum, int col, int row, Entity item) {
 		super(gp, col, row);
 		this.gp = gp;
+		this.item = item;
 		
 		destructible = true;
 		diggable = true;
@@ -23,7 +25,7 @@ public class IT_DigSpot extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
-		down1 = setup("/tiles/003", gp.tileSize, gp.tileSize);
+		down1 = setup("/tiles/003");
 	}
 	
 	public boolean isCorrectItem(Entity entity) {		
@@ -39,7 +41,7 @@ public class IT_DigSpot extends InteractiveTile {
 	public InteractiveTile getDestroyedForm() {
 		InteractiveTile tile = new IT_Hole(gp, worldX / gp.tileSize, worldY / gp.tileSize);
 
-		gp.obj[mapNum][gp.obj.length + 1] = new COL_Rupee_Red(gp);
+		gp.obj[mapNum][gp.obj.length + 1] = item;
 		gp.obj[mapNum][gp.obj.length + 1].worldX = worldX;
 		gp.obj[mapNum][gp.obj.length + 1].worldY = worldY;
 		

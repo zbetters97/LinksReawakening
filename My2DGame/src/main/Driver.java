@@ -1,5 +1,6 @@
 package main;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class Driver {
@@ -8,12 +9,15 @@ public class Driver {
 	
 	public static void main(String[] args) {
 
-		window = new JFrame();		
+		window = new JFrame();	
 		
 		// WINDOW PROPERTIES
-		window.setTitle("Link's Reawakening");
+		window.setTitle("Link's Reawakening");		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(false);
+		
+		ImageIcon icon = new ImageIcon("triforce.ico"); 
+		window.setIconImage(icon.getImage());
 		
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel); 
@@ -27,7 +31,7 @@ public class Driver {
 		// RESIZE WINDOW
 		window.pack(); 
 		window.setLocationRelativeTo(null);
-		window.setVisible(true);		
+		window.setVisible(true);	
 		
 		// START
 		gamePanel.setupGame();

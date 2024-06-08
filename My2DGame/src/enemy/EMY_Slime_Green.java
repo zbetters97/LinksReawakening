@@ -27,9 +27,9 @@ public class EMY_Slime_Green extends Entity {
 		exp = 4;
 		maxLife = 4; life = maxLife;
 		
-		hitBox = new Rectangle(2, 18, 44, 30);
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(2, 18, 44, 30);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 
 		projectile = new PRJ_Fireball(gp);
 		

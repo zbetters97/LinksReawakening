@@ -26,9 +26,8 @@ public class IT_DryTree extends InteractiveTile {
 	public boolean isCorrectItem(Entity entity) {		
 		
 		boolean isCorrectItem = false;				
-		if (entity.currentItem.name.equals("Axe")) {
-			isCorrectItem = true;
-		}
+		if (entity.currentItem.name.equals("Axe"))
+			isCorrectItem = true;		
 		
 		return isCorrectItem;
 	}

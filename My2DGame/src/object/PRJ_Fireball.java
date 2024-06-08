@@ -20,9 +20,9 @@ public class PRJ_Fireball extends Projectile {
 		maxLife = 60; life = maxLife;
 		alive = false;
 		
-		hitBox = new Rectangle(12, 12, 24, 24); 		
-		hitBoxDefaultX = hitBox.x;
-	    hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(12, 12, 24, 24); 		
+		hitboxDefaultX = hitbox.x;
+	    hitboxDefaultY = hitbox.y;
 		
 		getImage();
 	}

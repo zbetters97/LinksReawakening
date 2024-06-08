@@ -39,27 +39,29 @@ public class KeyHandler implements KeyListener{
 		else if (gp.gameState == gp.pauseState) {
 			pauseState(code);
 		}
-		// DIALOGUE STATE
-		else if (gp.gameState == gp.dialogueState) {
-			dialogueState(code);
-		}
 		// CHARACTER STATE
 		else if (gp.gameState == gp.characterState) {
 			characterState(code);
+		}
+		// DIALOGUE STATE
+		else if (gp.gameState == gp.dialogueState) {
+			dialogueState(code);
+		}		
+		// TRADE STATE
+		else if (gp.gameState == gp.tradeState) {
+			tradeState(code);
+		}
+		// ITEM GET STATE
+		else if (gp.gameState == gp.itemGetState) {
+			itemGetState(code);
 		}
 		// GAME OVER STATE
 		else if (gp.gameState == gp.gameOverState) {
 			gameOverState(code);
 		}
-		// TRADE STATE
-		else if (gp.gameState == gp.tradeState) {
-			tradeState(code);
-		}
-		else if (gp.gameState == gp.itemGetState) {
-			itemGetState(code);
-		}
 	}
 	
+	// TITLE	
 	public void titleState(int code) { 
 		
 		// MAIN MENU
@@ -215,21 +217,23 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
+	// PLAY
 	public void playState(int code) { 
 		
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = true;
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
-		if (code == KeyEvent.VK_SPACE && lock) { spacePressed = true; lock = false; }
+		if (code == KeyEvent.VK_SPACE && lock) { 
+			spacePressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }
 		if (code == KeyEvent.VK_ESCAPE) {
-			gp.playSE(1, 8);
+			gp.ui.playMenuOpenSE();
 			gp.gameState = gp.pauseState;
 		}
 		if (code == KeyEvent.VK_E) { 
-			gp.playSE(1, 8);
+			gp.ui.playMenuOpenSE();
 			gp.gameState = gp.characterState;
 		}
 		if (code == KeyEvent.VK_SHIFT) {
@@ -244,6 +248,7 @@ public class KeyHandler implements KeyListener{
 		}		
 	}
 	
+	// PAUSE
 	public void pauseState(int code) { 
 		
 		int maxCommandNum = 0;
@@ -293,7 +298,7 @@ public class KeyHandler implements KeyListener{
 		}
 		
 		if (code == KeyEvent.VK_ESCAPE) {
-			gp.playSE(1, 9);
+			gp.ui.playMenuCloseSE();
 			gp.gameState = gp.playState;
 		}
 		if (code == KeyEvent.VK_SPACE) {
@@ -302,44 +307,20 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
-	public void dialogueState(int code) { 
-		if (code == KeyEvent.VK_SPACE && lock) {
-									
-			gp.ui.dialogueText = "";
-			gp.ui.dialogueIndex = 0;
-			gp.ui.dialogueCounter = 0;	
-			
-			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
-				gp.player.getObject(gp.ui.npc.inventory.get(0));
-				gp.gameState = gp.itemGetState;
-			}		
-			else {
-				gp.ui.playDialogueFinishSE();
-				gp.gameState = gp.playState;
-			}
-			
-			lock = false;
-		}
-	}
-	
-	public void itemGetState(int code) { 
-		if (code == KeyEvent.VK_SPACE && lock) {
-			
-			gp.ui.dialogueText = "";
-			gp.ui.dialogueIndex = 0;
-			gp.ui.dialogueCounter = 0;	
-			
-			if (gp.ui.npc != null) {		
-				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);
-				gp.ui.npc = null;
-			}
-			gp.ui.newItem = null;			
+	// CHARACTER STATE
+	public void characterState(int code) { 
+		
+		if (code == KeyEvent.VK_E) {
+			gp.ui.playMenuCloseSE();
 			gp.gameState = gp.playState;
-			
-			lock = false;
 		}
+		if (code == KeyEvent.VK_SPACE) {			
+			gp.player.selectItem();
+		}
+		playerInventory(code);
 	}
 	
+	//INVENTORY	
 	public void playerInventory(int code) {
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.playerSlotRow != 0) {
@@ -366,6 +347,47 @@ public class KeyHandler implements KeyListener{
 			}
 		}
 	}
+	
+	// DIALOGUE
+	public void dialogueState(int code) { 
+		if (code == KeyEvent.VK_SPACE && lock) {
+									
+			gp.ui.dialogueText = "";
+			gp.ui.dialogueIndex = 0;
+			gp.ui.dialogueCounter = 0;	
+			
+			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
+				boolean get = gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
+			}		
+			else {
+				gp.ui.playDialogueFinishSE();
+				gp.gameState = gp.playState;
+			}
+			
+			lock = false;
+		}
+	}
+	
+	// ITEM GET	
+	public void itemGetState(int code) { 
+		if (code == KeyEvent.VK_SPACE && lock) {
+			
+			gp.ui.dialogueText = "";
+			gp.ui.dialogueIndex = 0;
+			gp.ui.dialogueCounter = 0;	
+			
+			if (gp.ui.npc != null) {		
+				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);
+				gp.ui.npc = null;
+			}
+			
+			gp.gameState = gp.playState;
+			gp.ui.newItem = null;
+			lock = false;
+		}
+	}
+	
+	// NPC INVENTORY
 	public void npcInventory(int code) {
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
 			if (gp.ui.npcSlotRow != 0) {
@@ -393,24 +415,17 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
-	public void characterState(int code) { 
-		
-		if (code == KeyEvent.VK_E) {
-			gp.playSE(1, 9);
-			gp.gameState = gp.playState;
-		}
-		if (code == KeyEvent.VK_SPACE) {			
-			gp.player.selectItem();
-		}
-		playerInventory(code);
-	}
-
+	// TRADE
 	public void tradeState(int code) {
-				
+						
 		if (code == KeyEvent.VK_SPACE && lock) {			
 			playSelectSE();
 			spacePressed = true;
 			lock = false;
+
+			gp.ui.dialogueText = "";
+			gp.ui.dialogueIndex = 0;
+			gp.ui.dialogueCounter = 0;	
 		}
 		if (gp.ui.subState == 0) {
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 				
@@ -440,6 +455,7 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
+	// GAME OVER
 	public void gameOverState(int code) {
 		
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
@@ -485,6 +501,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
 	}
 	
+	// SOUND EFFECTS
 	public void playCursorSE() {
 		gp.playSE(1, 0);
 	}

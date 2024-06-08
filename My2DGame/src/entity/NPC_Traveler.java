@@ -20,9 +20,9 @@ public class NPC_Traveler extends Entity{
 		speed = 1;
 		animationSpeed = 15; 		
 
-		hitBox = new Rectangle(8, 16, 32, 32); 		
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(8, 16, 32, 32); 		
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 		setDialogue();

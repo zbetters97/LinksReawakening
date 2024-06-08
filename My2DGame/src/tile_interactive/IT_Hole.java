@@ -15,9 +15,9 @@ public class IT_Hole extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 	
-		hitBox = new Rectangle(0,0,0,0);
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(0,0,0,0);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		down1 = setup("/tiles/017");
 	}

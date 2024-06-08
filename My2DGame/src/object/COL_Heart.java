@@ -22,9 +22,11 @@ public class COL_Heart extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		gp.playSE(1, 6);
-		gp.ui.addMessage("Life +" + value + "!");
+		playSE();
 		user.life += value;
 		return true;
+	}
+	public void playSE() {
+		gp.playSE(1, 6);	
 	}
 }

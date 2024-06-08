@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import object.COL_Potion_Red;
 import object.ITM_Boomerang;
 
 public class NPC_Merchant extends Entity {

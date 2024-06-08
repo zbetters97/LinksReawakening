@@ -3,7 +3,7 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class COL_Potion_Red extends Entity {
+public class COL_Potion_Red extends Entity implements Cloneable {
 
 	GamePanel gp;
 	
@@ -27,4 +27,8 @@ public class COL_Potion_Red extends Entity {
 		user.life += value;
 		return true;
 	}
+	@Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

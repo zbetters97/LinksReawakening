@@ -20,11 +20,11 @@ public class PRJ_Arrow extends Projectile {
 		maxLife = 60; life = maxLife;
 		alive = false;
 		
-		hitBox = new Rectangle(12, 16, 32, 24);
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
-		hitBoxDefaultWidth = hitBox.width;
-		hitBoxDefaultHeight = hitBox.height;
+		hitbox = new Rectangle(12, 16, 24, 24);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		getImage();
 	}

@@ -26,9 +26,9 @@ public class EMY_Bat extends Entity {
 		exp = 2;
 		maxLife = 6; life = maxLife;
 		
-		hitBox = new Rectangle(2, 18, 44, 30);
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(2, 18, 44, 30);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 	}
@@ -66,8 +66,8 @@ public class EMY_Bat extends Entity {
 		
 		if (onPath) {
 			
-			int goalCol = (gp.player.worldX + gp.player.hitBox.x) / gp.tileSize;
-			int goalRow = (gp.player.worldY + gp.player.hitBox.y) / gp.tileSize;
+			int goalCol = (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize;
+			int goalRow = (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize;
 			
 			searchPath(goalCol, goalRow);
 		}

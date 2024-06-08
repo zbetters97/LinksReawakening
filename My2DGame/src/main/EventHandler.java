@@ -1,5 +1,8 @@
 package main;
 
+import java.util.Arrays;
+import java.util.List;
+
 import entity.Entity;
 
 public class EventHandler {
@@ -31,6 +34,8 @@ public class EventHandler {
 			eventRect[map][col][row].height = 2;
 			eventRect[map][col][row].eventRectDefaultX = eventRect[map][col][row].x;
 			eventRect[map][col][row].eventRectDefaultY = eventRect[map][col][row].y;
+			eventRect[map][col][row].eventRectDefaultWidth = eventRect[map][col][row].width;
+			eventRect[map][col][row].eventRectDefaultHeight = eventRect[map][col][row].height;
 			
 			col++;
 			if (col == gp.maxWorldCol) {
@@ -57,20 +62,31 @@ public class EventHandler {
 		
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
-			if (hit(0, 23, 12, "up", false)) healingPool(gp.dialogueState);
-			else if (hit(0, 18, 20, "any", true)) fall(20, 20);
-			else if (hit(0, 18, 21, "any", true)) fall(20, 21);
-			else if (hit(0, 18, 22, "any", true)) fall(20, 22);
-			else if (hit(0, 10, 22, "any", true)) fall(10, 23);
-			else if (hit(0, 10, 21, "any", true)) fall(10, 23);
-			else if (hit(0, 10, 39, "any", false)) teleport(1, 12, 13);			
-			else if (hit(1, 12, 13, "any", false)) teleport(0, 10, 39);
-			else if (hit(1, 12, 9, "up", true)) speak(gp.npc[1][0]);
-			else if (hit(0, 12, 9, "any", false)) win();	
+			if (hit(0, 23, 12, Arrays.asList("up"), false)) healingPool(gp.dialogueState);
+			
+			else if (hit(0, 10, 39, false)) teleport(1, 12, 13);			
+			else if (hit(1, 12, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);
+			else if (hit(1, 12, 13, false)) teleport(0, 10, 39);	
+			
+			else if (hit(0, 18, 20, Arrays.asList("left","upleft","downleft"), true)) fall(20, 20);
+			else if (hit(0, 18, 21, Arrays.asList("left","upleft","downleft"), true)) fall(20, 21);
+			else if (hit(0, 18, 22, Arrays.asList("left","upleft","downleft"), true)) fall(20, 22);
+			
+			else if (hit(0, 18, 20, Arrays.asList("right","upright","downright"), true)) fall(16, 20);
+			else if (hit(0, 18, 21, Arrays.asList("right","upright","downright"), true)) fall(16, 21);
+			else if (hit(0, 18, 22, Arrays.asList("right","upright","downright"), true)) fall(16, 22);
+			
+			else if (hit(0, 37, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(37, 10);
+			else if (hit(0, 38, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(38, 10);
+			
+			else if (hit(0, 10, 22, Arrays.asList("up", "upleft", "upright"), true)) fall(10, 23);
+			else if (hit(0, 10, 21, Arrays.asList("up", "upleft", "upright"), true)) fall(10, 23);
+			
+			else if (hit(0, 12, 9, false)) win();	
 		}
 	}
 	
-	public boolean hit(int map, int col, int row, String reqDirection, boolean fullTile) {
+	public boolean hit(int map, int col, int row, List<String> reqDirection, boolean fullTile) {
 		
 		boolean hit = false;
 		
@@ -83,32 +99,78 @@ public class EventHandler {
 				eventRect[map][col][row].height = 16;
 			}
 			
-			// PLAYER HITBOX
-			gp.player.hitBox.x += gp.player.worldX;		
-			gp.player.hitBox.y += gp.player.worldY;
+			// PLAYER hitbox
+			gp.player.hitbox.x += gp.player.worldX;		
+			gp.player.hitbox.y += gp.player.worldY;
 			
-			// EVENT HITBOX
+			// EVENT hitbox
 			eventRect[map][col][row].x += col * gp.tileSize;
 			eventRect[map][col][row].y += row * gp.tileSize;
 			
 			// PLAYER INTERACTS WITH EVENT AND EVENT CAN HAPPEN
-			if (gp.player.hitBox.intersects(eventRect[map][col][row]) && 
+			if (gp.player.hitbox.intersects(eventRect[map][col][row]) && 
 					!eventRect[map][col][row].eventDone) {
 				
-				// EVENT OCCURS ONLY ON DIRECTION
-				if (gp.player.direction.equals(reqDirection) || 
-						reqDirection.equals("any")) {
-					hit = true;
-					
-					// RECORD PLAYER X/Y
-					previousEventX = gp.player.worldX;
-					previousEventY = gp.player.worldY;
+				for (String dir : reqDirection) {
+					if (gp.player.direction.equals(dir)) {
+						hit = true;
+						
+						// RECORD PLAYER X/Y
+						previousEventX = gp.player.worldX;
+						previousEventY = gp.player.worldY;
+						
+						break;
+					}
 				}
 			}
 			
-			// RESET HITBOX
-			gp.player.hitBox.x = gp.player.hitBoxDefaultX;
-			gp.player.hitBox.y = gp.player.hitBoxDefaultY;
+			// RESET hitbox
+			gp.player.hitbox.x = gp.player.hitboxDefaultX;
+			gp.player.hitbox.y = gp.player.hitboxDefaultY;
+			eventRect[map][col][row].x = eventRect[map][col][row].eventRectDefaultX;
+			eventRect[map][col][row].y = eventRect[map][col][row].eventRectDefaultY;	
+			eventRect[map][col][row].width = eventRect[map][col][row].eventRectDefaultWidth;
+			eventRect[map][col][row].height = eventRect[map][col][row].eventRectDefaultHeight;
+		}		
+		
+		return hit;		
+	}
+	
+	public boolean hit(int map, int col, int row, boolean fullTile) {
+		
+		boolean hit = false;
+		
+		if (map == gp.currentMap) {
+
+			if (fullTile) {
+				eventRect[map][col][row].x = 16;
+				eventRect[map][col][row].y = 16;
+				eventRect[map][col][row].width = 16;
+				eventRect[map][col][row].height = 16;
+			}
+			
+			// PLAYER hitbox
+			gp.player.hitbox.x += gp.player.worldX;		
+			gp.player.hitbox.y += gp.player.worldY;
+			
+			// EVENT hitbox
+			eventRect[map][col][row].x += col * gp.tileSize;
+			eventRect[map][col][row].y += row * gp.tileSize;
+			
+			// PLAYER INTERACTS WITH EVENT AND EVENT CAN HAPPEN
+			if (gp.player.hitbox.intersects(eventRect[map][col][row]) && 
+					!eventRect[map][col][row].eventDone) {
+				
+				hit = true;
+				
+				// RECORD PLAYER X/Y
+				previousEventX = gp.player.worldX;
+				previousEventY = gp.player.worldY;
+			}
+			
+			// RESET hitbox
+			gp.player.hitbox.x = gp.player.hitboxDefaultX;
+			gp.player.hitbox.y = gp.player.hitboxDefaultY;
 			eventRect[map][col][row].x = eventRect[map][col][row].eventRectDefaultX;
 			eventRect[map][col][row].y = eventRect[map][col][row].eventRectDefaultY;	
 		}		
@@ -161,12 +223,17 @@ public class EventHandler {
 	
 	public void healingPool(int gameState) {
 		if (gp.keyH.spacePressed) {
-			gp.player.attackCanceled = true;
-			gp.gameState = gameState;
-			gp.ui.currentDialogue = "Ah... The water is pure and heals you.";
 			gp.playSE(1, 4);
+			
+			gp.player.attackCanceled = true;			
+			gp.ui.currentDialogue = "Ah... The water is pure and heals you.";		
+			
 			gp.player.life = gp.player.maxLife;	
+			gp.player.arrows = gp.player.maxArrows;
+			gp.player.bombs = gp.player.maxBombs;
 			gp.aSetter.setEnemy();
+			
+			gp.gameState = gameState;
 		}
 	}
 }

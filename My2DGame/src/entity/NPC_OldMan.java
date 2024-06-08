@@ -22,9 +22,9 @@ public class NPC_OldMan extends Entity{
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 0; 
 		
-		hitBox = new Rectangle(8, 16, 32, 32); 		
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(8, 16, 32, 32); 		
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 		setItems();

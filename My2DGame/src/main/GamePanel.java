@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 import ai.PathFinder;
 import entity.*;
+import environment.EnvironmentManager;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
 
@@ -59,15 +60,16 @@ public class GamePanel extends JPanel implements Runnable {
 	public int gameState;
 	public final int titleState = 0;
 	public final int playState = 1;
-	public final int pauseState = 2;
-	public final int dialogueState = 3;	
-	public final int characterState = 4;
-	public final int itemState = 5;
-	public final int gameOverState = 6;
-	public final int transitionState = 7;
-	public final int tradeState = 8;
-	public final int itemGetState = 9;	
-		
+	public final int pauseState = 2;	
+	public final int characterState = 3;
+	public final int dialogueState = 4;		
+	public final int tradeState = 5;
+	public final int itemGetState = 6;
+	public final int projectileState = 7;	
+	public final int transitionState = 8;	
+	public final int sleepState = 9;
+	public final int gameOverState = 10;
+	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
 	public Entity npc[][] = new Entity[maxMap][10]; // total amount of npc displayed at once	
@@ -80,6 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// HANDLERS
 	public TileManager tileM = new TileManager(this);
+	public EnvironmentManager eManager = new EnvironmentManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);	
 	public EventHandler eHandler = new EventHandler(this);	
 	public AssetSetter aSetter = new AssetSetter(this);
@@ -98,11 +101,12 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = playState;
-		player.name = "LINK";
+//		gameState = playState;
 		
 		setupMusic();
-												
+
+		eManager.setup();
+		
 		aSetter.setNPC();
 		aSetter.setEnemy();
 		aSetter.setInteractiveTiles();
@@ -127,28 +131,6 @@ public class GamePanel extends JPanel implements Runnable {
 		screenWidth2 = Driver.window.getWidth();
 		screenHeight2 = Driver.window.getHeight();
 	}
-	public void setupMusic() {
-		
-		if (gameState == titleState) {
-			playMusic(0);		
-		}
-		else {			
-			if (currentMap == 0) playMusic(2);
-			else if (currentMap == 1) playMusic(4);
-		}
-	}	
-	public void playMusic(int c) {		
-		music.setFile(0, c);
-		music.play();
-		music.loop();
-	}
-	public void stopMusic() {
-		music.stop();
-	}
-	public void playSE(int i, int c) {
-		se.setFile(i, c);
-		se.play();
-	}	
 	
 	public void startGameThread() {		
 		gameThread = new Thread(this); // new Thread with GamePanel class
@@ -175,11 +157,11 @@ public class GamePanel extends JPanel implements Runnable {
 		stopMusic();
 		
 		player.alive = true;
-		player.setDefaultPosition();
-		player.restoreHearts();
-		player.setDefaultValues();
 		player.inventory.clear();
-		player.setItems();
+		player.restoreHearts();
+		player.setDefaultPosition();		
+		player.setDefaultValues();		
+		player.setDefaultItems();
 		
 		ui.deathSprite = 0;
 		ui.deathCounter = 0;
@@ -226,10 +208,13 @@ public class GamePanel extends JPanel implements Runnable {
 	public void update() {
 				
 		// GAME PLAYING
-		if (gameState == playState || gameState == itemState) {
+		if (gameState == playState || gameState == projectileState) {
 			
 			// UPDATE PLAYER
 			player.update();	
+			
+			// UPDATE ENVIRONMENT
+			eManager.update();
 				
 			// UPDATE NPCs
 			for (int i = 0; i < npc[1].length; i++) {
@@ -289,6 +274,26 @@ public class GamePanel extends JPanel implements Runnable {
 		// GAME PAUSED
 		if (gameState == pauseState) { }
 	}
+	public void setupMusic() {
+		
+		if (gameState == titleState) playMusic(0);			
+		else {			
+			if (currentMap == 0) playMusic(2);
+			else if (currentMap == 1) playMusic(4);
+		}
+	}	
+	public void playMusic(int c) {		
+		music.setFile(0, c);
+		music.play();
+		music.loop();
+	}
+	public void stopMusic() {
+		music.stop();
+	}
+	public void playSE(int i, int c) {
+		se.setFile(i, c);
+		se.play();
+	}	
 	
 	public void drawToTempScreen() {
 		
@@ -330,6 +335,9 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// EMPTY ENTITY LIST
 			entityList.clear();
+			
+			// DRAW ENVIRONMENT
+			eManager.draw(g2);
 			
 			// DRAW UI
 			ui.draw(g2);	

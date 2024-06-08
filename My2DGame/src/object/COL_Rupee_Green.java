@@ -15,13 +15,15 @@ public class COL_Rupee_Green extends Entity {
 		name = "Green Rupee";
 		value = 1;
 		
-		down1 = setup("/objects/COL_RUPEE_GREEN", gp.tileSize, gp.tileSize);
+		down1 = setup("/objects/COL_RUPEE_GREEN");
 	}
 	
 	public boolean use(Entity user) {		
-		gp.playSE(1, 5);
-		gp.ui.addMessage("Rupees +" + value + "!");
+		playSE();
 		user.rupees += value;
 		return true;
+	}
+	public void playSE() {
+		gp.playSE(1, 5);
 	}
 }

@@ -21,9 +21,9 @@ public class PRJ_Hookshot extends Projectile {
 		maxLife = 30; life = maxLife;	
 		alive = false;
 
-		hitBox = new Rectangle(16, 16, 16, 16); 		
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(16, 16, 16, 16); 		
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 	}

@@ -44,4 +44,8 @@ public class PRJ_Sword_Beam extends Projectile {
 	public void subtractResource(Entity user) {
 		user.arrows -= useCost;
 	}
+	
+	public void playSE() {
+		gp.playSE(3, 4);
+	}
 }

@@ -16,7 +16,7 @@ public class OBJ_Door extends Entity {
 		type = type_obstacle;
 		name = "Door";
 		down1 = setup("/objects/OBJ_DOOR");
-		hitBox = new Rectangle(0, 16, 48, 32);
+		hitbox = new Rectangle(0, 16, 48, 32);
 		collision = true;
 	}	
 	

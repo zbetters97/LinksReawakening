@@ -17,13 +17,10 @@ public class ITM_Axe extends Entity {
 		down1 = setup("/objects/ITEM_AXE");
 	}
 	
-	public void use() {
-		if (!gp.player.attackCanceled && !gp.player.attacking) {
-			playSE();
-			gp.player.attacking = true;
-		}
+	public void use() {				
+		gp.player.attacking = true;
+		gp.player.chopping = true;		
 	}
-	
 	public void playSE() {
 		gp.playSE(3, 0);
 	}

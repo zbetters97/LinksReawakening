@@ -24,11 +24,6 @@ public class IT_Wall extends InteractiveTile {
 	public void playSE() {
 		gp.playSE(1, 7);
 	}
-	
-	public InteractiveTile getDestroyedForm() {
-		InteractiveTile tile = new IT_Trunk(gp, worldX / gp.tileSize, worldY / gp.tileSize);
-		return tile;
-	}	
 	public Color getParticleColor() {
 		Color color = new Color(65,50,30); // BROWN
 		return color;

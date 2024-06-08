@@ -30,9 +30,9 @@ public class EMY_Goblin extends Entity {
 		exp = 8;
 		maxLife = 6; life = maxLife;
 						
-		hitBox = new Rectangle(8, 16, 32, 32); 
-		hitBoxDefaultX = hitBox.x;
-		hitBoxDefaultY = hitBox.y;
+		hitbox = new Rectangle(8, 16, 32, 32); 
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		arrows = -1;
 		item = new ITM_Bow(gp);
@@ -85,8 +85,8 @@ public class EMY_Goblin extends Entity {
 		
 		if (onPath) {
 			
-			int goalCol = (gp.player.worldX + gp.player.hitBox.x) / gp.tileSize;
-			int goalRow = (gp.player.worldY + gp.player.hitBox.y) / gp.tileSize;
+			int goalCol = (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize;
+			int goalRow = (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize;
 			
 			searchPath(goalCol, goalRow);
 			

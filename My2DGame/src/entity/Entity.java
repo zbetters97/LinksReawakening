@@ -33,7 +33,7 @@ public class Entity {
 	public int attack, defense;
 	public int level, exp, nextLevelEXP;
 	public int rupees;
-	public Entity currentWeapon, currentShield, currentItem;
+	public Entity currentWeapon, currentShield, currentItem, currentLight;
 	public Projectile projectile;
 	public boolean collisionOn = false;
 	public boolean hasItem = false;
@@ -64,9 +64,9 @@ public class Entity {
 	public boolean dying = false;
 	public int dyingCounter = 0;		
 
-	// DEFAULT HITBOX
-	public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
-	public int hitBoxDefaultX, hitBoxDefaultY, hitBoxDefaultWidth, hitBoxDefaultHeight;	
+	// DEFAULT hitbox
+	public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
+	public int hitboxDefaultX, hitboxDefaultY, hitboxDefaultWidth, hitboxDefaultHeight;	
 	
 	// ATTACKING
 	public int actionLockCounter = 0;
@@ -75,7 +75,7 @@ public class Entity {
 	public int attackCounter = 0;
 	public int attackNum = 1;
 	
-	// WEAPON HITBOX
+	// WEAPON hitbox
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 		
 	// ITEM ATTRIBUTES
@@ -84,8 +84,9 @@ public class Entity {
 	public String description = "";
 	public int price;
 	public int useCost;	
-	public boolean stackable = false;
 	public int amount = 1;
+	public boolean stackable = false;
+	public int lightRadius;
 	public boolean hookGrab = false;
 	
 	// INVENTORY
@@ -109,10 +110,12 @@ public class Entity {
 	public final int type_item = 5;
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
+	public final int type_light = 8;
 	
 	// MAP TYPES
-	public final int type_obstacle = 8;
+	public final int type_obstacle = 9;
 		
+	// CONSTRUCTOR
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 	}
@@ -130,45 +133,44 @@ public class Entity {
 	public void playHurtSE() { }
 	public void playDeathSE() { }	
 	
+	// UPDATER
 	public void update() { 
 		
-		if (knockback) 
-			knockbackEntity();		
-		else {
-			// CHILD CLASS
-			setAction();
+		if (knockback) { knockbackEntity();	return; }
+		
+		// CHILD CLASS
+		setAction();
+		
+		checkCollision();
+		if (!collisionOn) { 
+						
+			// move player in direction pressed
+			switch (direction) {
+				case "up": worldY -= speed; break;
+				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
+				case "upright": worldY -= speed - 1; worldX += speed - 1; break;
+				
+				case "down": worldY += speed; break;
+				case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
+				case "downright": worldY += speed; worldX += speed - 1; break;
+				
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
 			
-			checkCollision();
-			if (!collisionOn) { 
-							
-				// move player in direction pressed
-				switch (direction) {
-					case "up": worldY -= speed; break;
-					case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
-					case "upright": worldY -= speed - 1; worldX += speed - 1; break;
+			if (type == type_npc || type == type_enemy) {
+			
+				// WALKING ANIMATION (only if no collision)
+				spriteCounter++;
+				if (spriteCounter > animationSpeed && animationSpeed != 0) { // speed of sprite change
 					
-					case "down": worldY += speed; break;
-					case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
-					case "downright": worldY += speed; worldX += speed - 1; break;
+					if (spriteNum == 1) spriteNum = 2;
+					else if (spriteNum == 2) spriteNum = 1;
 					
-					case "left": worldX -= speed; break;
-					case "right": worldX += speed; break;
-				}
-				
-				if (type == type_npc || type == type_enemy) {
-				
-					// WALKING ANIMATION (only if no collision)
-					spriteCounter++;
-					if (spriteCounter > animationSpeed && animationSpeed != 0) { // speed of sprite change
-						
-						if (spriteNum == 1) spriteNum = 2;
-						else if (spriteNum == 2) spriteNum = 1;
-						
-						spriteCounter = 0;
-					}
+					spriteCounter = 0;
 				}
 			}
-		}
+		}		
 		 
 		// ENTITY SHIELD AFTER HIT
 		if (invincible) {
@@ -187,6 +189,7 @@ public class Entity {
 		}
 	}
 	
+	// COLLISION CHECKER
 	public void checkCollision() {		
 		
 		collisionOn = false;
@@ -201,28 +204,12 @@ public class Entity {
 		if (this.type == type_enemy && contactPlayer) 
 			damagePlayer(attack);  	
 	}
-	
-	public int getLeftX() {
-		return worldX + hitBox.x;
-	}
-	public int getRightX() {
-		return worldX + hitBox.x + hitBox.width;
-	}
-	public int getTopY() {
-		return worldY + hitBox.y;
-	}
-	public int getBottomY() {
-		return worldY + hitBox.y + hitBox.height;
-	}
-	public int getCol() {
-		return (worldX + hitBox.x) / gp.tileSize;
-	}
-	public int getRow() {
-		return (worldY + hitBox.y) / gp.tileSize;
-	}
 
+	// SPEAKING
 	public void speak() { 
 				
+		gp.keyH.spacePressed = false;
+		
 		if (dialogues[dialogueIndex] == null) 
 			dialogueIndex = 0;
 		
@@ -232,27 +219,35 @@ public class Entity {
 		switch (gp.player.direction) {		
 			case "up":
 			case "upleft":
-			case "upright":
-				direction = "down";
-				break;
+			case "upright": direction = "down"; break;
 			case "down":
 			case "downleft":
-			case "downright":
-				direction = "up";
-				break;
-			case "left":
-				direction = "right";
-				break;
-			case "right":
-				direction = "left";
-				break;		
+			case "downright": direction = "up"; break;
+			case "left": direction = "right"; break;
+			case "right": direction = "left"; break;		
 		}		
 	}
 	
+	// PATH FINDING
+	public boolean findPath(int goalCol, int goalRow) {
+		
+		boolean pathFound = false;
+		
+		int startCol = (worldX + hitbox.x) / gp.tileSize;
+		int startRow = (worldY + hitbox.y) / gp.tileSize;
+		
+		// SET PATH
+		gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
+		
+		if (gp.pFinder.search()) 
+			pathFound = true;
+			
+		return pathFound;
+	}	
 	public void searchPath(int goalCol, int goalRow) {
 		
-		int startCol = (worldX + hitBox.x) / gp.tileSize;
-		int startRow = (worldY + hitBox.y) / gp.tileSize;
+		int startCol = (worldX + hitbox.x) / gp.tileSize;
+		int startRow = (worldY + hitbox.y) / gp.tileSize;
 		
 		// SET PATH
 		gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
@@ -264,11 +259,11 @@ public class Entity {
 			int nextX = gp.pFinder.pathList.get(0).col * gp.tileSize;
 			int nextY = gp.pFinder.pathList.get(0).row * gp.tileSize;
 						
-			// ENTITY HITBOX
-			int eLeftX = worldX + hitBox.x;
-			int eRightX = worldX + hitBox.x + hitBox.width;
-			int eTopY = worldY + hitBox.y;
-			int eBottomY = worldY + hitBox.y + hitBox.height;
+			// ENTITY hitbox
+			int eLeftX = worldX + hitbox.x;
+			int eRightX = worldX + hitbox.x + hitbox.width;
+			int eTopY = worldY + hitbox.y;
+			int eBottomY = worldY + hitbox.y + hitbox.height;
 			
 			// FIND DIRECTION TO NEXT NODE
 			// UP OR DOWN
@@ -319,38 +314,8 @@ public class Entity {
 				pathCompleted = true;
 		}
 	}
-	public boolean findPath(int goalCol, int goalRow) {
-		
-		boolean pathFound = false;
-		
-		int startCol = (worldX + hitBox.x) / gp.tileSize;
-		int startRow = (worldY + hitBox.y) / gp.tileSize;
-		
-		// SET PATH
-		gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
-		
-		if (gp.pFinder.search()) 
-			pathFound = true;
-			
-		return pathFound;
-	}
-		
-	public void damagePlayer(int attack) {
-				
-		if (!gp.player.invincible && gp.player.alive) {
-			gp.player.playHurtSE();
-			
-			if (knockbackPower > 0) 
-				knockback(gp.player, direction, knockbackPower);	
-			
-			int damage = attack - gp.player.defense;
-			if (damage < 0) damage = 0;	
-			gp.player.life -= damage;
-			
-			gp.player.invincible = true;
-		}
-	}
 	
+	// KNOCKBACK / DAMAGE
 	public void knockbackEntity() {
 		
 		// CANCEL IF TILE COLLISION
@@ -385,16 +350,29 @@ public class Entity {
 		entity.direction = direction;		
 		entity.speed += knockbackPower;
 		entity.knockback = true;
-	}
+	}		
+	public void damagePlayer(int attack) {
+		
+		if (!gp.player.invincible && gp.player.alive) {
+			gp.player.playHurtSE();
 			
+			if (knockbackPower > 0) 
+				knockback(gp.player, direction, knockbackPower);	
+			
+			int damage = attack - gp.player.defense;
+			if (damage < 0) damage = 0;	
+			gp.player.life -= damage;
+			
+			gp.player.invincible = true;
+		}
+	}
 	public void hurtAnimation(Graphics2D g2) {
 		
 		invincibleCounter++;	
 		
 		if (invincibleCounter % 5 == 0) 
 			changeAlpha(g2, 0.2f);
-	}
-	
+	}	
 	public void dyingAnimation(Graphics2D g2) {
 		
 		dyingCounter++;	
@@ -405,7 +383,6 @@ public class Entity {
 		if (dyingCounter > 40) 
 			alive = false;		
 	}
-	
 	public void dropItem(Entity droppedItem) { 
 		
 		for (int i = 0; i < gp.obj[1].length; i++) {			
@@ -418,6 +395,90 @@ public class Entity {
 		}
 	}
 	
+	// OBJECT INTERACTION
+	public boolean canObtainItem(Entity item) {
+		
+		// IF STACKABLE ITEM
+		if (item.stackable) {	
+			
+			try {
+				Entity newItem = (Entity) item.clone();
+				newItem.amount = 1;	
+				
+				// ITEM FOUND IN INVENTORY
+				int index = searchItemInventory(item.name);
+				if (index != -1) {		
+					
+					// NOT TOO MANY
+					if (inventory.get(index).amount != 999) {
+						inventory.get(index).amount++;
+						return true;
+					}
+				}
+				// NEW ITEM
+				else {
+					if (inventory.size() != maxInventorySize) {													
+						inventory.add(newItem);
+						return true;
+					}
+				}	
+			} 
+			catch (CloneNotSupportedException e) { }
+		}
+		// NOT STACKABLE
+		else {
+			if (inventory.size() != maxInventorySize) {
+				if (this == gp.player) getObject(item);				
+				else inventory.add(item);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public int searchItemInventory(String itemName) {
+		
+		// IF PLAYER HAS ITEM
+		int itemIndex = -1;		
+		for (int i = 0; i < inventory.size(); i++) {
+			if (inventory.get(i).name.equals(itemName)) {
+				itemIndex = i;
+				break;
+			}
+		}		
+		return itemIndex;
+	}
+	public void getObject(Entity item) {
+		
+		// INVENTORY ITEMS
+		if (item.type == type_item) {
+			hasItem = true;
+		}
+		else if (item.type == type_sword) {
+			currentWeapon = item;
+			attack = gp.player.getAttack();
+		}
+		else if (item.type == type_shield) {
+			currentShield = item;
+			defense = gp.player.getDefense();
+		}
+		else if (item.type == type_collectable) {
+			item.use(this);
+			return;
+		}
+		else if (item.type == type_consumable) {
+			item.use(this);
+			return;
+		}	
+		
+		playGetItemSE();
+		gp.gameState = gp.itemGetState;
+		gp.ui.newItem = item;
+		gp.ui.currentDialogue = "You got the " + item.name + "!";
+		inventory.add(item);
+	}
+	
+	// ITEM-OBJECT INTERACTION
 	public int getDetected(Entity user, Entity target[][], String targetName) {
 		
 		int index = -1;
@@ -452,7 +513,26 @@ public class Entity {
 		
 		return index;
 	}
+	public int getLeftX() {
+		return worldX + hitbox.x;
+	}
+	public int getRightX() {
+		return worldX + hitbox.x + hitbox.width;
+	}
+	public int getTopY() {
+		return worldY + hitbox.y;
+	}
+	public int getBottomY() {
+		return worldY + hitbox.y + hitbox.height;
+	}
+	public int getCol() {
+		return (worldX + hitbox.x) / gp.tileSize;
+	}
+	public int getRow() {
+		return (worldY + hitbox.y) / gp.tileSize;
+	}
 	
+	// PROJECTILE
 	public void addProjectile(Projectile projectile) {
 		for (int i = 0; i < gp.projectile[1].length; i++) {
 			if (gp.projectile[gp.currentMap][i] == null) {
@@ -461,6 +541,8 @@ public class Entity {
 			}
 		}
 	}
+	
+	// PARTICLE
 	public void generateParticle(Entity generator, Entity target) {
 
 		Color color = generator.getParticleColor();
@@ -491,6 +573,7 @@ public class Entity {
 		return maxLife;
 	}	
 	
+	// SOUND EFFECTS
 	public void playGetItemSE() {
 		gp.playSE(3, 1);
 	}
@@ -498,6 +581,42 @@ public class Entity {
 		gp.playSE(3, 12);
 	}
 	
+	// IMAGE MANAGERS
+	public BufferedImage setup(String imagePath) {	
+		
+		UtilityTool utility = new UtilityTool();
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+			image = utility.scaleImage(image, gp.tileSize, gp.tileSize);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return image;
+	}
+	public BufferedImage setup(String imagePath, int width, int height) {
+		
+		UtilityTool utility = new UtilityTool();
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+			image = utility.scaleImage(image, width, height);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return image;
+	}	
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
+	}
+	
+	// DRAW
 	public void draw(Graphics2D g2) {
 		
 		BufferedImage image = null;
@@ -575,49 +694,14 @@ public class Entity {
 			
 			g2.drawImage(image, screenX, screenY, null);			
 
-			// DRAW HITBOX
+			// DRAW hitbox
 			if (gp.keyH.debug) {
 				g2.setColor(Color.RED);
-				g2.drawRect(screenX + hitBox.x, screenY + hitBox.y, hitBox.width, hitBox.height);
+				g2.drawRect(screenX + hitbox.x, screenY + hitbox.y, hitbox.width, hitbox.height);
 			}
 			
 			// RESET OPACITY
 			changeAlpha(g2, 1f);			
 		}
-	}
-	
-	public BufferedImage setup(String imagePath) {	
-		
-		UtilityTool utility = new UtilityTool();
-		BufferedImage image = null;
-		
-		try {
-			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
-			image = utility.scaleImage(image, gp.tileSize, gp.tileSize);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return image;
-	}
-	public BufferedImage setup(String imagePath, int width, int height) {
-		
-		UtilityTool utility = new UtilityTool();
-		BufferedImage image = null;
-		
-		try {
-			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
-			image = utility.scaleImage(image, width, height);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return image;
-	}
-	
-	public void changeAlpha(Graphics2D g2, float alphaValue) {
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 }

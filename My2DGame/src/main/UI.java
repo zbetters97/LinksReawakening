@@ -100,44 +100,50 @@ public class UI {
 		if (gp.gameState == gp.titleState) {
 			drawTitleScreen();
 		}		
-		// PLAY STATE
-		if (gp.gameState == gp.playState || gp.gameState == gp.itemState) {
+		// PLAY STATE / PROJECTILE STATE
+		else if (gp.gameState == gp.playState || gp.gameState == gp.projectileState) {
 			drawHUD();
 			drawMessage();
 		}		
 		// PAUSE STATE
-		if (gp.gameState == gp.pauseState) {
+		else if (gp.gameState == gp.pauseState) {
 			drawHUD();
 			drawPauseScreen();
 		}		
-		// DIALOGUE STATE
-		if (gp.gameState == gp.dialogueState) {
-			drawHUD();
-			drawDialogueScreen();
-		}
-		// CHARACTER INVENTORY STATE
-		if (gp.gameState == gp.characterState) {
+		// CHARACTER STATE
+		else if (gp.gameState == gp.characterState) {
 			drawCharacterScreen();
 			drawInventory(gp.player, true);
 		}
-		// GAME OVER STATE
-		if (gp.gameState == gp.gameOverState) {
-			drawGameOverScreen();
-		}
-		// TRANSITION STATE
-		if (gp.gameState == gp.transitionState) {
-			drawTransition();
-		}
-		// TRADE STATE
-		if (gp.gameState == gp.tradeState) {
-			drawTradeScreen();
-		}
-		if (gp.gameState == gp.itemGetState) {
+		// DIALOGUE STATE
+		else if (gp.gameState == gp.dialogueState) {
 			drawHUD();
 			drawDialogueScreen();
 		}
+		// TRADE STATE
+		else if (gp.gameState == gp.tradeState) {
+			drawTradeScreen();
+		}
+		// ITEM GET STATE
+		else if (gp.gameState == gp.itemGetState) {
+			drawHUD();
+			drawDialogueScreen();
+		}
+		// TRANSITION STATE
+		else if (gp.gameState == gp.transitionState) {
+			drawTransition();
+		}
+		// SLEEP STATE
+		else if (gp.gameState == gp.sleepState) {
+			drawSleepScreen();
+		}
+		// GAME OVER STATE
+		else if (gp.gameState == gp.gameOverState) {
+			drawGameOverScreen();
+		}
 	}
 	
+	// TITLE
 	public void drawTitleScreen() {
 		
 		// BACKGROUND
@@ -297,6 +303,7 @@ public class UI {
 		}
 	}
 	
+	// HUD
 	public void drawHUD() {
 		
 		int x = gp.tileSize / 2;
@@ -384,9 +391,9 @@ public class UI {
 			y += lineHeight;
 			g2.drawString("WorldY: " + gp.player.worldY, x , y); 
 			y += lineHeight;
-			g2.drawString("Column: " + (gp.player.worldX + gp.player.hitBox.x) / gp.tileSize, x , y);
+			g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
 			y += lineHeight;
-			g2.drawString("Row: " + (gp.player.worldY + gp.player.hitBox.y) / gp.tileSize, x , y);
+			g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
 		}
 	}
 	public void addMessage(String text) {
@@ -420,6 +427,7 @@ public class UI {
 		}
 	}
 	
+	// PAUSE
 	public void drawPauseScreen() {
 						
 		g2.setColor(Color.white);
@@ -660,6 +668,7 @@ public class UI {
 		}
 	}
 	
+	// CHARACTER
 	public void drawCharacterScreen() {
 		
 		// WINDOW
@@ -715,6 +724,7 @@ public class UI {
 		g2.drawString(value, textX, textY);
 	}
 	
+	// INVENTORY
 	public void drawInventory(Entity entity, boolean cursor) {
 		
 		// ITEM WINDOW
@@ -760,14 +770,20 @@ public class UI {
 			if (entity.inventory.get(i) == entity.currentItem) {				
 				g2.setColor(new Color(240,190,90));
 				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}			
+			}	
+			else if (entity.inventory.get(i) == entity.currentLight) {				
+				g2.setColor(new Color(90,190,240));
+				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+			}	
+			
+			g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
 			
 			// STACKABLE ITEMS
 			if (entity.inventory.get(i).amount > 1) {
 				
 				g2.setFont(g2.getFont().deriveFont(28F));				
 				int amountX;
-				int amountY;
+				int amountY;	
 				
 				String s = "" + entity.inventory.get(i).amount;
 				amountX = getXforRightAlignText(s, slotX + gp.tileSize);
@@ -782,9 +798,7 @@ public class UI {
 				g2.drawString(s, amountX - 3, amountY - 3);
 			}
 			
-			g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
-			slotX += slotSize;
-			
+			slotX += slotSize;			
 			if (i == 4 || i == 9 || i == 14) {
 				slotX = slotXStart;
 				slotY += gp.tileSize;
@@ -833,6 +847,7 @@ public class UI {
 		return itemIndex;
 	}
 	
+	// DIALOGUE
 	public void drawDialogueScreen() {
 				
 		gp.player.attackCanceled = false;
@@ -846,7 +861,7 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
 		x += gp.tileSize;
 		y += gp.tileSize;	
-					
+		
 		if (newItem == null) {
 									
 			// PRINT ONE CHARACTER AT A TIME
@@ -886,7 +901,8 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.drawString(text, x, y + 30);
 	}
-	
+			
+	// TRADE
 	public void drawTradeScreen() {
 					
 		switch (subState) {
@@ -981,45 +997,33 @@ public class UI {
 			// BUY AN ITEM
 			if (gp.keyH.spacePressed) {
 				
+				// NOT ENOUGH RUPEES
 				if (npc.inventory.get(itemIndex).price > gp.player.rupees) {
 					subState = 0;
 					gp.gameState = gp.dialogueState;
 					currentDialogue = "Hey! You don't have enough rupees!";
-				}
-				else if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {					
-					gp.player.rupees -= npc.inventory.get(itemIndex).price;			
-				}
-				else {
-					subState = 0;
-					gp.gameState = gp.dialogueState;
-					currentDialogue = "Looks like you don't have enough room, kid!";
-					drawDialogueScreen();
-					npc = null;
-				}
-/*				else if (gp.player.inventory.size() == gp.player.maxInventorySize) {
-					subState = 0;
-					gp.gameState = gp.dialogueState;
-					currentDialogue = "Looks like you don't have enough room, kid!";
-					drawDialogueScreen();
 					npc = null;
 				}
 				else {					
-					subState = 0;
-					
-					gp.player.rupees -= npc.inventory.get(itemIndex).price;					
-					if (gp.player.rupees < 0)
-						gp.player.rupees = 0;
-					
-					gp.player.playGetItemSE();																						
-					gp.ui.currentDialogue = "You got the " + npc.inventory.get(itemIndex).name + "!";
-					newItem = npc.inventory.get(itemIndex);
-					newItemIndex = itemIndex;
-					gp.gameState = gp.itemGetState;
-					
-					gp.player.inventory.add(npc.inventory.get(itemIndex));					
-					if (npc.inventory.get(itemIndex).type == gp.player.type_item) 
-						gp.player.hasItem = true;
-				} */
+					if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {	
+						gp.player.rupees -= npc.inventory.get(itemIndex).price;	
+												
+						// STACKABLE ITEM
+						if (npc.inventory.get(itemIndex).amount > 1) {
+							npc.inventory.get(itemIndex).amount--;
+						}
+						// NON-STACKABLE ITEM
+						else if (npc.inventory.get(itemIndex).stackable) {
+							npc.inventory.remove(itemIndex);
+						}									
+					}
+					else {
+						subState = 0;
+						gp.gameState = gp.dialogueState;
+						currentDialogue = "Looks like you don't have enough room, kid!";
+						npc = null;
+					}
+				}
 			} 
 		}		
 	}
@@ -1057,7 +1061,7 @@ public class UI {
 			g2.drawImage(rupee, x+5, y+8, 32, 32, null);
 			
 			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 37F));
-			int price = gp.player.inventory.get(itemIndex).price;
+			int price = gp.player.inventory.get(itemIndex).price / 2;
 			String text = Integer.toString(price);
 			x = getXforRightAlignText(text, gp.tileSize * 14);
 			g2.drawString(text, x+32, y+35);	
@@ -1066,9 +1070,10 @@ public class UI {
 			if (gp.keyH.spacePressed) {
 												
 				// MAIN ITEM NOT SELLABLE
-				if (gp.player.inventory.get(itemIndex).type == gp.player.type_item || 
-						gp.player.inventory.get(itemIndex).type == gp.player.type_shield ||
-						gp.player.inventory.get(itemIndex).type == gp.player.type_sword) {
+				if (gp.player.inventory.get(itemIndex).type == npc.type_item || 
+						gp.player.inventory.get(itemIndex).type == npc.type_shield ||
+						gp.player.inventory.get(itemIndex).type == npc.type_sword ||
+						gp.player.inventory.get(itemIndex).type == npc.type_light) {
 					
 					subState = 0;
 					commandNum = 0;					
@@ -1076,15 +1081,26 @@ public class UI {
 					currentDialogue = "I think you should hold onto that!";
 					npc = null;
 				}
-				else {
-					gp.player.rupees += price / 2;
-					npc.inventory.add(gp.player.inventory.get(itemIndex));
-					gp.player.inventory.remove(itemIndex);
+				// CAN SELL
+				else {					
+					if (npc.canObtainItem(gp.player.inventory.get(itemIndex))) {	
+						gp.player.rupees += price;
+												
+						// STACKABLE ITEM
+						if (gp.player.inventory.get(itemIndex).amount > 1) {
+							gp.player.inventory.get(itemIndex).amount--;
+						}
+						// NON-STACKABLE ITEM
+						else {
+							gp.player.inventory.remove(itemIndex);
+						}												
+					}	
 				}
 			}
 		}		
 	}
 		
+	// TRANSITION
 	public void drawTransition() {
 		
 		// DARKEN SCREEN
@@ -1108,6 +1124,29 @@ public class UI {
 		}		
 	}
 	
+	// SLEEP
+	public void drawSleepScreen() {
+		
+		counter++;
+		if (counter < 120) { // DARKEN FOR 2 SECONDS
+			gp.eManager.lighting.filterAlpha += 0.01f;
+			if (gp.eManager.lighting.filterAlpha > 1f) {
+				gp.eManager.lighting.filterAlpha = 1f;
+			}
+		}
+		else if (counter >= 120) { // BRIGHTEN FOR 2 SECONDS
+			gp.eManager.lighting.filterAlpha -= 0.01f;
+			if (gp.eManager.lighting.filterAlpha <= 0f) {
+				gp.eManager.lighting.filterAlpha = 0f;
+				counter = 0;
+				gp.eManager.lighting.timeState = gp.eManager.lighting.day;
+				gp.eManager.lighting.timeCounter = 0;
+				gp.gameState = gp.playState;
+			}
+		}
+	}
+	
+	// GAME OVER
 	public void drawGameOverScreen() {
 				
 		if (deathSprite < 18)
@@ -1180,11 +1219,18 @@ public class UI {
 		}
 	}
 	
+	// SOUND EFFECTS
 	public void playDialogueSE() {
 		gp.playSE(1, 11);
 	}
 	public void playDialogueFinishSE() {
 		gp.playSE(1, 12);
+	}
+	public void playMenuOpenSE() {
+		gp.playSE(1, 8);
+	}
+	public void playMenuCloseSE() {
+		gp.playSE(1, 9);
 	}
 	
 	public void drawSubWindow(int x, int y, int width, int height) {
