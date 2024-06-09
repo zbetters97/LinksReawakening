@@ -20,7 +20,7 @@ public class UI {
 	GamePanel gp;
 	Graphics2D g2;
 	
-	Font PK_DS;
+	public Font PK_DS;
 		
 	// TITLE SCREEN STATE
 	public int titleScreenState = 0;

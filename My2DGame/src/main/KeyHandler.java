@@ -39,6 +39,10 @@ public class KeyHandler implements KeyListener{
 		else if (gp.gameState == gp.pauseState) {
 			pauseState(code);
 		}
+		// MAP STATE
+		else if (gp.gameState == gp.mapState) {
+			mapState(code);
+		}
 		// CHARACTER STATE
 		else if (gp.gameState == gp.characterState) {
 			characterState(code);
@@ -224,8 +228,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
-		if (code == KeyEvent.VK_SPACE && lock) { 
-			spacePressed = true; lock = false; }
+		if (code == KeyEvent.VK_SPACE && lock) { spacePressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }
 		if (code == KeyEvent.VK_ESCAPE) {
@@ -235,6 +238,12 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_E) { 
 			gp.ui.playMenuOpenSE();
 			gp.gameState = gp.characterState;
+		}
+		if (code == KeyEvent.VK_M) {
+			gp.gameState = gp.mapState;
+		}
+		if (code == KeyEvent.VK_N) {
+			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
 		if (code == KeyEvent.VK_SHIFT) {
 			if (debug) debug = false; 
@@ -304,6 +313,13 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_SPACE) {
 			playSelectSE();
 			spacePressed = true;
+		}
+	}
+	
+	// MAP
+	public void mapState(int code) {
+		if (code == KeyEvent.VK_M) {
+			gp.gameState = gp.playState;
 		}
 	}
 	

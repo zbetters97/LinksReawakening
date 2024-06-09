@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import ai.PathFinder;
 import entity.*;
 import environment.EnvironmentManager;
+import tile.Map;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
 
@@ -60,15 +61,16 @@ public class GamePanel extends JPanel implements Runnable {
 	public int gameState;
 	public final int titleState = 0;
 	public final int playState = 1;
-	public final int pauseState = 2;	
-	public final int characterState = 3;
-	public final int dialogueState = 4;		
-	public final int tradeState = 5;
-	public final int itemGetState = 6;
-	public final int projectileState = 7;	
-	public final int transitionState = 8;	
-	public final int sleepState = 9;
-	public final int gameOverState = 10;
+	public final int pauseState = 2;		
+	public final int mapState = 3;
+	public final int characterState = 4;
+	public final int dialogueState = 5;		
+	public final int tradeState = 6;
+	public final int itemGetState = 7;
+	public final int projectileState = 8;	
+	public final int transitionState = 9;	
+	public final int sleepState = 10;
+	public final int gameOverState = 11;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
@@ -87,6 +89,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public EventHandler eHandler = new EventHandler(this);	
 	public AssetSetter aSetter = new AssetSetter(this);
 	public PathFinder pFinder = new PathFinder(this);
+	
+	// MAP
+	Map map = new Map(this);
 	
 	/** CONSTRUCTOR **/
 	public GamePanel() {
@@ -215,7 +220,7 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// UPDATE ENVIRONMENT
 			eManager.update();
-				
+									
 			// UPDATE NPCs
 			for (int i = 0; i < npc[1].length; i++) {
 				if (npc[currentMap][i] != null)
@@ -301,6 +306,10 @@ public class GamePanel extends JPanel implements Runnable {
 		if (gameState == titleState) {
 			ui.draw(g2);
 		}		
+		// MAP SCREEN
+		else if (gameState == mapState) {
+			map.drawFullMapScreen(g2);
+		}		
 		// GAME START
 		else {			
 			// DRAW TILES
@@ -340,7 +349,10 @@ public class GamePanel extends JPanel implements Runnable {
 			eManager.draw(g2);
 			
 			// DRAW UI
-			ui.draw(g2);	
+			ui.draw(g2);			
+
+			// DRAW MINIMAP
+			map.drawMiniMap(g2);
 		}		
 	}
 	
