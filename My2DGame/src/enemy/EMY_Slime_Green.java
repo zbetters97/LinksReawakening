@@ -14,8 +14,7 @@ public class EMY_Slime_Green extends Entity {
 	GamePanel gp;
 	
 	public EMY_Slime_Green(GamePanel gp) {
-		super(gp);		
-		
+		super(gp);			
 		this.gp = gp;
 		
 		type = type_enemy;
@@ -25,7 +24,7 @@ public class EMY_Slime_Green extends Entity {
 		attack = 3; defense = 0;
 		knockbackPower = 1;
 		exp = 4;
-		maxLife = 4; life = maxLife;
+		maxLife = 9; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;
@@ -48,33 +47,8 @@ public class EMY_Slime_Green extends Entity {
 	}
 	
 	public void setAction() {
-
-		actionLockCounter++;
-		
-		if (actionLockCounter == 120) {		
-						
-			Random random = new Random();
-			int i = random.nextInt(100) + 1; // random number 1-100
-						
-			if (i <= 25) direction = "up";
-			if (i > 25 && i <= 50) direction = "down";
-			if (i > 50 && i <= 75) direction = "left";
-			if (i > 75) direction = "right";
-			
-			actionLockCounter = 0;
-		}		
-
-		// ~1 SHOT/2 SECONDS (120 frames)
-		int i = new Random().nextInt(120) + 1;
-		if (i > 119 && !projectile.alive && shotAvailableCounter == 30) {
-			
-			projectile.set(worldX, worldY, direction, true, this);
-			addProjectile(projectile);
-			
-			shotAvailableCounter = 0;
-			
-			projectile.playSE();
-		}
+		getDirection(120);
+		useProjectile(180);
 	}
 	
 	// RUN AWAY WHEN HIT

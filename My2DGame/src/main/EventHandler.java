@@ -52,6 +52,8 @@ public class EventHandler {
 	
 	public void checkEvent() {
 		
+		gp.ui.showHint = false;
+		
 		// CHECK IF PLAYER IS >1 TILE AWAY FROM PREVIOUS EVENT
 		int xDistance = Math.abs(gp.player.worldX - previousEventX); // convert - to +
 		int yDistance = Math.abs(gp.player.worldY - previousEventY); // convert - to +
@@ -179,8 +181,8 @@ public class EventHandler {
 	}
 	
 	public void win() {
-		gp.gameState = gp.dialogueState;
 		gp.ui.currentDialogue = "You win!";
+		gp.gameState = gp.dialogueState;
 	}
 	
 	public void speak(Entity npc) {		
@@ -190,18 +192,17 @@ public class EventHandler {
 			npc.speak();
 		}
 	}
-	public void teleport(int map, int col, int row) {	
-				
+	public void teleport(int map, int col, int row) {				
 		gp.stopMusic();		
 		gp.playSE(1,10);		
-		
-		gp.gameState = gp.transitionState;
 		
 		tempMap = map;
 		tempCol = col;
 		tempRow = row;
 		
 		canTouchEvent = false;
+		
+		gp.gameState = gp.transitionState;
 	}
 	public void fall(int x, int y) {			
 		gp.playSE(2, 2);
@@ -212,17 +213,21 @@ public class EventHandler {
 	}
 	
 	public void damagePit(int gameState) {		
-		
-		gp.playSE(2, 0);
-		gp.gameState = gameState;
+		gp.playSE(2, 0);		
 		
 		gp.ui.currentDialogue = "Ouch! You got stung by a bee!";
 		gp.player.life--;
 		canTouchEvent = false;
+		gp.gameState = gameState;
 	}
 	
 	public void healingPool(int gameState) {
+		
+		gp.ui.hint = "[Press SPACE to interact]";
+		gp.ui.showHint = true;
+		
 		if (gp.keyH.spacePressed) {
+			gp.ui.showHint = false;
 			gp.playSE(1, 4);
 			
 			gp.player.attackCanceled = true;			

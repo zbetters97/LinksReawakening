@@ -79,15 +79,15 @@ public class AssetSetter {
 		gp.enemy[mapNum][3].worldX = gp.tileSize * 38;
 		gp.enemy[mapNum][3].worldY = gp.tileSize * 40;
 		
-		gp.enemy[mapNum][4] = new EMY_Goblin(gp);
+		gp.enemy[mapNum][4] = new EMY_Goblin_Archer(gp);
 		gp.enemy[mapNum][4].worldX = gp.tileSize * 36;
 		gp.enemy[mapNum][4].worldY = gp.tileSize * 27;
 		
-		gp.enemy[mapNum][5] = new EMY_Goblin(gp);
+		gp.enemy[mapNum][5] = new EMY_Goblin_Archer(gp);
 		gp.enemy[mapNum][5].worldX = gp.tileSize * 12;
 		gp.enemy[mapNum][5].worldY = gp.tileSize * 31;
 		
-		gp.enemy[mapNum][6] = new EMY_Goblin(gp);
+		gp.enemy[mapNum][6] = new EMY_Goblin_Combat(gp);
 		gp.enemy[mapNum][6].worldX = gp.tileSize * 12;
 		gp.enemy[mapNum][6].worldY = gp.tileSize * 29;
 	}

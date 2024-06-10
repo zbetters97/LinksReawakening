@@ -13,8 +13,7 @@ public class EMY_Bat extends Entity {
 	GamePanel gp;
 	
 	public EMY_Bat(GamePanel gp) {
-		super(gp);		
-		
+		super(gp);				
 		this.gp = gp;
 		
 		type = type_enemy;
@@ -44,48 +43,15 @@ public class EMY_Bat extends Entity {
 		right2 = setup("/enemy/bat_down_2");
 	}
 	
-	public void update() {
-		
-		super.update();
-		
-		// DISTANCE TO PLAYER (IN TILES)
-		int xDistance = Math.abs(worldX - gp.player.worldX);
-		int yDistance = Math.abs(worldY - gp.player.worldY);
-		int tileDistance = (xDistance + yDistance) / gp.tileSize;
-		
-		// FOLLOW PLAYER IF CLOSE		
-		if (!onPath && tileDistance < 5)			
-			onPath = true;		
-		
-		// STOP FOLLOWING IF TOO FAR
-		if (onPath && tileDistance > 10)
-			onPath = false;
-	}
-	
 	public void setAction() {
 		
-		if (onPath) {
-			
-			int goalCol = (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize;
-			int goalRow = (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize;
-			
-			searchPath(goalCol, goalRow);
+		if (onPath) {			
+			isOffPath(gp.player, 10);				
+			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
 		}
-		else {
-			
-			actionLockCounter++;			
-			if (actionLockCounter == 25) {		
-							
-				Random random = new Random();
-				int i = random.nextInt(100) + 1; // random number 1-100
-							
-				if (i <= 25) direction = "up";
-				if (i > 25 && i <= 50) direction = "down";
-				if (i > 50 && i <= 75) direction = "left";
-				if (i > 75) direction = "right";
-				
-				actionLockCounter = 0;
-			}
+		else {				
+			isOnPath(gp.player, 5);
+			getDirection(25);
 		}
 	}
 	

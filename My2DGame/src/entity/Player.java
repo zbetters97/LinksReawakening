@@ -89,7 +89,7 @@ public class Player extends Entity {
 		// PLAYER ATTRIBUTES
 		level = 1;
 		maxLife = 8; life = maxLife;
-		strength = 1; dexterity = 1; // helps attack, defense
+		strength = 1; dexterity = 1;
 		exp = 0; nextLevelEXP = 10;
 		rupees = 0;
 		
@@ -117,11 +117,13 @@ public class Player extends Entity {
 			return 1;
 		else {
 			attackArea = currentWeapon.attackArea;
-			return attack = strength * currentWeapon.attackValue;
+			swingSpeed1 = currentWeapon.swingSpeed1;
+			swingSpeed2 = currentWeapon.swingSpeed2;
+			return strength * currentWeapon.attackValue;
 		}
 	}
 	public int getDefense() {
-		return defense = dexterity * currentShield.defenseValue;
+		return dexterity * currentShield.defenseValue;
 	}
 	
 	// PLAYER IMAGES
@@ -479,78 +481,6 @@ public class Player extends Entity {
 		}
 	}	
 	
-	public void attacking() {
-		
-		attackCounter++;
-		
-		// 3 FRAMES: ATTACK IMAGE 1
-		if (3 >= attackCounter) {			
-			attackNum = 1;
-		}		
-		// 12 FRAMES: ATTACK IMAGE 2
-		if (15 >= attackCounter && attackCounter > 3) {
-			attackNum = 2;
-			
-			// CHECK IF WEAPON HITS TARGET	
-			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			int hitBoxWidth = hitbox.width;
-			int hitBoxHeight = hitbox.height;
-			
-			// ADJUST PLAYER'S X/Y 
-			switch (direction) {
-				case "up": worldY -= attackArea.height; break; 
-				case "upleft": worldY -= attackArea.height; worldX -= attackArea.width; break; 
-				case "upright": worldY -= attackArea.height; worldX += attackArea.width; break; 
-				case "down": worldY += attackArea.height; break;
-				case "downleft": worldY += attackArea.height; worldX -= attackArea.width; break;
-				case "downright": worldY += attackArea.height; worldX += attackArea.width; break;					
-				case "left": worldX -= attackArea.width; break;
-				case "right": worldX += attackArea.width; break;
-			}
-			
-			// CHANGE SIZE OF HIT BOX 
-			hitbox.width = attackArea.width;
-			hitbox.height = attackArea.height;
-			
-			// CHECK IF ATTACK LANDS ON ENEMY
-			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			
-			// PREVENT GLITCH WITH AXE
-			if (currentWeapon != null) damageEnemy(enemyIndex, attack, currentWeapon.knockbackPower);			
-			else damageEnemy(enemyIndex, attack, 0);
-			
-			// CHECK IF ATTACK LANDS ON PROJECTILE
-			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-			damageProjectile(projectileIndex);
-								
-			// SWINGING AXE
-			if (chopping) {				
-				currentItem.playSE();
-				
-				// CHECK INTERACTIVE TILE
-				int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-				gp.player.damageInteractiveTile(iTileIndex);	
-			}
-			
-			// RESTORE PLAYER HITBOX
-			worldX = currentWorldX;
-			worldY = currentWorldY;
-			hitbox.width = hitBoxWidth;
-			hitbox.height = hitBoxHeight;
-			
-			chopping = false;
-		}
-		
-		// RESET IMAGE
-		if (attackCounter > 15) {
-			attackNum = 1;
-			attackCounter = 0;
-			attacking = false;
-			gp.keyH.spacePressed = false;
-		}
-	}
-	
 	public void digging() {
 		
 		digCounter++;
@@ -657,10 +587,13 @@ public class Player extends Entity {
 				gp.enemy[gp.currentMap][i].playHurtSE();
 				
 				if (knockbackPower > 0) 
-					knockback(gp.enemy[gp.currentMap][i], direction, knockbackPower);				
+					knockback(gp.enemy[gp.currentMap][i], direction, knockbackPower);
 				
 				int damage = attack - gp.enemy[gp.currentMap][i].defense;
-				if (damage < 0) damage = 0;				
+				if (damage < 0) damage = 0;		
+				
+				System.out.println(attack + "-" + gp.enemy[gp.currentMap][i].defense + "=" + damage);
+				
 				gp.enemy[gp.currentMap][i].life -= damage;			
 				
 				gp.enemy[gp.currentMap][i].invincible = true;
@@ -671,11 +604,13 @@ public class Player extends Entity {
 					gp.enemy[gp.currentMap][i].dying = true;
 					
 					gp.playSE(4, 2);
-													
+					
+					/*								
 					exp += gp.enemy[gp.currentMap][i].exp;
 					gp.ui.addMessage("+" + gp.enemy[gp.currentMap][i].exp + " EXP!");	
 					
 					checkLevelUp();
+					*/
 				}
 			}
 		}
@@ -793,6 +728,10 @@ public class Player extends Entity {
 	// DRAW
 	public void draw(Graphics2D g2) {
 						
+		// DON'T DRAW PLAYER IN ITEMGET STATE
+		if (gp.gameState == gp.itemGetState) 
+			return;
+		
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
 		
@@ -818,15 +757,12 @@ public class Player extends Entity {
 						if (spriteNum == 2) image1 = up2;	
 					}					
 					else {
+						tempScreenY -= gp.tileSize;
 						if (attackNum == 1) {
 							tempScreenX -= gp.tileSize;
-							tempScreenY -= gp.tileSize;
 							image1 = attackUp1;
 						}
-						if (attackNum == 2) {
-							tempScreenY -= gp.tileSize;
-							image1 = attackUp2;	
-						}
+						if (attackNum == 2) image1 = attackUp2;							
 					}				
 					break;
 				case "down":

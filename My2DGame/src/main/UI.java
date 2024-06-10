@@ -50,8 +50,11 @@ public class UI {
 	public boolean messageOn = false;
 	public String currentDialogue = "";
 	public String dialogueText = "";
+	public String interactText = "";
 	public int dialogueIndex = 0;
 	public int dialogueCounter = 0;	
+	public String hint = "";
+	public boolean showHint = false;
 	
 	// TRANSITION
 	int counter = 0;
@@ -141,6 +144,10 @@ public class UI {
 		else if (gp.gameState == gp.gameOverState) {
 			drawGameOverScreen();
 		}
+	}
+	
+	public void showText(String text) {
+		
 	}
 	
 	// TITLE
@@ -380,6 +387,15 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(rupee_count, x, y);		
 		
+		// DRAW HINT 
+		if (showHint && hint.length() > 0) {
+			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));			
+			x = getXforCenteredText(hint);
+			y = gp.tileSize * 11;						
+			g2.drawString(hint, x, y);
+		}
+		
 		// DEBUG HUD
 		if (gp.keyH.debug) {			
 			
@@ -404,15 +420,15 @@ public class UI {
 		
 		int messageX = gp.tileSize;
 		int messageY = gp.tileSize * 4;
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 32F));
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
 		
 		for (int i = 0; i< message.size(); i++) {
 			
 			if (message.get(i) != null) {
 				
-				g2.setColor(Color.black);
+				g2.setColor(Color.BLACK);
 				g2.drawString(message.get(i), messageX+2, messageY+2);
-				g2.setColor(Color.white);
+				g2.setColor(Color.WHITE);
 				g2.drawString(message.get(i), messageX, messageY);
 				
 				int counter = messageCounter.get(i) + 1;
@@ -1005,6 +1021,7 @@ public class UI {
 					npc = null;
 				}
 				else {					
+					subState = 0;
 					if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {	
 						gp.player.rupees -= npc.inventory.get(itemIndex).price;	
 												
@@ -1018,7 +1035,6 @@ public class UI {
 						}									
 					}
 					else {
-						subState = 0;
 						gp.gameState = gp.dialogueState;
 						currentDialogue = "Looks like you don't have enough room, kid!";
 						npc = null;
@@ -1139,8 +1155,12 @@ public class UI {
 			if (gp.eManager.lighting.filterAlpha <= 0f) {
 				gp.eManager.lighting.filterAlpha = 0f;
 				counter = 0;
-				gp.eManager.lighting.timeState = gp.eManager.lighting.day;
-				gp.eManager.lighting.timeCounter = 0;
+				gp.eManager.lighting.dayState = gp.eManager.lighting.day;
+				gp.eManager.lighting.dayCounter = 0;
+				
+				if (gp.eManager.lighting.bloodMoonCounter < gp.eManager.lighting.bloodMoonMax)
+					gp.eManager.lighting.bloodMoonCounter++;
+				
 				gp.gameState = gp.playState;
 			}
 		}

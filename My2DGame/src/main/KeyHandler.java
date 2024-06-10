@@ -308,6 +308,7 @@ public class KeyHandler implements KeyListener{
 		
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.ui.playMenuCloseSE();
+			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
 		}
 		if (code == KeyEvent.VK_SPACE) {

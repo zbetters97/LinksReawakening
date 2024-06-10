@@ -15,8 +15,12 @@ public class EQP_Sword extends Entity {
 		name = "Old Sword";
 		description = "[" + name + "]\nA humble starter sword.\n+1 ATK";
 				
-		attackValue = 2;
+		attackValue = 3;
 		knockbackPower = 1;
+		
+		swingSpeed1 = 3;
+		swingSpeed2 = 15;
+		
 		attackArea.width = 36;
 		attackArea.height = 36;
 		
