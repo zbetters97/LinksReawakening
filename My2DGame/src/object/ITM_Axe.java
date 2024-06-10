@@ -14,12 +14,16 @@ public class ITM_Axe extends Entity {
 		type = type_item;		
 		name = "Axe";
 		description = "[" + name + "]\nEquip to chop down trees!";
+		
+		attack = 1;
+		knockbackPower = 0;
+		
 		down1 = setup("/objects/ITEM_AXE");
 	}
 	
 	public void use() {				
 		gp.player.attacking = true;
-		gp.player.chopping = true;		
+		gp.player.chopping = true;
 	}
 	public void playSE() {
 		gp.playSE(3, 0);

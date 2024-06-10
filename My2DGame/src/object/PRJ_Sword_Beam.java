@@ -32,8 +32,7 @@ public class PRJ_Sword_Beam extends Projectile {
 		right2 = setup("/projectile/sword_right_2", gp.tileSize, gp.tileSize);		
 	}
 	
-	public boolean hasResource(Entity user) {
-		
+	public boolean hasResource(Entity user) {		
 		boolean hasResource = false;
 		if (user.life == user.maxLife)
 				hasResource = true;

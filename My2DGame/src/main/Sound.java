@@ -65,6 +65,7 @@ public class Sound {
 		objects[10] = getClass().getResource("/sound/ITEM_BOOMERANG.wav");
 		objects[11] = getClass().getResource("/sound/ITEM_FEATHER.wav");
 		objects[12] = getClass().getResource("/sound/OBJ_MOVE.wav");
+		objects[13] = getClass().getResource("/sound/OBJ_TINK.wav");
 		
 		// 4
 		enemy[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

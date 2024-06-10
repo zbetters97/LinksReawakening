@@ -10,7 +10,7 @@ public class KeyHandler implements KeyListener{
 	GamePanel gp;
 	public boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean spacePressed, itemPressed, tabPressed;
+	public boolean actionPressed, guardPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	public String keyboardLetters;
 	public boolean isCapital = true;
@@ -228,7 +228,8 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
-		if (code == KeyEvent.VK_SPACE && lock) { spacePressed = true; lock = false; }
+		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
+		if (code == KeyEvent.VK_Z) { gp.player.guarding = true; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }
 		if (code == KeyEvent.VK_ESCAPE) {
@@ -313,7 +314,7 @@ public class KeyHandler implements KeyListener{
 		}
 		if (code == KeyEvent.VK_SPACE) {
 			playSelectSE();
-			spacePressed = true;
+			actionPressed = true;
 		}
 	}
 	
@@ -374,7 +375,7 @@ public class KeyHandler implements KeyListener{
 			gp.ui.dialogueCounter = 0;	
 			
 			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
-				boolean get = gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
+				gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
 			}		
 			else {
 				gp.ui.playDialogueFinishSE();
@@ -437,7 +438,7 @@ public class KeyHandler implements KeyListener{
 						
 		if (code == KeyEvent.VK_SPACE && lock) {			
 			playSelectSE();
-			spacePressed = true;
+			actionPressed = true;
 			lock = false;
 
 			gp.ui.dialogueText = "";
@@ -513,7 +514,8 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = false;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
-		if (code == KeyEvent.VK_SPACE) { spacePressed = false; lock = true; }
+		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
+		if (code == KeyEvent.VK_Z && lock) { gp.player.guarding = false; lock = true; }
 		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; lock = true; }	
 		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
 	}

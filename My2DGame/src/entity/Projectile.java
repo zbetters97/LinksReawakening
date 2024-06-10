@@ -102,7 +102,7 @@ public class Projectile extends Entity {
 						
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 		if (enemyIndex != -1) 
-			gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
+			gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 		
 		// OBJECT IS NOT GRABBABLE, RETURN
 		int objectIndex = gp.cChecker.checkObject(this, true);
@@ -388,29 +388,28 @@ public class Projectile extends Entity {
 		// CHECK TILE COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
-		
-		// NO COLLISION FOR SWORD BEAM
-		if (name.equals("Sword Beam")) 			
-			collisionOn = false;		
+		gp.cChecker.checkEntity(this, gp.iTile);		
 		
 		// SHOT BY PLAYER
 		if (user == gp.player) {
 			
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
-				gp.player.damageEnemy(enemyIndex, attack, knockbackPower);
+				gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 				alive = false;
 			}
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);			
 			if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].pressable && 
-					gp.iTile[gp.currentMap][iTileIndex].isCorrectItem(this)) {				
-				//PLAY SE
+					gp.iTile[gp.currentMap][iTileIndex].isCorrectItem(this)) {		
 				
 				gp.iTile[gp.currentMap][10] = null;
 				gp.iTile[gp.currentMap][11] = null;
 			}
+			
+			// NO COLLISION FOR SWORD BEAM
+			if (name.equals("Sword Beam")) 			
+				collisionOn = false;	
 		}
 		// SHOT BY ENEMEY
 		else {
@@ -422,9 +421,9 @@ public class Projectile extends Entity {
 		}
 		
 		if (!collisionOn) {
-
-			grabbable = false;
-					
+			
+			grabbable = false;		
+			
 			// MOVE IN DIRECTION SHOT
 			switch (direction) {
 				case "up": 
@@ -437,8 +436,12 @@ public class Projectile extends Entity {
 				case "right": worldX += speed; break;
 			}
 		}
-		else {
-			grabbable = true;
+		// KILL PROJECTILE IF COLLISION
+		else {			
+			if (name.equals("Arrow")) 
+				grabbable = true;
+			else 
+				alive = false;
 		}
 		
 		life--;

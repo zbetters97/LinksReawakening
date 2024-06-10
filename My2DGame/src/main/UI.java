@@ -463,7 +463,7 @@ public class UI {
 			case 2: options_controls(frameX, frameY); break;
 			case 3: options_quitGameConfirm(frameX, frameY); break;
 		}
-		gp.keyH.spacePressed = false;
+		gp.keyH.actionPressed = false;
 	}
 	public void options_top(int frameX, int frameY) {
 		
@@ -483,7 +483,7 @@ public class UI {
 		if (commandNum == 0) {
 			
 			g2.drawString(">", textX - 25, textY);		
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				if (gp.fullScreenOn) {
 					gp.fullScreenOn = false;
 				}
@@ -509,7 +509,7 @@ public class UI {
 		g2.drawString("Text Speed", textX, textY);
 		if (commandNum == 3) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				textSpeed++;
 				if (textSpeed > 3) textSpeed = 1;
 			}
@@ -520,7 +520,7 @@ public class UI {
 		g2.drawString("Controls", textX, textY);
 		if (commandNum == 4) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				subState = 2;
 				commandNum = 0;
 			}
@@ -531,7 +531,7 @@ public class UI {
 		g2.drawString("Save and Close", textX, textY);
 		if (commandNum == 5) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.spacePressed) {				
+			if (gp.keyH.actionPressed) {				
 				commandNum = 0;
 				subState = 0;
 				gp.gameState = gp.playState;
@@ -543,7 +543,7 @@ public class UI {
 		g2.drawString("Quit to Title Screen", textX, textY);
 		if (commandNum == 6) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				subState = 3;
 				commandNum = 0;
 			}
@@ -595,7 +595,7 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				commandNum = 0;
 				subState = 0;
 			}
@@ -639,7 +639,7 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				commandNum = 4;
 				subState = 0;
 			}
@@ -661,7 +661,7 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				subState = 0;				
 				gp.gameState = gp.titleState;
 				gp.stopMusic();
@@ -677,7 +677,7 @@ public class UI {
 		if (commandNum == 1) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				commandNum = 6;
 				subState = 0;
 			}
@@ -927,7 +927,7 @@ public class UI {
 			case 2: trade_sell(); break;
 		}
 		
-		gp.keyH.spacePressed = false;
+		gp.keyH.actionPressed = false;
 	}
 	public void trade_select() {
 				
@@ -946,7 +946,7 @@ public class UI {
 		g2.drawString("Buy", x, y);
 		if (commandNum == 0) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.spacePressed) 
+			if (gp.keyH.actionPressed) 
 				subState = 1;
 		}
 		
@@ -954,7 +954,7 @@ public class UI {
 		g2.drawString("Sell", x, y);
 		if (commandNum == 1) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.spacePressed)
+			if (gp.keyH.actionPressed)
 				subState = 2;
 		}
 		
@@ -962,7 +962,7 @@ public class UI {
 		g2.drawString("Leave", x, y);
 		if (commandNum == 2) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				gp.gameState = gp.dialogueState;
 				gp.ui.commandNum = 0;
 				gp.ui.subState = 0;
@@ -1011,7 +1011,7 @@ public class UI {
 			
 			
 			// BUY AN ITEM
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 				
 				// NOT ENOUGH RUPEES
 				if (npc.inventory.get(itemIndex).price > gp.player.rupees) {
@@ -1083,7 +1083,7 @@ public class UI {
 			g2.drawString(text, x+32, y+35);	
 			
 			// SELL AN ITEM
-			if (gp.keyH.spacePressed) {
+			if (gp.keyH.actionPressed) {
 												
 				// MAIN ITEM NOT SELLABLE
 				if (gp.player.inventory.get(itemIndex).type == npc.type_item || 

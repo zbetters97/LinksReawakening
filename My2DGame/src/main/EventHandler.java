@@ -186,7 +186,7 @@ public class EventHandler {
 	}
 	
 	public void speak(Entity npc) {		
-		if (gp.keyH.spacePressed) {
+		if (gp.keyH.actionPressed) {
 			gp.gameState = gp.dialogueState;
 			gp.player.attackCanceled = true;
 			npc.speak();
@@ -226,7 +226,7 @@ public class EventHandler {
 		gp.ui.hint = "[Press SPACE to interact]";
 		gp.ui.showHint = true;
 		
-		if (gp.keyH.spacePressed) {
+		if (gp.keyH.actionPressed) {
 			gp.ui.showHint = false;
 			gp.playSE(1, 4);
 			

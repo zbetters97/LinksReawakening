@@ -49,6 +49,8 @@ public class Entity {
 	public BufferedImage die1, die2, die3, die4;
 	public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, 
 							attackLeft1, attackLeft2, attackRight1, attackRight2;
+	public BufferedImage guardUp1, guardUp2, guardDown1, guardDown2, 
+							guardLeft1, guardLeft2, guardRight1, guardRight2;
 
 	// DIALOGUE
 	public String dialogues[] = new String[20];
@@ -57,11 +59,16 @@ public class Entity {
 	// LIFE
 	public boolean hpBarOn = false;
 	public int hpBarCounter = 0;
+	
+	public Entity attacker;
 	public boolean knockback = false;
 	public int knockbackCounter = 0;
 	public String knockbackDirection = "";
+	
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
+	public boolean transparent = false;
+	
 	public boolean alive = true;
 	public boolean dying = false;
 	public int dyingCounter = 0;		
@@ -78,6 +85,7 @@ public class Entity {
 	public boolean attacking;	
 	public int attackCounter = 0;
 	public int attackNum = 1;
+	public boolean guarding = false;
 	
 	// WEAPON hitbox
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
@@ -212,7 +220,7 @@ public class Entity {
 	// SPEAKING
 	public void speak() { 
 				
-		gp.keyH.spacePressed = false;
+		gp.keyH.actionPressed = false;
 		
 		if (dialogues[dialogueIndex] == null) 
 			dialogueIndex = 0;
@@ -365,7 +373,7 @@ public class Entity {
 		return goalRow;
 	}
 	
-	// ATTACKING / KNOCKBACK / DAMAGE
+	// ATTACKING / DAMAGE
 	public void isAttacking(int rate, int straight, int horizontal) {
 				
 		boolean targetInRange = false;
@@ -412,11 +420,17 @@ public class Entity {
 
 		attackCounter++;
 		
-		// 3 FRAMES: ATTACK IMAGE 1
+		// PREVENT SWING SPEED GLITCH
+		if (swingSpeed1 == 0 && swingSpeed2 == 0) {
+			swingSpeed1 = 3;
+			swingSpeed2 = 15;
+		}
+				
+		// ATTACK IMAGE 1
 		if (swingSpeed1 >= attackCounter) {			
 			attackNum = 1;
 		}		
-		// 12 FRAMES: ATTACK IMAGE 2
+		// ATTACK IMAGE 2
 		if (swingSpeed2 >= attackCounter && attackCounter > swingSpeed1) {
 			attackNum = 2;
 			
@@ -444,9 +458,8 @@ public class Entity {
 			
 			// ENEMY ATTACKING
 			if (type == type_enemy) {
-				if (gp.cChecker.checkPlayer(this)) {
-					damagePlayer(attack);
-				}
+				if (gp.cChecker.checkPlayer(this)) 
+					damagePlayer(attack);				
 			}
 			// PLAYER ATTACKING
 			else {
@@ -454,9 +467,25 @@ public class Entity {
 				// CHECK IF ATTACK LANDS ON ENEMY
 				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 				
-				// PREVENT GLITCH WITH AXE
-				if (currentWeapon != null) gp.player.damageEnemy(enemyIndex, attack, currentWeapon.knockbackPower);			
-				else gp.player.damageEnemy(enemyIndex, attack, 0);
+				// PREVENT AXE GLITCH
+				if(currentWeapon == null) 
+					gp.player.damageEnemy(enemyIndex, this, attack, 0);
+				else 
+					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
+				
+				// SHOOT SWORD BEAM
+				if (enemyIndex == -1 && gp.keyH.actionPressed) {
+					if (projectile.hasResource(this) && !projectile.alive && 
+							shotAvailableCounter == 30 ) {
+						projectile.playSE();
+						
+						projectile.set(worldX, worldY, direction, true, this);			
+						addProjectile(projectile);					
+						projectile.subtractResource(this);
+						
+						shotAvailableCounter = 0;
+					}
+				}
 				
 				// CHECK IF ATTACK LANDS ON PROJECTILE
 				int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
@@ -470,9 +499,9 @@ public class Entity {
 					int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
 					gp.player.damageInteractiveTile(iTileIndex);	
 				}
-				
-				gp.player.chopping = false;
 			}
+			
+			gp.player.chopping = false;
 						
 			// RESTORE PLAYER HITBOX
 			worldX = currentWorldX;
@@ -486,75 +515,51 @@ public class Entity {
 			attackNum = 1;
 			attackCounter = 0;
 			attacking = false;
-			gp.keyH.spacePressed = false;
+			gp.keyH.actionPressed = false;
 		}
-	}
-	public void knockbackEntity() {
-		
-		// CANCEL IF TILE COLLISION
-		checkCollision();			
-		if (collisionOn) {
-			knockbackCounter = 0;
-			knockback = false;
-			speed = defaultSpeed;
-		}
-		else {
-			switch(gp.player.direction) {
-				case "up": 
-				case "upleft": 
-				case "upright": worldY -= speed; break;				
-				case "down": 
-				case "downleft": 
-				case "downright": worldY += speed; break;				
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
-			}
-		}
-		
-		knockbackCounter++;
-		if (knockbackCounter == 10) {
-			knockbackCounter = 0;
-			knockback = false;
-			speed = defaultSpeed;						
-		}		
-	}	
-	public void knockback(Entity entity, String direction, int knockbackPower) {		
-		entity.knockbackDirection = entity.direction;
-		entity.direction = direction;		
-		entity.speed += knockbackPower;
-		entity.knockback = true;
 	}		
-	public void useItem(int rate) {
-		int i = new Random().nextInt(rate);
-		if (i == 0) currentItem.use(this);		
-	}
-	public void useProjectile(int rate) {
-		
-		int i = new Random().nextInt(rate);
-		if (i == 0 && !projectile.alive && shotAvailableCounter == 30) {
-			
-			projectile.set(worldX, worldY, direction, true, this);
-			addProjectile(projectile);
-			
-			shotAvailableCounter = 0;
-			
-			projectile.playSE();
-		}
-	}
 	public void damagePlayer(int attack) {
 		
 		if (!gp.player.invincible && gp.player.alive) {
-			gp.player.playHurtSE();
-			
-			if (knockbackPower > 0) 
-				knockback(gp.player, direction, knockbackPower);	
-			
+									
 			int damage = attack - gp.player.defense;
-			if (damage < 0) damage = 0;	
-			gp.player.life -= damage;
 			
+			String canGuardDirection = getOppositeDirection(direction);			
+			if (gp.player.guarding && gp.player.direction.equals(canGuardDirection)) {
+				gp.playSE(3, 13);			
+				if (knockbackPower > 0) 
+					setKnockback(gp.player, this, 1);
+				damage = 0;
+			}
+			else {
+				gp.player.playHurtSE();
+				if (knockbackPower > 0) 
+					setKnockback(gp.player, this, knockbackPower);
+
+				if (damage < 0) damage = 0;	
+				gp.player.life -= damage;
+				gp.player.transparent = true;
+			}			
+
 			gp.player.invincible = true;
 		}
+	}
+	public String getOppositeDirection(String direction) {
+		
+		String oppositeDirection = "";
+		
+		switch(direction) {
+			case "up":
+			case "upleft":
+			case "upright": oppositeDirection = "down"; break;
+			case "down":
+			case "downleft":
+			case "downright": oppositeDirection = "up"; break;
+			case "left": oppositeDirection = "right"; break;
+			case "right": oppositeDirection = "left"; break;
+		}
+		
+		return oppositeDirection;
 	}
 	public void hurtAnimation(Graphics2D g2) {
 		
@@ -581,6 +586,62 @@ public class Entity {
 				gp.obj[gp.currentMap][i].worldY = worldY;
 				break;
 			}
+		}
+	}
+	
+	// KNOCKBACK
+	public void knockbackEntity() {
+		
+		// CANCEL IF TILE COLLISION
+		checkCollision();			
+		if (collisionOn) {
+			knockbackCounter = 0;
+			knockback = false;
+			speed = defaultSpeed;
+		}
+		else {
+			switch(knockbackDirection) {
+				case "up": 
+				case "upleft": 
+				case "upright": worldY -= speed; break;				
+				case "down": 
+				case "downleft": 
+				case "downright": worldY += speed; break;				
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
+		}
+		
+		knockbackCounter++;
+		if (knockbackCounter == 10) {
+			knockbackCounter = 0;
+			knockback = false;
+			speed = defaultSpeed;						
+		}		
+	}	
+	public void setKnockback(Entity target, Entity attacker, int knockbackPower) {			
+		this.attacker = attacker;
+		target.knockbackDirection = attacker.direction;
+		target.speed += knockbackPower;
+		target.knockback = true;
+	}
+	
+	// ITEM HANDLING
+	public void useItem(int rate) {
+		int i = new Random().nextInt(rate);
+		if (i == 0) currentItem.use(this);		
+	}
+	public void useProjectile(int rate) {
+		
+		int i = new Random().nextInt(rate);
+		if (i == 0 && !projectile.alive && shotAvailableCounter == 30) {
+			
+			projectile.set(worldX, worldY, direction, true, this);
+			addProjectile(projectile);
+			
+			shotAvailableCounter = 0;
+			
+			projectile.playSE();
 		}
 	}
 	
@@ -722,6 +783,8 @@ public class Entity {
 	}
 	
 	// PROJECTILE
+	
+	// PARTICLES
 	public void addProjectile(Projectile projectile) {
 		for (int i = 0; i < gp.projectile[1].length; i++) {
 			if (gp.projectile[gp.currentMap][i] == null) {

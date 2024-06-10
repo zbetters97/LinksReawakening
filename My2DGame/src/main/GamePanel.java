@@ -283,7 +283,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		if (gameState == titleState) playMusic(0);			
 		else {			
-			if (currentMap == 0) playMusic(2);
+			if (currentMap == 0) playMusic(1);
 			else if (currentMap == 1) playMusic(4);
 		}
 	}	

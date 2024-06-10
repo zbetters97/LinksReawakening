@@ -101,7 +101,7 @@ public class PRJ_Bomb extends Projectile {
 		ArrayList<Integer> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
 		if (enemyIndexes.size() > 0) {
 			for (Integer e : enemyIndexes) 
-				gp.player.damageEnemy(e, attack, knockbackPower);						
+				gp.player.damageEnemy(e, this, attack, knockbackPower);						
 		}
 		
 		// DAMAGE SURROUNDING iTILES

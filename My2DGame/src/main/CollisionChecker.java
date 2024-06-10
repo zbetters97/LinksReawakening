@@ -29,6 +29,12 @@ public class CollisionChecker {
 				
 		// detect the two tiles player is interacting with
 		int tileNum1 = 0, tileNum2 = 0;
+		
+		// KNOCKBACK DIRECTION
+		String direction = entity.direction;
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}
 				
 		// PREVENT COLLISION DETECTION OUT OF BOUNDS
 		if (entityTopRow <= 0) return;		
@@ -37,7 +43,7 @@ public class CollisionChecker {
 		if (entityRightCol >= gp.maxWorldCol - 1) return;
 		
 		// find tile player will interact with, factoring in speed
-		switch (entity.direction) {
+		switch (direction) {
 			case "up":
 				entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;	
 				
@@ -190,6 +196,12 @@ public class CollisionChecker {
 		
 		int index = -1;
 		
+		// KNOCKBACK DIRECTION
+		String direction = entity.direction;
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}
+				
 		for (int i  = 0; i < target[1].length; i++) {
 			
 			if (target[gp.currentMap][i] != null) {			
@@ -204,7 +216,7 @@ public class CollisionChecker {
 				
 				// find where entity will be after moving in a direction
 				// ask if npc and entity intersect 
-				switch (entity.direction) {
+				switch (direction) {
 					case "up":					
 						entity.hitbox.y -= entity.speed;
 						break;					
