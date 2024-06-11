@@ -6,12 +6,14 @@ import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.image.BufferedImage;
 
+import entity.Entity;
 import main.GamePanel;
 
 public class Lighting {
 
 	GamePanel gp;
 	BufferedImage darknessFilter;
+	Entity eventMaster;
 	
 	// DAY AND NIGHT CYCLE
 	public int dayCounter;
@@ -27,7 +29,14 @@ public class Lighting {
 	
 	public Lighting(GamePanel gp) {
 		this.gp = gp;
+		eventMaster = new Entity(gp);
 		setLightSource();
+		setDialogue();
+	}
+	
+	public void setDialogue() {
+		eventMaster.dialogues[0][0] = "\"It's getting dark.\nI better find a light...\"";
+		eventMaster.dialogues[1][0] = "The blood moon rises once again...";
 	}
 	
 	public void update() {
@@ -48,8 +57,8 @@ public class Lighting {
 				setLightSource();
 				
 				if (gp.player.currentLight == null && gp.gameState == gp.playState) {
-					gp.ui.currentDialogue = "\"It's getting dark.\nI better find a light...\"";
-					gp.gameState = gp.dialogueState;
+					gp.keyH.actionPressed = false;
+					eventMaster.startDialogue(eventMaster, 0);
 				}
 			}
 		}
@@ -64,8 +73,7 @@ public class Lighting {
 				if (bloodMoonCounter == bloodMoonMax) {
 					bloodMoonCounter = 0;
 					gp.aSetter.setEnemy();					
-					gp.ui.currentDialogue = "The blood moon rises once again...";
-					gp.gameState = gp.dialogueState;
+					eventMaster.startDialogue(eventMaster, 1);
 				}
 			}
 		}
@@ -158,6 +166,13 @@ public class Lighting {
 		g2.dispose();
 	}
 	
+	public void resetDay() {
+		
+		dayState = day;
+		filterAlpha = 0f;
+		bloodMoonCounter = 0;
+	}
+	
 	public void draw(Graphics2D g2) {
 		
 		// DAY LIGHTING
@@ -166,17 +181,19 @@ public class Lighting {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		
 		// DEBUG
-		String timeOfDay = "";
-		switch (dayState) {
-			case day: timeOfDay = "DAY"; break;
-			case dusk: timeOfDay = "DUSK"; break;
-			case night: timeOfDay = "NIGHT"; break;
-			case dawn: timeOfDay = "DAWN"; break;
+		if (gp.keyH.debug) {
+			
+			String timeOfDay = "";
+			switch (dayState) {
+				case day: timeOfDay = "DAY"; break;
+				case dusk: timeOfDay = "DUSK"; break;
+				case night: timeOfDay = "NIGHT"; break;
+				case dawn: timeOfDay = "DAWN"; break;
+			}
+			
+			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(50f));		
+			g2.drawString(timeOfDay, 10, gp.tileSize * 5);
 		}
-		g2.setColor(Color.WHITE);
-		g2.setFont(g2.getFont().deriveFont(50f));
-		
-		if (gp.keyH.debug) 
-			g2.drawString(timeOfDay, gp.tileSize, gp.tileSize * 9);
 	}
 }

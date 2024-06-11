@@ -109,6 +109,16 @@ public class Projectile extends Entity {
 		if (collisionOn) 
 			life = 0;
 		
+		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+		if (projectileIndex != -1) {
+			Entity projectile = gp.projectile[gp.currentMap][projectileIndex];
+			
+			if (projectile.name.equals("Bomb"))
+				projectile.explode();
+			
+			life = 0;
+		}
+		
 		// MAX LENGTH REACHED
 		if (life <= 0 || objectIndex != -1) {	
 			
@@ -200,7 +210,7 @@ public class Projectile extends Entity {
 		
 		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
 		int objectIndex = gp.cChecker.checkObject(this, true);
-		
+				
 		// OBJECT IS NOT GRABBABLE, RETURN
 		if (collisionOn && iTileIndex == -1) 
 			life = 0;
@@ -405,6 +415,16 @@ public class Projectile extends Entity {
 				
 				gp.iTile[gp.currentMap][10] = null;
 				gp.iTile[gp.currentMap][11] = null;
+			}
+			
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			if (projectileIndex != -1) {
+				Entity projectile = gp.projectile[gp.currentMap][projectileIndex];
+				
+				if (projectile.name.equals("Bomb"))
+					projectile.explode();
+				
+				alive = false;
 			}
 			
 			// NO COLLISION FOR SWORD BEAM

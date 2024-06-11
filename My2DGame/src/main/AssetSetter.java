@@ -2,6 +2,13 @@ package main;
 
 import enemy.*;
 import entity.*;
+import item.ITM_Axe;
+import item.ITM_Boots;
+import item.ITM_Bow;
+import item.ITM_Feather;
+import item.ITM_Hookshot;
+import item.ITM_Lantern;
+import item.ITM_Shovel;
 import object.*;
 import tile_interactive.*;
 
@@ -17,7 +24,8 @@ public class AssetSetter {
 		
 		int mapNum = 0;
 				
-		gp.obj[mapNum][0] = new ITM_Shovel(gp);
+		gp.obj[mapNum][0] = new OBJ_Chest(gp);
+		gp.obj[mapNum][0].setLoot(new ITM_Shovel(gp));
 		gp.obj[mapNum][0].worldX = gp.tileSize * 38;
 		gp.obj[mapNum][0].worldY = gp.tileSize * 41;	
 						
@@ -37,7 +45,8 @@ public class AssetSetter {
 		gp.obj[mapNum][4].worldX = gp.tileSize * 12;
 		gp.obj[mapNum][4].worldY = gp.tileSize * 32;
 		
-		gp.obj[mapNum][5] = new ITM_Bow(gp);
+		gp.obj[mapNum][5] = new OBJ_Chest(gp);
+		gp.obj[mapNum][5].setLoot(new ITM_Bow(gp));
 		gp.obj[mapNum][5].worldX = gp.tileSize * 34;
 		gp.obj[mapNum][5].worldY = gp.tileSize * 8;		
 

@@ -28,8 +28,6 @@ public class UI {
 	// MENU OPTION SELECTION
 	public int commandNum = 0;
 	
-	public int textSpeed = 1;
-	
 	// HUD
 	BufferedImage heart_full, heart_half, heart_empty, rupee;
 	public String rupee_count = "0";
@@ -39,8 +37,7 @@ public class UI {
 		
 	// ITEM MENU
 	public int playerSlotCol = 0;
-	public int playerSlotRow = 0;
-	
+	public int playerSlotRow = 0;	
 	public int npcSlotCol = 0;
 	public int npcSlotRow = 0;
 	
@@ -49,16 +46,20 @@ public class UI {
 	ArrayList<Integer> messageCounter = new ArrayList<>();
 	public boolean messageOn = false;
 	public String currentDialogue = "";
-	public String dialogueText = "";
-	public String interactText = "";
 	public int dialogueIndex = 0;
+	public int textSpeed = 0;
 	public int dialogueCounter = 0;	
+	public int charIndex = 0;
+	public String combinedText = "";
+	
+	// HINT
 	public String hint = "";
 	public boolean showHint = false;
 	
 	// TRANSITION
 	int counter = 0;
 	
+	// NPC ITEM TRANSACTION
 	public Entity npc;
 	public Entity newItem;
 	public int newItemIndex;
@@ -130,7 +131,7 @@ public class UI {
 		// ITEM GET STATE
 		else if (gp.gameState == gp.itemGetState) {
 			drawHUD();
-			drawDialogueScreen();
+			drawItemGetScreen();
 		}
 		// TRANSITION STATE
 		else if (gp.gameState == gp.transitionState) {
@@ -399,7 +400,7 @@ public class UI {
 		// DEBUG HUD
 		if (gp.keyH.debug) {			
 			
-			x = 10; y = 500; int lineHeight = 20;
+			x = 10; y = gp.tileSize * 6; int lineHeight = 20;
 			g2.setFont(new Font("Arial", Font.PLAIN, 20));
 			g2.setColor(Color.white);
 			
@@ -511,7 +512,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.actionPressed) {
 				textSpeed++;
-				if (textSpeed > 3) textSpeed = 1;
+				if (textSpeed > 2) textSpeed = 0;
 			}
 		}
 		
@@ -534,6 +535,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {				
 				commandNum = 0;
 				subState = 0;
+				gp.saveLoad.save();			
 				gp.gameState = gp.playState;
 			}
 		}
@@ -571,9 +573,9 @@ public class UI {
 		
 		// TEXT SPEED OPTION
 		textY += gp.tileSize * 1.5;
-		if (textSpeed == 1) g2.drawString("FAST", textX, textY);
-		else if (textSpeed == 2) g2.drawString("MEDIUM", textX, textY);
-		else if (textSpeed == 3) g2.drawString("SLOW", textX, textY);
+		if (textSpeed == 0) g2.drawString("FAST", textX, textY);
+		else if (textSpeed == 1) g2.drawString("MEDIUM", textX, textY);
+		else if (textSpeed == 2) g2.drawString("SLOW", textX, textY);
 		
 		gp.config.saveConfig();
 	}
@@ -662,10 +664,10 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.actionPressed) {
-				subState = 0;				
-				gp.gameState = gp.titleState;
-				gp.stopMusic();
-				gp.playMusic(0);
+				gp.stopMusic();				
+				subState = 0;							
+				gp.gameState = gp.titleState;				
+				gp.resetGame(true);
 			}
 		}
 		
@@ -877,45 +879,84 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
 		x += gp.tileSize;
 		y += gp.tileSize;	
-		
-		if (newItem == null) {
-									
-			// PRINT ONE CHARACTER AT A TIME
-			if (dialogueCounter == textSpeed) {		
-				
-				if (dialogueIndex < currentDialogue.length()) {				
-					playDialogueSE();					
-					dialogueText += currentDialogue.charAt(dialogueIndex);					
-					dialogueIndex++;
-				}			
-				dialogueCounter = 0;
-			}			
-			dialogueCounter++;	
+	
+		// NPC HAS SOMETHING TO SAY
+		if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {		
 			
-			// NEW LINE
-			for (String line : dialogueText.split("\n")) { 
-				g2.drawString(line, x, y);	
-				y += 40;
+			if (dialogueCounter == textSpeed) {
+				char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();			
+				if (charIndex < characters.length) {
+					
+					playDialogueSE();
+					String s = String.valueOf(characters[charIndex]);				
+					combinedText += s;
+					currentDialogue = combinedText;					
+					charIndex++;
+				}
+	
+				if (gp.keyH.actionPressed) {
+					
+					charIndex = 0;
+					combinedText = "";
+					
+					if (gp.gameState == gp.dialogueState) {
+						npc.dialogueIndex++;
+						gp.keyH.actionPressed = false;
+					}				
+				}
+				dialogueCounter = 0;
 			}
+			else
+				dialogueCounter++;
 		}
-		else {
-	  		for (String line : currentDialogue.split("\n")) { 
-				g2.drawString(line, x, y);	
-				y += 40;
-			} 
-	  		
-	  		// DISPLAY ITEM ABOVE PLAYER
-			if (newItem != null) {			
-				g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
-				g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
-			}
+		// NPC HAS NO MORE DIALOGUE
+		else {			
+			npc.dialogueIndex = 0;
+			
+			if (npc != null && npc.hasItemToGive) {
+				gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
+			}		
+			else {
+				gp.ui.playDialogueFinishSE();				
+				gp.gameState = gp.playState;
+			}	
 		}
-
+		
+		
+  		for (String line : currentDialogue.split("\n")) { 
+			g2.drawString(line, x, y);	
+			y += 40;
+		} 
+  		
 		String text = "[Press SPACE to continue]";
 		x = getXforCenteredText(text);
 		y = gp.tileSize * 11;
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.drawString(text, x, y + 30);
+	}
+	
+	public void drawItemGetScreen() {
+	
+		int x = gp.tileSize * 2;
+		int y = gp.screenWidth / 2;
+		int width = gp.screenWidth - (gp.tileSize * 4);
+		int height = gp.tileSize * 4;		
+		drawSubWindow(x, y, width, height);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
+		x += gp.tileSize;
+		y += gp.tileSize;
+		
+		for (String line : currentDialogue.split("\n")) { 
+			g2.drawString(line, x, y);	
+			y += 40;
+		} 
+		
+		// DISPLAY ITEM ABOVE PLAYER
+		if (newItem != null) {			
+			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
+			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+		}			
 	}
 			
 	// TRADE
@@ -931,6 +972,7 @@ public class UI {
 	}
 	public void trade_select() {
 				
+		npc.dialogueSet = 0;
 		drawDialogueScreen();
 		
 		// DRAW OPTIONS WINDOW
@@ -962,12 +1004,10 @@ public class UI {
 		g2.drawString("Leave", x, y);
 		if (commandNum == 2) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.actionPressed) {
-				gp.gameState = gp.dialogueState;
+			if (gp.keyH.actionPressed) {				
 				gp.ui.commandNum = 0;
 				gp.ui.subState = 0;
-				gp.ui.currentDialogue = "Scram, kid!";
-				npc = null;
+				npc.startDialogue(npc, 4);
 			}	
 		}
 	}
@@ -1016,9 +1056,7 @@ public class UI {
 				// NOT ENOUGH RUPEES
 				if (npc.inventory.get(itemIndex).price > gp.player.rupees) {
 					subState = 0;
-					gp.gameState = gp.dialogueState;
-					currentDialogue = "Hey! You don't have enough rupees!";
-					npc = null;
+					npc.startDialogue(npc, 1);
 				}
 				else {					
 					subState = 0;
@@ -1035,9 +1073,7 @@ public class UI {
 						}									
 					}
 					else {
-						gp.gameState = gp.dialogueState;
-						currentDialogue = "Looks like you don't have enough room, kid!";
-						npc = null;
+						npc.startDialogue(npc, 2);
 					}
 				}
 			} 
@@ -1093,9 +1129,7 @@ public class UI {
 					
 					subState = 0;
 					commandNum = 0;					
-					gp.gameState = gp.dialogueState;
-					currentDialogue = "I think you should hold onto that!";
-					npc = null;
+					npc.startDialogue(npc, 3);
 				}
 				// CAN SELL
 				else {					

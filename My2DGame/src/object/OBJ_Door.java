@@ -7,6 +7,7 @@ import main.GamePanel;
 
 public class OBJ_Door extends Entity {
 	
+	public static final String itmName = "Locked Door";
 	GamePanel gp;
 	
 	public OBJ_Door(GamePanel gp) {
@@ -14,14 +15,19 @@ public class OBJ_Door extends Entity {
 		this.gp = gp;
 		
 		type = type_obstacle;
-		name = "Door";
+		name = itmName;
 		down1 = setup("/objects/OBJ_DOOR");
 		hitbox = new Rectangle(0, 16, 48, 32);
 		collision = true;
+		
+		setDialogue();
 	}	
 	
+	public void setDialogue() {
+		dialogues[0][0] = "It's locked...";	
+	}
+	
 	public void interact() {		
-		gp.gameState = gp.dialogueState;
-		gp.ui.currentDialogue = "It's locked...";		
+		startDialogue(this, 0);
 	}
 }

@@ -38,6 +38,7 @@ public class Entity {
 	public Projectile projectile;
 	public boolean collisionOn = false;
 	public boolean hasItem = false;
+	public boolean hasItemToGive = false;
 	
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
@@ -53,8 +54,9 @@ public class Entity {
 							guardLeft1, guardLeft2, guardRight1, guardRight2;
 
 	// DIALOGUE
-	public String dialogues[] = new String[20];
-	public int dialogueIndex = 0;	
+	public String dialogues[][] = new String[20][20];
+	public int dialogueSet = 0;
+	public int dialogueIndex = 0;		
 	
 	// LIFE
 	public boolean hpBarOn = false;
@@ -81,11 +83,11 @@ public class Entity {
 	public int swingSpeed1;
 	public int swingSpeed2;
 	public int actionLockCounter = 0;
-	public int shotAvailableCounter;
 	public boolean attacking;	
 	public int attackCounter = 0;
-	public int attackNum = 1;
-	public boolean guarding = false;
+	public int attackNum = 1;	
+	public int shotAvailableCounter;
+	public boolean attackCanceled = false;
 	
 	// WEAPON hitbox
 	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
@@ -110,6 +112,8 @@ public class Entity {
 	public boolean collision = false;
 	public boolean diggable = false;
 	public boolean canExplode;
+	public Entity loot;
+	public boolean opened = false;
 	
 	// CHARACTER TYPES
 	public final int type_player = 0;
@@ -140,6 +144,7 @@ public class Entity {
 	public boolean use(Entity user) { return true; }
 	public void interact() { }
 	public void explode() {	}
+	public void setLoot(Entity loot) { }
 	public void playSE() { }
 	public void playAttackSE() { }
 	public void playHurtSE() { }
@@ -150,6 +155,7 @@ public class Entity {
 		
 		if (knockback) { knockbackEntity();	return; }
 		if (attacking) { attacking(); }
+		
 		// CHILD CLASS
 		setAction();
 		
@@ -201,6 +207,16 @@ public class Entity {
 		}
 	}
 	
+	public void resetCounter() {
+		spriteCounter = 0;
+		actionLockCounter = 0;		
+		shotAvailableCounter = 0;		
+		hpBarCounter = 0;
+		invincibleCounter = 0;
+		knockbackCounter = 0;
+		dyingCounter = 0;
+	}
+	
 	// COLLISION CHECKER
 	public void checkCollision() {		
 		
@@ -217,17 +233,14 @@ public class Entity {
 			damagePlayer(attack);  	
 	}
 
-	// SPEAKING
-	public void speak() { 
-				
-		gp.keyH.actionPressed = false;
-		
-		if (dialogues[dialogueIndex] == null) 
-			dialogueIndex = 0;
-		
-		gp.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;	
-		
+	// DIALOGUE
+	public void speak() { }	
+	public void startDialogue(Entity entity, int setNum) {
+		dialogueSet = setNum;
+		gp.ui.npc = entity;		
+		gp.gameState = gp.dialogueState;
+	}	
+	public void facePlayer() {
 		switch (gp.player.direction) {		
 			case "up":
 			case "upleft":
@@ -237,7 +250,7 @@ public class Entity {
 			case "downright": direction = "up"; break;
 			case "left": direction = "right"; break;
 			case "right": direction = "left"; break;		
-		}		
+		}	
 	}
 
 	// PATH FINDING
@@ -515,6 +528,7 @@ public class Entity {
 			attackNum = 1;
 			attackCounter = 0;
 			attacking = false;
+			attackCanceled = false;
 			gp.keyH.actionPressed = false;
 		}
 	}		
@@ -648,38 +662,35 @@ public class Entity {
 	// OBJECT INTERACTION
 	public boolean canObtainItem(Entity item) {
 		
+		Entity newItem = gp.eGenerator.getObject(item.name);
+		newItem.amount = 1;	
+		
 		// IF STACKABLE ITEM
-		if (item.stackable) {	
+		if (newItem.stackable) {	
 			
-			try {
-				Entity newItem = (Entity) item.clone();
-				newItem.amount = 1;	
+			// ITEM FOUND IN INVENTORY
+			int index = searchItemInventory(newItem.name);
+			if (index != -1) {		
 				
-				// ITEM FOUND IN INVENTORY
-				int index = searchItemInventory(item.name);
-				if (index != -1) {		
-					
-					// NOT TOO MANY
-					if (inventory.get(index).amount != 999) {
-						inventory.get(index).amount++;
-						return true;
-					}
+				// NOT TOO MANY
+				if (inventory.get(index).amount != 999) {
+					inventory.get(index).amount++;
+					return true;
 				}
-				// NEW ITEM
-				else {
-					if (inventory.size() != maxInventorySize) {													
-						inventory.add(newItem);
-						return true;
-					}
-				}	
-			} 
-			catch (CloneNotSupportedException e) { }
+			}
+			// NEW ITEM
+			else {
+				if (inventory.size() != maxInventorySize) {													
+					inventory.add(newItem);
+					return true;
+				}
+			}	
 		}
 		// NOT STACKABLE
 		else {
 			if (inventory.size() != maxInventorySize) {
-				if (this == gp.player) getObject(item);				
-				else inventory.add(item);
+				if (this == gp.player) getObject(newItem);				
+				else inventory.add(newItem);
 				return true;
 			}
 		}
@@ -722,10 +733,11 @@ public class Entity {
 		}	
 		
 		playGetItemSE();
-		gp.gameState = gp.itemGetState;
+		
 		gp.ui.newItem = item;
-		gp.ui.currentDialogue = "You got the " + item.name + "!";
 		inventory.add(item);
+		gp.ui.currentDialogue = "You got the " + item.name + "!";		
+		gp.gameState = gp.itemGetState;
 	}
 	
 	// ITEM-OBJECT INTERACTION
@@ -740,17 +752,18 @@ public class Entity {
 		switch(user.direction) {
 			case "up":
 			case "upleft":
-			case "upright": nextWorldY = user.getTopY() - 1; break;
+			case "upright": nextWorldY = user.getTopY() - gp.player.speed; break;
 			case "down":
 			case "downleft":
-			case "downright": nextWorldY = user.getBottomY() + 1; break;
-			case "left": nextWorldX = user.getLeftX() - 1; break;
-			case "right": nextWorldX = user.getRightX() + 1; break;
+			case "downright": nextWorldY = user.getBottomY() + gp.player.speed; break;
+			case "left": nextWorldX = user.getLeftX() - gp.player.speed; break;
+			case "right": nextWorldX = user.getRightX() + gp.player.speed; break;
 		}
 		
 		// CHECK IF FOUND OBJECT IS TARGET
 		int col = nextWorldX / gp.tileSize;
-		int row = nextWorldY / gp.tileSize;			
+		int row = nextWorldY / gp.tileSize;		
+		
 		for (int i = 0; i < target[1].length; i++) {
 			if (target[gp.currentMap][i] != null && 
 				target[gp.currentMap][i].getCol() == col && 
@@ -783,8 +796,6 @@ public class Entity {
 	}
 	
 	// PROJECTILE
-	
-	// PARTICLES
 	public void addProjectile(Projectile projectile) {
 		for (int i = 0; i < gp.projectile[1].length; i++) {
 			if (gp.projectile[gp.currentMap][i] == null) {
@@ -794,7 +805,7 @@ public class Entity {
 		}
 	}
 	
-	// PARTICLE
+	// PARTICLES
 	public void generateParticle(Entity generator, Entity target) {
 
 		Color color = generator.getParticleColor();
@@ -887,6 +898,8 @@ public class Entity {
 			else {							
 				switch (direction) {
 					case "up":
+					case "upleft":
+					case "upright":
 						if (attacking) {
 							screenY -= gp.tileSize;
 							if (attackNum == 1) image = attackUp1;
@@ -898,6 +911,8 @@ public class Entity {
 						}
 						break;
 					case "down":
+					case "downleft":
+					case "downright":
 						if (attacking) {		
 							if (attackNum == 1) image = attackDown1;
 							if (attackNum == 2) image = attackDown2;	

@@ -1,8 +1,7 @@
 package entity;
 
+import item.ITM_Boomerang;
 import main.GamePanel;
-import object.COL_Potion_Red;
-import object.ITM_Boomerang;
 
 public class NPC_Merchant extends Entity {
 	
@@ -32,13 +31,17 @@ public class NPC_Merchant extends Entity {
 		inventory.add(new ITM_Boomerang(gp));
 	}
 	public void setDialogue() {
-		dialogues[0] = "Buy somethin', will ya!";
+		dialogues[0][0] = "Buy somethin', will ya!";		
+		dialogues[1][0] = "Hey! You don't have enough rupees!";
+		dialogues[2][0] = "Looks like yer all outa room, kid!";
+		dialogues[3][0] = "I think you should hold onto that!";
+		dialogues[4][0] = "Scram, kid!";
 	}	
 	
-	public void speak() {		
+	public void speak() {				
+		facePlayer();
+		gp.keyH.actionPressed = false;
 		gp.gameState = gp.tradeState;
-		super.speak();		
-		
 		gp.ui.npc = this;
 	}
 	

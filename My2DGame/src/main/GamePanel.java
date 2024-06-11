@@ -14,6 +14,7 @@ import java.util.Comparator;
 import javax.swing.JPanel;
 
 import ai.PathFinder;
+import data.SaveLoad;
 import entity.*;
 import environment.EnvironmentManager;
 import tile.Map;
@@ -89,6 +90,10 @@ public class GamePanel extends JPanel implements Runnable {
 	public EventHandler eHandler = new EventHandler(this);	
 	public AssetSetter aSetter = new AssetSetter(this);
 	public PathFinder pFinder = new PathFinder(this);
+	public EntityGenerator eGenerator = new EntityGenerator(this);
+	
+	// SAVE LOAD MANAGER
+	SaveLoad saveLoad = new SaveLoad(this);
 	
 	// MAP
 	Map map = new Map(this);
@@ -106,7 +111,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {
 		
-		gameState = playState;
+//		gameState = playState;
 		
 		setupMusic();
 
@@ -142,40 +147,25 @@ public class GamePanel extends JPanel implements Runnable {
 		gameThread.start(); // calls run() method
 	}
 	
-	public void retry() {	
-		stopMusic();		
-		
-		player.alive = true;		
-		player.setDefaultPosition();
-		player.restoreHearts();
-		
-		ui.deathSprite = 0;
-		ui.deathCounter = 0;
-		
-		aSetter.setNPC();
-		aSetter.setEnemy();
-						
-		setupMusic();
-	}
-	
-	public void restart() {	
+	public void resetGame(boolean restart) {
 		stopMusic();
 		
-		player.alive = true;
-		player.inventory.clear();
-		player.restoreHearts();
-		player.setDefaultPosition();		
-		player.setDefaultValues();		
-		player.setDefaultItems();
-		
-		ui.deathSprite = 0;
-		ui.deathCounter = 0;
-		
+		player.alive = true;		
+		player.restoreStatus();
+		player.setDefaultPosition();	
+		player.resetCounter();
 		aSetter.setNPC();
-		aSetter.setEnemy();
-		aSetter.setInteractiveTiles();
-		aSetter.setObject();		
-
+		aSetter.setEnemy();		
+		
+		if (restart) {
+			player.inventory.clear();
+			player.setDefaultValues();	
+			aSetter.setInteractiveTiles();
+			aSetter.setObject();
+			
+			eManager.lighting.resetDay();
+		}
+		
 		setupMusic();
 	}
 	
@@ -283,7 +273,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		if (gameState == titleState) playMusic(0);			
 		else {			
-			if (currentMap == 0) playMusic(1);
+			if (currentMap == 0) playMusic(3);
 			else if (currentMap == 1) playMusic(4);
 		}
 	}	

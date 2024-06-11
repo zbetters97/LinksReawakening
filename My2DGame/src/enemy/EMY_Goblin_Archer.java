@@ -4,12 +4,12 @@ import java.awt.Rectangle;
 import java.util.Random;
 
 import entity.Entity;
+import item.ITM_Bow;
 import main.GamePanel;
 import object.COL_Arrow;
 import object.COL_Heart;
 import object.COL_Rupee_Blue;
 import object.COL_Rupee_Red;
-import object.ITM_Bow;
 
 public class EMY_Goblin_Archer extends Entity {
 

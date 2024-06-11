@@ -7,17 +7,15 @@ import main.GamePanel;
 
 public class OBJ_Chest extends Entity {
 	
+	public static final String itmName = "Chest";
 	GamePanel gp;
-	Entity loot;
-	boolean opened = false;
 	
-	public OBJ_Chest(GamePanel gp, Entity loot) {
+	public OBJ_Chest(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
-		this.loot = loot;
 		
 		type = type_obstacle;
-		name = "Chest";
+		name = itmName;
 		image1 = setup("/objects/chest");
 		image2 = setup("/objects/chest_opened");
 		down1 = image1;
@@ -28,15 +26,20 @@ public class OBJ_Chest extends Entity {
 		hitboxDefaultY = hitbox.y;
 	}	
 	
+	public void setLoot(Entity loot) {
+		this.loot = loot;
+		setDialogue();
+	}
+	
+	public void setDialogue() {
+		dialogues[0][0] = "It's empty...";
+	}
+	
 	public void interact() {		
 		if (!opened) {		
 			opened = true;	
 			down1 = image2;
 			gp.player.getObject(loot);	
-		}
-		else {
-			gp.gameState = gp.dialogueState;
-			gp.ui.currentDialogue = "It's empty...";
 		}
 	}
 }

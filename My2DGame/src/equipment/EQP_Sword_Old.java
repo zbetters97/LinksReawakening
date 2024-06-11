@@ -1,18 +1,19 @@
-package object;
+package equipment;
 
 import entity.Entity;
 import main.GamePanel;
 
-public class EQP_Sword extends Entity {
+public class EQP_Sword_Old extends Entity {
 
 	GamePanel gp;
+	public static final String itmName = "Old Sword";
 	
-	public EQP_Sword(GamePanel gp) {
+	public EQP_Sword_Old(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_sword;		
-		name = "Old Sword";
+		name = itmName;
 		description = "[" + name + "]\nA humble starter sword.\n+1 ATK";
 				
 		attackValue = 3;

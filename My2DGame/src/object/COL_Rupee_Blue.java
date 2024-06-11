@@ -5,6 +5,7 @@ import main.GamePanel;
 
 public class COL_Rupee_Blue extends Entity {
 
+	public static final String itmName = "Blue Rupee";
 	GamePanel gp;
 	
 	public COL_Rupee_Blue(GamePanel gp) {
@@ -12,7 +13,7 @@ public class COL_Rupee_Blue extends Entity {
 		this.gp = gp;
 		
 		type = type_collectable;
-		name = "Blue Rupee";
+		name = itmName;
 		value = 5;
 		
 		down1 = setup("/objects/COL_RUPEE_BLUE");

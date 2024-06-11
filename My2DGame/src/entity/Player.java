@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import equipment.EQP_Shield_Old;
 import main.GamePanel;
 import main.KeyHandler;
 import object.*;
@@ -26,21 +27,21 @@ public class Player extends Entity {
 	
 	public String enemyDirection;
 			
-	public boolean attackCanceled = false;
-	public boolean chopping = false;
+	public boolean guarding = false;
 	public boolean running = false;
+	public boolean chopping = false;	
 	
-	public int digNum;
-	public int digCounter = 0;
 	public boolean digging = false;
-	
+	public int digNum;
+	public int digCounter = 0;	
+
+	public boolean jumping = false;
 	public int jumpNum;
 	public int jumpCounter = 0;
-	public boolean jumping = false;
-	
+
+	public boolean falling = false;
 	public int fallNum;
 	public int fallCounter = 0;
-	public boolean falling = false;
 	
 	public BufferedImage titleScreen, sit, sing, itemGet, fall1, fall2, fall3;	
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
@@ -68,21 +69,11 @@ public class Player extends Entity {
 		attackArea.height = 36;
 		
 		setDefaultValues();  
-		setDefaultItems();		
-
-		getImage();
-		getAttackImage();	
-		getGuardImage();
-		getDigImage();
-		getJumpImage();
-		getMiscImage();
 	}
 	
 	// DEFAULT VALUES
 	public void setDefaultValues() {
 						
-		setDefaultPosition();
-		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
@@ -96,11 +87,24 @@ public class Player extends Entity {
 		maxArrows = 5; arrows = maxArrows;
 		maxBombs = 5; bombs = maxBombs;
 		
-		currentShield = new EQP_Shield(gp);
+		currentShield = new EQP_Shield_Old(gp);
+		currentWeapon = null;
+		currentLight = null;
 		projectile = new PRJ_Sword_Beam(gp);		
 		
 		attack = getAttack();
 		defense = getDefense();
+		
+		setDefaultPosition();
+		setDefaultItems();	
+		setDialogue();
+
+		getImage();
+		getAttackImage();	
+		getGuardImage();
+		getDigImage();
+		getJumpImage();
+		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
 		worldX = gp.tileSize * 23;
@@ -109,6 +113,27 @@ public class Player extends Entity {
 	}
 	public void setDefaultItems() {		
 		inventory.add(currentShield);
+	}
+	public void restoreStatus() {
+		life = maxLife;
+		speed = defaultSpeed;
+		attacking = false;
+		guarding = false;
+		running = false;
+		jumping = false;
+		falling = false;
+		chopping = false;
+		digging = false;
+		knockback = false;
+		invincible = false;
+		transparent = false;
+		lightUpdated = true;
+	}
+	
+	public void setDialogue() {
+		dialogues[0][0] = "\"I need to find a sword!\nBut where?...\"";
+		dialogues[1][0] = "\"I need to find an item!\nBut where?...\"";
+		dialogues[2][0] = "\"I should equip an item first...\"";
 	}
 	
 	// ATTACK, DEFENSE
@@ -126,6 +151,31 @@ public class Player extends Entity {
 		return dexterity * currentShield.defenseValue;
 	}
 	
+	public int getCurrentWeaponSlot() {
+		
+		int currentWeaponSlot = 0;
+		
+		for (int i = 0; i < inventory.size(); i++) {
+			if (inventory.get(i) == currentWeapon) {
+				currentWeaponSlot = i;
+			}
+		}
+		
+		return currentWeaponSlot;
+	}
+	public int getCurrentShieldSlot() {
+		
+		int currentShieldSlot = 0;
+		
+		for (int i = 0; i < inventory.size(); i++) {
+			if (inventory.get(i) == currentShield) {
+				currentShieldSlot = i;
+			}
+		}
+		
+		return currentShieldSlot;
+	}
+	
 	// PLAYER IMAGES
 	public void getImage() {			
 		up1 = setup("/player/boy_up_1"); 
@@ -141,11 +191,9 @@ public class Player extends Entity {
 		attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
 		attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);		
 		attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);
-		
+		attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);		
 		attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);
-		
+		attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);		
 		attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
 		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
@@ -161,30 +209,24 @@ public class Player extends Entity {
 	}	
 	public void getDigImage() {
 		digUp1 = setup("/player/boy_dig_up_1"); 
-		digUp2 = setup("/player/boy_dig_up_2");	
-		
+		digUp2 = setup("/player/boy_dig_up_2");			
 		digDown1 = setup("/player/boy_dig_down_1"); 
-		digDown2 = setup("/player/boy_dig_down_2");
-		
+		digDown2 = setup("/player/boy_dig_down_2");		
 		digLeft1 = setup("/player/boy_dig_left_1"); 
-		digLeft2 = setup("/player/boy_dig_left_2");
-		
+		digLeft2 = setup("/player/boy_dig_left_2");		
 		digRight1 = setup("/player/boy_dig_right_1"); 
 		digRight2 = setup("/player/boy_dig_right_2");		
 	}
 	public void getJumpImage() {
 		jumpUp1 = setup("/player/boy_jump_up_1");
 		jumpUp2 = setup("/player/boy_jump_up_2");
-		jumpUp3 = setup("/player/boy_jump_up_3");		
-		
+		jumpUp3 = setup("/player/boy_jump_up_3");			
 		jumpDown1 = setup("/player/boy_jump_down_1");
 		jumpDown2 = setup("/player/boy_jump_down_2");
-		jumpDown3 = setup("/player/boy_jump_down_3");
-		
+		jumpDown3 = setup("/player/boy_jump_down_3");		
 		jumpLeft1 = setup("/player/boy_jump_left_1");
 		jumpLeft2 = setup("/player/boy_jump_left_2");
-		jumpLeft3 = setup("/player/boy_jump_left_3");
-		
+		jumpLeft3 = setup("/player/boy_jump_left_3");		
 		jumpRight1 = setup("/player/boy_jump_right_1");
 		jumpRight2 = setup("/player/boy_jump_right_2");
 		jumpRight3 = setup("/player/boy_jump_right_3");
@@ -192,12 +234,10 @@ public class Player extends Entity {
 	public void getMiscImage() {		
 		fall1 = setup("/player/boy_fall_1");
 		fall2 = setup("/player/boy_fall_2");
-		fall3 = setup("/player/boy_fall_3");
-		
+		fall3 = setup("/player/boy_fall_3");		
 		itemGet = setup("/player/boy_item_get");		
 		sit = setup("/player/boy_sit"); 
-		sing = setup("/npc/girl_sing_1");
-		
+		sing = setup("/npc/girl_sing_1");		
 		die1 = setup("/player/boy_die_1"); 
 		die2 = setup("/player/boy_die_2");
 		die3 = setup("/player/boy_die_3"); 
@@ -205,21 +245,20 @@ public class Player extends Entity {
 	}
 	
 	// UPDATER
-	public void update() {		
+	public void update() {	
+
+		guarding = false;
 		
+		if (keyH.actionPressed) { action(); }
 		if (attacking) { attacking(); return; }	
-		if (digging) { digging(); return; }
-		if (jumping) jumping();		
+		if (knockback) { knockbackPlayer(); return;	}
+		if (digging) { digging(); return; }		
+		if (jumping) { jumping(); }			
 		if (falling) { falling(); return; } 
-		if (knockback) { knockbackPlayer();	return; }				
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {			
-			guarding = false;
+		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ||
+				keyH.guardPressed) {
 			walking();
-		}
-		if (keyH.guardPressed) { 			
-			guarding = true; 
-		}
-		if (keyH.actionPressed) { action(); }		
+		}				
 		if (keyH.itemPressed) { useItem(); }				
 		if (keyH.tabPressed) { cycleItems(); }	
 		
@@ -235,42 +274,50 @@ public class Player extends Entity {
 		// CHECK COLLISION (NOT ON DEBUG)
 		if(!keyH.debug) checkCollision();
 		
-		// MOVE PLAYER
-		if (!collisionOn) { 			
-			switch (direction) {
-				case "up": worldY -= speed; break;
-				case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-				case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+		// STOP MOVEMENT WHEN GUARDING
+		if (keyH.guardPressed) {
+			guarding = true;
+		}
+		else {
+			guarding = false;
+		
+			// MOVE PLAYER
+			if (!collisionOn) { 			
+				switch (direction) {
+					case "up": worldY -= speed; break;
+					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+					
+					case "down": worldY += speed; break;
+					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+					case "downright": worldY += speed; worldX += speed - 0.5; break;
+					
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
+				}
+			}
+			
+			// WALKING ANIMATION
+			spriteCounter++;
+			if (spriteCounter > animationSpeed) {
+								
+				// CYLCE WALKING SPRITES
+				if (spriteNum == 1) spriteNum = 2;
+				else if (spriteNum == 2) spriteNum = 1;
 				
-				case "down": worldY += speed; break;
-				case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-				case "downright": worldY += speed; worldX += speed - 0.5; break;
-				
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
+				// RUNNING ANIMATION
+				if (running) {
+					currentItem.playSE();
+					speed = runSpeed;
+					animationSpeed = 6;
+				}
+				else {
+					speed = defaultSpeed; 
+					animationSpeed = 10; 
+				}					
+				spriteCounter = 0;
 			}
 		}
-		
-		// WALKING ANIMATION
-		spriteCounter++;
-		if (spriteCounter > animationSpeed) {
-							
-			// CYLCE WALKING SPRITES
-			if (spriteNum == 1) spriteNum = 2;
-			else if (spriteNum == 2) spriteNum = 1;
-			
-			// RUNNING ANIMATION
-			if (running) {
-				currentItem.playSE();
-				speed = runSpeed;
-				animationSpeed = 6;
-			}
-			else {
-				speed = defaultSpeed; 
-				animationSpeed = 10; 
-			}					
-			spriteCounter = 0;
-		}		
 	}
 	
 	public void getDirection() {
@@ -324,9 +371,9 @@ public class Player extends Entity {
 	
 	public void interactNPC(int i) {		
 		if (i != -1 && keyH.actionPressed) {
-			attackCanceled = true;
-			gp.gameState = gp.dialogueState;
-			gp.npc[gp.currentMap][i].speak();		
+			keyH.actionPressed = false;
+			attackCanceled = true;			
+			gp.npc[gp.currentMap][i].speak();
 		}				
 	}
 	public void contactEnemy(int i) {
@@ -375,10 +422,11 @@ public class Player extends Entity {
 	}
 			
 	public void swingSword() {
-		
-		if (currentWeapon == null) {
+				
+		if (currentWeapon == null) {		
+			keyH.actionPressed = false;
 			gp.gameState = gp.dialogueState;
-			gp.ui.currentDialogue = "\"I need to find a sword!\nBut where?...\"";
+			startDialogue(this, 0);
 			return;
 		}			
 		// SWING SWORD IF NOT ALREADY
@@ -386,10 +434,11 @@ public class Player extends Entity {
 			currentWeapon.playSE();
 			
 			attacking = true;
+			attackCanceled = true;
 			spriteCounter = 0;
 		}			
 	}
-	
+			
 	public void useItem() {
 		keyH.itemPressed = false;
 		
@@ -416,11 +465,11 @@ public class Player extends Entity {
 		}
 		else if (!hasItem) {
 			gp.gameState = gp.dialogueState;
-			gp.ui.currentDialogue = "\"I need to find an item!\nBut where?...\"";
+			startDialogue(this, 1);
 		}
 		else if (currentItem == null) {
 			gp.gameState = gp.dialogueState;
-			gp.ui.currentDialogue = "\"I should equip an item first...\"";
+			startDialogue(this, 2);
 		}			
 	}
 	
@@ -532,6 +581,7 @@ public class Player extends Entity {
 			fallCounter = 0;
 			falling = false;
 			attackCanceled = false;
+			transparent = true;
 			
 			// MOVE PLAYER TO SAFE SPOT
 			worldX = safeWorldX;
@@ -700,11 +750,6 @@ public class Player extends Entity {
 			gp.gameState = gp.gameOverState;
 			gp.ui.commandNum = -1;			
 		}
-	}
-	
-	public void restoreHearts() {
-		life = maxLife;
-		invincible = false;
 	}
 	
 	// SOUND EFFECTS

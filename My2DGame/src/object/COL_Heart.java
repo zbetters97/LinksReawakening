@@ -5,6 +5,7 @@ import main.GamePanel;
 
 public class COL_Heart extends Entity {
 	
+	public static final String itmName = "Heart";
 	GamePanel gp;
 	
 	public COL_Heart(GamePanel gp) {
@@ -12,7 +13,7 @@ public class COL_Heart extends Entity {
 		this.gp = gp;
 		
 		type = type_collectable;		
-		name = "Heart";
+		name = itmName;
 		value = 2;
 		
 		down1 = setup("/objects/heart_full", gp.tileSize / 2, gp.tileSize / 2);

@@ -5,6 +5,7 @@ import main.GamePanel;
 
 public class OBJ_Tent extends Entity {
 	
+	public static final String itmName = "Tent";
 	GamePanel gp;
 	
 	public OBJ_Tent(GamePanel gp) {
@@ -12,8 +13,9 @@ public class OBJ_Tent extends Entity {
 		this.gp = gp;
 		
 		type = type_obstacle;
-		name = "Tent";
+		name = itmName;
 		collision = true;
+		
 		down1 = setup("/objects/OBJ_TENT");
 	}	
 	

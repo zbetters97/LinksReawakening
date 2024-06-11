@@ -92,6 +92,11 @@ public class KeyHandler implements KeyListener{
 				// LOAD GAME OPTION
 				else if (gp.ui.commandNum == 1) {
 					playSelectSE();		
+
+					gp.stopMusic();
+					gp.saveLoad.load();		
+					gp.gameState = gp.playState;
+					gp.setupMusic();
 				}
 				// QUIT GAME OPTION
 				else if (gp.ui.commandNum == 2) {
@@ -197,7 +202,7 @@ public class KeyHandler implements KeyListener{
 					gp.ui.titleScreenState = 0;
 					gp.ui.commandNum = 0;					
 					gp.gameState = 1;
-					gp.restart();
+					gp.resetGame(true);
 				}
 				// LETTER SELECT				
 				else {					
@@ -216,8 +221,7 @@ public class KeyHandler implements KeyListener{
 						gp.player.name += keyboard.get(gp.ui.commandNum);
 					}
 				}
-			}				
-			
+			}			
 		}
 	}
 	
@@ -229,7 +233,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
-		if (code == KeyEvent.VK_Z) { gp.player.guarding = true; }
+		if (code == KeyEvent.VK_Z) { guardPressed = true; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }
 		if (code == KeyEvent.VK_ESCAPE) {
@@ -368,40 +372,23 @@ public class KeyHandler implements KeyListener{
 	
 	// DIALOGUE
 	public void dialogueState(int code) { 
-		if (code == KeyEvent.VK_SPACE && lock) {
-									
-			gp.ui.dialogueText = "";
-			gp.ui.dialogueIndex = 0;
-			gp.ui.dialogueCounter = 0;	
-			
-			if (gp.ui.npc != null && gp.ui.npc.hasItem) {
-				gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
-			}		
-			else {
-				gp.ui.playDialogueFinishSE();
-				gp.gameState = gp.playState;
-			}
-			
+		if (code == KeyEvent.VK_SPACE && lock) {						
+			actionPressed = true;			
 			lock = false;
 		}
 	}
 	
 	// ITEM GET	
-	public void itemGetState(int code) { 
-		if (code == KeyEvent.VK_SPACE && lock) {
-			
-			gp.ui.dialogueText = "";
-			gp.ui.dialogueIndex = 0;
-			gp.ui.dialogueCounter = 0;	
-			
-			if (gp.ui.npc != null) {		
-				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);
+	public void itemGetState(int code) {
+		if (code == KeyEvent.VK_SPACE) {
+						
+			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
+				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);				
 				gp.ui.npc = null;
-			}
+			}			
 			
-			gp.gameState = gp.playState;
 			gp.ui.newItem = null;
-			lock = false;
+			gp.gameState = gp.playState;
 		}
 	}
 	
@@ -441,9 +428,7 @@ public class KeyHandler implements KeyListener{
 			actionPressed = true;
 			lock = false;
 
-			gp.ui.dialogueText = "";
 			gp.ui.dialogueIndex = 0;
-			gp.ui.dialogueCounter = 0;	
 		}
 		if (gp.ui.subState == 0) {
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 				
@@ -489,19 +474,21 @@ public class KeyHandler implements KeyListener{
 			}
 		}
 		if (code == KeyEvent.VK_SPACE) {
+
+			gp.ui.deathSprite = 0;
+			gp.ui.deathCounter = 0;
 			
 			if (gp.ui.commandNum == 0) {
 				playSelectSE();
 				gp.gameState = gp.playState;
 				gp.ui.commandNum = 0;
-				gp.retry();
+				gp.resetGame(false);
 			}
 			else if (gp.ui.commandNum == 1){
 				playSelectSE();	
 				gp.gameState = gp.titleState;
 				gp.ui.commandNum = 0;
-				gp.ui.deathSprite = 0;
-				gp.ui.deathCounter = 0;
+				gp.resetGame(true);
 			}			
 		}
 	}
@@ -515,7 +502,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
-		if (code == KeyEvent.VK_Z && lock) { gp.player.guarding = false; lock = true; }
+		if (code == KeyEvent.VK_Z) { guardPressed = false; }
 		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; lock = true; }	
 		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
 	}

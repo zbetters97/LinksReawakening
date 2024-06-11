@@ -9,14 +9,16 @@ public class EventHandler {
 	
 	GamePanel gp;
 	EventRect eventRect[][][];
+	Entity eventMaster;
 	
 	int previousEventX, previousEventY;
 	boolean canTouchEvent = true;
 	int tempMap, tempCol, tempRow;
 	
 	public EventHandler(GamePanel gp) {
-		
 		this.gp = gp;
+		
+		eventMaster = new Entity(gp);
 		
 		// EVENT RECTANGLE ON EVERY WORLD MAP TILE
 		eventRect = new EventRect[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
@@ -48,6 +50,13 @@ public class EventHandler {
 				}
 			}
 		}
+		
+		setDialogue();
+	}
+	
+	public void setDialogue() {
+		eventMaster.dialogues[0][0] = "Ah... The water is pure and heals you.";
+		eventMaster.dialogues[1][0] = "You win!";
 	}
 	
 	public void checkEvent() {
@@ -64,7 +73,7 @@ public class EventHandler {
 		
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
-			if (hit(0, 23, 12, Arrays.asList("up"), false)) healingPool(gp.dialogueState);
+			if (hit(0, 23, 12, Arrays.asList("up"), false)) healingPool();
 			
 			else if (hit(0, 10, 39, false)) teleport(1, 12, 13);			
 			else if (hit(1, 12, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);
@@ -180,11 +189,6 @@ public class EventHandler {
 		return hit;		
 	}
 	
-	public void win() {
-		gp.ui.currentDialogue = "You win!";
-		gp.gameState = gp.dialogueState;
-	}
-	
 	public void speak(Entity npc) {		
 		if (gp.keyH.actionPressed) {
 			gp.gameState = gp.dialogueState;
@@ -212,16 +216,7 @@ public class EventHandler {
 		gp.player.safeWorldY = y * gp.tileSize;
 	}
 	
-	public void damagePit(int gameState) {		
-		gp.playSE(2, 0);		
-		
-		gp.ui.currentDialogue = "Ouch! You got stung by a bee!";
-		gp.player.life--;
-		canTouchEvent = false;
-		gp.gameState = gameState;
-	}
-	
-	public void healingPool(int gameState) {
+	public void healingPool() {
 		
 		gp.ui.hint = "[Press SPACE to interact]";
 		gp.ui.showHint = true;
@@ -231,14 +226,17 @@ public class EventHandler {
 			gp.playSE(1, 4);
 			
 			gp.player.attackCanceled = true;			
-			gp.ui.currentDialogue = "Ah... The water is pure and heals you.";		
 			
 			gp.player.life = gp.player.maxLife;	
 			gp.player.arrows = gp.player.maxArrows;
 			gp.player.bombs = gp.player.maxBombs;
 			gp.aSetter.setEnemy();
 			
-			gp.gameState = gameState;
+			eventMaster.startDialogue(eventMaster, 0);
 		}
+	}
+	
+	public void win() {
+		eventMaster.startDialogue(eventMaster, 1);
 	}
 }

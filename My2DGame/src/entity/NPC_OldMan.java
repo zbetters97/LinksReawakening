@@ -2,9 +2,9 @@ package entity;
 
 import java.awt.Rectangle;
 
+import equipment.EQP_Sword_Old;
+import item.ITM_Bomb;
 import main.GamePanel;
-import object.EQP_Sword;
-import object.ITM_Bomb;
 
 public class NPC_OldMan extends Entity{
 	
@@ -15,7 +15,7 @@ public class NPC_OldMan extends Entity{
 		super(gp);
 		this.gp = gp;		
 		
-		hasItem = true;
+		hasItemToGive = true;
 		type = type_npc;
 		name = "Old Man";
 		direction = "down";
@@ -38,39 +38,49 @@ public class NPC_OldMan extends Entity{
 		right1 = setup("/npc/oldman_right_1"); right2 = setup("/npc/oldman_right_2");
 	}
 	public void setItems() {		
-		inventory.add(new EQP_Sword(gp));
+		inventory.add(new EQP_Sword_Old(gp));
 		inventory.add(new ITM_Bomb(gp));
 	}
 	
 	public void setDialogue() {
-		dialogues[0] = "It's dangerous to go alone!\nTake this!";
-		dialogues[1] = "My home lies in the northeast region.\nIs it safe to walk there?";
-		dialogues[2] = "I don't have time to chat right now.";
-		dialogues[3] = "Thank you, kind boy. Here is a gift for you.";
-		dialogues[4] = "It's a secret to everyone.";
+		dialogues[0][0] = "Many years ago, a boy just like you came\nup to me. He faced many challenges...";
+		dialogues[0][1] = "It's dangerous to go alone...\nTake this!";
+		
+		dialogues[1][0] = "My home lies in the northeast region.\nIs it safe to walk there?";
+		
+		dialogues[2][0] = "I don't have time to chat right now.";
+		
+		dialogues[3][0] = "Thank you, kind boy. Here is a gift for you.";
+		
+		dialogues[4][0] = "It's a secret to everyone.";
 	}
 	
 	public void speak() {		
 		
+		hasItemToGive = false;
+		
 		if (inventory.size() == 2) {
+			hasItemToGive = true;
 			gp.ui.npc = this;
 			gp.ui.newItemIndex = itemIndex;
-			dialogueIndex = 0;
+			dialogueSet = 0;
 		}				
 		else if (inventory.size() == 1 && !pathCompleted) {	
+			dialogueSet = 1;
 			onPath = true;
 		}			
 		else if (inventory.size() == 1 && pathCompleted) {
+			hasItemToGive = true;
 			gp.ui.npc = this;
 			gp.ui.newItemIndex = itemIndex;	
-			dialogueIndex = 3;
+			dialogueSet = 3;
 		}		
-		else if (inventory.size() == 0) 
-			dialogueIndex = 4;			
+		else if (inventory.size() == 0) {
+			dialogueSet = 4;			
+		}
 		
-//		dialogues = Arrays.copyOfRange(dialogues, 1, dialogues.length);
-		
-		super.speak();			
+		facePlayer();
+		startDialogue(this, dialogueSet);
 	}
 	
 	public void setAction() {
@@ -82,14 +92,14 @@ public class NPC_OldMan extends Entity{
 		if (onPath && !findPath(goalCol, goalRow)) {
 			speed = defaultSpeed;
 			animationSpeed = 0;	
-			dialogueIndex = 1;
+			dialogueSet = 1;
 			onPath = false;
 		}
 		// PATH OPEN
 		if (onPath && findPath(goalCol, goalRow)) {						
 			speed = 2;
 			animationSpeed = 15;
-			dialogueIndex = 2;			
+			dialogueSet = 2;			
 			searchPath(goalCol, goalRow);
 		}		
 		// GOAL REACHED
