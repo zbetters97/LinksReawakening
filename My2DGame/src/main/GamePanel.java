@@ -233,8 +233,11 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// UPDATE OBJECTS
 			for (int i = 0; i < obj[1].length; i++) {
-				if (obj[currentMap][i] != null) 
+				if (obj[currentMap][i] != null) {
 					obj[currentMap][i].update();
+					if (!obj[currentMap][i].alive)
+						obj[currentMap][i] = null;
+				}
 			}
 			
 			// UPDATE INTERACTIVE TILES
@@ -273,7 +276,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		if (gameState == titleState) playMusic(0);			
 		else {			
-			if (currentMap == 0) playMusic(3);
+			if (currentMap == 0) playMusic(2);
 			else if (currentMap == 1) playMusic(4);
 		}
 	}	

@@ -1286,6 +1286,9 @@ public class UI {
 	public void playMenuCloseSE() {
 		gp.playSE(1, 9);
 	}
+	public void playMapOpenSE() {
+		gp.playSE(1, 14);
+	}
 	
 	public void drawSubWindow(int x, int y, int width, int height) {
 		

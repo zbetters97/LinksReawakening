@@ -17,16 +17,14 @@ public class Player extends Entity {
 	
 	public final int maxItemInventorySize = 10;
 	public int itemIndex = 0;
-	
-	public boolean lightUpdated = false;
-	
+		
 	public final int screenX;
 	public final int screenY;
 	public int safeWorldX = 0;
 	public int safeWorldY = 0;
+
+	public boolean lightUpdated = false;
 	
-	public String enemyDirection;
-			
 	public boolean guarding = false;
 	public boolean running = false;
 	public boolean chopping = false;	
@@ -70,7 +68,7 @@ public class Player extends Entity {
 		
 		setDefaultValues();  
 	}
-	
+			
 	// DEFAULT VALUES
 	public void setDefaultValues() {
 						
@@ -254,14 +252,21 @@ public class Player extends Entity {
 		if (knockback) { knockbackPlayer(); return;	}
 		if (digging) { digging(); return; }		
 		if (jumping) { jumping(); }			
+		if (lockon) { lockTarget(); }
+		else {
+			if (lockedTarget != null) {
+				lockedTarget.isLocked = false;
+				lockedTarget = null;
+			}
+		}
 		if (falling) { falling(); return; } 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ||
 				keyH.guardPressed) {
 			walking();
 		}				
+		if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
 		if (keyH.itemPressed) { useItem(); }				
 		if (keyH.tabPressed) { cycleItems(); }	
-		
 		manageValues();		
 		checkDeath();
 	}
@@ -282,18 +287,34 @@ public class Player extends Entity {
 			guarding = false;
 		
 			// MOVE PLAYER
-			if (!collisionOn) { 			
-				switch (direction) {
-					case "up": worldY -= speed; break;
-					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-					
-					case "down": worldY += speed; break;
-					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-					case "downright": worldY += speed; worldX += speed - 0.5; break;
-					
-					case "left": worldX -= speed; break;
-					case "right": worldX += speed; break;
+			if (!collisionOn) { 				
+				if (lockon) {
+					switch (lockonDirection) {
+						case "up": worldY -= speed; break;
+						case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+						case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+						
+						case "down": worldY += speed; break;
+						case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+						case "downright": worldY += speed; worldX += speed - 0.5; break;
+						
+						case "left": worldX -= speed; break;
+						case "right": worldX += speed; break;
+					}
+				}
+				else {				
+					switch (direction) {
+						case "up": worldY -= speed; break;
+						case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+						case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+						
+						case "down": worldY += speed; break;
+						case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+						case "downright": worldY += speed; worldX += speed - 0.5; break;
+						
+						case "left": worldX -= speed; break;
+						case "right": worldX += speed; break;
+					}
 				}
 			}
 			
@@ -321,15 +342,30 @@ public class Player extends Entity {
 	}
 	
 	public void getDirection() {
-		if (keyH.upPressed) direction = "up";
-		if (keyH.downPressed) direction = "down";
-		if (keyH.leftPressed) direction = "left";
-		if (keyH.rightPressed) direction = "right";			
 		
-		if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
-		if (keyH.upPressed && keyH.rightPressed) direction = "upright";
-		if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
-		if (keyH.downPressed && keyH.rightPressed) direction = "downright";	
+		if (lockedTarget == null && !lockon) {
+			if (keyH.upPressed) direction = "up";
+			if (keyH.downPressed) direction = "down";
+			if (keyH.leftPressed) direction = "left";
+			if (keyH.rightPressed) direction = "right";			
+			
+			if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
+			if (keyH.upPressed && keyH.rightPressed) direction = "upright";
+			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
+			if (keyH.downPressed && keyH.rightPressed) direction = "downright";	
+		}
+		// KEEP PLAYER FACING ENEMY
+		else {			
+			if (keyH.upPressed) lockonDirection = "up";
+			if (keyH.downPressed) lockonDirection = "down";
+			if (keyH.leftPressed) lockonDirection = "left";
+			if (keyH.rightPressed) lockonDirection = "right";			
+			
+			if (keyH.upPressed && keyH.leftPressed) lockonDirection = "upleft";
+			if (keyH.upPressed && keyH.rightPressed) lockonDirection = "upright";
+			if (keyH.downPressed && keyH.leftPressed) lockonDirection = "downleft";
+			if (keyH.downPressed && keyH.rightPressed) lockonDirection = "downright";	
+		}
 	}
 	
 	public void checkCollision() {
@@ -421,6 +457,77 @@ public class Player extends Entity {
 		}
 	}
 			
+	public void lockTarget() {
+		
+		// FIND TARGET IF NOT ALREADY
+		if (lockedTarget == null) {
+			playLockOnSE();
+			lockedTarget = findTarget();			
+		}
+		
+		// TARGET FOUND WITHIN 10 TILES
+		if (lockedTarget != null && getTileDistance(lockedTarget) < 10) {
+			if (lockedTarget.alive) {
+				lockedTarget.isLocked = true;
+				direction = findTargetDirection(lockedTarget);
+			}
+			// TARGET DEFEATED
+			else {				
+				lockedTarget.isLocked = false;
+				lockedTarget = null;
+				lockon = false;
+			}
+		}
+		// NO TARGET FOUND, TURN OFF LOCKON
+		else 
+			lockon = false;	
+			
+	}	
+	public Entity findTarget() {
+		
+		Entity target = null;
+		
+		int currentDistance = 6;
+		for (int i = 0; i < gp.enemy[1].length; i++) {
+			
+			if (gp.enemy[gp.currentMap][i] != null) {
+				int enemyDistance = getTileDistance(gp.enemy[gp.currentMap][i]);
+				if (enemyDistance < currentDistance) {
+					currentDistance = enemyDistance;
+					target = gp.enemy[gp.currentMap][i];
+				}
+			}
+		}
+		
+		return target;
+	}	
+	public String findTargetDirection(Entity enemy) {
+		
+		String eDirection = "";
+		
+		int px = worldX / gp.tileSize;
+		int py = worldY / gp.tileSize;
+		
+		int ex = enemy.worldX / gp.tileSize;
+		int ey = enemy.worldY / gp.tileSize;	
+
+		if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey))
+			eDirection = "up";
+		else if (py >= ey && px-ex >= Math.abs(py-ey))
+			eDirection = "left";
+		else if (py >= ey && px-ex <= Math.abs(py-ey))
+			eDirection = "right";
+		
+		else if (py < ey && Math.abs(px-ex) < Math.abs(py-ey))
+			eDirection = "down";
+		else if (py < ey && px-ex >= Math.abs(py-ey))
+			eDirection = "left";
+		else if (py < ey && px-ex <= Math.abs(py-ey))
+			eDirection = "right";
+		
+		return eDirection;
+	}
+	
 	public void swingSword() {
 				
 		if (currentWeapon == null) {		
@@ -747,12 +854,18 @@ public class Player extends Entity {
 			gp.stopMusic();
 			playDeathSE();
 			alive = false;
+			lockon = false;
+			lockedTarget = null;
 			gp.gameState = gp.gameOverState;
 			gp.ui.commandNum = -1;			
 		}
 	}
 	
 	// SOUND EFFECTS
+	
+	public void playLockOnSE() {
+		gp.playSE(2, 3);
+	}
 	public void playLevelUpSE() {
 		gp.playSE(1, 3);
 	}

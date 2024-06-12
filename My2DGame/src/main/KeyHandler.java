@@ -10,7 +10,7 @@ public class KeyHandler implements KeyListener{
 	GamePanel gp;
 	public boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, guardPressed, itemPressed, tabPressed;
+	public boolean actionPressed, guardPressed, lockPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	public String keyboardLetters;
 	public boolean isCapital = true;
@@ -227,15 +227,15 @@ public class KeyHandler implements KeyListener{
 	
 	// PLAY
 	public void playState(int code) { 
-		
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = true;
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
 		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Z) { guardPressed = true; }
+		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
-		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }
+		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }		
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.ui.playMenuOpenSE();
 			gp.gameState = gp.pauseState;
@@ -245,6 +245,7 @@ public class KeyHandler implements KeyListener{
 			gp.gameState = gp.characterState;
 		}
 		if (code == KeyEvent.VK_M) {
+			gp.ui.playMapOpenSE();
 			gp.gameState = gp.mapState;
 		}
 		if (code == KeyEvent.VK_N) {
@@ -503,6 +504,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
 		if (code == KeyEvent.VK_Z) { guardPressed = false; }
+		if (code == KeyEvent.VK_F) { lockPressed = false; lock = true; }
 		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; lock = true; }	
 		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
 	}

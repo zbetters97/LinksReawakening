@@ -22,7 +22,7 @@ public class Entity {
 	// GENERAL ATTRIBUTES
 	public int worldX, worldY;		
 	public String name;	
-	
+		
 	// CHARACTER ATTRIBUTES
 	public int type;
 	public String direction = "down";
@@ -52,7 +52,8 @@ public class Entity {
 							attackLeft1, attackLeft2, attackRight1, attackRight2;
 	public BufferedImage guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2;
-
+	public BufferedImage lockedImage;
+	
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
 	public int dialogueSet = 0;
@@ -67,13 +68,18 @@ public class Entity {
 	public int knockbackCounter = 0;
 	public String knockbackDirection = "";
 	
+	public boolean lockon = false;
+	public Entity lockedTarget;	
+	public String lockonDirection;
+	public boolean isLocked = false;	
+	
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
 	public boolean transparent = false;
 	
 	public boolean alive = true;
 	public boolean dying = false;
-	public int dyingCounter = 0;		
+	public int dyingCounter = 0;	
 
 	// DEFAULT hitbox
 	public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
@@ -99,6 +105,7 @@ public class Entity {
 	public int price;
 	public int useCost;	
 	public int amount = 1;
+	public int lifeDuration = -1;
 	public boolean stackable = false;
 	public int lightRadius;
 	public boolean hookGrab = false;
@@ -151,7 +158,7 @@ public class Entity {
 	public void playDeathSE() { }	
 	
 	// UPDATER
-	public void update() { 
+	public void update() {
 		
 		if (knockback) { knockbackEntity();	return; }
 		if (attacking) { attacking(); }
@@ -204,6 +211,13 @@ public class Entity {
 		// PROJECTILE REFRESH TIME (1/2 SECOND)
 		if (shotAvailableCounter < 30) {
 			shotAvailableCounter++;
+		}
+		
+		// REMOVE ITEMS AFTER X SECONDS
+		if (lifeDuration != -1) {
+			lifeDuration--;
+			if (lifeDuration == 0)
+				dying = true;
 		}
 	}
 	
@@ -887,7 +901,7 @@ public class Entity {
 		// convert world map coordinates to screen coordinates
 		int screenX = worldX - gp.player.worldX + gp.player.screenX;
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
-					
+						
 		// only draw tiles within player boundary
 		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
 			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
@@ -975,12 +989,22 @@ public class Entity {
 				
 				// FLASH OPACITY
 				if (invincible) hurtAnimation(g2);
-			}	
+			}			
 			
 			if (dying) dyingAnimation(g2);		
+						
+			g2.drawImage(image, screenX, screenY, null);	
 			
-			g2.drawImage(image, screenX, screenY, null);			
-
+			if (isLocked) {	
+				
+				// RESET X AND Y				
+				screenX = worldX - gp.player.worldX + gp.player.screenX;
+				screenY = worldY - gp.player.worldY + gp.player.screenY;
+				lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);
+				
+				changeAlpha(g2, 0.8f);
+				g2.drawImage(lockedImage, screenX - 10, screenY - 10, null);
+			}	
 			// DRAW HITBOX
 			if (gp.keyH.debug) {
 				g2.setColor(Color.RED);

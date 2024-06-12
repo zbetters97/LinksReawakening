@@ -15,6 +15,7 @@ public class COL_Heart extends Entity {
 		type = type_collectable;		
 		name = itmName;
 		value = 2;
+		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
 		down1 = setup("/objects/heart_full", gp.tileSize / 2, gp.tileSize / 2);
 		image1 = down1;

@@ -15,6 +15,7 @@ public class COL_Rupee_Green extends Entity {
 		type = type_collectable;
 		name = itmName;
 		value = 1;
+		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
 		down1 = setup("/objects/COL_RUPEE_GREEN");
 	}

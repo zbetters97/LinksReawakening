@@ -35,6 +35,9 @@ public class CollisionChecker {
 		if (entity.knockback) {
 			direction = entity.knockbackDirection;
 		}
+		if (entity.lockon) {
+			direction = entity.lockonDirection;
+		}
 				
 		// PREVENT COLLISION DETECTION OUT OF BOUNDS
 		if (entityTopRow <= 0) return;		
@@ -200,6 +203,9 @@ public class CollisionChecker {
 		String direction = entity.direction;
 		if (entity.knockback) {
 			direction = entity.knockbackDirection;
+		}
+		if (entity.lockon) {
+			direction = entity.lockonDirection;
 		}
 				
 		for (int i  = 0; i < target[1].length; i++) {

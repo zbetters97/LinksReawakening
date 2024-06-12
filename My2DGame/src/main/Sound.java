@@ -45,11 +45,13 @@ public class Sound {
 		misc[10] = getClass().getResource("/sound/OBJ_DOOR_ENTER.wav");
 		misc[11] = getClass().getResource("/sound/MENU_DIALOGUE.wav");
 		misc[12] = getClass().getResource("/sound/MENU_DIALOGUE_FINISH.wav");
+		misc[14] = getClass().getResource("/sound/MENU_MAP.wav");
 		
 		// 2
 		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");
 		player[1] = getClass().getResource("/sound/PLAYER_DIE.wav");
 		player[2] = getClass().getResource("/sound/PLAYER_FALL.wav");
+		player[3] = getClass().getResource("/sound/PLAYER_LOCKON.wav");
 		
 		// 3
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");
