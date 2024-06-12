@@ -21,8 +21,8 @@ public class COL_Rupee_Blue extends Entity {
 	}
 	
 	public boolean use(Entity user) {		
-		playSE();
-		user.rupees += value;
+		//playSE();
+		gp.ui.rupeeCount = user.rupees + value;
 		return true;
 	}
 	public void playSE() {

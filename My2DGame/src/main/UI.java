@@ -31,6 +31,8 @@ public class UI {
 	// HUD
 	BufferedImage heart_full, heart_half, heart_empty, rupee;
 	public String rupee_count = "0";
+	public int rupeeCount = -1;
+	public int rCounter = 0;
 	
 	// OPTIONS MEU
 	int subState = 0;
@@ -374,16 +376,36 @@ public class UI {
 				g2.drawString(bombCount, x + 35, y + gp.tileSize);
 			}
 		}
-		
-		// DRAW RUPEES
+						
+		// DRAW RUPEE IMAGE
 		x = gp.tileSize * 14 - 20;
 		y = gp.tileSize * 10 + 20;		
 		g2.drawImage(rupee, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
-		
+						
+		// DRAW RUPEE COUNT
 		x += gp.tileSize - 8;
 		y += gp.tileSize - 12;	
 		
-		rupee_count = Integer.toString(gp.player.rupees);
+		if (rupeeCount > gp.player.walletSize)
+			rupeeCount = gp.player.walletSize;
+		
+		if (gp.player.rupees < rupeeCount) {
+			if (rCounter == 2) { 
+				playWalletSE(); 
+				gp.player.rupees++; 
+				rCounter = 0; 
+			}
+			else rCounter++;
+		}
+		else rCounter = 0;
+		
+		if (gp.player.walletSize == 99)
+			rupee_count = String.format("%02d", gp.player.rupees);
+		else if (gp.player.walletSize == 999)
+			rupee_count = String.format("%03d", gp.player.rupees);
+		else if (gp.player.walletSize == 9999)
+			rupee_count = String.format("%04d", gp.player.rupees);
+		
 		g2.setColor(Color.WHITE);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(rupee_count, x, y);		
@@ -934,7 +956,8 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.drawString(text, x, y + 30);
 	}
-	
+
+	// ITEM GET
 	public void drawItemGetScreen() {
 	
 		int x = gp.tileSize * 2;
@@ -1288,6 +1311,9 @@ public class UI {
 	}
 	public void playMapOpenSE() {
 		gp.playSE(1, 14);
+	}
+	public void playWalletSE() {
+		gp.playSE(1, 15);
 	}
 	
 	public void drawSubWindow(int x, int y, int width, int height) {

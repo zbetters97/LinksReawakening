@@ -17,6 +17,8 @@ public class Player extends Entity {
 	
 	public final int maxItemInventorySize = 10;
 	public int itemIndex = 0;
+	
+	public int walletSize;
 		
 	public final int screenX;
 	public final int screenY;
@@ -80,7 +82,7 @@ public class Player extends Entity {
 		maxLife = 8; life = maxLife;
 		strength = 1; dexterity = 1;
 		exp = 0; nextLevelEXP = 10;
-		rupees = 0;
+		walletSize = 99; rupees = 0;
 		
 		maxArrows = 5; arrows = maxArrows;
 		maxBombs = 5; bombs = maxBombs;
@@ -176,14 +178,14 @@ public class Player extends Entity {
 	
 	// PLAYER IMAGES
 	public void getImage() {			
-		up1 = setup("/player/boy_up_1"); 
-		up2 = setup("/player/boy_up_2"); 
-		down1 = setup("/player/boy_down_1"); 
-		down2 = setup("/player/boy_down_2"); 
-		left1 = setup("/player/boy_left_1"); 
-		left2 = setup("/player/boy_left_2"); 
-		right1 = setup("/player/boy_right_1"); 
-		right2 = setup("/player/boy_right_2"); 
+		up1 = setup("/player_NEW/boy_up_1"); 
+		up2 = setup("/player_NEW/boy_up_2"); 
+		down1 = setup("/player_NEW/boy_down_1"); 
+		down2 = setup("/player_NEW/boy_down_2"); 
+		left1 = setup("/player_NEW/boy_left_1"); 
+		left2 = setup("/player_NEW/boy_left_2"); 
+		right1 = setup("/player_NEW/boy_right_1"); 
+		right2 = setup("/player_NEW/boy_right_2"); 
 	}	
 	public void getAttackImage() {		
 		attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
@@ -196,13 +198,13 @@ public class Player extends Entity {
 		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
 	public void getGuardImage() {			
-		guardUp1 = setup("/player/boy_guard_up_1"); 
+		guardUp1 = setup("/player_NEW/boy_guard_up_1"); 
 		guardUp2 = guardUp1;
-		guardDown1 = setup("/player/boy_guard_down_1"); 
+		guardDown1 = setup("/player_NEW/boy_guard_down_1"); 
 		guardDown2 = guardDown1;
-		guardLeft1 = setup("/player/boy_guard_left_1"); 
+		guardLeft1 = setup("/player_NEW/boy_guard_left_1"); 
 		guardLeft2 = guardLeft1;
-		guardRight1 = setup("/player/boy_guard_right_1"); 
+		guardRight1 = setup("/player_NEW/boy_guard_right_1"); 
 		guardRight2 = guardRight1;
 	}	
 	public void getDigImage() {
@@ -230,16 +232,16 @@ public class Player extends Entity {
 		jumpRight3 = setup("/player/boy_jump_right_3");
 	}
 	public void getMiscImage() {		
-		fall1 = setup("/player/boy_fall_1");
-		fall2 = setup("/player/boy_fall_2");
-		fall3 = setup("/player/boy_fall_3");		
-		itemGet = setup("/player/boy_item_get");		
-		sit = setup("/player/boy_sit"); 
+		fall1 = setup("/player_NEW/boy_fall_1");
+		fall2 = setup("/player_NEW/boy_fall_2");
+		fall3 = setup("/player_NEW/boy_fall_3");		
+		itemGet = setup("/player_NEW/boy_item_get");		
+		sit = setup("/player_NEW/boy_sit"); 
 		sing = setup("/npc/girl_sing_1");		
-		die1 = setup("/player/boy_die_1"); 
-		die2 = setup("/player/boy_die_2");
-		die3 = setup("/player/boy_die_3"); 
-		die4 = setup("/player/boy_die_4");		
+		die1 = setup("/player_NEW/boy_die_1"); 
+		die2 = setup("/player_NEW/boy_die_2");
+		die3 = setup("/player_NEW/boy_die_3"); 
+		die4 = setup("/player_NEW/boy_die_4");		
 	}
 	
 	// UPDATER
