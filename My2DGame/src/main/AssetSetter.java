@@ -1,5 +1,6 @@
 package main;
 
+import collectable.COL_Rupee_Red;
 import enemy.*;
 import entity.*;
 import item.ITM_Axe;
@@ -53,14 +54,6 @@ public class AssetSetter {
 		gp.obj[mapNum][6] = new OBJ_Tent(gp);
 		gp.obj[mapNum][6].worldX = gp.tileSize * 40;
 		gp.obj[mapNum][6].worldY = gp.tileSize * 11;
-		
-		gp.obj[mapNum][7] = new COL_Rupee_Blue(gp);
-		gp.obj[mapNum][7].worldX = gp.tileSize * 22;
-		gp.obj[mapNum][7].worldY = gp.tileSize * 24;
-		
-		gp.obj[mapNum][8] = new COL_Rupee_Red(gp);
-		gp.obj[mapNum][8].worldX = gp.tileSize * 22;
-		gp.obj[mapNum][8].worldY = gp.tileSize * 21;
 	}	
 	public void setNPC() {
 		
@@ -88,7 +81,7 @@ public class AssetSetter {
 		gp.enemy[mapNum][1].worldX = gp.tileSize * 21;
 		gp.enemy[mapNum][1].worldY = gp.tileSize * 37;
 		
-		gp.enemy[mapNum][2] = new EMY_Slime_Green(gp);
+		gp.enemy[mapNum][2] = new EMY_Slime_Red(gp);
 		gp.enemy[mapNum][2].worldX = gp.tileSize * 36;
 		gp.enemy[mapNum][2].worldY = gp.tileSize * 31;
 		

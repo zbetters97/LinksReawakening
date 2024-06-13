@@ -2,9 +2,9 @@ package tile_interactive;
 
 import java.awt.Color;
 
+import collectable.COL_Rupee_Red;
 import entity.Entity;
 import main.GamePanel;
-import object.COL_Rupee_Red;
 
 public class IT_DigSpot extends InteractiveTile {
 

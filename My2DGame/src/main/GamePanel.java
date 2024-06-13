@@ -73,6 +73,13 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int sleepState = 10;
 	public final int gameOverState = 11;
 	
+	// AREA STATES
+	public int currentArea;
+	public int nextArea;
+	public final int outside = 50;
+	public final int inside = 51;
+	public final int dungeon = 52;
+	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
 	public Entity npc[][] = new Entity[maxMap][10]; // total amount of npc displayed at once	
@@ -109,9 +116,11 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setFocusable(true); // GamePanel in focus to receive input
 	}
 	
-	public void setupGame() {
+	public void setupGame() {		
 		
-//		gameState = playState;
+//		gameState = titleState;		
+		gameState = playState;
+		currentArea = outside;
 		
 		setupMusic();
 
@@ -145,28 +154,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public void startGameThread() {		
 		gameThread = new Thread(this); // new Thread with GamePanel class
 		gameThread.start(); // calls run() method
-	}
-	
-	public void resetGame(boolean restart) {
-		stopMusic();
-		
-		player.alive = true;		
-		player.restoreStatus();
-		player.setDefaultPosition();	
-		player.resetCounter();
-		aSetter.setNPC();
-		aSetter.setEnemy();		
-		
-		if (restart) {
-			player.inventory.clear();
-			player.setDefaultValues();	
-			aSetter.setInteractiveTiles();
-			aSetter.setObject();
-			
-			eManager.lighting.resetDay();
-		}
-		
-		setupMusic();
 	}
 	
 	@Override
@@ -272,12 +259,49 @@ public class GamePanel extends JPanel implements Runnable {
 		// GAME PAUSED
 		if (gameState == pauseState) { }
 	}
+	
+	public void changeArea() {
+		
+		if (nextArea != currentArea) {
+			stopMusic();			
+			setupMusic();
+		}
+		
+		currentArea = nextArea;
+		aSetter.setEnemy();		
+	}
+	
+	public void resetGame(boolean restart) {
+		stopMusic();
+		
+		player.alive = true;		
+		player.restoreStatus();
+		player.setDefaultPosition();	
+		player.resetCounter();
+		aSetter.setNPC();
+		aSetter.setEnemy();		
+		
+		if (restart) {
+			player.inventory.clear();
+			player.setDefaultValues();	
+			aSetter.setInteractiveTiles();
+			aSetter.setObject();
+			
+			eManager.lighting.resetDay();
+		}
+		
+		setupMusic();
+	}
+	
+	// SOUND HANDLER **/
 	public void setupMusic() {
 		
 		if (gameState == titleState) playMusic(0);			
 		else {			
 			if (currentMap == 0) playMusic(2);
-			else if (currentMap == 1) playMusic(4);
+			else if (currentMap == 1) playMusic(3);
+			else if (currentMap == 2) playMusic(4);
+			else if (currentMap == 3) playMusic(4);
 		}
 	}	
 	public void playMusic(int c) {		
@@ -292,6 +316,7 @@ public class GamePanel extends JPanel implements Runnable {
 		se.setFile(i, c);
 		se.play();
 	}	
+	/** END SOUND HANDLER **/
 	
 	public void drawToTempScreen() {
 		
@@ -348,7 +373,6 @@ public class GamePanel extends JPanel implements Runnable {
 			map.drawMiniMap(g2);
 		}		
 	}
-	
 	public void drawToScreen() {		
 		Graphics g = getGraphics();
 		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);

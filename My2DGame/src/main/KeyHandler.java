@@ -258,7 +258,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_R) {			
 			switch(gp.currentMap) {
 				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
-				case 1: gp.tileM.loadMap("/maps/interior01.txt", 1); break;
+				case 1: gp.tileM.loadMap("/maps/indoor01.txt", 1); break;
 			}			
 		}		
 	}
@@ -389,6 +389,7 @@ public class KeyHandler implements KeyListener{
 			}			
 			
 			gp.ui.newItem = null;
+			gp.player.attackCanceled = false;
 			gp.gameState = gp.playState;
 		}
 	}

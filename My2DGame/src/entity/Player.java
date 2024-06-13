@@ -1,5 +1,6 @@
 package entity;
 
+/** IMPORTS **/
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,47 +10,65 @@ import java.awt.image.BufferedImage;
 import equipment.EQP_Shield_Old;
 import main.GamePanel;
 import main.KeyHandler;
-import object.*;
+import projectile.PRJ_Sword_Beam;
+/** END IMPORTS **/
 
+
+/** PLAYER CLASS **/
 public class Player extends Entity {
 
+	
+	/** PLAYER VARIABLES **/
+	
+	// KEY INPUT
 	KeyHandler keyH;
 	
+	// INVENTORY
 	public final int maxItemInventorySize = 10;
-	public int itemIndex = 0;
-	
+	public int itemIndex = 0;	
 	public int walletSize;
 		
+	// POSITIONING
 	public final int screenX;
 	public final int screenY;
 	public int safeWorldX = 0;
 	public int safeWorldY = 0;
 
+	// LIGHTING
 	public boolean lightUpdated = false;
 	
+	// TRIGGERS
 	public boolean guarding = false;
 	public boolean running = false;
 	public boolean chopping = false;	
 	
+	// DIGGING
 	public boolean digging = false;
 	public int digNum;
 	public int digCounter = 0;	
 
+	// JUMPING
 	public boolean jumping = false;
 	public int jumpNum;
 	public int jumpCounter = 0;
 
+	// FALLING
 	public boolean falling = false;
 	public int fallNum;
 	public int fallCounter = 0;
 	
+	// IMAGES
 	public BufferedImage titleScreen, sit, sing, itemGet, fall1, fall2, fall3;	
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
 							digLeft1, digLeft2, digRight1, digRight2;
 	public BufferedImage jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
 							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3;
-			
-	// CONSTRUCTOR
+	
+	/** END PLAYER VARIABLES **/		
+	
+	
+	
+	/** PLAYER CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
 		// pass GamePanel to Entity abstract class
@@ -70,7 +89,11 @@ public class Player extends Entity {
 		
 		setDefaultValues();  
 	}
-			
+	/** END PLAYER CONSTRUCTOR **/
+		
+	
+	/** DEFAULT HANDLERS **/
+	
 	// DEFAULT VALUES
 	public void setDefaultValues() {
 						
@@ -108,7 +131,7 @@ public class Player extends Entity {
 	}	
 	public void setDefaultPosition() {	
 		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;
+		worldY = gp.tileSize * 20;
 		direction = "down";
 	}
 	public void setDefaultItems() {		
@@ -128,8 +151,9 @@ public class Player extends Entity {
 		invincible = false;
 		transparent = false;
 		lightUpdated = true;
-	}
-	
+	}	
+
+	// DIALOGUE
 	public void setDialogue() {
 		dialogues[0][0] = "\"I need to find a sword!\nBut where?...\"";
 		dialogues[1][0] = "\"I need to find an item!\nBut where?...\"";
@@ -151,6 +175,7 @@ public class Player extends Entity {
 		return dexterity * currentShield.defenseValue;
 	}
 	
+	// EQUIPMENT SLOT
 	public int getCurrentWeaponSlot() {
 		
 		int currentWeaponSlot = 0;
@@ -178,14 +203,14 @@ public class Player extends Entity {
 	
 	// PLAYER IMAGES
 	public void getImage() {			
-		up1 = setup("/player_NEW/boy_up_1"); 
-		up2 = setup("/player_NEW/boy_up_2"); 
-		down1 = setup("/player_NEW/boy_down_1"); 
-		down2 = setup("/player_NEW/boy_down_2"); 
-		left1 = setup("/player_NEW/boy_left_1"); 
-		left2 = setup("/player_NEW/boy_left_2"); 
-		right1 = setup("/player_NEW/boy_right_1"); 
-		right2 = setup("/player_NEW/boy_right_2"); 
+		up1 = setup("/player/boy_up_1"); 
+		up2 = setup("/player/boy_up_2"); 
+		down1 = setup("/player/boy_down_1"); 
+		down2 = setup("/player/boy_down_2"); 
+		left1 = setup("/player/boy_left_1"); 
+		left2 = setup("/player/boy_left_2"); 
+		right1 = setup("/player/boy_right_1"); 
+		right2 = setup("/player/boy_right_2"); 
 	}	
 	public void getAttackImage() {		
 		attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
@@ -198,13 +223,13 @@ public class Player extends Entity {
 		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
 	public void getGuardImage() {			
-		guardUp1 = setup("/player_NEW/boy_guard_up_1"); 
+		guardUp1 = setup("/player/boy_guard_up_1"); 
 		guardUp2 = guardUp1;
-		guardDown1 = setup("/player_NEW/boy_guard_down_1"); 
+		guardDown1 = setup("/player/boy_guard_down_1"); 
 		guardDown2 = guardDown1;
-		guardLeft1 = setup("/player_NEW/boy_guard_left_1"); 
+		guardLeft1 = setup("/player/boy_guard_left_1"); 
 		guardLeft2 = guardLeft1;
-		guardRight1 = setup("/player_NEW/boy_guard_right_1"); 
+		guardRight1 = setup("/player/boy_guard_right_1"); 
 		guardRight2 = guardRight1;
 	}	
 	public void getDigImage() {
@@ -232,19 +257,22 @@ public class Player extends Entity {
 		jumpRight3 = setup("/player/boy_jump_right_3");
 	}
 	public void getMiscImage() {		
-		fall1 = setup("/player_NEW/boy_fall_1");
-		fall2 = setup("/player_NEW/boy_fall_2");
-		fall3 = setup("/player_NEW/boy_fall_3");		
-		itemGet = setup("/player_NEW/boy_item_get");		
-		sit = setup("/player_NEW/boy_sit"); 
+		fall1 = setup("/player/boy_fall_1");
+		fall2 = setup("/player/boy_fall_2");
+		fall3 = setup("/player/boy_fall_3");		
+		itemGet = setup("/player/boy_item_get");		
+		sit = setup("/player/boy_sit"); 
 		sing = setup("/npc/girl_sing_1");		
-		die1 = setup("/player_NEW/boy_die_1"); 
-		die2 = setup("/player_NEW/boy_die_2");
-		die3 = setup("/player_NEW/boy_die_3"); 
-		die4 = setup("/player_NEW/boy_die_4");		
+		die1 = setup("/player/boy_die_1"); 
+		die2 = setup("/player/boy_die_2");
+		die3 = setup("/player/boy_die_3"); 
+		die4 = setup("/player/boy_die_4");		
 	}
 	
-	// UPDATER
+	/** END DEFAULT HANDLERS **/
+	
+	
+	/** UPDATER **/
 	public void update() {	
 
 		guarding = false;
@@ -272,7 +300,12 @@ public class Player extends Entity {
 		manageValues();		
 		checkDeath();
 	}
+	/** END UPDATER **/
 	
+	
+	/** PLAYER METHODS **/
+	
+	// MOVEMENT
 	public void walking() {
 		
 		// FIND DIRECTION
@@ -342,7 +375,6 @@ public class Player extends Entity {
 			}
 		}
 	}
-	
 	public void getDirection() {
 		
 		if (lockedTarget == null && !lockon) {
@@ -370,6 +402,13 @@ public class Player extends Entity {
 		}
 	}
 	
+	// ACTION BUTTON
+	public void action() {
+		checkCollision();
+		
+		if (!attackCanceled) 
+			swingSword();
+	}
 	public void checkCollision() {
 		
 		collisionOn = false;
@@ -399,14 +438,6 @@ public class Player extends Entity {
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 		pickUpProjectile(projectileIndex);
 	}
-	
-	public void action() {
-		checkCollision();
-		
-		if (!attackCanceled) 
-			swingSword();
-	}
-	
 	public void interactNPC(int i) {		
 		if (i != -1 && keyH.actionPressed) {
 			keyH.actionPressed = false;
@@ -458,7 +489,25 @@ public class Player extends Entity {
 			projectile.interact();
 		}
 	}
+	public void swingSword() {
+				
+		if (currentWeapon == null) {		
+			keyH.actionPressed = false;
+			gp.gameState = gp.dialogueState;
+			startDialogue(this, 0);
+			return;
+		}			
+		// SWING SWORD IF NOT ALREADY
+		else if (currentWeapon != null && !attackCanceled) {								
+			currentWeapon.playSE();
 			
+			attacking = true;
+			attackCanceled = true;
+			spriteCounter = 0;
+		}			
+	}
+	
+	// Z-TARGETING
 	public void lockTarget() {
 		
 		// FIND TARGET IF NOT ALREADY
@@ -468,7 +517,7 @@ public class Player extends Entity {
 		}
 		
 		// TARGET FOUND WITHIN 10 TILES
-		if (lockedTarget != null && getTileDistance(lockedTarget) < 10) {
+		if (lockedTarget != null && getTileDistance(lockedTarget) < 8) {
 			if (lockedTarget.alive) {
 				lockedTarget.isLocked = true;
 				direction = findTargetDirection(lockedTarget);
@@ -530,24 +579,43 @@ public class Player extends Entity {
 		return eDirection;
 	}
 	
-	public void swingSword() {
-				
-		if (currentWeapon == null) {		
-			keyH.actionPressed = false;
-			gp.gameState = gp.dialogueState;
-			startDialogue(this, 0);
-			return;
-		}			
-		// SWING SWORD IF NOT ALREADY
-		else if (currentWeapon != null && !attackCanceled) {								
-			currentWeapon.playSE();
-			
-			attacking = true;
-			attackCanceled = true;
-			spriteCounter = 0;
-		}			
-	}
-			
+	// KNOCKBACK
+	public void knockbackPlayer() {
+		
+		collisionOn = false;
+		gp.cChecker.checkTile(this);
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.enemy);
+		gp.eHandler.checkEvent();
+		
+		if (collisionOn) {
+			knockbackCounter = 0;
+			knockback = false;
+			speed = defaultSpeed;
+		}
+		else {
+			switch(knockbackDirection) {
+				case "up": 
+				case "upleft":
+				case "upright": worldY -= speed; break;				
+				case "down": 
+				case "downleft": 
+				case "downright": worldY += speed; break;				
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
+		}
+		
+		knockbackCounter++;
+		if (knockbackCounter == 10) {
+			knockbackCounter = 0;
+			knockback = false;
+			speed = defaultSpeed;					
+		}		
+	}	
+	
+	// ITEM HANDLING
 	public void useItem() {
 		keyH.itemPressed = false;
 		
@@ -581,7 +649,6 @@ public class Player extends Entity {
 			startDialogue(this, 2);
 		}			
 	}
-	
 	public void selectItem() {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
@@ -623,7 +690,6 @@ public class Player extends Entity {
 			getAttackImage();
 		}
 	}
-	
 	public void cycleItems() {
 		
 		if (currentItem != null) {
@@ -641,7 +707,8 @@ public class Player extends Entity {
 			currentItem = inventory.get(itemIndex);		
 		}
 	}	
-	
+
+	// ANIMATIONS
 	public void digging() {
 		
 		digCounter++;
@@ -660,7 +727,6 @@ public class Player extends Entity {
 			attackCanceled = false;
 		}
 	}
-	
 	public void jumping() {
 		
 		jumpCounter++;
@@ -675,7 +741,6 @@ public class Player extends Entity {
 			attackCanceled = false;
 		}
 	}
-	
 	public void falling() {
 		
 		fallCounter++;
@@ -699,42 +764,8 @@ public class Player extends Entity {
 			safeWorldY = 0;
 		}		
 	}	
-	
-	public void knockbackPlayer() {
-		
-		collisionOn = false;
-		gp.cChecker.checkTile(this);
-		gp.cChecker.checkEntity(this, gp.iTile);
-		gp.cChecker.checkEntity(this, gp.npc);
-		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.eHandler.checkEvent();
-		
-		if (collisionOn) {
-			knockbackCounter = 0;
-			knockback = false;
-			speed = defaultSpeed;
-		}
-		else {
-			switch(knockbackDirection) {
-				case "up": 
-				case "upleft":
-				case "upright": worldY -= speed; break;				
-				case "down": 
-				case "downleft": 
-				case "downright": worldY += speed; break;				
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
-			}
-		}
-		
-		knockbackCounter++;
-		if (knockbackCounter == 10) {
-			knockbackCounter = 0;
-			knockback = false;
-			speed = defaultSpeed;					
-		}		
-	}	
 			
+	// DAMAGE
 	public void damageEnemy(int i, Entity attacker, int attack, int knockbackPower) {
 		
 		// ATTACK HITS ENEMY
@@ -804,6 +835,7 @@ public class Player extends Entity {
 		}
 	}
 	
+	// CHECKERS
 	public void manageValues() {
 						
 		// KEEP ARROWS WITHIN MAX
@@ -834,7 +866,6 @@ public class Player extends Entity {
 			}
 		}	
 	}
-	
 	public void checkLevelUp() {
 		
 		if (exp >= nextLevelEXP) {
@@ -849,7 +880,6 @@ public class Player extends Entity {
 			gp.ui.addMessage("Leveled up to level " + level + "!");
 		}
 	}
-	
 	public void checkDeath() {
 		
 		if (life <= 0 && alive) {
@@ -863,8 +893,7 @@ public class Player extends Entity {
 		}
 	}
 	
-	// SOUND EFFECTS
-	
+	// SOUND EFFECTS	
 	public void playLockOnSE() {
 		gp.playSE(2, 3);
 	}
@@ -883,7 +912,10 @@ public class Player extends Entity {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 	
-	// DRAW
+	/** END PLAYER METHODS **/
+	
+	
+	/** DRAW HANDLER **/
 	public void draw(Graphics2D g2) {
 						
 		// DON'T DRAW PLAYER IN ITEMGET STATE
@@ -1042,4 +1074,7 @@ public class Player extends Entity {
 		// RESET OPACITY
 		changeAlpha(g2, 1f);
 	}
+	/** END DRAW HANDLER **/
+	
 }
+/** END PLAYER CLASS **/

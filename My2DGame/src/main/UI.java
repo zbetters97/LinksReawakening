@@ -12,8 +12,9 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import entity.*;
-import object.*;
+import collectable.COL_Heart;
+import collectable.COL_Rupee_Blue;
+import entity.Entity;
 
 public class UI {
 	
@@ -35,7 +36,7 @@ public class UI {
 	public int rCounter = 0;
 	
 	// OPTIONS MEU
-	int subState = 0;
+	public int subState = 0;
 		
 	// ITEM MENU
 	public int playerSlotCol = 0;
@@ -147,10 +148,6 @@ public class UI {
 		else if (gp.gameState == gp.gameOverState) {
 			drawGameOverScreen();
 		}
-	}
-	
-	public void showText(String text) {
-		
 	}
 	
 	// TITLE
@@ -386,19 +383,28 @@ public class UI {
 		x += gp.tileSize - 8;
 		y += gp.tileSize - 12;	
 		
-		if (rupeeCount > gp.player.walletSize)
+		if (rupeeCount >= gp.player.walletSize)
 			rupeeCount = gp.player.walletSize;
 		
-		if (gp.player.rupees < rupeeCount) {
-			if (rCounter == 2) { 
-				playWalletSE(); 
-				gp.player.rupees++; 
-				rCounter = 0; 
+		if (rupeeCount != -1) {
+			if (gp.player.rupees < rupeeCount) {
+				if (rCounter == 2) { 
+					playWalletSE(); 
+					gp.player.rupees++; 
+					rCounter = 0; 
+				}
+				else rCounter++;
 			}
-			else rCounter++;
+			else if (gp.player.rupees > rupeeCount) {
+				if (rCounter == 2) { 
+					playWalletSE(); 
+					gp.player.rupees--; 
+					rCounter = 0; 
+				}
+				else rCounter++;
+			}
 		}
-		else rCounter = 0;
-		
+								
 		if (gp.player.walletSize == 99)
 			rupee_count = String.format("%02d", gp.player.rupees);
 		else if (gp.player.walletSize == 999)
@@ -1081,17 +1087,17 @@ public class UI {
 					subState = 0;
 					npc.startDialogue(npc, 1);
 				}
-				else {					
-					subState = 0;
-					if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {	
-						gp.player.rupees -= npc.inventory.get(itemIndex).price;	
+				else {				
+					if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {
+						
+						gp.ui.rupeeCount = gp.player.rupees - npc.inventory.get(itemIndex).price;	
 												
 						// STACKABLE ITEM
 						if (npc.inventory.get(itemIndex).amount > 1) {
 							npc.inventory.get(itemIndex).amount--;
 						}
 						// NON-STACKABLE ITEM
-						else if (npc.inventory.get(itemIndex).stackable) {
+						else {
 							npc.inventory.remove(itemIndex);
 						}									
 					}
@@ -1157,7 +1163,8 @@ public class UI {
 				// CAN SELL
 				else {					
 					if (npc.canObtainItem(gp.player.inventory.get(itemIndex))) {	
-						gp.player.rupees += price;
+						
+						gp.ui.rupeeCount = gp.player.rupees + price;	
 												
 						// STACKABLE ITEM
 						if (gp.player.inventory.get(itemIndex).amount > 1) {
@@ -1192,8 +1199,8 @@ public class UI {
 			
 			gp.eHandler.previousEventX = gp.player.worldX;
 			gp.eHandler.previousEventY = gp.player.worldY;
-
-			gp.setupMusic();
+			
+			gp.changeArea();
 		}		
 	}
 	

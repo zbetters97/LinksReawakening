@@ -3,10 +3,10 @@ package enemy;
 import java.awt.Rectangle;
 import java.util.Random;
 
+import collectable.COL_Heart;
+import collectable.COL_Rupee_Green;
 import entity.Entity;
 import main.GamePanel;
-import object.COL_Heart;
-import object.COL_Rupee_Green;
 
 public class EMY_Bat extends Entity {
 

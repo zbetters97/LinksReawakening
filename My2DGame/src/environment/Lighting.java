@@ -17,7 +17,7 @@ public class Lighting {
 	
 	// DAY AND NIGHT CYCLE
 	public int dayCounter;
-	final int dayLength = 3200; // 60 SECONDS (1/60 * 3200)
+	final int dayLength = 5400; // 90 SECONDS (1/60 * 5400)
 	public final int day = 0;
 	final int dusk = 1;
 	final int night = 2;
@@ -47,50 +47,54 @@ public class Lighting {
 			gp.player.lightUpdated = false;
 		}
 		
-		// DAY
-		if (dayState == day) {
-			dayCounter++;
-			if (dayCounter > dayLength) { // 100 SEC (60/1 SEC)
-				dayState = dusk;
-				dayCounter = 0;
-				bloodMoonCounter++;				
-				setLightSource();
-				
-				if (gp.player.currentLight == null && gp.gameState == gp.playState) {
-					gp.keyH.actionPressed = false;
-					eventMaster.startDialogue(eventMaster, 0);
+		// ONLY PASS TIME WHEN OUTSIDE
+		if (gp.currentArea == gp.outside) {
+		
+			// DAY
+			if (dayState == day) {
+				dayCounter++;
+				if (dayCounter > dayLength) { // 100 SEC (60/1 SEC)
+					dayState = dusk;
+					dayCounter = 0;
+					bloodMoonCounter++;				
+					setLightSource();
+					
+					if (gp.player.currentLight == null && gp.gameState == gp.playState) {
+						gp.keyH.actionPressed = false;
+						eventMaster.startDialogue(eventMaster, 0);
+					}
 				}
 			}
-		}
-		// DUSK
-		else if (dayState == dusk) {
-			filterAlpha += 0.001f; // 16 SEC ([1/0.001] / 60)
-			if (filterAlpha > 1f) { // NO OPACITY (DARK)
-				dayState = night;
-				filterAlpha = 1f;		
-				
-				// BLOOD MOON CYCLE
-				if (bloodMoonCounter == bloodMoonMax) {
-					bloodMoonCounter = 0;
-					gp.aSetter.setEnemy();					
-					eventMaster.startDialogue(eventMaster, 1);
+			// DUSK
+			else if (dayState == dusk) {
+				filterAlpha += 0.001f; // 16 SEC ([1/0.001] / 60)
+				if (filterAlpha > 1f) { // NO OPACITY (DARK)
+					dayState = night;
+					filterAlpha = 1f;		
+					
+					// BLOOD MOON CYCLE
+					if (bloodMoonCounter == bloodMoonMax) {
+						bloodMoonCounter = 0;
+						gp.aSetter.setEnemy();					
+						eventMaster.startDialogue(eventMaster, 1);
+					}
 				}
 			}
-		}
-		// NIGHT
-		else if (dayState == night) {
-			dayCounter++;
-			if (dayCounter > dayLength) {
-				dayState = dawn;
-				dayCounter = 0;				
+			// NIGHT
+			else if (dayState == night) {
+				dayCounter++;
+				if (dayCounter > dayLength) {
+					dayState = dawn;
+					dayCounter = 0;				
+				}
 			}
-		}
-		// DAWN
-		else if (dayState == dawn) {
-			filterAlpha -= 0.001f;
-			if (filterAlpha < 0f) { // FULL OPACITY (LIGHT)
-				dayState = day;
-				filterAlpha = 0f;
+			// DAWN
+			else if (dayState == dawn) {
+				filterAlpha -= 0.001f;
+				if (filterAlpha < 0f) { // FULL OPACITY (LIGHT)
+					dayState = day;
+					filterAlpha = 0f;
+				}
 			}
 		}
 	}
@@ -175,10 +179,12 @@ public class Lighting {
 	
 	public void draw(Graphics2D g2) {
 		
-		// DAY LIGHTING
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha));
-		g2.drawImage(darknessFilter, 0, 0, null);
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+		// ONLY CHANGE LIGHTING WHEN OUTSIDE
+		if (gp.currentArea == gp.outside) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha));
+			g2.drawImage(darknessFilter, 0, 0, null);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+		}
 		
 		// DEBUG
 		if (gp.keyH.debug) {

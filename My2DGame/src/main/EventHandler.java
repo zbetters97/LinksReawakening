@@ -9,7 +9,7 @@ public class EventHandler {
 	
 	GamePanel gp;
 	EventRect eventRect[][][];
-	Entity eventMaster;
+	Entity dekuTree;
 	
 	int previousEventX, previousEventY;
 	boolean canTouchEvent = true;
@@ -18,7 +18,8 @@ public class EventHandler {
 	public EventHandler(GamePanel gp) {
 		this.gp = gp;
 		
-		eventMaster = new Entity(gp);
+		// MYSTERIOUS VOICE DIALOGUE
+		dekuTree = new Entity(gp);
 		
 		// EVENT RECTANGLE ON EVERY WORLD MAP TILE
 		eventRect = new EventRect[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
@@ -55,8 +56,8 @@ public class EventHandler {
 	}
 	
 	public void setDialogue() {
-		eventMaster.dialogues[0][0] = "Ah... The water is pure and heals you.";
-		eventMaster.dialogues[1][0] = "You win!";
+		dekuTree.dialogues[0][0] = "Ah... The water is pure and heals you.";
+		dekuTree.dialogues[1][0] = "YOU ARE WINNER";
 	}
 	
 	public void checkEvent() {
@@ -64,36 +65,47 @@ public class EventHandler {
 		gp.ui.showHint = false;
 		
 		// CHECK IF PLAYER IS >1 TILE AWAY FROM PREVIOUS EVENT
-		int xDistance = Math.abs(gp.player.worldX - previousEventX); // convert - to +
-		int yDistance = Math.abs(gp.player.worldY - previousEventY); // convert - to +
-		int distance = Math.max(xDistance, yDistance); // find greater of two
+		int xDistance = Math.abs(gp.player.worldX - previousEventX); 
+		int yDistance = Math.abs(gp.player.worldY - previousEventY);
+		int distance = Math.max(xDistance, yDistance); // FIND GREATER OF THE TWO
 		
 		if (distance > gp.tileSize) 
 			canTouchEvent = true;
 		
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
+			
+			// FAIRY POOL
 			if (hit(0, 23, 12, Arrays.asList("up"), false)) healingPool();
 			
-			else if (hit(0, 10, 39, false)) teleport(1, 12, 13);			
-			else if (hit(1, 12, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);
-			else if (hit(1, 12, 13, false)) teleport(0, 10, 39);	
+			// SHOP KEEPER
+			else if (hit(1, 10, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
+			else if (hit(1, 11, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
+			else if (hit(1, 12, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
+			else if (hit(1, 13, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
+			else if (hit(1, 14, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
 			
+			// DAMAGE PIT 1
 			else if (hit(0, 18, 20, Arrays.asList("left","upleft","downleft"), true)) fall(20, 20);
 			else if (hit(0, 18, 21, Arrays.asList("left","upleft","downleft"), true)) fall(20, 21);
-			else if (hit(0, 18, 22, Arrays.asList("left","upleft","downleft"), true)) fall(20, 22);
-			
+			else if (hit(0, 18, 22, Arrays.asList("left","upleft","downleft"), true)) fall(20, 22);			
 			else if (hit(0, 18, 20, Arrays.asList("right","upright","downright"), true)) fall(16, 20);
 			else if (hit(0, 18, 21, Arrays.asList("right","upright","downright"), true)) fall(16, 21);
 			else if (hit(0, 18, 22, Arrays.asList("right","upright","downright"), true)) fall(16, 22);
 			
+			// DAMAGE PIT 2
 			else if (hit(0, 37, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(37, 10);
-			else if (hit(0, 38, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(38, 10);
+			else if (hit(0, 38, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(38, 10);			
+			else if (hit(0, 10, 22, Arrays.asList("down", "downleft", "downright"), true)) fall(10, 19);
+			else if (hit(0, 10, 21, Arrays.asList("down", "downleft", "downright"), true)) fall(10, 19);
 			
-			else if (hit(0, 10, 22, Arrays.asList("up", "upleft", "upright"), true)) fall(10, 23);
-			else if (hit(0, 10, 21, Arrays.asList("up", "upleft", "upright"), true)) fall(10, 23);
-			
-			else if (hit(0, 12, 9, false)) win();	
+			// TELEPORT SPOTS
+			else if (hit(0, 10, 39, false)) teleport(1, 12, 13, gp.inside); // SHOP ENTRANCE
+			else if (hit(1, 12, 13, false)) teleport(0, 10, 39, gp.outside); // SHOP EXIT
+			else if (hit(0, 12, 9, false)) teleport(2, 9, 41, gp.inside); // DUNGEON ENTRANCE
+			else if (hit(2, 9, 41, false)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
+			else if (hit(2, 8, 7, false)) teleport(3, 26, 41, gp.inside); // DUNGEON B1
+			else if (hit(3, 26, 41, false)) teleport(2, 8, 7, gp.inside); // DUNEGOEN B2
 		}
 	}
 	
@@ -189,33 +201,6 @@ public class EventHandler {
 		return hit;		
 	}
 	
-	public void speak(Entity npc) {		
-		if (gp.keyH.actionPressed) {
-			gp.gameState = gp.dialogueState;
-			gp.player.attackCanceled = true;
-			npc.speak();
-		}
-	}
-	public void teleport(int map, int col, int row) {				
-		gp.stopMusic();		
-		gp.playSE(1,10);		
-		
-		tempMap = map;
-		tempCol = col;
-		tempRow = row;
-		
-		canTouchEvent = false;
-		
-		gp.gameState = gp.transitionState;
-	}
-	public void fall(int x, int y) {			
-		gp.playSE(2, 2);
-		gp.player.falling = true;
-		gp.player.invincible = true;
-		gp.player.safeWorldX = x * gp.tileSize;
-		gp.player.safeWorldY = y * gp.tileSize;
-	}
-	
 	public void healingPool() {
 		
 		gp.ui.hint = "[Press SPACE to interact]";
@@ -232,11 +217,36 @@ public class EventHandler {
 			gp.player.bombs = gp.player.maxBombs;
 			gp.aSetter.setEnemy();
 			
-			eventMaster.startDialogue(eventMaster, 0);
+			dekuTree.startDialogue(dekuTree, 0);
 		}
 	}
-	
+	public void speak(Entity npc) {		
+		if (gp.keyH.actionPressed) {
+			gp.gameState = gp.dialogueState;
+			gp.player.attackCanceled = true;
+			npc.speak();
+		}
+	}
+	public void fall(int x, int y) {			
+		gp.playSE(2, 2);
+		gp.player.falling = true;
+		gp.player.invincible = true;
+		gp.player.safeWorldX = x * gp.tileSize;
+		gp.player.safeWorldY = y * gp.tileSize;
+	}
+	public void teleport(int map, int col, int row, int area) {					
+		gp.playSE(1,10);		
+		
+		tempMap = map;
+		tempCol = col;
+		tempRow = row;
+		
+		canTouchEvent = false;
+		
+		gp.nextArea = area;		
+		gp.gameState = gp.transitionState;
+	}	
 	public void win() {
-		eventMaster.startDialogue(eventMaster, 1);
+		dekuTree.startDialogue(dekuTree, 1);
 	}
 }

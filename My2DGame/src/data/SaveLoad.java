@@ -6,15 +6,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import item.*;
 import entity.Entity;
-import equipment.EQP_Shield_Old;
-import equipment.EQP_Sword_Old;
 import main.GamePanel;
-import object.COL_Key;
-import object.OBJ_Chest;
-import object.OBJ_Door;
-import object.OBJ_Tent;
 
 public class SaveLoad {
 
@@ -100,9 +93,7 @@ public class SaveLoad {
 			// WRITE THE DS OBJECT
 			oos.writeObject(ds);
 		}
-		catch(Exception e) {
-			System.out.println(e);
-		}
+		catch(Exception e) { }
 	}
 	
 	public void load() {
@@ -179,8 +170,6 @@ public class SaveLoad {
 				}				
 			}
 		}
-		catch(Exception e) {
-			System.out.println(e);
-		}
+		catch(Exception e) { }
 	}
 }

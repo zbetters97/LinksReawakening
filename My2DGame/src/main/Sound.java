@@ -28,8 +28,8 @@ public class Sound {
 		music[0] = getClass().getResource("/sound/MUSIC_TITLESCREEN.wav");
 		music[1] = getClass().getResource("/sound/MUSIC_LIGHT_WORLD.wav");
 		music[2] = getClass().getResource("/sound/MUSIC_DARK_WORLD.wav");		
-		music[3] = getClass().getResource("/sound/MUSIC_LIGHT_DUNGEON.wav");
-		music[4] = getClass().getResource("/sound/MUSIC_SHOP.wav");
+		music[3] = getClass().getResource("/sound/MUSIC_SHOP.wav");
+		music[4] = getClass().getResource("/sound/MUSIC_LIGHT_DUNGEON.wav");
 		
 		// 1
 		misc[0] = getClass().getResource("/sound/MENU_CURSOR.wav");

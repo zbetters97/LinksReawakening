@@ -183,11 +183,11 @@ public class Entity {
 				case "right": worldX += speed; break;
 			}
 			
-			if (type == type_npc || type == type_enemy) {
+			// ANIMATE NPC IF MOVING
+			if (type == type_npc) {
 			
-				// WALKING ANIMATION (only if no collision)
 				spriteCounter++;
-				if (spriteCounter > animationSpeed && animationSpeed != 0) { // speed of sprite change
+				if (spriteCounter > animationSpeed && animationSpeed != 0) {
 					
 					if (spriteNum == 1) spriteNum = 2;
 					else if (spriteNum == 2) spriteNum = 1;
@@ -196,31 +196,21 @@ public class Entity {
 				}
 			}
 		}		
-		 
-		// ENTITY SHIELD AFTER HIT
-		if (invincible) {
-			invincibleCounter++;
+		// ANIMATE ENEMY ALWAYS
+		if (type == type_enemy) {
 			
-			// REFRESH TIME (1 SECOND)
-			if (invincibleCounter > 60) {
-				invincible = false;
-				invincibleCounter = 0;
+			spriteCounter++;
+			if (spriteCounter > animationSpeed && animationSpeed != 0) {
+				
+				if (spriteNum == 1) spriteNum = 2;
+				else if (spriteNum == 2) spriteNum = 1;
+				
+				spriteCounter = 0;
 			}
 		}
-		
-		// PROJECTILE REFRESH TIME (1/2 SECOND)
-		if (shotAvailableCounter < 30) {
-			shotAvailableCounter++;
-		}
-		
-		// REMOVE ITEMS AFTER X SECONDS
-		if (lifeDuration != -1) {
-			lifeDuration--;
-			if (lifeDuration == 0)
-				dying = true;
-		}
+		manageValues();
 	}
-	
+			
 	public void resetCounter() {
 		spriteCounter = 0;
 		actionLockCounter = 0;		
@@ -654,6 +644,32 @@ public class Entity {
 		target.knockback = true;
 	}
 	
+	public void manageValues() {
+		 
+		// ENTITY SHIELD AFTER HIT
+		if (invincible) {
+			invincibleCounter++;
+			
+			// REFRESH TIME (1 SECOND)
+			if (invincibleCounter > 60) {
+				invincible = false;
+				invincibleCounter = 0;
+			}
+		}
+		
+		// PROJECTILE REFRESH TIME (1/2 SECOND)
+		if (shotAvailableCounter < 30) {
+			shotAvailableCounter++;
+		}
+		
+		// REMOVE ITEMS AFTER X SECONDS
+		if (lifeDuration != -1) {
+			lifeDuration--;
+			if (lifeDuration == 0)
+				dying = true;
+		}
+	}
+	
 	// ITEM HANDLING
 	public void useItem(int rate) {
 		int i = new Random().nextInt(rate);
@@ -751,6 +767,7 @@ public class Entity {
 		gp.ui.newItem = item;
 		inventory.add(item);
 		gp.ui.currentDialogue = "You got the " + item.name + "!";		
+		gp.ui.subState = 0;
 		gp.gameState = gp.itemGetState;
 	}
 	

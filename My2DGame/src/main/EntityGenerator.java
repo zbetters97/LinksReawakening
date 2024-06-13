@@ -1,8 +1,8 @@
 package main;
-
 import entity.Entity;
 import equipment.*;
 import item.*;
+import collectable.*;
 import object.*;
 
 public class EntityGenerator {
@@ -30,11 +30,7 @@ public class EntityGenerator {
 			case ITM_Hookshot.itmName: obj = new ITM_Hookshot(gp); break;
 			case ITM_Lantern.itmName: obj = new ITM_Lantern(gp); break;
 			case ITM_Shovel.itmName: obj = new ITM_Shovel(gp); break;	
-			
-			case OBJ_Door.itmName: obj = new OBJ_Door(gp); break;
-			case OBJ_Chest.itmName: obj = new OBJ_Chest(gp); break;
-			case OBJ_Tent.itmName: obj = new OBJ_Tent(gp); break;
-			
+									
 			case COL_Arrow.itmName: obj = new COL_Arrow(gp); break;
 			case COL_Heart.itmName: obj = new COL_Heart(gp); break;
 			case COL_Key.itmName: obj = new COL_Key(gp); break;
@@ -42,6 +38,10 @@ public class EntityGenerator {
 			case COL_Rupee_Blue.itmName: obj = new COL_Rupee_Blue(gp); break;
 			case COL_Rupee_Green.itmName: obj = new COL_Rupee_Green(gp); break;
 			case COL_Rupee_Red.itmName: obj = new COL_Rupee_Red(gp); break;
+			
+			case OBJ_Door.itmName: obj = new OBJ_Door(gp); break;
+			case OBJ_Chest.itmName: obj = new OBJ_Chest(gp); break;
+			case OBJ_Tent.itmName: obj = new OBJ_Tent(gp); break;
 		}
 		
 		return obj;		

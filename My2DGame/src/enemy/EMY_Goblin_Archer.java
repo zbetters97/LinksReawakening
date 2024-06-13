@@ -3,13 +3,13 @@ package enemy;
 import java.awt.Rectangle;
 import java.util.Random;
 
+import collectable.COL_Arrow;
+import collectable.COL_Heart;
+import collectable.COL_Rupee_Blue;
+import collectable.COL_Rupee_Red;
 import entity.Entity;
 import item.ITM_Bow;
 import main.GamePanel;
-import object.COL_Arrow;
-import object.COL_Heart;
-import object.COL_Rupee_Blue;
-import object.COL_Rupee_Red;
 
 public class EMY_Goblin_Archer extends Entity {
 
