@@ -81,7 +81,7 @@ public class Lighting {
 				}
 			}
 			// NIGHT
-			else if (dayState == night) {
+			else if (dayState == night) {				
 				dayCounter++;
 				if (dayCounter > dayLength) {
 					dayState = dawn;
@@ -111,7 +111,7 @@ public class Lighting {
 			float blue = 0;						
 			if (bloodMoonCounter == bloodMoonMax) red = 0.1f; 
 			else blue = 0.1f;
-			g2.setColor(new Color(red,0,blue,0.98f));
+			g2.setColor(new Color(red,0,blue,0.97f));
 		}
 		else {
 			// LIGHTING CIRCLE CENTER POINT ON PLAYER
@@ -139,9 +139,9 @@ public class Lighting {
 			color[6] = new Color(red,0,blue,0.82f);
 			color[7] = new Color(red,0,blue,0.87f);
 			color[8] = new Color(red,0,blue,0.91f);
-			color[9] = new Color(red,0,blue,0.94f);
-			color[10] = new Color(red,0,blue,0.96f);
-			color[11] = new Color(red,0,blue,0.98f);
+			color[9] = new Color(red,0,blue,0.92f);
+			color[10] = new Color(red,0,blue,0.93f);
+			color[11] = new Color(red,0,blue,0.94f);
 			
 			// DISTANCE FROM CIRCLE (1 = EDGE, 0 = CENTER)
 			fraction[0] = 0f;

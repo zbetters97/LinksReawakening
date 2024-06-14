@@ -62,10 +62,8 @@ public class EMY_Goblin_Archer extends Entity {
 		}
 	}
 	
-	// RUN AWAY WHEN HIT
 	public void damageReaction() {
 		actionLockCounter = 0;
-		direction = gp.player.direction; 
 	}
 	
 	public void playHurtSE() {

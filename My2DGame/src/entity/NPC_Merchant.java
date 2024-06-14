@@ -38,8 +38,7 @@ public class NPC_Merchant extends Entity {
 		dialogues[4][0] = "Scram, kid!";
 	}	
 	
-	public void speak() {				
-		facePlayer();
+	public void speak() {
 		gp.keyH.actionPressed = false;
 		gp.gameState = gp.tradeState;
 		gp.ui.npc = this;

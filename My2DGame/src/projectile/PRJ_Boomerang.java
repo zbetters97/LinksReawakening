@@ -12,9 +12,9 @@ public class PRJ_Boomerang extends Projectile {
 	public PRJ_Boomerang(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
-		
+						
+		type = type_projectile;
 		name = "Boomerang";
-		
 		knockbackPower = 1;
 		speed = 8; 		
 		animationSpeed = 8;			

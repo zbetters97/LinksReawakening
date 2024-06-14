@@ -42,7 +42,15 @@ public class Entity {
 	
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
+	public boolean isPushed = false;
 	
+	// BOSS VALUES
+	public boolean boss = false;
+	public int currentBossPhase = 0;
+	public final int bossPhase_1 = 1;
+	public final int bossPhase_2 = 2;
+	public final int bossPhase_3 = 3;
+		
 	// SPRITES
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
@@ -67,6 +75,9 @@ public class Entity {
 	public boolean knockback = false;
 	public int knockbackCounter = 0;
 	public String knockbackDirection = "";
+	
+	public boolean stunned = false;
+	public int stunnedCounter = 0;
 	
 	public boolean lockon = false;
 	public Entity lockedTarget;	
@@ -121,6 +132,8 @@ public class Entity {
 	public boolean canExplode;
 	public Entity loot;
 	public boolean opened = false;
+	public Entity linkedEntity;
+	public int pushAvailableCounter = 0;
 	
 	// CHARACTER TYPES
 	public final int type_player = 0;
@@ -134,9 +147,10 @@ public class Entity {
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
 	public final int type_light = 8;
+	public final int type_projectile = 9;
 	
 	// MAP TYPES
-	public final int type_obstacle = 9;
+	public final int type_obstacle = 10;
 		
 	// CONSTRUCTOR
 	public Entity(GamePanel gp) {
@@ -150,6 +164,7 @@ public class Entity {
 	public void use() {	}
 	public boolean use(Entity user) { return true; }
 	public void interact() { }
+	public void move(String direction) { }
 	public void explode() {	}
 	public void setLoot(Entity loot) { }
 	public void playSE() { }
@@ -162,6 +177,7 @@ public class Entity {
 		
 		if (knockback) { knockbackEntity();	return; }
 		if (attacking) { attacking(); }
+		if (stunned) { manageValues(); return; }
 		
 		// CHILD CLASS
 		setAction();
@@ -261,7 +277,7 @@ public class Entity {
 	public void getDirection(int rate) {
 		
 		actionLockCounter++;			
-		if (actionLockCounter == rate) {		
+		if (actionLockCounter >= rate) {		
 						
 			Random random = new Random();
 			int i = random.nextInt(100) + 1;
@@ -289,13 +305,57 @@ public class Entity {
 		return tileDistance;
 	}
 	public int getXdistance(Entity target) { 
-		int xDistance = Math.abs(worldX - target.worldX);
+		int xDistance = Math.abs(getCenterX() - target.getCenterX());
 		return xDistance;
 	}
 	public int getYdistance(Entity target) { 
-		int yDistance = Math.abs(worldY - target.worldY);
+		int yDistance = Math.abs(getCenterY() - target.getCenterY());
 		return yDistance;
 	}
+	public int getCenterX() {
+		int centerX = worldX + left1.getWidth() / 2;
+		return centerX;
+	}
+	public int getCenterY() {
+		int centerY = worldY + up1.getHeight() / 2;
+		return centerY;
+	}
+	public int getScreenX() {
+		int screenX = worldX - gp.player.worldX + gp.player.screenX;
+		return screenX;
+	}
+	public int getScreenY() {
+		int screenY = worldY - gp.player.worldY + gp.player.screenY;
+		return screenY;
+	}
+	
+	
+	public void approachPlayer(int rate) {
+		
+		actionLockCounter++;
+		if (actionLockCounter >= rate) {
+			
+			if (getXdistance(gp.player) >= getYdistance(gp.player)) {
+				if (gp.player.getCenterX() < getCenterX()) {
+					direction = "left";
+				}
+				else {
+					direction = "right";
+				}
+			}
+			else if (getXdistance(gp.player) < getYdistance(gp.player)) {
+				if (gp.player.getCenterY() < getCenterY()) {
+					direction = "up";
+				}
+				else {
+					direction = "down";
+				}
+			}
+			
+			actionLockCounter = 0;
+		}
+	}
+	
 	public boolean findPath(int goalCol, int goalRow) {
 		
 		boolean pathFound = false;
@@ -400,22 +460,26 @@ public class Entity {
 		// IF PLAYER IS WITHIN ATTACK BOX
 		switch (direction) {
 			case "up": 
-				if (gp.player.worldY < worldY && yDis < straight && xDis < horizontal) {
+			case "upleft":
+			case "upright":
+				if (gp.player.getCenterY() < getCenterY() && yDis < straight && xDis < horizontal) {
 					targetInRange = true;
 				}
 				break;
 			case "down":
-				if (gp.player.worldY > worldY && yDis < straight && xDis < horizontal) {
+			case "downleft":
+			case "downright":
+				if (gp.player.getCenterY() > getCenterY() && yDis < straight && xDis < horizontal) {
 					targetInRange = true;
 				}
 				break;
 			case "left": 
-				if (gp.player.worldX < worldX && xDis < straight && yDis < horizontal) {
+				if (gp.player.getCenterX() < getCenterX() && xDis < straight && yDis < horizontal) {
 					targetInRange = true;
 				}
 				break;
 			case "right": 
-				if (gp.player.worldX > worldX && xDis < straight && yDis < horizontal) {
+				if (gp.player.getCenterX() > getCenterX() && xDis < straight && yDis < horizontal) {
 					targetInRange = true;
 				}
 				break;
@@ -646,6 +710,15 @@ public class Entity {
 	
 	public void manageValues() {
 		 
+		// ENEMY STUNNED
+		if (stunned) {
+			stunnedCounter++;
+			if (stunnedCounter > 30) {				
+				stunned = false;
+				stunnedCounter = 0;				
+			}
+		}
+		
 		// ENTITY SHIELD AFTER HIT
 		if (invincible) {
 			invincibleCounter++;
@@ -910,20 +983,31 @@ public class Entity {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 	
+	public boolean inFrame() {
+		
+		boolean inFrame = false;
+		
+		// WITHIN SCREEN BOUNDARY
+		if (worldX + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
+				worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+				worldY + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
+				worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+			inFrame = true;
+		}
+		
+		return inFrame;
+	}
+	
 	// DRAW
 	public void draw(Graphics2D g2) {
 		
 		BufferedImage image = null;
 		
-		// convert world map coordinates to screen coordinates
-		int screenX = worldX - gp.player.worldX + gp.player.screenX;
-		int screenY = worldY - gp.player.worldY + gp.player.screenY;
-						
-		// only draw tiles within player boundary
-		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+		int tempScreenX = getScreenX();
+		int tempScreenY = getScreenY();
+								
+		// DRAW TILES WITHIN SCREEN BOUNDARY
+		if (inFrame()) {
 			
 			if (hookGrab) image = this.image1;			
 			else {							
@@ -932,7 +1016,7 @@ public class Entity {
 					case "upleft":
 					case "upright":
 						if (attacking) {
-							screenY -= gp.tileSize;
+							tempScreenY -= up1.getHeight();
 							if (attackNum == 1) image = attackUp1;
 							if (attackNum == 2) image = attackUp2;
 						}		
@@ -956,7 +1040,7 @@ public class Entity {
 						break;
 					case "left":					
 						if (attacking) {
-							screenX -= gp.tileSize;
+							tempScreenX -= left1.getWidth();
 							if (attackNum == 1)	image = attackLeft1;							
 							if (attackNum == 2) image = attackLeft2;	
 						}		
@@ -977,26 +1061,7 @@ public class Entity {
 						break;
 				}
 			}
-			
-			// ENEMY HP BAR
-			if (type == 2 && hpBarOn) {		
-				double oneScale = (double)gp.tileSize / maxLife; // LENGTH OF HALF HEART
-				double hpBarValue = oneScale * life; // LENGTH OF ENEMY HEALTH
-				
-				g2.setColor(new Color(35,35,35)); // DARK GRAY OUTLINE
-				g2.fillRect(screenX-1, screenY - 16, gp.tileSize + 2, 10);
-				
-				g2.setColor(new Color(255,0,30)); // RED BAR
-				g2.fillRect(screenX, screenY - 15, (int)hpBarValue, 8);
-				
-				// REMOVE BAR AFTER 10 SECONDS
-				hpBarCounter++;
-				if (hpBarCounter > 600) {
-					hpBarCounter = 0;
-					hpBarOn = false;
-				}
-			}
-			
+						
 			// ENEMY IS HIT
 			if (invincible) {
 				
@@ -1010,22 +1075,22 @@ public class Entity {
 			
 			if (dying) dyingAnimation(g2);		
 						
-			g2.drawImage(image, screenX, screenY, null);	
+			g2.drawImage(image, tempScreenX, tempScreenY, null);	
 			
 			if (isLocked) {	
 				
 				// RESET X AND Y				
-				screenX = worldX - gp.player.worldX + gp.player.screenX;
-				screenY = worldY - gp.player.worldY + gp.player.screenY;
+				tempScreenX = getScreenX();
+				tempScreenY = getScreenY();
 				lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);
 				
 				changeAlpha(g2, 0.8f);
-				g2.drawImage(lockedImage, screenX - 10, screenY - 10, null);
+				g2.drawImage(lockedImage, tempScreenX - 10, tempScreenY - 10, null);
 			}	
 			// DRAW HITBOX
 			if (gp.keyH.debug) {
 				g2.setColor(Color.RED);
-				g2.drawRect(screenX + hitbox.x, screenY + hitbox.y, hitbox.width, hitbox.height);
+				g2.drawRect(tempScreenX + hitbox.x, tempScreenY + hitbox.y, hitbox.width, hitbox.height);
 			}
 			
 			// RESET OPACITY

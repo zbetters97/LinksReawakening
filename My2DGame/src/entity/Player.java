@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import equipment.EQP_Shield_Old;
+import equipment.EQP_Sword_Old;
 import main.GamePanel;
 import main.KeyHandler;
 import projectile.PRJ_Sword_Beam;
@@ -111,7 +112,10 @@ public class Player extends Entity {
 		maxBombs = 5; bombs = maxBombs;
 		
 		currentShield = new EQP_Shield_Old(gp);
+		
 		currentWeapon = null;
+//		currentWeapon = new EQP_Sword_Old(gp);
+		
 		currentLight = null;
 		projectile = new PRJ_Sword_Beam(gp);		
 		
@@ -130,8 +134,15 @@ public class Player extends Entity {
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
+		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 20;
+//		worldX = gp.tileSize * 15;
+//		worldY = gp.tileSize * 27;
+		
+		gp.currentMap = 0;
+//		gp.currentMap = 2;
+		
 		direction = "down";
 	}
 	public void setDefaultItems() {		
@@ -276,7 +287,7 @@ public class Player extends Entity {
 	public void update() {	
 
 		guarding = false;
-		
+				
 		if (keyH.actionPressed) { action(); }
 		if (attacking) { attacking(); return; }	
 		if (knockback) { knockbackPlayer(); return;	}
@@ -293,12 +304,13 @@ public class Player extends Entity {
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ||
 				keyH.guardPressed) {
 			walking();
-		}				
+		}	
 		if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
 		if (keyH.itemPressed) { useItem(); }				
 		if (keyH.tabPressed) { cycleItems(); }	
 		manageValues();		
 		checkDeath();
+		
 	}
 	/** END UPDATER **/
 	
@@ -439,10 +451,15 @@ public class Player extends Entity {
 		pickUpProjectile(projectileIndex);
 	}
 	public void interactNPC(int i) {		
-		if (i != -1 && keyH.actionPressed) {
-			keyH.actionPressed = false;
-			attackCanceled = true;			
-			gp.npc[gp.currentMap][i].speak();
+		if (i != -1) {
+			if (keyH.actionPressed) {
+				keyH.actionPressed = false;
+				attackCanceled = true;			
+				gp.npc[gp.currentMap][i].speak();
+			}			
+						
+			if (!gp.npc[gp.currentMap][i].isPushed)
+				gp.npc[gp.currentMap][i].move(direction);
 		}				
 	}
 	public void contactEnemy(int i) {
@@ -512,7 +529,6 @@ public class Player extends Entity {
 		
 		// FIND TARGET IF NOT ALREADY
 		if (lockedTarget == null) {
-			playLockOnSE();
 			lockedTarget = findTarget();			
 		}
 		
@@ -549,6 +565,9 @@ public class Player extends Entity {
 				}
 			}
 		}
+		
+		if (target != null)
+			playLockOnSE();
 		
 		return target;
 	}	
@@ -775,29 +794,28 @@ public class Player extends Entity {
 			if (!gp.enemy[gp.currentMap][i].invincible) {
 				gp.enemy[gp.currentMap][i].playHurtSE();
 				
-				if (knockbackPower > 0) 
+				if (knockbackPower > 0) {
 					setKnockback(gp.enemy[gp.currentMap][i], attacker, knockbackPower);
+				}
 				
+				// HIT BY PROJECTILE (NOT SWORD BEAM)
+				if (attacker.type == type_projectile && 
+						!attacker.name.equals(PRJ_Sword_Beam.prjName)) {
+					gp.enemy[gp.currentMap][i].stunned = true;
+					gp.enemy[gp.currentMap][i].spriteCounter = -30;
+				}
+								
 				int damage = attack - gp.enemy[gp.currentMap][i].defense;
-				if (damage < 0) damage = 0;		
+				if (damage < 0) damage = 0;				
 				
-				gp.enemy[gp.currentMap][i].life -= damage;			
-				
+				gp.enemy[gp.currentMap][i].life -= damage;					
 				gp.enemy[gp.currentMap][i].invincible = true;
 				gp.enemy[gp.currentMap][i].damageReaction();
 				
 				// KILL ENEMY
 				if (gp.enemy[gp.currentMap][i].life <= 0) {
-					gp.enemy[gp.currentMap][i].dying = true;
-					
 					gp.playSE(4, 2);
-					
-					/*								
-					exp += gp.enemy[gp.currentMap][i].exp;
-					gp.ui.addMessage("+" + gp.enemy[gp.currentMap][i].exp + " EXP!");	
-					
-					checkLevelUp();
-					*/
+					gp.enemy[gp.currentMap][i].dying = true;
 				}
 			}
 		}
@@ -830,8 +848,10 @@ public class Player extends Entity {
 					
 			generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
 			
-			if (gp.iTile[gp.currentMap][i].life == 0)
+			if (gp.iTile[gp.currentMap][i].life == 0) {				
+				gp.iTile[gp.currentMap][i].checkDrop();
 				gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();
+			}
 		}
 	}
 	
@@ -882,6 +902,10 @@ public class Player extends Entity {
 	}
 	public void checkDeath() {
 		
+		if (keyH.debug) {
+			return;
+		}
+		
 		if (life <= 0 && alive) {
 			gp.stopMusic();
 			playDeathSE();
@@ -894,6 +918,9 @@ public class Player extends Entity {
 	}
 	
 	// SOUND EFFECTS	
+	public void playGuardSE() {
+		gp.playSE(2, 3);
+	}
 	public void playLockOnSE() {
 		gp.playSE(2, 3);
 	}

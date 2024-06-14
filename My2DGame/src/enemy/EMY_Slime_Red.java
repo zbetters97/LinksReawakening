@@ -51,10 +51,8 @@ public class EMY_Slime_Red extends Entity {
 		useProjectile(180);
 	}
 	
-	// RUN AWAY WHEN HIT
 	public void damageReaction() {
 		actionLockCounter = 0;
-		direction = gp.player.direction; 
 	}
 	
 	public void playHurtSE() {

@@ -1,16 +1,22 @@
 package tile_interactive;
 
 import java.awt.Color;
+import java.util.Random;
+
+import collectable.COL_Bomb;
+import collectable.COL_Rupee_Blue;
 import main.GamePanel;
 
 public class IT_Wall extends InteractiveTile {
 
+	public static final String itName = "Destructible Wall";
 	GamePanel gp;
 	
 	public IT_Wall(GamePanel gp, int col, int row) {
 		super(gp, col, row);
 		this.gp = gp;
 		
+		name = itName;		
 		destructible = true;
 		bombable = true;
 		life = 1;
@@ -39,5 +45,13 @@ public class IT_Wall extends InteractiveTile {
 	public int getParticleMaxLife() {
 		int maxLife = 20; // 20 frames
 		return maxLife;
+	}
+	
+	// DROPPED ITEM
+	public void checkDrop() {
+		int i = new Random().nextInt(100) + 1;
+		
+		if (i < 50) dropItem(new COL_Rupee_Blue(gp));
+		else dropItem(new COL_Bomb(gp));
 	}
 }

@@ -58,6 +58,8 @@ public class GamePanel extends JPanel implements Runnable {
 	int screenHeight2 = screenHeight;
 	BufferedImage tempScreen;	
 	
+	public int volumeSet = 0;
+	
 	// GAME STATES
 	public int gameState;
 	public final int titleState = 0;
@@ -68,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int dialogueState = 5;		
 	public final int tradeState = 6;
 	public final int itemGetState = 7;
-	public final int projectileState = 8;	
+	public final int objectState = 8;	
 	public final int transitionState = 9;	
 	public final int sleepState = 10;
 	public final int gameOverState = 11;
@@ -118,9 +120,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {		
 		
-//		gameState = titleState;		
-		gameState = playState;
+		gameState = titleState;	
 		currentArea = outside;
+//		gameState = playState;
+// 		currentArea = inside;
 		
 		setupMusic();
 
@@ -190,7 +193,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public void update() {
 				
 		// GAME PLAYING
-		if (gameState == playState || gameState == projectileState) {
+		if (gameState == playState || gameState == objectState) {
 			
 			// UPDATE PLAYER
 			player.update();	
@@ -268,12 +271,13 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		
 		currentArea = nextArea;
-		aSetter.setEnemy();		
+		aSetter.setEnemy();
 	}
 	
 	public void resetGame(boolean restart) {
 		stopMusic();
 		
+		currentArea = outside;
 		player.alive = true;		
 		player.restoreStatus();
 		player.setDefaultPosition();	

@@ -5,13 +5,15 @@ import main.GamePanel;
 
 public class PRJ_Sword_Beam extends Projectile {
 
+	public final static String prjName = "Sword Beam";
 	GamePanel gp;
 	
 	public PRJ_Sword_Beam(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
-		name = "Sword Beam";
+		type = type_projectile;
+		name = prjName;
 		attack = 1; 
 		speed = 8; 
 		animationSpeed = 8;

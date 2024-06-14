@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 
 import entity.Entity;
+import tile_interactive.IT_Plate_Metal;
 
 public class CollisionChecker {
 	
@@ -130,6 +131,16 @@ public class CollisionChecker {
 		
 		int index = -1;
 		
+		// KNOCKBACK DIRECTION
+		String direction = entity.direction;
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}
+		// LOCKON DIRECTION
+		if (entity.lockon) {
+			direction = entity.lockonDirection;
+		}
+		
 		for (int i  = 0; i < gp.obj[1].length; i++) {
 			
 			if (gp.obj[gp.currentMap][i] != null) {
@@ -144,35 +155,35 @@ public class CollisionChecker {
 				
 				// find where entity will be after moving in a direction
 				// ask if object and entity intersect 
-				switch (entity.direction) {
-				case "up":					
-					entity.hitbox.y -= entity.speed;						
-					break;
-				case "upleft":
-					entity.hitbox.y -= entity.speed;
-					entity.hitbox.x -= entity.speed;
-					break;
-				case "upright":
-					entity.hitbox.y -= entity.speed;
-					entity.hitbox.x += entity.speed;
-					break;
-				case "down":					
-					entity.hitbox.y += entity.speed;
-					break;
-				case "downleft":					
-					entity.hitbox.y += entity.speed;
-					entity.hitbox.x -= entity.speed;
-					break;
-				case "downright":					
-					entity.hitbox.y += entity.speed;
-					entity.hitbox.x += entity.speed;
-					break;
-				case "left":					
-					entity.hitbox.x -= entity.speed;
-					break;
-				case "right":					
-					entity.hitbox.x += entity.speed;
-					break;
+				switch (direction) {
+					case "up":					
+						entity.hitbox.y -= entity.speed;						
+						break;
+					case "upleft":
+						entity.hitbox.y -= entity.speed;
+						entity.hitbox.x -= entity.speed;
+						break;
+					case "upright":
+						entity.hitbox.y -= entity.speed;
+						entity.hitbox.x += entity.speed;
+						break;
+					case "down":					
+						entity.hitbox.y += entity.speed;
+						break;
+					case "downleft":					
+						entity.hitbox.y += entity.speed;
+						entity.hitbox.x -= entity.speed;
+						break;
+					case "downright":					
+						entity.hitbox.y += entity.speed;
+						entity.hitbox.x += entity.speed;
+						break;
+					case "left":					
+						entity.hitbox.x -= entity.speed;
+						break;
+					case "right":					
+						entity.hitbox.x += entity.speed;
+						break;
 				}
 				
 				if (entity.hitbox.intersects(gp.obj[gp.currentMap][i].hitbox)) {						
@@ -204,6 +215,8 @@ public class CollisionChecker {
 		if (entity.knockback) {
 			direction = entity.knockbackDirection;
 		}
+		
+		// LOCKON DIRECTION
 		if (entity.lockon) {
 			direction = entity.lockonDirection;
 		}
@@ -256,9 +269,11 @@ public class CollisionChecker {
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
 					
 					if (target[gp.currentMap][i] != entity) {		
-						index = i;			
+						index = i;	
+												
 						// ONLY PLAYER CAN PUSH BOMBS
-						if (!target[gp.currentMap][i].diggable && !target[gp.currentMap][i].canExplode)
+						if (!target[gp.currentMap][i].diggable && !target[gp.currentMap][i].canExplode &&
+								!target[gp.currentMap][i].name.equals(IT_Plate_Metal.itName))
 							entity.collisionOn = true;
 					}
 				}

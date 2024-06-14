@@ -14,6 +14,7 @@ public class PRJ_Fireball extends Projectile {
 		super(gp);
 		this.gp = gp;
 		
+		type = type_projectile;
 		name = "Fireball";
 		attack = 2;	
 		speed = 8; 

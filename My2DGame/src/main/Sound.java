@@ -47,6 +47,7 @@ public class Sound {
 		misc[12] = getClass().getResource("/sound/MENU_DIALOGUE_FINISH.wav");
 		misc[14] = getClass().getResource("/sound/MENU_MAP.wav");
 		misc[15] = getClass().getResource("/sound/MISC_WALLET.wav");
+		misc[16] = getClass().getResource("/sound/MISC_BUTTON.wav");
 		
 		// 2
 		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");
@@ -69,6 +70,7 @@ public class Sound {
 		objects[11] = getClass().getResource("/sound/ITEM_FEATHER.wav");
 		objects[12] = getClass().getResource("/sound/OBJ_MOVE.wav");
 		objects[13] = getClass().getResource("/sound/OBJ_TINK.wav");
+		objects[14] = getClass().getResource("/sound/OBJ_DOOR_OPEN.wav");
 		
 		// 4
 		enemy[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

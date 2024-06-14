@@ -2,21 +2,22 @@ package tile_interactive;
 
 import java.awt.Color;
 
-import collectable.COL_Rupee_Red;
 import entity.Entity;
 import main.GamePanel;
 
 public class IT_DigSpot extends InteractiveTile {
 
-	GamePanel gp;
+	public static final String itName = "Dig Spot";
 	int mapNum;
 	Entity item;
+	GamePanel gp;	
 	
 	public IT_DigSpot(GamePanel gp, int mapNum, int col, int row, Entity item) {
 		super(gp, col, row);
 		this.gp = gp;
 		this.item = item;
 		
+		name = itName;		
 		destructible = true;
 		diggable = true;
 		life = 1;

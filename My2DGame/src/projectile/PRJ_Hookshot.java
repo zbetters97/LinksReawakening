@@ -16,7 +16,9 @@ public class PRJ_Hookshot extends Projectile {
 		super(gp);
 		this.gp = gp;
 		
+		type = type_projectile;
 		name = "Hookshot";
+		knockbackPower = 0;
 		speed = 10;
 		maxLife = 30; life = maxLife;	
 		alive = false;

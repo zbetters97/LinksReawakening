@@ -13,10 +13,12 @@ public class PRJ_Arrow extends Projectile {
 		super(gp);
 		this.gp = gp;
 		
+		type = type_projectile;
 		name = "Arrow";
 		speed = 12; 		
 		attack = 2; 	
-		useCost = 1;
+		knockbackPower = 0;
+		useCost = 1;		
 		maxLife = 60; life = maxLife;
 		alive = false;
 		

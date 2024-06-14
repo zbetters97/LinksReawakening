@@ -6,12 +6,14 @@ import main.GamePanel;
 
 public class IT_Trunk extends InteractiveTile {
 
+	public static final String itName = "Tree Trunk";
 	GamePanel gp;
 	
 	public IT_Trunk(GamePanel gp, int col, int row) {
 		super(gp, col, row);
 		this.gp = gp;
 		
+		name = itName;
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 	

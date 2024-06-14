@@ -64,186 +64,213 @@ public class KeyHandler implements KeyListener{
 			gameOverState(code);
 		}
 	}
-	
+		
 	// TITLE	
 	public void titleState(int code) { 
 		
 		// MAIN MENU
-		if (gp.ui.titleScreenState == 0) {
-			
-			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-				playCursorSE();
-				gp.ui.commandNum--;
-				if (gp.ui.commandNum < 0)
-					gp.ui.commandNum = 0;
-			}
-			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-				playCursorSE();
-				gp.ui.commandNum++;
-				if (gp.ui.commandNum > 2)
-					gp.ui.commandNum = 2;
-			}
-			if (code == KeyEvent.VK_SPACE) { 				
-				// NEW GAME OPTION
-				if (gp.ui.commandNum == 0) {
-					playSelectSE();
-					gp.ui.titleScreenState = 1;
-				}
-				// LOAD GAME OPTION
-				else if (gp.ui.commandNum == 1) {
-					playSelectSE();		
-
-					gp.stopMusic();
-					gp.saveLoad.load();		
-					gp.gameState = gp.playState;
-					gp.setupMusic();
-				}
-				// QUIT GAME OPTION
-				else if (gp.ui.commandNum == 2) {
-					System.exit(0);
-				}
-			}
+		if (gp.ui.titleScreenState == 0) {			
+			mainMenu(code);
 		}
 		// NEW GAME
 		else if (gp.ui.titleScreenState == 1) {
-			
-			// MAP VALUES TO ON-SCREEN KEYBOARD
-			Map<Integer, String> keyboard = new LinkedHashMap<>();
-			
-			if (isCapital) keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";	
-			else keyboardLetters = "qwertyuiopasdfghjklzxcvbnm";				
-			
-			for (int i = 0; i < keyboardLetters.length(); i++) 
-				keyboard.put(i, String.valueOf(keyboardLetters.charAt(i)));
-							
-			// NAVIGATE THROUGH ON-SCREEN KEYBOARD
-			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {				
-				if (gp.ui.commandNum >= 10) {
-					playCursorSE();
-					if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
-						gp.ui.commandNum -= 10;					
-					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 25) 
-						gp.ui.commandNum -= 9;	
-					else if (gp.ui.commandNum == 26)
-						gp.ui.commandNum = 17;
-					else if (gp.ui.commandNum == 27)
-						gp.ui.commandNum = 18;
-					else if (gp.ui.commandNum >= 28)
-						gp.ui.commandNum = 19;
-				}
-			}
-			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-				if (gp.ui.commandNum <= 27) {
-					playCursorSE();
-					if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
-						gp.ui.commandNum += 10;					
-					else if (gp.ui.commandNum >= 9 && gp.ui.commandNum <= 17) 
-						gp.ui.commandNum += 9;	
-					else if (gp.ui.commandNum == 18)
-						gp.ui.commandNum += 9;
-					else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 27)
-						gp.ui.commandNum = 28;		
-				}
-			}
-			if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-				if (gp.ui.commandNum > 0) {
-					playCursorSE();
-					gp.ui.commandNum--;
-					
-					if (gp.ui.commandNum < 0)
-						gp.ui.commandNum = 0;
-				}
-			}
-			if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {		
-				if (gp.ui.commandNum <= 28) {
-					gp.ui.commandNum++;
-					
-					// STOP PLAYER FROM STARTING IF NO LETTERS
-					if (gp.ui.commandNum == 29 && gp.player.name.length() < 1) {
-						gp.playSE(1, 2);
-						gp.ui.commandNum = 28;
-					}
-					else 
-						playCursorSE();
-									
-					if (gp.ui.commandNum > 29)
-						gp.ui.commandNum = 29;
-				}
-			}				
-			if (code == KeyEvent.VK_SPACE) {
-				
-				// DEL BUTTON
-				if (gp.ui.commandNum == 26) {
-					if (gp.player.name.length() > 0) {
-						playSelectSE();
-						gp.player.name = gp.player.name.substring(
-							0, gp.player.name.length() - 1
-						);							
-					}
-					else
-						gp.playSE(1, 2);
-				}			
-				// CAPS BUTTON
-				else if (gp.ui.commandNum == 27) {
-					playSelectSE();
-					if (isCapital) isCapital = false;
-					else isCapital = true;
-				}
-				// BACK BUTTON
-				else if (gp.ui.commandNum == 28) {
-					playSelectSE();
-					gp.ui.commandNum = 0;
-					gp.ui.titleScreenState = 0;
-					gp.player.name = "Link";
-				}
-				// ENTER BUTTON
-				else if (gp.ui.commandNum == 29) {
-					playSelectSE();
-					gp.ui.titleScreenState = 0;
-					gp.ui.commandNum = 0;					
-					gp.gameState = 1;
-					gp.resetGame(true);
-				}
-				// LETTER SELECT				
-				else {					
-					playSelectSE();	
-					
-					// name limit is 10 char
-					if (gp.player.name.length() <= 10) 
-						gp.player.name += keyboard.get(gp.ui.commandNum);
-					
-					// if name too long, replace last character with selected letter						
-					else {
-						gp.player.name = gp.player.name.substring(
-								0, gp.player.name.length() - 1);	
-						
-						// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
-						gp.player.name += keyboard.get(gp.ui.commandNum);
-					}
-				}
-			}			
+			newGameMenu(code);	
 		}
+	}
+	public void mainMenu(int code) {
+		
+		if (code == KeyEvent.VK_UP) {
+			playCursorSE();
+			gp.ui.commandNum--;
+			if (gp.ui.commandNum < 0)
+				gp.ui.commandNum = 0;
+		}
+		if (code == KeyEvent.VK_DOWN) {
+			playCursorSE();
+			gp.ui.commandNum++;
+			if (gp.ui.commandNum > 2)
+				gp.ui.commandNum = 2;
+		}
+		if (code == KeyEvent.VK_SPACE) { 
+			
+			// NEW GAME OPTION
+			if (gp.ui.commandNum == 0) {
+				playSelectSE();
+				gp.ui.titleScreenState = 1;
+			}
+			
+			// LOAD GAME OPTION
+			else if (gp.ui.commandNum == 1) {
+				playSelectSE();		
+
+				gp.stopMusic();
+				gp.saveLoad.load();		
+				gp.gameState = gp.playState;
+				gp.setupMusic();
+			}
+			
+			// QUIT GAME OPTION
+			else if (gp.ui.commandNum == 2) {
+				System.exit(0);
+			}
+		}
+	}
+	public void newGameMenu(int code) {
+
+		// MAP VALUES TO ON-SCREEN KEYBOARD
+		Map<Integer, String> keyboard = new LinkedHashMap<>();
+		
+		if (isCapital) keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";	
+		else keyboardLetters = "qwertyuiopasdfghjklzxcvbnm";				
+		
+		for (int i = 0; i < keyboardLetters.length(); i++) 
+			keyboard.put(i, String.valueOf(keyboardLetters.charAt(i)));
+						
+		// NAVIGATE THROUGH ON-SCREEN KEYBOARD
+		if (code == KeyEvent.VK_UP) {				
+			if (gp.ui.commandNum >= 10) {
+				playCursorSE();
+				if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
+					gp.ui.commandNum -= 10;					
+				else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 25) 
+					gp.ui.commandNum -= 9;	
+				else if (gp.ui.commandNum == 26)
+					gp.ui.commandNum = 17;
+				else if (gp.ui.commandNum == 27)
+					gp.ui.commandNum = 18;
+				else if (gp.ui.commandNum >= 28)
+					gp.ui.commandNum = 19;
+			}
+		}				
+		if (code == KeyEvent.VK_DOWN) {
+			if (gp.ui.commandNum <= 27) {
+				playCursorSE();
+				if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
+					gp.ui.commandNum += 10;					
+				else if (gp.ui.commandNum >= 9 && gp.ui.commandNum <= 17) 
+					gp.ui.commandNum += 9;	
+				else if (gp.ui.commandNum == 18)
+					gp.ui.commandNum += 9;
+				else if (gp.ui.commandNum >= 19 && gp.ui.commandNum <= 27)
+					gp.ui.commandNum = 28;		
+			}
+		}
+		if (code == KeyEvent.VK_LEFT) {
+			if (gp.ui.commandNum > 0) {
+				playCursorSE();
+				gp.ui.commandNum--;
+				
+				if (gp.ui.commandNum < 0)
+					gp.ui.commandNum = 0;
+			}
+		}
+		if (code == KeyEvent.VK_RIGHT) {		
+			if (gp.ui.commandNum <= 28) {
+				gp.ui.commandNum++;
+				
+				// STOP PLAYER FROM STARTING IF NO LETTERS
+				if (gp.ui.commandNum == 29 && gp.player.name.length() < 1) {
+					gp.playSE(1, 2);
+					gp.ui.commandNum = 28;
+				}
+				else 
+					playCursorSE();
+								
+				if (gp.ui.commandNum > 29)
+					gp.ui.commandNum = 29;
+			}
+		}				
+		if (code == KeyEvent.VK_SPACE) {
+			
+			// DEL BUTTON
+			if (gp.ui.commandNum == 26) {
+				if (gp.player.name.length() > 0) {
+					playSelectSE();
+					gp.player.name = gp.player.name.substring(
+						0, gp.player.name.length() - 1
+					);							
+				}
+				else
+					gp.playSE(1, 2);
+			}			
+			// CAPS BUTTON
+			else if (gp.ui.commandNum == 27) {
+				playSelectSE();
+				if (isCapital) isCapital = false;
+				else isCapital = true;
+			}
+			// BACK BUTTON
+			else if (gp.ui.commandNum == 28) {
+				playSelectSE();
+				gp.ui.commandNum = 0;
+				gp.ui.titleScreenState = 0;
+				gp.player.name = "Link";
+			}
+			// ENTER BUTTON
+			else if (gp.ui.commandNum == 29) {
+				playSelectSE();
+				gp.ui.titleScreenState = 0;
+				gp.ui.commandNum = 0;					
+				gp.gameState = 1;
+				gp.resetGame(true);
+			}
+			// LETTER SELECT				
+			else {					
+				playSelectSE();	
+				
+				// 10 CHAR NAME LIMIT
+				if (gp.player.name.length() <= 10) 
+					gp.player.name += keyboard.get(gp.ui.commandNum);
+				
+				// if name too long, replace last character with selected letter						
+				else {
+					gp.player.name = gp.player.name.substring(
+							0, gp.player.name.length() - 1);	
+					
+					// get char in map via corresponding key (EX: 0 -> Q, 10 -> A)
+					gp.player.name += keyboard.get(gp.ui.commandNum);
+				}
+			}
+		}		
 	}
 	
 	// PLAY
 	public void playState(int code) { 
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = true;
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
+		
+		/* 
+		 * ARROWS: MOVEMENT
+		 * SPACE: ACTION
+		 * Z: GUARD
+		 * F: Z-TARGET
+		 * Q: ITEM
+		 * T: TAB ITEM
+		 * ESC: PAUSE MENU
+		 * E: CHARACTER MENU
+		 * M: MAP
+		 * N: MINIMAP
+		 * R: RELOAD MAP
+		 * SHIFT: DEBUG
+		 */		
+		
+		if (code == KeyEvent.VK_UP) upPressed = true;
+		if (code == KeyEvent.VK_DOWN) downPressed = true;
+		if (code == KeyEvent.VK_LEFT) leftPressed = true;
+		if (code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
-		if (code == KeyEvent.VK_Z) { guardPressed = true; }
+		if (code == KeyEvent.VK_Z && lock) { guardPressed = true; lock = false; gp.player.playGuardSE(); }
 		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }		
-		if (code == KeyEvent.VK_ESCAPE) {
-			gp.ui.playMenuOpenSE();
-			gp.gameState = gp.pauseState;
-		}
+		
 		if (code == KeyEvent.VK_E) { 
 			gp.ui.playMenuOpenSE();
 			gp.gameState = gp.characterState;
 		}
+		if (code == KeyEvent.VK_ESCAPE) {
+			gp.ui.playMenuOpenSE();
+			gp.gameState = gp.pauseState;
+		}
+		
 		if (code == KeyEvent.VK_M) {
 			gp.ui.playMapOpenSE();
 			gp.gameState = gp.mapState;
@@ -251,16 +278,16 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_N) {
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
-		if (code == KeyEvent.VK_SHIFT) {
-			if (debug) debug = false; 
-			else debug = true;
-		}
 		if (code == KeyEvent.VK_R) {			
 			switch(gp.currentMap) {
 				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
 				case 1: gp.tileM.loadMap("/maps/indoor01.txt", 1); break;
 			}			
 		}		
+		if (code == KeyEvent.VK_SHIFT) {
+			if (debug) debug = false; 
+			else debug = true;
+		}
 	}
 	
 	// PAUSE
@@ -272,19 +299,19 @@ public class KeyHandler implements KeyListener{
 			case 3: maxCommandNum = 1; break;
 		}
 		
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
+		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.commandNum != 0) {
 				playCursorSE(); 
 				gp.ui.commandNum--; 
 			}
 		}
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+		if (code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.commandNum != maxCommandNum) { 
 				playCursorSE(); 
 				gp.ui.commandNum++; 
 			}
 		}
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+		if (code == KeyEvent.VK_LEFT) {
 			
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
@@ -298,7 +325,7 @@ public class KeyHandler implements KeyListener{
 				}
 			}
 		}
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+		if (code == KeyEvent.VK_RIGHT) {
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
 					gp.music.volumeScale++;
@@ -314,6 +341,7 @@ public class KeyHandler implements KeyListener{
 		
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.ui.playMenuCloseSE();
+			gp.ui.commandNum = 0;
 			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
 		}
@@ -330,7 +358,7 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
-	// CHARACTER STATE
+	// CHARACTER
 	public void characterState(int code) { 
 		
 		if (code == KeyEvent.VK_E) {
@@ -345,25 +373,25 @@ public class KeyHandler implements KeyListener{
 	
 	//INVENTORY	
 	public void playerInventory(int code) {
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
+		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.playerSlotRow != 0) {
 				playCursorSE(); 
 				gp.ui.playerSlotRow--; 
 			}
 		}
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+		if (code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.playerSlotRow != 3) { 
 				playCursorSE(); 
 				gp.ui.playerSlotRow++; 
 			}
 		}
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { 
+		if (code == KeyEvent.VK_LEFT) { 
 			if (gp.ui.playerSlotCol != 0) { 
 				playCursorSE();
 				gp.ui.playerSlotCol--; 
 			}
 		}
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { 
+		if (code == KeyEvent.VK_RIGHT) { 
 			if (gp.ui.playerSlotCol != 4) {
 				playCursorSE(); 
 				gp.ui.playerSlotCol++; 
@@ -394,34 +422,6 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
-	// NPC INVENTORY
-	public void npcInventory(int code) {
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
-			if (gp.ui.npcSlotRow != 0) {
-				playCursorSE(); 
-				gp.ui.npcSlotRow--; 
-			}
-		}
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
-			if (gp.ui.npcSlotRow != 3) { 
-				playCursorSE(); 
-				gp.ui.npcSlotRow++; 
-			}
-		}
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { 
-			if (gp.ui.npcSlotCol != 0) { 
-				playCursorSE();
-				gp.ui.npcSlotCol--; 
-			}
-		}
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { 
-			if (gp.ui.npcSlotCol != 4) {
-				playCursorSE(); 
-				gp.ui.npcSlotCol++; 
-			}
-		}
-	}
-	
 	// TRADE
 	public void tradeState(int code) {
 						
@@ -433,14 +433,14 @@ public class KeyHandler implements KeyListener{
 			gp.ui.dialogueIndex = 0;
 		}
 		if (gp.ui.subState == 0) {
-			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 				
+			if (code == KeyEvent.VK_UP) { 				
 				gp.ui.commandNum--;
 				if (gp.ui.commandNum < 0)					
 					gp.ui.commandNum = 0;
 				else
 					playCursorSE(); 
 			}
-			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+			if (code == KeyEvent.VK_DOWN) { 
 				gp.ui.commandNum++;
 				if (gp.ui.commandNum > 2)					
 					gp.ui.commandNum = 2;
@@ -460,16 +460,44 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
+	// NPC INVENTORY
+	public void npcInventory(int code) {
+		if (code == KeyEvent.VK_UP) { 
+			if (gp.ui.npcSlotRow != 0) {
+				playCursorSE(); 
+				gp.ui.npcSlotRow--; 
+			}
+		}
+		if (code == KeyEvent.VK_DOWN) { 
+			if (gp.ui.npcSlotRow != 3) { 
+				playCursorSE(); 
+				gp.ui.npcSlotRow++; 
+			}
+		}
+		if (code == KeyEvent.VK_LEFT) { 
+			if (gp.ui.npcSlotCol != 0) { 
+				playCursorSE();
+				gp.ui.npcSlotCol--; 
+			}
+		}
+		if (code == KeyEvent.VK_RIGHT) { 
+			if (gp.ui.npcSlotCol != 4) {
+				playCursorSE(); 
+				gp.ui.npcSlotCol++; 
+			}
+		}
+	}
+	
 	// GAME OVER
 	public void gameOverState(int code) {
 		
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { 
+		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.commandNum != 0) {
 				playCursorSE(); 
 				gp.ui.commandNum = 0;
 			}
 		}
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+		if (code == KeyEvent.VK_DOWN) { 
 			if (gp.ui.commandNum != 1) {
 				playCursorSE(); 
 				gp.ui.commandNum = 1;
@@ -499,12 +527,12 @@ public class KeyHandler implements KeyListener{
 	public void keyReleased(KeyEvent e) {	
 		int code = e.getKeyCode();
 		
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = false; 
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = false;
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = false;
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = false;
+		if (code == KeyEvent.VK_UP) upPressed = false; 
+		if (code == KeyEvent.VK_DOWN) downPressed = false;
+		if (code == KeyEvent.VK_LEFT) leftPressed = false;
+		if (code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
-		if (code == KeyEvent.VK_Z) { guardPressed = false; }
+		if (code == KeyEvent.VK_Z) { guardPressed = false; lock = true;}
 		if (code == KeyEvent.VK_F) { lockPressed = false; lock = true; }
 		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; lock = true; }	
 		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }

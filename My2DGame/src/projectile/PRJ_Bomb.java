@@ -17,6 +17,7 @@ public class PRJ_Bomb extends Projectile {
 		
 		canExplode = true;
 		
+		type = type_projectile;
 		name = "Bomb";
 		animationSpeed = 30;
 		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 
@@ -115,8 +116,10 @@ public class PRJ_Bomb extends Projectile {
 						
 				generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
 				
-				if (gp.iTile[gp.currentMap][i].life == 0)
-					gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();				
+				if (gp.iTile[gp.currentMap][i].life == 0) {
+					gp.iTile[gp.currentMap][i].checkDrop();
+					gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();	
+				}			
 			}
 		}			
 		

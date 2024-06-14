@@ -26,11 +26,84 @@ public class Projectile extends Entity {
 		// PREVENT GLITCHED DEATH WHEN ITEM IS IN AIR
 		if (gp.gameState != gp.gameOverState) {
 			
-			if (name.equals("Bomb")) useBomb();
+			if (name.equals("Arrow")) useArrow();
+			else if (name.equals("Bomb")) useBomb();
 			else if (name.equals("Boomerang")) useBoomerang();
 			else if (name.equals("Hookshot")) useHookshot();
 			else useProjectile();
 		}
+	}	
+	
+	public void useArrow() {
+		
+		// CHECK TILE COLLISION
+		collisionOn = false;		
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);		
+		
+		// SHOT BY PLAYER
+		if (user == gp.player) {
+			
+			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+			if (enemyIndex != -1) {
+				gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
+				alive = false;
+			}
+									
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			if (projectileIndex != -1) {
+				Entity projectile = gp.projectile[gp.currentMap][projectileIndex];	
+				
+				if (projectile.name.equals("Bomb"))
+					projectile.explode();
+				
+				alive = false;
+			}	
+		}
+		// SHOT BY ENEMEY
+		else {
+			boolean contactPlayer = gp.cChecker.checkPlayer(this);
+			if (contactPlayer && !gp.player.invincible) {
+				damagePlayer(attack);
+				alive = false;
+			}
+		}
+		
+		if (!collisionOn) {
+			
+			grabbable = false;		
+			
+			// MOVE IN DIRECTION SHOT
+			switch (direction) {
+				case "up": 
+				case "upleft": 
+				case "upright": worldY -= speed; break;			
+				case "down":
+				case "downleft": 
+				case "downright": worldY += speed; break;			
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
+		}
+		// KILL PROJECTILE IF COLLISION
+		else {
+			alive = false;
+		}
+		
+		life--;
+		if (life <= 0) { // REMOVE AFTER X FRAMES
+			alive = false;
+		}
+		
+		// MOVING ANIMATION
+		spriteCounter++;
+		if (spriteCounter > animationSpeed) { // speed of sprite change
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}		
 	}
 	
 	public void useBomb() {
@@ -90,7 +163,7 @@ public class Projectile extends Entity {
 	public void useBoomerang() {
 		
 		// PAUSE PLAYER INPUT
-		gp.gameState = gp.projectileState;
+		gp.gameState = gp.objectState;
 		
 		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
 		collisionOn = false;		
@@ -198,7 +271,7 @@ public class Projectile extends Entity {
 	public void useHookshot() {
 				
 		// PAUSE PLAYER INPUT
-		gp.gameState = gp.projectileState;
+		gp.gameState = gp.objectState;
 						
 		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
 		collisionOn = false;		
@@ -207,6 +280,10 @@ public class Projectile extends Entity {
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkObject(this, false);		
+		
+		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+		if (enemyIndex != -1) 
+			gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 		
 		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
 		int objectIndex = gp.cChecker.checkObject(this, true);
@@ -457,11 +534,8 @@ public class Projectile extends Entity {
 			}
 		}
 		// KILL PROJECTILE IF COLLISION
-		else {			
-			if (name.equals("Arrow")) 
-				grabbable = true;
-			else 
-				alive = false;
+		else {	
+			alive = false;
 		}
 		
 		life--;

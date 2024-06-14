@@ -32,6 +32,7 @@ public class EntityGenerator {
 			case ITM_Shovel.itmName: obj = new ITM_Shovel(gp); break;	
 									
 			case COL_Arrow.itmName: obj = new COL_Arrow(gp); break;
+			case COL_Bomb.itmName: obj = new COL_Bomb(gp); break;
 			case COL_Heart.itmName: obj = new COL_Heart(gp); break;
 			case COL_Key.itmName: obj = new COL_Key(gp); break;
 			case COL_Potion_Red.itmName: obj = new COL_Potion_Red(gp); break;
@@ -40,6 +41,7 @@ public class EntityGenerator {
 			case COL_Rupee_Red.itmName: obj = new COL_Rupee_Red(gp); break;
 			
 			case OBJ_Door.itmName: obj = new OBJ_Door(gp); break;
+			case OBJ_Door_Iron.itmName: obj = new OBJ_Door_Iron(gp); break;
 			case OBJ_Chest.itmName: obj = new OBJ_Chest(gp); break;
 			case OBJ_Tent.itmName: obj = new OBJ_Tent(gp); break;
 		}

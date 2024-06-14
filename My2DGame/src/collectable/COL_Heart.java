@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Heart extends Entity {
 	
-	public static final String itmName = "Heart";
+	public static final String itmName = "Collectable Heart";
 	GamePanel gp;
 	
 	public COL_Heart(GamePanel gp) {

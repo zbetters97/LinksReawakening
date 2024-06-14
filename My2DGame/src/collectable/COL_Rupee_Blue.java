@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Rupee_Blue extends Entity {
 
-	public static final String itmName = "Blue Rupee";
+	public static final String itmName = "Collectable Blue Rupee";
 	GamePanel gp;
 	
 	public COL_Rupee_Blue(GamePanel gp) {

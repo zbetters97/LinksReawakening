@@ -108,13 +108,15 @@ public class UI {
 			drawTitleScreen();
 		}		
 		// PLAY STATE / PROJECTILE STATE
-		else if (gp.gameState == gp.playState || gp.gameState == gp.projectileState) {
+		else if (gp.gameState == gp.playState || gp.gameState == gp.objectState) {
 			drawHUD();
+			drawEnemyHPBar();
 			drawMessage();
 		}		
 		// PAUSE STATE
 		else if (gp.gameState == gp.pauseState) {
 			drawHUD();
+			drawEnemyHPBar();
 			drawPauseScreen();
 		}		
 		// CHARACTER STATE
@@ -470,6 +472,67 @@ public class UI {
 				}
 			}
 		}
+	}
+	public void drawEnemyHPBar() {
+		
+		for (int i = 0; i < gp.enemy[1].length; i++) {
+		
+			Entity enemy = gp.enemy[gp.currentMap][i];
+			
+			if (enemy != null && enemy.inFrame() &&	enemy.hpBarOn) {
+				
+				// BOSS HEALTH BAR
+				if (enemy.boss) {
+					
+					// LENGTH OF HALF HEART
+					double oneScale = (double)gp.tileSize * 8 / enemy.maxLife; 
+					
+					// LENGTH OF ENEMY HEALTH
+					double hpBarValue = oneScale * enemy.life; 
+					
+					int x = (gp.screenWidth / 2) - (gp.tileSize * 4);
+					int y = gp.tileSize * 2;
+					
+					// DARK GRAY OUTLINE
+					g2.setColor(new Color(35,35,35)); 
+					g2.fillRect(x - 1, y - 1, (gp.tileSize * 8) + 2, 12);
+					
+					// RED BAR
+					g2.setColor(new Color(255,0,30)); 
+					g2.fillRect(x, y, (int)hpBarValue, 10);
+													
+					// DRAW BOSS NAME
+					g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
+					g2.setColor(Color.WHITE);
+					x = getXforCenteredText(enemy.name);
+					g2.drawString(enemy.name, x, y - 8);
+				}
+				
+				// REGULAR ENEMY HEALTH BAR
+				else {
+					
+					// LENGTH OF HALF HEART
+					double oneScale = (double)gp.tileSize / enemy.maxLife; 
+					
+					// LENGTH OF ENEMY HEALTH
+					double hpBarValue = oneScale * enemy.life; 
+					
+					g2.setColor(new Color(35,35,35)); // DARK GRAY OUTLINE
+					g2.fillRect(enemy.getScreenX() - 1, enemy.getScreenY() - 16, gp.tileSize + 2, 10);
+					
+					g2.setColor(new Color(255,0,30)); // RED BAR
+					g2.fillRect(enemy.getScreenX(), enemy.getScreenY() - 15, (int)hpBarValue, 8);
+					
+					// REMOVE BAR AFTER 10 SECONDS
+					enemy.hpBarCounter++;
+					if (enemy.hpBarCounter > 600) {
+						enemy.hpBarCounter = 0;
+						enemy.hpBarOn = false;
+						
+					}
+				}				
+			}			
+		}				
 	}
 	
 	// PAUSE
