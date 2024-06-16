@@ -1,4 +1,4 @@
-package object;
+package item;
 
 import entity.Entity;
 import main.GamePanel;
@@ -6,13 +6,14 @@ import main.GamePanel;
 public class ITM_Boots extends Entity {
 	
 	GamePanel gp;
+	public static final String itmName = "Boots";
 	
 	public ITM_Boots(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_item;
-		name = "Boots";
+		name = itmName;
 		description = "[" + name + "]\nEquip to run fast!";
 		down1 = setup("/objects/ITEM_BOOTS");
 	}	

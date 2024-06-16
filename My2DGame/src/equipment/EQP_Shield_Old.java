@@ -1,15 +1,17 @@
-package object;
+package equipment;
 
 import entity.Entity;
 import main.GamePanel;
 
-public class EQP_Shield extends Entity {
+public class EQP_Shield_Old extends Entity {
 
-	public EQP_Shield(GamePanel gp) {
+	public static final String itmName = "Old Shield";
+	
+	public EQP_Shield_Old(GamePanel gp) {
 		super(gp);
 
 		type = type_shield;
-		name = "Old Shield";
+		name = itmName;
 		description = "[" + name + "]\nA humble starter shield.\n+1 DEF";
 		defenseValue = 1;
 		

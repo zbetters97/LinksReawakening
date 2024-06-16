@@ -1,18 +1,20 @@
-package object;
+package item;
 
 import entity.Entity;
 import main.GamePanel;
+import projectile.PRJ_Arrow;
 
 public class ITM_Bow extends Entity {
 
 	GamePanel gp;
+	public static final String itmName = "Bow";
 	
 	public ITM_Bow(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 
 		type = type_item;
-		name = "Bow";
+		name = itmName;
 		description = "[" + name + "]\nEquip to fire an arrow!";
 		down1 = setup("/objects/ITEM_BOW");
 		

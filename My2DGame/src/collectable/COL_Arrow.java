@@ -1,10 +1,11 @@
-package object;
+package collectable;
 
 import entity.Entity;
 import main.GamePanel;
 
 public class COL_Arrow extends Entity {
 
+	public static final String itmName = "Collectable Arrow";
 	GamePanel gp;
 	
 	public COL_Arrow(GamePanel gp) {
@@ -12,8 +13,10 @@ public class COL_Arrow extends Entity {
 		this.gp = gp;
 
 		type = type_collectable;
-		name = "Arrow";
+		name = itmName;
 		value = 1;
+		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
+		
 		down1 = setup("/objects/arrows_full", gp.tileSize - 15, gp.tileSize - 15);
 		image1 = setup("/objects/arrows_full", gp.tileSize - 15, gp.tileSize - 15);
 		image2 = setup("/objects/arrows_empty", gp.tileSize - 15, gp.tileSize - 15);
