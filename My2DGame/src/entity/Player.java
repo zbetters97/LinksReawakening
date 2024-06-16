@@ -7,11 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import equipments.EQP_Shield_Old;
-import equipments.EQP_Sword_Old;
+import equipment.EQP_Shield_Old;
+import equipment.EQP_Sword_Old;
 import main.GamePanel;
 import main.KeyHandler;
-import projectiles.PRJ_Sword_Beam;
+import projectile.PRJ_Sword_Beam;
 
 
 /** PLAYER CLASS **/

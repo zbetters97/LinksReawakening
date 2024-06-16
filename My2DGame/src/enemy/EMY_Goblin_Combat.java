@@ -3,9 +3,9 @@ package enemy;
 import java.awt.Rectangle;
 import java.util.Random;
 
-import collectables.COL_Heart;
-import collectables.COL_Rupee_Blue;
-import collectables.COL_Rupee_Red;
+import collectable.COL_Heart;
+import collectable.COL_Rupee_Blue;
+import collectable.COL_Rupee_Red;
 import entity.Entity;
 import main.GamePanel;
 

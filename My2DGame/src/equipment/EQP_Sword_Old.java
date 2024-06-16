@@ -1,4 +1,4 @@
-package equipments;
+package equipment;
 
 import entity.Entity;
 import main.GamePanel;

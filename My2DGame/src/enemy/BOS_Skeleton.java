@@ -3,7 +3,7 @@ package enemy;
 import java.awt.Rectangle;
 
 import entity.Entity;
-import items.ITM_Hookshot;
+import item.ITM_Hookshot;
 import main.GamePanel;
 
 public class BOS_Skeleton extends Entity {

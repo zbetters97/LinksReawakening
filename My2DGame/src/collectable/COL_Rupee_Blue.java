@@ -1,23 +1,23 @@
-package collectables;
+package collectable;
 
 import entity.Entity;
 import main.GamePanel;
 
-public class COL_Rupee_Green extends Entity {
+public class COL_Rupee_Blue extends Entity {
 
-	public static final String itmName = "Collectable Green Rupee";
+	public static final String itmName = "Collectable Blue Rupee";
 	GamePanel gp;
 	
-	public COL_Rupee_Green(GamePanel gp) {
+	public COL_Rupee_Blue(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_collectable;
 		name = itmName;
-		value = 1;
+		value = 5;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
-		down1 = setup("/objects/COL_RUPEE_GREEN");
+		down1 = setup("/objects/COL_RUPEE_BLUE");
 	}
 	
 	public boolean use(Entity user) {		

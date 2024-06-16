@@ -1,8 +1,8 @@
 package main;
-import collectables.*;
+import collectable.*;
 import entity.Entity;
-import equipments.*;
-import items.*;
+import equipment.*;
+import item.*;
 import object.*;
 
 public class EntityGenerator {

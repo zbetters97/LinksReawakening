@@ -2,8 +2,8 @@ package entity;
 
 import java.awt.Rectangle;
 
-import equipments.EQP_Sword_Old;
-import items.ITM_Bomb;
+import equipment.EQP_Sword_Old;
+import item.ITM_Bomb;
 import main.GamePanel;
 
 public class NPC_OldMan extends Entity{
