@@ -1,4 +1,4 @@
-package projectile;
+package projectiles;
 
 import java.awt.Rectangle;
 

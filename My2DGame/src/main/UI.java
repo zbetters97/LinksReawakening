@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import collectable.COL_Heart;
-import collectable.COL_Rupee_Blue;
+import collectables.COL_Heart;
+import collectables.COL_Rupee_Blue;
 import entity.Entity;
 
 public class UI {

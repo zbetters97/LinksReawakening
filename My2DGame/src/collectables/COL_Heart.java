@@ -1,4 +1,4 @@
-package collectable;
+package collectables;
 
 import entity.Entity;
 import main.GamePanel;

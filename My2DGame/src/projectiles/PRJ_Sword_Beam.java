@@ -1,4 +1,4 @@
-package projectile;
+package projectiles;
 
 import entity.*;
 import main.GamePanel;

@@ -3,11 +3,11 @@ package enemy;
 import java.awt.Rectangle;
 import java.util.Random;
 
-import collectable.COL_Heart;
-import collectable.COL_Rupee_Blue;
+import collectables.COL_Heart;
+import collectables.COL_Rupee_Blue;
 import entity.Entity;
 import main.GamePanel;
-import projectile.PRJ_Fireball;
+import projectiles.PRJ_Fireball;
 
 public class EMY_Slime_Red extends Entity {
 

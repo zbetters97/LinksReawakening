@@ -1,15 +1,15 @@
 package main;
 
-import collectable.COL_Rupee_Red;
+import collectables.COL_Rupee_Red;
 import enemy.*;
 import entity.*;
-import item.ITM_Axe;
-import item.ITM_Boots;
-import item.ITM_Bow;
-import item.ITM_Feather;
-import item.ITM_Hookshot;
-import item.ITM_Lantern;
-import item.ITM_Shovel;
+import items.ITM_Axe;
+import items.ITM_Boots;
+import items.ITM_Bow;
+import items.ITM_Feather;
+import items.ITM_Hookshot;
+import items.ITM_Lantern;
+import items.ITM_Shovel;
 import object.*;
 import tile_interactive.*;
 

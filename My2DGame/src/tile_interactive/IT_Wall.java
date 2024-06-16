@@ -3,8 +3,8 @@ package tile_interactive;
 import java.awt.Color;
 import java.util.Random;
 
-import collectable.COL_Bomb;
-import collectable.COL_Rupee_Blue;
+import collectables.COL_Bomb;
+import collectables.COL_Rupee_Blue;
 import main.GamePanel;
 
 public class IT_Wall extends InteractiveTile {
