@@ -34,8 +34,8 @@ public class BOS_Skeleton extends Entity {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		attackArea.width = 170;
-		attackArea.height = 170;
+		attackbox.width = 170;
+		attackbox.height = 170;
 		
 		getImage();
 		getAttackImage();
@@ -96,15 +96,21 @@ public class BOS_Skeleton extends Entity {
 		
 		if (currentBossPhase == 1) {
 			
-			if (getTileDistance(gp.player) < 10) {			
-				approachPlayer(120);
+			// DON'T CHASE PLAYER WHEN ATTACKING
+			if (getTileDistance(gp.player) < 10 && !attacking) {			
+				approachPlayer(90);
 			}
-			else {			
-				getDirection(120);
-			}			
+			else if (!attacking) {			
+				getDirection(90);
+			}						
+			
 			if (!attacking) {
-				isAttacking(60, gp.tileSize * 7, gp.tileSize * 5);
+				isAttacking(90, gp.tileSize * 7, gp.tileSize * 5);
+				speed = defaultSpeed;
 			}
+			// STOP MOVEMENT WHEN ATTACKING
+			else
+				speed = 0;
 			
 			if (life < maxLife / 2) {
 				currentBossPhase = 2;
@@ -116,16 +122,21 @@ public class BOS_Skeleton extends Entity {
 		}
 		else if (currentBossPhase == 2) {
 			
-			if (getTileDistance(gp.player) < 10) {			
-				approachPlayer(90);
+			// DON'T CHASE PLAYER WHEN ATTACKING
+			if (getTileDistance(gp.player) < 10 && !attacking) {			
+				approachPlayer(60);
 			}
-			else {			
-				getDirection(90);
-			}
+			else if (!attacking) {			
+				getDirection(60);
+			}			
 			
 			if (!attacking) {
 				isAttacking(60, gp.tileSize * 7, gp.tileSize * 5);
+				speed = defaultSpeed;
 			}
+			// STOP MOVEMENT WHEN ATTACKING
+			else
+				speed = 0;
 		}	
 	}
 	

@@ -107,7 +107,7 @@ public class Entity {
 	public boolean attackCanceled = false;
 	
 	// WEAPON hitbox
-	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
+	public Rectangle attackbox = new Rectangle(0, 0, 0, 0);
 		
 	// ITEM ATTRIBUTES
 	public int value, attackValue, defenseValue;
@@ -328,8 +328,7 @@ public class Entity {
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 		return screenY;
 	}
-	
-	
+
 	public void approachPlayer(int rate) {
 		
 		actionLockCounter++;
@@ -523,19 +522,19 @@ public class Entity {
 			
 			// ADJUST PLAYER'S X/Y 
 			switch (direction) {
-				case "up": worldY -= attackArea.height; break; 
-				case "upleft": worldY -= attackArea.height; worldX -= attackArea.width; break; 
-				case "upright": worldY -= attackArea.height; worldX += attackArea.width; break; 
-				case "down": worldY += attackArea.height; break;
-				case "downleft": worldY += attackArea.height; worldX -= attackArea.width; break;
-				case "downright": worldY += attackArea.height; worldX += attackArea.width; break;					
-				case "left": worldX -= attackArea.width; break;
-				case "right": worldX += attackArea.width; break;
+				case "up": worldY -= attackbox.height; break; 
+				case "upleft": worldY -= attackbox.height; worldX -= attackbox.width; break; 
+				case "upright": worldY -= attackbox.height; worldX += attackbox.width; break; 
+				case "down": worldY += attackbox.height; break;
+				case "downleft": worldY += attackbox.height; worldX -= attackbox.width; break;
+				case "downright": worldY += attackbox.height; worldX += attackbox.width; break;					
+				case "left": worldX -= attackbox.width; break;
+				case "right": worldX += attackbox.width; break;
 			}
 			
 			// CHANGE SIZE OF HIT BOX 
-			hitbox.width = attackArea.width;
-			hitbox.height = attackArea.height;
+			hitbox.width = attackbox.width;
+			hitbox.height = attackbox.height;
 			
 			// ENEMY ATTACKING
 			if (type == type_enemy) {
@@ -1079,14 +1078,21 @@ public class Entity {
 			
 			if (isLocked) {	
 				
-				// RESET X AND Y				
-				tempScreenX = getScreenX();
-				tempScreenY = getScreenY();
-				lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);
+				// LOCKON IMAGE X, Y 				
+				if (boss) {
+					tempScreenX = (getScreenX() + hitbox.width / 2) + 10;
+					tempScreenY = (getScreenY());	
+				}
+				else {
+					tempScreenX = getScreenX() - 10;
+					tempScreenY = getScreenY() - 10;	
+				}				
 				
+				lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);				
 				changeAlpha(g2, 0.8f);
-				g2.drawImage(lockedImage, tempScreenX - 10, tempScreenY - 10, null);
-			}	
+				g2.drawImage(lockedImage, tempScreenX, tempScreenY, null);
+			}
+			
 			// DRAW HITBOX
 			if (gp.keyH.debug) {
 				g2.setColor(Color.RED);

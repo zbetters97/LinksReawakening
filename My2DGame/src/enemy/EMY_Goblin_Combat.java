@@ -33,8 +33,8 @@ public class EMY_Goblin_Combat extends Entity {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		attackArea.width = 36;
-		attackArea.height = 36;
+		attackbox.width = 36;
+		attackbox.height = 36;
 		
 		getImage();
 		getAttackImage();

@@ -84,8 +84,8 @@ public class Player extends Entity {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		attackArea.width = 36;
-		attackArea.height = 36;
+		attackbox.width = 36;
+		attackbox.height = 36;
 		
 		setDefaultValues();  
 	}
@@ -110,10 +110,9 @@ public class Player extends Entity {
 		maxArrows = 5; arrows = maxArrows;
 		maxBombs = 5; bombs = maxBombs;
 		
-		currentShield = new EQP_Shield_Old(gp);
-		
 		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);
+//		currentWeapon = new EQP_Sword_Old(gp);		
+		currentShield = new EQP_Shield_Old(gp);	
 		
 		currentLight = null;
 		projectile = new PRJ_Sword_Beam(gp);		
@@ -136,11 +135,11 @@ public class Player extends Entity {
 		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 20;
-//		worldX = gp.tileSize * 15;
+//		worldX = gp.tileSize * 21;
 //		worldY = gp.tileSize * 27;
 		
 		gp.currentMap = 0;
-//		gp.currentMap = 2;
+//		gp.currentMap = 3;
 		
 		direction = "down";
 	}
@@ -175,7 +174,7 @@ public class Player extends Entity {
 		if (currentWeapon == null)
 			return 1;
 		else {
-			attackArea = currentWeapon.attackArea;
+			attackbox = currentWeapon.attackbox;
 			swingSpeed1 = currentWeapon.swingSpeed1;
 			swingSpeed2 = currentWeapon.swingSpeed2;
 			return strength * currentWeapon.attackValue;
@@ -532,7 +531,7 @@ public class Player extends Entity {
 		}
 		
 		// TARGET FOUND WITHIN 10 TILES
-		if (lockedTarget != null && getTileDistance(lockedTarget) < 8) {
+		if (lockedTarget != null && getTileDistance(lockedTarget) < 12) {
 			if (lockedTarget.alive) {
 				lockedTarget.isLocked = true;
 				direction = findTargetDirection(lockedTarget);
@@ -577,8 +576,8 @@ public class Player extends Entity {
 		int px = worldX / gp.tileSize;
 		int py = worldY / gp.tileSize;
 		
-		int ex = enemy.worldX / gp.tileSize;
-		int ey = enemy.worldY / gp.tileSize;	
+		int ex = (enemy.worldX + (enemy.hitbox.width / 2)) / gp.tileSize;
+		int ey = (enemy.worldY + (enemy.hitbox.height / 2)) / gp.tileSize;	
 
 		if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey))
 			eDirection = "up";

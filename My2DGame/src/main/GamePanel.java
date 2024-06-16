@@ -81,6 +81,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int outside = 50;
 	public final int inside = 51;
 	public final int dungeon = 52;
+	public final int boss = 53;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
@@ -120,10 +121,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupGame() {		
 		
-		gameState = titleState;	
-		currentArea = outside;
-//		gameState = playState;
-// 		currentArea = inside;
+//		gameState = titleState;	
+//		currentArea = outside;
+		gameState = playState;
+ 		currentArea = inside;
 		
 		setupMusic();
 
@@ -305,7 +306,7 @@ public class GamePanel extends JPanel implements Runnable {
 			if (currentMap == 0) playMusic(2);
 			else if (currentMap == 1) playMusic(3);
 			else if (currentMap == 2) playMusic(4);
-			else if (currentMap == 3) playMusic(4);
+			else if (currentMap == 3) playMusic(5);
 		}
 	}	
 	public void playMusic(int c) {		

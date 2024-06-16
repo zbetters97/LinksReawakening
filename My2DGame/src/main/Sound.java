@@ -25,11 +25,12 @@ public class Sound {
 	public Sound() {
 		
 		// 0
-		music[0] = getClass().getResource("/sound/MUSIC_TITLESCREEN.wav");
-		music[1] = getClass().getResource("/sound/MUSIC_LIGHT_WORLD.wav");
-		music[2] = getClass().getResource("/sound/MUSIC_DARK_WORLD.wav");		
+		music[0] = getClass().getResource("/sound/MUSIC_MENU_MAIN.wav");
+		music[1] = getClass().getResource("/sound/MUSIC_WORLD_LIGHT.wav");
+		music[2] = getClass().getResource("/sound/MUSIC_WORLD_DARK.wav");		
 		music[3] = getClass().getResource("/sound/MUSIC_SHOP.wav");
-		music[4] = getClass().getResource("/sound/MUSIC_LIGHT_DUNGEON.wav");
+		music[4] = getClass().getResource("/sound/MUSIC_DUNGEON_LIGHT.wav");
+		music[5] = getClass().getResource("/sound/MUSIC_BOSS.wav");
 		
 		// 1
 		misc[0] = getClass().getResource("/sound/MENU_CURSOR.wav");
