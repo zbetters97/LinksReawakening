@@ -435,7 +435,8 @@ public class Player extends Entity {
 		if (!jumping) gp.eHandler.checkEvent();
 					
 		// CHECK NPC COLLISION
-		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.npc);		
+		int npcIndex = gp.cChecker.checkNPC();
 		interactNPC(npcIndex);
 		
 		// CHECK ENEMY COLLISION

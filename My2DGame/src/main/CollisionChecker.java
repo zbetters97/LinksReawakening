@@ -234,7 +234,7 @@ public class CollisionChecker {
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitbox.y;
 				
 				// find where entity will be after moving in a direction
-				// ask if npc and entity intersect 
+				// ask if target and entity intersect 
 				switch (direction) {
 					case "up":					
 						entity.hitbox.y -= entity.speed;
@@ -287,6 +287,90 @@ public class CollisionChecker {
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].hitboxDefaultY;
 			}
 		}		
+		return index;
+	}
+	
+	// ENTITY COLLISION
+	public int checkNPC() {
+		
+		int index = -1;
+		
+		gp.player.speed += 30;
+		
+		// KNOCKBACK DIRECTION
+		String direction = gp.player.direction;
+		if (gp.player.knockback) {
+			direction = gp.player.knockbackDirection;
+		}
+		
+		// LOCKON DIRECTION
+		if (gp.player.lockon) {
+			direction = gp.player.lockonDirection;
+		}
+				
+		for (int i  = 0; i < gp.npc[1].length; i++) {
+			
+			if (gp.npc[gp.currentMap][i] != null) {			
+				
+				// get gp.player's solid area position
+				gp.player.hitbox.x = gp.player.worldX + gp.player.hitbox.x;
+				gp.player.hitbox.y = gp.player.worldY + gp.player.hitbox.y;
+				
+				// get object's solid area position
+				gp.npc[gp.currentMap][i].hitbox.x = gp.npc[gp.currentMap][i].worldX + gp.npc[gp.currentMap][i].hitbox.x;
+				gp.npc[gp.currentMap][i].hitbox.y = gp.npc[gp.currentMap][i].worldY + gp.npc[gp.currentMap][i].hitbox.y;
+				
+				// find where gp.player will be after moving in a direction
+				// ask if gp.npc and gp.player intersect 
+				switch (direction) {
+					case "up":					
+						gp.player.hitbox.y -= gp.player.speed;
+						break;					
+					case "upleft":
+						gp.player.hitbox.y -= gp.player.speed;
+						gp.player.hitbox.x -= gp.player.speed;
+						break;
+					case "upright":
+						gp.player.hitbox.y -= gp.player.speed;
+						gp.player.hitbox.x += gp.player.speed;
+						break;
+					case "down":					
+						gp.player.hitbox.y += gp.player.speed;
+						break;
+					case "downleft":					
+						gp.player.hitbox.y += gp.player.speed;
+						gp.player.hitbox.x -= gp.player.speed;
+						break;
+					case "downright":					
+						gp.player.hitbox.y += gp.player.speed;
+						gp.player.hitbox.x += gp.player.speed;
+						break;
+					case "left":					
+						gp.player.hitbox.x -= gp.player.speed;
+						break;
+					case "right":					
+						gp.player.hitbox.x += gp.player.speed;
+						break;	
+				}
+				
+				if (gp.player.hitbox.intersects(gp.npc[gp.currentMap][i].hitbox)) {	
+					
+					if (gp.npc[gp.currentMap][i] != gp.player) {		
+						index = i;	
+					}
+				}
+				
+				// reset gp.player solid area
+				gp.player.hitbox.x = gp.player.hitboxDefaultX;
+				gp.player.hitbox.y = gp.player.hitboxDefaultY;
+				
+				// reset object solid area
+				gp.npc[gp.currentMap][i].hitbox.x = gp.npc[gp.currentMap][i].hitboxDefaultX;
+				gp.npc[gp.currentMap][i].hitbox.y = gp.npc[gp.currentMap][i].hitboxDefaultY;
+			}
+		}		
+		
+		gp.player.speed = gp.player.defaultSpeed;
 		return index;
 	}
 	
