@@ -3,17 +3,18 @@ package main;
 import java.util.Arrays;
 import java.util.List;
 
+import data.Progress;
 import entity.Entity;
 
 public class EventHandler {
 	
-	GamePanel gp;
-	EventRect eventRect[][][];
-	Entity dekuTree;
+	private GamePanel gp;
+	private EventRect eventRect[][][];
+	private Entity dekuTree;
 	
-	int previousEventX, previousEventY;
-	boolean canTouchEvent = true;
-	int tempMap, tempCol, tempRow;
+	protected int previousEventX, previousEventY;
+	private boolean canTouchEvent = true;
+	protected int tempMap, tempCol, tempRow;
 	
 	public EventHandler(GamePanel gp) {
 		this.gp = gp;
@@ -55,7 +56,7 @@ public class EventHandler {
 		setDialogue();
 	}
 	
-	public void setDialogue() {
+	private void setDialogue() {
 		dekuTree.dialogues[0][0] = "Ah... The water is pure and heals you.";
 		dekuTree.dialogues[1][0] = "YOU ARE WINNER";
 	}
@@ -100,16 +101,19 @@ public class EventHandler {
 			else if (hit(0, 10, 21, Arrays.asList("down", "downleft", "downright"), true)) fall(10, 19);
 			
 			// TELEPORT SPOTS
-			else if (hit(0, 10, 39, false)) teleport(1, 12, 13, gp.inside); // SHOP ENTRANCE
-			else if (hit(1, 12, 13, false)) teleport(0, 10, 39, gp.outside); // SHOP EXIT
-			else if (hit(0, 12, 9, false)) teleport(2, 9, 41, gp.dungeon); // DUNGEON ENTRANCE
-			else if (hit(2, 9, 41, false)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
-			else if (hit(2, 8, 7, false)) teleport(3, 26, 41, gp.dungeon); // DUNGEON B1
-			else if (hit(3, 26, 41, false)) teleport(2, 8, 7, gp.boss); // DUNEGOEN B2
+			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside); // SHOP ENTRANCE
+			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside); // SHOP EXIT
+			else if (hit(0, 12, 9, true)) teleport(2, 9, 41, gp.dungeon); // DUNGEON ENTRANCE
+			else if (hit(2, 9, 41, true)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
+			else if (hit(2, 8, 7, true)) teleport(3, 26, 41, gp.dungeon); // DUNGEON B1
+			else if (hit(3, 26, 41, true)) teleport(2, 8, 7, gp.boss); // DUNEGOEN B2
+			
+			// CUTSCENES
+			else if (hit(3, 25, 27, false)) boss(); // SKELETON CUTSCENE
 		}
 	}
 	
-	public boolean hit(int map, int col, int row, List<String> reqDirection, boolean fullTile) {
+	private boolean hit(int map, int col, int row, List<String> reqDirection, boolean fullTile) {
 		
 		boolean hit = false;
 		
@@ -159,7 +163,7 @@ public class EventHandler {
 		return hit;		
 	}
 	
-	public boolean hit(int map, int col, int row, boolean fullTile) {
+	private boolean hit(int map, int col, int row, boolean fullTile) {
 		
 		boolean hit = false;
 		
@@ -201,7 +205,7 @@ public class EventHandler {
 		return hit;		
 	}
 	
-	public void healingPool() {
+	private void healingPool() {
 		
 		gp.ui.hint = "[Press SPACE to interact]";
 		gp.ui.showHint = true;
@@ -220,21 +224,21 @@ public class EventHandler {
 			dekuTree.startDialogue(dekuTree, 0);
 		}
 	}
-	public void speak(Entity npc) {		
+	private void speak(Entity npc) {		
 		if (gp.keyH.actionPressed) {
 			gp.gameState = gp.dialogueState;
 			gp.player.attackCanceled = true;
 			npc.speak();
 		}
 	}
-	public void fall(int x, int y) {			
+	private void fall(int x, int y) {			
 		gp.playSE(2, 2);
 		gp.player.falling = true;
 		gp.player.invincible = true;
 		gp.player.safeWorldX = x * gp.tileSize;
 		gp.player.safeWorldY = y * gp.tileSize;
 	}
-	public void teleport(int map, int col, int row, int area) {					
+	private void teleport(int map, int col, int row, int area) {					
 		gp.playSE(1,10);		
 		
 		tempMap = map;
@@ -246,7 +250,11 @@ public class EventHandler {
 		gp.nextArea = area;		
 		gp.gameState = gp.transitionState;
 	}	
-	public void win() {
-		dekuTree.startDialogue(dekuTree, 1);
+	
+	private void boss() {		
+		if (!gp.bossBattleOn && !Progress.bossDefeated) {
+			gp.csManager.scene = gp.csManager.boss;
+			gp.gameState = gp.cutsceneState;			
+		}
 	}
 }

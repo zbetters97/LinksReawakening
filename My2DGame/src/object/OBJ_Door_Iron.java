@@ -7,7 +7,7 @@ import main.GamePanel;
 
 public class OBJ_Door_Iron extends Entity {
 	
-	public static final String itmName = "Iron Door";
+	public static final String objName = "Iron Door";
 	GamePanel gp;
 	
 	public OBJ_Door_Iron(GamePanel gp) {
@@ -15,7 +15,7 @@ public class OBJ_Door_Iron extends Entity {
 		this.gp = gp;
 		
 		type = type_obstacle;
-		name = itmName;
+		name = objName;
 		down1 = setup("/objects/OBJ_DOOR_IRON");
 		hitbox = new Rectangle(0, 0, 48, 48);
 		collision = true;

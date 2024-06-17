@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Potion_Red extends Entity implements Cloneable {
 
-	public static final String itmName = "Collectable Red Potion";
+	public static final String colName = "Red Potion";
 	GamePanel gp;
 	
 	public COL_Potion_Red(GamePanel gp) {
@@ -13,7 +13,7 @@ public class COL_Potion_Red extends Entity implements Cloneable {
 		this.gp = gp;
 		
 		type = type_consumable;
-		name = itmName;
+		name = colName;
 		description = "[" + name + "]\nHeals two hearts.";
 		value = 4;
 		price = 20;

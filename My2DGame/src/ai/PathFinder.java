@@ -101,6 +101,28 @@ public class PathFinder {
 				}
 			}
 			
+			// CHECK OBJECTS
+			for (int i = 0; i < gp.obj[1].length; i++) {
+				
+				// SOLID IF DESTRUCTIBLE BUT NOT DIGGABLE
+				if (gp.obj[gp.currentMap][i] != null && gp.obj[gp.currentMap][i].collision) {
+					int iCol = gp.obj[gp.currentMap][i].worldX / gp.tileSize;
+					int iRow = gp.obj[gp.currentMap][i].worldY / gp.tileSize;
+					node[iCol][iRow].solid = true;
+				}
+			}
+			
+			// CHECK NPC
+			for (int i = 0; i < gp.npc[1].length; i++) {
+				
+				// SOLID IF DESTRUCTIBLE BUT NOT DIGGABLE
+				if (gp.npc[gp.currentMap][i] != null) {
+					int iCol = gp.npc[gp.currentMap][i].worldX / gp.tileSize;
+					int iRow = gp.npc[gp.currentMap][i].worldY / gp.tileSize;
+					node[iCol][iRow].solid = true;
+				}
+			}
+			
 			// SET COST ON EACH NODE
 			setCost(node[col][row]);
 			

@@ -2,13 +2,15 @@ package enemy;
 
 import java.awt.Rectangle;
 
+import data.Progress;
 import entity.Entity;
 import item.ITM_Hookshot;
 import main.GamePanel;
+import object.OBJ_Door_Iron;
 
 public class BOS_Skeleton extends Entity {
 
-	public static final String bosName = "Skeleton King";
+	public static final String emyName = "Skeleton King";
 	GamePanel gp;
 	
 	public BOS_Skeleton(GamePanel gp) {
@@ -17,13 +19,14 @@ public class BOS_Skeleton extends Entity {
 		
 		type = type_enemy;
 		boss = true;
-		name = bosName;
+		sleep = true;
+		name = emyName;
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 10; defense = 2;
 		knockbackPower = 5;
 		exp = 50;
-		maxLife = 50; life = maxLife;
+		maxLife = 3; life = maxLife;
 		currentBossPhase = bossPhase_1;
 		
 		swingSpeed1 = 45;
@@ -39,6 +42,7 @@ public class BOS_Skeleton extends Entity {
 		
 		getImage();
 		getAttackImage();
+		setDialogue();
 	}
 	
 	public void getImage() {
@@ -90,6 +94,11 @@ public class BOS_Skeleton extends Entity {
 			attackRight1 = setup("/enemy/skeletonlord_phase2_attack_right_1", scale * 2, scale); 
 			attackRight2 = setup("/enemy/skeletonlord_phase2_attack_right_2", scale * 2, scale);	
 		}
+	}
+	
+	public void setDialogue() {
+		dialogues[0][0] = "No one may enter the tressure room!";
+		dialogues[0][1] = "Taste the blade of my sword!";
 	}
 	
 	public void setAction() {
@@ -144,15 +153,33 @@ public class BOS_Skeleton extends Entity {
 		actionLockCounter = 0;
 	}
 	
+	public void playAttackSE() {
+		gp.playSE(4, 3);
+	}
 	public void playHurtSE() {
-		gp.playSE(4, 0);
+		gp.playSE(4, 4);
 	}
 	public void playDeathSE() {
-		gp.playSE(4, 2);
+		gp.playSE(4, 5);
 	}
 	
 	// DROPPED ITEM
 	public void checkDrop() {		
+		gp.stopMusic();		
+		// PLAY VICTORY MUSIC
+		
+		gp.bossBattleOn = false;
+		Progress.bossDefeated = true;		
+		
+		// REMOVE IRON DOOR
+		for (int i = 0; i < gp.obj[1].length; i++) {
+			if (gp.obj[gp.currentMap][i] != null &&
+					gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Iron.objName) ) {						
+				gp.obj[gp.currentMap][i] = null;				
+				break;
+			}
+		}
+		
 		dropItem(new ITM_Hookshot(gp));
 	}
 }

@@ -151,7 +151,13 @@ public class Entity {
 	
 	// MAP TYPES
 	public final int type_obstacle = 10;
+	public final int type_pickupOnly = 11;
 		
+	public boolean sleep = false;
+	public boolean temp = false;
+	public boolean drawing = true;
+	public boolean hasCutscene = false;
+	
 	// CONSTRUCTOR
 	public Entity(GamePanel gp) {
 		this.gp = gp;
@@ -159,6 +165,7 @@ public class Entity {
 	
 	// CHILD ONLY	
 	public void setAction() { }	
+	public void setPath(int c, int r) { }	
 	public void damageReaction() { }	
 	public void checkDrop() { }
 	public void use() {	}
@@ -175,6 +182,7 @@ public class Entity {
 	// UPDATER
 	public void update() {
 		
+		if (sleep) return;		
 		if (knockback) { knockbackEntity();	return; }
 		if (attacking) { attacking(); }
 		if (stunned) { manageValues(); return; }
@@ -509,6 +517,8 @@ public class Entity {
 		// ATTACK IMAGE 1
 		if (swingSpeed1 >= attackCounter) {			
 			attackNum = 1;
+			if (swingSpeed1 == attackCounter)
+				playAttackSE();
 		}		
 		// ATTACK IMAGE 2
 		if (swingSpeed2 >= attackCounter && attackCounter > swingSpeed1) {
@@ -656,8 +666,15 @@ public class Entity {
 		if (dyingCounter % 5 == 0) 
 			changeAlpha(g2, 0.2f);
 		
-		if (dyingCounter > 40) 
-			alive = false;		
+		// LONGER DYING ANIMATION FOR BOSSES
+		if (boss) {
+			if (dyingCounter > 180) 
+				alive = false;		
+		}
+		else {
+			if (dyingCounter > 40) 
+				alive = false;			
+		}		
 	}
 	public void dropItem(Entity droppedItem) { 								
 		for (int i = 0; i < gp.obj[1].length; i++) {			

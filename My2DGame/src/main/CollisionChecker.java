@@ -7,7 +7,7 @@ import tile_interactive.IT_Plate_Metal;
 
 public class CollisionChecker {
 	
-	GamePanel gp;
+	private GamePanel gp;
 	
 	/** CONSTRUCTOR **/
 	public CollisionChecker(GamePanel gp) {		

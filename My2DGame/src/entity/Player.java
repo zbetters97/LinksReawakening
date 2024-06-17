@@ -18,7 +18,7 @@ import projectile.PRJ_Sword_Beam;
 public class Player extends Entity {
 
 	
-	/** PLAYER VARIABLES **/
+/** PLAYER VARIABLES **/
 	
 	// KEY INPUT
 	KeyHandler keyH;
@@ -64,11 +64,11 @@ public class Player extends Entity {
 	public BufferedImage jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
 							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3;
 	
-	/** END PLAYER VARIABLES **/		
+/** END PLAYER VARIABLES **/		
 	
+		
+/** PLAYER CONSTRUCTOR **/
 	
-	
-	/** PLAYER CONSTRUCTOR **/
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
 		// pass GamePanel to Entity abstract class
@@ -89,10 +89,11 @@ public class Player extends Entity {
 		
 		setDefaultValues();  
 	}
-	/** END PLAYER CONSTRUCTOR **/
+
+/** END PLAYER CONSTRUCTOR **/
 		
 	
-	/** DEFAULT HANDLERS **/
+/** DEFAULT HANDLERS **/
 	
 	// DEFAULT VALUES
 	public void setDefaultValues() {
@@ -135,8 +136,8 @@ public class Player extends Entity {
 		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 20;
-//		worldX = gp.tileSize * 21;
-//		worldY = gp.tileSize * 27;
+//		worldX = gp.tileSize * 25;
+//		worldY = gp.tileSize * 30;
 		
 		gp.currentMap = 0;
 //		gp.currentMap = 3;
@@ -277,13 +278,13 @@ public class Player extends Entity {
 		die3 = setup("/player/boy_die_3"); 
 		die4 = setup("/player/boy_die_4");		
 	}
-	
-	/** END DEFAULT HANDLERS **/
-	
-	
-	/** UPDATER **/
-	public void update() {	
 
+/** END DEFAULT HANDLERS **/
+	
+	
+/** UPDATER **/
+
+	public void update() {	
 		guarding = false;
 				
 		if (keyH.actionPressed) { action(); }
@@ -310,10 +311,11 @@ public class Player extends Entity {
 		checkDeath();
 		
 	}
-	/** END UPDATER **/
+
+/** END UPDATER **/
 	
 	
-	/** PLAYER METHODS **/
+/** PLAYER METHODS **/
 	
 	// MOVEMENT
 	public void walking() {
@@ -490,11 +492,16 @@ public class Player extends Entity {
 					gp.obj[gp.currentMap][i].interact();
 				}
 			}
+			// PICKUP ONLY ITEMS
+			else if (gp.obj[gp.currentMap][i].type == type_pickupOnly) {
+				attackCanceled = true;
+				gp.obj[gp.currentMap][i].use(this);
+				gp.obj[gp.currentMap][i] = null;
+			}
 			// REGULAR ITEMS
 			else if (canObtainItem(gp.obj[gp.currentMap][i])) {
 				gp.obj[gp.currentMap][i] = null;
-			}			
-			
+			}						
 		}
 	}	
 	public void pickUpProjectile(int i) {
@@ -812,7 +819,7 @@ public class Player extends Entity {
 				
 				// KILL ENEMY
 				if (gp.enemy[gp.currentMap][i].life <= 0) {
-					gp.playSE(4, 2);
+					gp.enemy[gp.currentMap][i].playDeathSE();
 					gp.enemy[gp.currentMap][i].dying = true;
 				}
 			}
@@ -936,11 +943,12 @@ public class Player extends Entity {
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
+
+/** END PLAYER METHODS **/
 	
-	/** END PLAYER METHODS **/
 	
+/** DRAW HANDLER **/
 	
-	/** DRAW HANDLER **/
 	public void draw(Graphics2D g2) {
 						
 		// DON'T DRAW PLAYER IN ITEMGET STATE
@@ -1081,13 +1089,15 @@ public class Player extends Entity {
 			if (fallNum == 3) image1 = fall3;
 			if (fallNum == 4) image1 = null;
 		}
-						
-		g2.drawImage(image1, tempScreenX, tempScreenY, null); 
-		
-		// DRAW SHADOW UNDER PLAYER
-		if (jumping) {
-			g2.setColor(Color.BLACK);
-			g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+					
+		if (drawing) {		
+			g2.drawImage(image1, tempScreenX, tempScreenY, null); 
+			
+			// DRAW SHADOW UNDER PLAYER
+			if (jumping) {
+				g2.setColor(Color.BLACK);
+				g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+			}
 		}
 
 		// DRAW HITBOX
@@ -1099,7 +1109,9 @@ public class Player extends Entity {
 		// RESET OPACITY
 		changeAlpha(g2, 1f);
 	}
-	/** END DRAW HANDLER **/
+
+/** END DRAW HANDLER **/
 	
 }
+
 /** END PLAYER CLASS **/

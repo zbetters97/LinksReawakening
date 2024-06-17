@@ -6,14 +6,14 @@ import main.GamePanel;
 public class EQP_Sword_Old extends Entity {
 
 	GamePanel gp;
-	public static final String itmName = "Old Sword";
+	public static final String eqpName = "Old Sword";
 	
 	public EQP_Sword_Old(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_sword;		
-		name = itmName;
+		name = eqpName;
 		description = "[" + name + "]\nA humble starter sword.\n+1 ATK";
 				
 		attackValue = 3;

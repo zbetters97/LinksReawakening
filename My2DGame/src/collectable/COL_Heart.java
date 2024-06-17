@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Heart extends Entity {
 	
-	public static final String itmName = "Collectable Heart";
+	public static final String colName = "Heart";
 	GamePanel gp;
 	
 	public COL_Heart(GamePanel gp) {
@@ -13,7 +13,7 @@ public class COL_Heart extends Entity {
 		this.gp = gp;
 		
 		type = type_collectable;		
-		name = itmName;
+		name = colName;
 		value = 2;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		

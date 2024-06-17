@@ -7,7 +7,7 @@ import main.GamePanel;
 
 public class OBJ_Chest extends Entity {
 	
-	public static final String itmName = "Chest";
+	public static final String objName = "Chest";
 	GamePanel gp;
 	
 	public OBJ_Chest(GamePanel gp) {
@@ -15,7 +15,7 @@ public class OBJ_Chest extends Entity {
 		this.gp = gp;
 		
 		type = type_obstacle;
-		name = itmName;
+		name = objName;
 		image1 = setup("/objects/chest");
 		image2 = setup("/objects/chest_opened");
 		down1 = image1;

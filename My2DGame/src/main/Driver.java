@@ -5,19 +5,17 @@ import javax.swing.JFrame;
 
 public class Driver {
 	
-	public static JFrame window;
+	protected static JFrame window;
 	
 	public static void main(String[] args) {
 
 		window = new JFrame();
 		
-		// WINDOW PROPERTIES
-		window.setTitle("Link's Reawakening");		
+		// WINDOW PROPERTIES		
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(false);
-		
-		ImageIcon icon = new ImageIcon("triforce.ico"); 
-		window.setIconImage(icon.getImage());
+		window.setTitle("Link's Reawakening");	
+		new Driver().setIcon();				
 		
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel); 
@@ -36,5 +34,10 @@ public class Driver {
 		// START
 		gamePanel.setupGame();
 		gamePanel.startGameThread();
+	}
+	
+	private void setIcon() {
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon/triforce.png")); 
+		window.setIconImage(icon.getImage());
 	}
 }

@@ -24,20 +24,20 @@ import tile_interactive.InteractiveTile;
 public class GamePanel extends JPanel implements Runnable {
 	
 	// GENERAL CONFIG
-	Config config = new Config(this);
-	Graphics2D g2;
-	Thread gameThread;
-	int FPS = 60;
+	protected Config config = new Config(this);
+	private Graphics2D g2;
+	private Thread gameThread;
+	private int FPS = 60;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
-	Sound music = new Sound();
-	Sound se = new Sound();	
+	protected Sound music = new Sound();
+	protected Sound se = new Sound();	
 	public UI ui = new UI(this);	
 	
 	// SCREEN SETTINGS
-	final int originalTileSize = 16; // 16x16 tile
-	final int scale = 3; // scale rate to accommodate for large screen
+	private final int originalTileSize = 16; // 16x16 tile
+	private final int scale = 3; // scale rate to accommodate for large screen
 	public final int tileSize = originalTileSize * scale; // scaled tile (16*3 = 48px)	
 	public final int maxScreenCol = 16; // columns (width)
 	public final int maxScreenRow = 12; // rows (height)
@@ -53,11 +53,15 @@ public class GamePanel extends JPanel implements Runnable {
 	public int currentMap = 0;
 	
 	// FULL SCREEN SETTINGS
-	public boolean fullScreenOn = false;
-	int screenWidth2 = screenWidth;
-	int screenHeight2 = screenHeight;
-	BufferedImage tempScreen;	
+	boolean fullScreenOn = false;
+	private int screenWidth2 = screenWidth;
+	private int screenHeight2 = screenHeight;
+	private BufferedImage tempScreen;	
 	
+	// MAP HANDLER
+	protected Map map = new Map(this);
+	
+	// VOLUME ADJUSTMENT
 	public int volumeSet = 0;
 	
 	// GAME STATES
@@ -73,7 +77,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int objectState = 8;	
 	public final int transitionState = 9;	
 	public final int sleepState = 10;
-	public final int gameOverState = 11;
+	public final int cutsceneState = 11;	
+	public final int gameOverState = 12;
+	public final int endingState = 13;
 	
 	// AREA STATES
 	public int currentArea;
@@ -81,7 +87,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int outside = 50;
 	public final int inside = 51;
 	public final int dungeon = 52;
-	public final int boss = 53;
+	public final int boss = 53;	
+	public boolean bossBattleOn = false;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
@@ -101,14 +108,13 @@ public class GamePanel extends JPanel implements Runnable {
 	public AssetSetter aSetter = new AssetSetter(this);
 	public PathFinder pFinder = new PathFinder(this);
 	public EntityGenerator eGenerator = new EntityGenerator(this);
+	public CutsceneManager csManager = new CutsceneManager(this);
 	
 	// SAVE LOAD MANAGER
-	SaveLoad saveLoad = new SaveLoad(this);
+	protected SaveLoad saveLoad = new SaveLoad(this);
 	
-	// MAP
-	Map map = new Map(this);
+/** CONSTRUCTOR **/
 	
-	/** CONSTRUCTOR **/
 	public GamePanel() {
 		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // screen size
@@ -119,12 +125,12 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setFocusable(true); // GamePanel in focus to receive input
 	}
 	
-	public void setupGame() {		
+	protected void setupGame() {		
 		
-//		gameState = titleState;	
-//		currentArea = outside;
-		gameState = playState;
- 		currentArea = inside;
+		gameState = titleState;	
+		currentArea = outside;
+//		gameState = playState;
+// 		currentArea = inside;
 		
 		setupMusic();
 
@@ -143,7 +149,7 @@ public class GamePanel extends JPanel implements Runnable {
 			setFullScreen();
 	}
 		
-	public void setFullScreen() {
+	private void setFullScreen() {
 		
 		// GET SYSTEM SCREEN
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -155,7 +161,7 @@ public class GamePanel extends JPanel implements Runnable {
 		screenHeight2 = Driver.window.getHeight();
 	}
 	
-	public void startGameThread() {		
+	protected void startGameThread() {		
 		gameThread = new Thread(this); // new Thread with GamePanel class
 		gameThread.start(); // calls run() method
 	}
@@ -191,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
-	public void update() {
+	private void update() {
 				
 		// GAME PLAYING
 		if (gameState == playState || gameState == objectState) {
@@ -259,6 +265,14 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 		}
+		else if (gameState == cutsceneState) {
+			
+			// UPDATE NPCs
+			for (int i = 0; i < npc[1].length; i++) {
+				if (npc[currentMap][i] != null)
+					npc[currentMap][i].update();
+			}
+		}
 		
 		// GAME PAUSED
 		if (gameState == pauseState) { }
@@ -275,10 +289,37 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setEnemy();
 	}
 	
+	private void removeTempEntity() {
+
+		for (int mapNum = 0; mapNum < maxMap; mapNum++) {
+			
+			for (int i = 0; i < npc[1].length; i++) {
+				if (npc[mapNum][i] != null && npc[mapNum][i].temp) {
+					npc[mapNum][i] = null;
+				}
+			}	
+			for (int i = 0; i < enemy[1].length; i++) {
+				if (enemy[mapNum][i] != null && enemy[mapNum][i].temp) {
+					enemy[mapNum][i] = null;
+				}
+			}				
+			for (int i = 0; i < obj[1].length; i++) {
+				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
+					obj[mapNum][i] = null;
+				}
+			}			
+		}
+	}
+	
 	public void resetGame(boolean restart) {
 		stopMusic();
 		
-		currentArea = outside;
+		bossBattleOn = false;
+		removeTempEntity();
+		currentArea = outside;	
+		csManager.scene = csManager.NA;
+		csManager.phase = 0;
+		
 		player.alive = true;		
 		player.restoreStatus();
 		player.setDefaultPosition();	
@@ -298,7 +339,6 @@ public class GamePanel extends JPanel implements Runnable {
 		setupMusic();
 	}
 	
-	// SOUND HANDLER **/
 	public void setupMusic() {
 		
 		if (gameState == titleState) playMusic(0);			
@@ -306,7 +346,7 @@ public class GamePanel extends JPanel implements Runnable {
 			if (currentMap == 0) playMusic(2);
 			else if (currentMap == 1) playMusic(3);
 			else if (currentMap == 2) playMusic(4);
-			else if (currentMap == 3) playMusic(5);
+			else if (currentMap == 3) playMusic(4);
 		}
 	}	
 	public void playMusic(int c) {		
@@ -321,9 +361,8 @@ public class GamePanel extends JPanel implements Runnable {
 		se.setFile(i, c);
 		se.play();
 	}	
-	/** END SOUND HANDLER **/
-	
-	public void drawToTempScreen() {
+
+	private void drawToTempScreen() {
 		
 		// TITLE SCREEN
 		if (gameState == titleState) {
@@ -376,9 +415,12 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// DRAW MINIMAP
 			map.drawMiniMap(g2);
+			
+			// DRAW CUTSCENE
+			csManager.draw(g2);
 		}		
 	}
-	public void drawToScreen() {		
+	private void drawToScreen() {		
 		Graphics g = getGraphics();
 		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
 		g.dispose();

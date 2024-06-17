@@ -7,9 +7,9 @@ import object.*;
 
 public class EntityGenerator {
 
-	GamePanel gp;
+	private GamePanel gp;
 	
-	public EntityGenerator(GamePanel gp) {
+	protected EntityGenerator(GamePanel gp) {
 		this.gp = gp;
 	}
 	
@@ -18,8 +18,8 @@ public class EntityGenerator {
 		Entity obj = null;
 		
 		switch (itemName) {		
-			case EQP_Sword_Old.itmName: obj = new EQP_Sword_Old(gp); break;
-			case EQP_Shield_Old.itmName: obj = new EQP_Shield_Old(gp); break;
+			case EQP_Sword_Old.eqpName: obj = new EQP_Sword_Old(gp); break;
+			case EQP_Shield_Old.eqpName: obj = new EQP_Shield_Old(gp); break;
 			
 			case ITM_Axe.itmName: obj = new ITM_Axe(gp); break;
 			case ITM_Bomb.itmName: obj = new ITM_Bomb(gp); break;		
@@ -31,19 +31,19 @@ public class EntityGenerator {
 			case ITM_Lantern.itmName: obj = new ITM_Lantern(gp); break;
 			case ITM_Shovel.itmName: obj = new ITM_Shovel(gp); break;	
 									
-			case COL_Arrow.itmName: obj = new COL_Arrow(gp); break;
-			case COL_Bomb.itmName: obj = new COL_Bomb(gp); break;
-			case COL_Heart.itmName: obj = new COL_Heart(gp); break;
-			case COL_Key.itmName: obj = new COL_Key(gp); break;
-			case COL_Potion_Red.itmName: obj = new COL_Potion_Red(gp); break;
-			case COL_Rupee_Blue.itmName: obj = new COL_Rupee_Blue(gp); break;
-			case COL_Rupee_Green.itmName: obj = new COL_Rupee_Green(gp); break;
-			case COL_Rupee_Red.itmName: obj = new COL_Rupee_Red(gp); break;
+			case COL_Arrow.colName: obj = new COL_Arrow(gp); break;
+			case COL_Bomb.colName: obj = new COL_Bomb(gp); break;
+			case COL_Heart.colName: obj = new COL_Heart(gp); break;
+			case COL_Key.colName: obj = new COL_Key(gp); break;
+			case COL_Potion_Red.colName: obj = new COL_Potion_Red(gp); break;
+			case COL_Rupee_Blue.colName: obj = new COL_Rupee_Blue(gp); break;
+			case COL_Rupee_Green.colName: obj = new COL_Rupee_Green(gp); break;
+			case COL_Rupee_Red.colName: obj = new COL_Rupee_Red(gp); break;
 			
-			case OBJ_Door.itmName: obj = new OBJ_Door(gp); break;
-			case OBJ_Door_Iron.itmName: obj = new OBJ_Door_Iron(gp); break;
-			case OBJ_Chest.itmName: obj = new OBJ_Chest(gp); break;
-			case OBJ_Tent.itmName: obj = new OBJ_Tent(gp); break;
+			case OBJ_Door.objName: obj = new OBJ_Door(gp); break;
+			case OBJ_Door_Iron.objName: obj = new OBJ_Door_Iron(gp); break;
+			case OBJ_Chest.objName: obj = new OBJ_Chest(gp); break;
+			case OBJ_Tent.objName: obj = new OBJ_Tent(gp); break;
 		}
 		
 		return obj;		

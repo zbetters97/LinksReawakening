@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class KeyHandler implements KeyListener{
 
-	GamePanel gp;
-	public boolean lock = true;
+	private GamePanel gp;
+	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
 	public boolean actionPressed, guardPressed, lockPressed, itemPressed, tabPressed;
 	public boolean debug = false;
-	public String keyboardLetters;
-	public boolean isCapital = true;
+	private String keyboardLetters;
+	protected boolean isCapital = true;
 	
 	public KeyHandler(GamePanel gp) {
 		this.gp = gp;
@@ -48,7 +48,7 @@ public class KeyHandler implements KeyListener{
 			characterState(code);
 		}
 		// DIALOGUE STATE
-		else if (gp.gameState == gp.dialogueState) {
+		else if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
 			dialogueState(code);
 		}		
 		// TRADE STATE
@@ -63,10 +63,13 @@ public class KeyHandler implements KeyListener{
 		else if (gp.gameState == gp.gameOverState) {
 			gameOverState(code);
 		}
+		else if (gp.gameState == gp.endingState) {
+			endingState(code);
+		}
 	}
 		
 	// TITLE	
-	public void titleState(int code) { 
+	private void titleState(int code) { 
 		
 		// MAIN MENU
 		if (gp.ui.titleScreenState == 0) {			
@@ -77,7 +80,7 @@ public class KeyHandler implements KeyListener{
 			newGameMenu(code);	
 		}
 	}
-	public void mainMenu(int code) {
+	private void mainMenu(int code) {
 		
 		if (code == KeyEvent.VK_UP) {
 			playCursorSE();
@@ -235,7 +238,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// PLAY
-	public void playState(int code) { 
+	private void playState(int code) { 
 		
 		/* 
 		 * ARROWS: MOVEMENT
@@ -263,16 +266,16 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }		
 		
 		if (code == KeyEvent.VK_E) { 
-			gp.ui.playMenuOpenSE();
+			playMenuOpenSE();
 			gp.gameState = gp.characterState;
 		}
 		if (code == KeyEvent.VK_ESCAPE) {
-			gp.ui.playMenuOpenSE();
+			playMenuOpenSE();
 			gp.gameState = gp.pauseState;
 		}
 		
 		if (code == KeyEvent.VK_M) {
-			gp.ui.playMapOpenSE();
+			playMapOpenSE();
 			gp.gameState = gp.mapState;
 		}
 		if (code == KeyEvent.VK_N) {
@@ -291,7 +294,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// PAUSE
-	public void pauseState(int code) { 
+	private void pauseState(int code) { 
 		
 		int maxCommandNum = 0;
 		switch (gp.ui.subState) {
@@ -340,7 +343,7 @@ public class KeyHandler implements KeyListener{
 		}
 		
 		if (code == KeyEvent.VK_ESCAPE) {
-			gp.ui.playMenuCloseSE();
+			playMenuCloseSE();
 			gp.ui.commandNum = 0;
 			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
@@ -352,17 +355,17 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// MAP
-	public void mapState(int code) {
+	private void mapState(int code) {
 		if (code == KeyEvent.VK_M) {
 			gp.gameState = gp.playState;
 		}
 	}
 	
 	// CHARACTER
-	public void characterState(int code) { 
+	private void characterState(int code) { 
 		
 		if (code == KeyEvent.VK_E) {
-			gp.ui.playMenuCloseSE();
+			playMenuCloseSE();
 			gp.gameState = gp.playState;
 		}
 		if (code == KeyEvent.VK_SPACE) {			
@@ -372,7 +375,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	//INVENTORY	
-	public void playerInventory(int code) {
+	private void playerInventory(int code) {
 		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.playerSlotRow != 0) {
 				playCursorSE(); 
@@ -400,7 +403,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// DIALOGUE
-	public void dialogueState(int code) { 
+	private void dialogueState(int code) { 
 		if (code == KeyEvent.VK_SPACE && lock) {						
 			actionPressed = true;			
 			lock = false;
@@ -408,7 +411,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// ITEM GET	
-	public void itemGetState(int code) {
+	private void itemGetState(int code) {
 		if (code == KeyEvent.VK_SPACE) {
 						
 			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
@@ -423,7 +426,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// TRADE
-	public void tradeState(int code) {
+	private void tradeState(int code) {
 						
 		if (code == KeyEvent.VK_SPACE && lock) {			
 			playSelectSE();
@@ -461,7 +464,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// NPC INVENTORY
-	public void npcInventory(int code) {
+	private void npcInventory(int code) {
 		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.npcSlotRow != 0) {
 				playCursorSE(); 
@@ -489,7 +492,7 @@ public class KeyHandler implements KeyListener{
 	}
 	
 	// GAME OVER
-	public void gameOverState(int code) {
+	private void gameOverState(int code) {
 		
 		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.commandNum != 0) {
@@ -523,6 +526,16 @@ public class KeyHandler implements KeyListener{
 		}
 	}
 	
+	// ENDING 
+	private void endingState(int code) {
+		
+		if (code == KeyEvent.VK_ESCAPE) {
+			gp.gameState = gp.titleState;
+			gp.ui.commandNum = 0;
+			gp.resetGame(true);
+		}
+	}
+	
 	@Override
 	public void keyReleased(KeyEvent e) {	
 		int code = e.getKeyCode();
@@ -545,4 +558,14 @@ public class KeyHandler implements KeyListener{
 	public void playSelectSE() {
 		gp.playSE(1, 1);
 	}
+	public void playMenuOpenSE() {
+		gp.playSE(1, 8);
+	}
+	public void playMenuCloseSE() {
+		gp.playSE(1, 9);
+	}
+	public void playMapOpenSE() {
+		gp.playSE(1, 14);
+	}
+
 }

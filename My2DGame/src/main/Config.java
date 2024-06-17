@@ -8,13 +8,13 @@ import java.io.IOException;
 
 public class Config {
 	
-	GamePanel gp;
+	private GamePanel gp;
 	
 	public Config(GamePanel gp) {
 		this.gp = gp;
 	}
 	
-	public void saveConfig() {
+	protected void saveConfig() {
 		
 		try {
 			// IMPORT FILE
@@ -48,8 +48,7 @@ public class Config {
 			e.printStackTrace();
 		}
 	}
-	
-	public void loadConfig() {
+	protected void loadConfig() {
 		
 		try {
 			// IMPORT FILE

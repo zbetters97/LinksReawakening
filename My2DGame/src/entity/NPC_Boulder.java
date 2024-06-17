@@ -150,7 +150,7 @@ public class NPC_Boulder extends Entity{
 				// REMOVE IRON DOOR
 				if (gp.obj[gp.currentMap][i] != null && 
 						gp.obj[gp.currentMap][i].name != null &&
-						gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Iron.itmName)) {
+						gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Iron.objName)) {
 					
 					gp.obj[gp.currentMap][i].playSE();
 					gp.obj[gp.currentMap][i] = null;

@@ -9,20 +9,21 @@ import javax.sound.sampled.FloatControl;
 
 public class Sound {
 	
-	Clip clip;
-	URL sounds[][] = new URL[5][];
-	URL music[] = new URL[30];
-	URL player[] = new URL[30];
-	URL enemy[] = new URL[30];	
-	URL objects[] = new URL[30];
-	URL misc[] = new URL[30];
+	// CLIP HOLDERS
+	protected Clip clip;
+	private URL sounds[][] = new URL[5][];
+	private URL music[] = new URL[30];	
+	private URL misc[] = new URL[30];
+	private URL player[] = new URL[30];
+	private URL objects[] = new URL[30];
+	private URL enemy[] = new URL[30];	
 	
 	// VOLUME SLIDER
-	FloatControl fc;
-	int volumeScale = 3;
-	float volume;
+	private FloatControl fc;
+	protected int volumeScale = 3;
+	protected float volume;
 	
-	public Sound() {
+	protected Sound() {
 		
 		// 0
 		music[0] = getClass().getResource("/sound/MUSIC_MENU_MAIN.wav");
@@ -77,6 +78,10 @@ public class Sound {
 		enemy[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");
 		enemy[1] = getClass().getResource("/sound/ENEMY_NORMAL_HIT.wav");		
 		enemy[2] = getClass().getResource("/sound/ENEMY_SMALL_DIE.wav");
+		enemy[3] = getClass().getResource("/sound/ENEMY_SWORD_LARGE.wav");
+		enemy[4] = getClass().getResource("/sound/BOSS_HIT.wav");
+		enemy[5] = getClass().getResource("/sound/BOSS_DIE.wav");
+		
 		
 		sounds[0] = music; 
 		sounds[1] = misc; 
@@ -84,7 +89,7 @@ public class Sound {
 		sounds[3] = objects; 
 		sounds[4] = enemy;
 	}	
-	public void setFile(int category, int record) {		
+	protected void setFile(int category, int record) {		
 		try {			
 			AudioInputStream ais = AudioSystem.getAudioInputStream(sounds[category][record]);
 			clip = AudioSystem.getClip();
@@ -98,16 +103,16 @@ public class Sound {
 			e.printStackTrace();
 		}
 	}
-	public void play() {		
+	protected void play() {		
 		clip.start();
 	}	
-	public void loop() {
+	protected void loop() {
 		clip.loop(Clip.LOOP_CONTINUOUSLY);		
 	}	
-	public void stop() {
+	protected void stop() {
 		clip.stop();
 	}
-	public void checkVolume() {
+	protected void checkVolume() {
 		
 		switch(volumeScale) {
 			case 0: volume = -80f; break;

@@ -18,22 +18,22 @@ import entity.Entity;
 
 public class UI {
 	
-	GamePanel gp;
-	Graphics2D g2;
+	private GamePanel gp;
+	private Graphics2D g2;
 	
 	public Font PK_DS;
 		
 	// TITLE SCREEN STATE
-	public int titleScreenState = 0;
+	protected int titleScreenState = 0;
 	
 	// MENU OPTION SELECTION
 	public int commandNum = 0;
 	
 	// HUD
-	BufferedImage heart_full, heart_half, heart_empty, rupee;
-	public String rupee_count = "0";
+	private BufferedImage heart_full, heart_half, heart_empty, rupee;
+	private String rupee_count = "0";
 	public int rupeeCount = -1;
-	public int rCounter = 0;
+	private int rCounter = 0;
 	
 	// OPTIONS MEU
 	public int subState = 0;
@@ -45,22 +45,22 @@ public class UI {
 	public int npcSlotRow = 0;
 	
 	// DIALOGUE HANDLER	
-	ArrayList<String> message = new ArrayList<>();
-	ArrayList<Integer> messageCounter = new ArrayList<>();
+	private ArrayList<String> message = new ArrayList<>();
+	private ArrayList<Integer> messageCounter = new ArrayList<>();
 	public boolean messageOn = false;
 	public String currentDialogue = "";
 	public int dialogueIndex = 0;
 	public int textSpeed = 0;
-	public int dialogueCounter = 0;	
-	public int charIndex = 0;
-	public String combinedText = "";
+	private int dialogueCounter = 0;	
+	private int charIndex = 0;
+	private String combinedText = "";
 	
 	// HINT
 	public String hint = "";
 	public boolean showHint = false;
 	
 	// TRANSITION
-	int counter = 0;
+	private int counter = 0;
 	
 	// NPC ITEM TRANSACTION
 	public Entity npc;
@@ -153,7 +153,7 @@ public class UI {
 	}
 	
 	// TITLE
-	public void drawTitleScreen() {
+	private void drawTitleScreen() {
 		
 		// BACKGROUND
 		g2.setColor(new Color(65, 90, 255));
@@ -313,7 +313,7 @@ public class UI {
 	}
 	
 	// HUD
-	public void drawHUD() {
+	private void drawHUD() {
 		
 		int x = gp.tileSize / 2;
 		int y = gp.tileSize / 2;
@@ -447,7 +447,7 @@ public class UI {
 		message.add(text);		
 		messageCounter.add(0);
 	}
-	public void drawMessage() {
+	private void drawMessage() {
 		
 		int messageX = gp.tileSize;
 		int messageY = gp.tileSize * 4;
@@ -473,7 +473,7 @@ public class UI {
 			}
 		}
 	}
-	public void drawEnemyHPBar() {
+	private void drawEnemyHPBar() {
 		
 		for (int i = 0; i < gp.enemy[1].length; i++) {
 		
@@ -502,7 +502,7 @@ public class UI {
 					g2.fillRect(x, y, (int)hpBarValue, 10);
 													
 					// DRAW BOSS NAME
-					g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
+					g2.setFont(g2.getFont().deriveFont(Font.BOLD, 38f));
 					g2.setColor(Color.WHITE);
 					x = getXforCenteredText(enemy.name);
 					g2.drawString(enemy.name, x, y - 8);
@@ -536,7 +536,7 @@ public class UI {
 	}
 	
 	// PAUSE
-	public void drawPauseScreen() {
+	private void drawPauseScreen() {
 						
 		g2.setColor(Color.white);
 		g2.setFont(g2.getFont().deriveFont(32F));
@@ -557,7 +557,7 @@ public class UI {
 		}
 		gp.keyH.actionPressed = false;
 	}
-	public void options_top(int frameX, int frameY) {
+	private void options_top(int frameX, int frameY) {
 		
 		int textX;
 		int textY;
@@ -670,7 +670,7 @@ public class UI {
 		
 		gp.config.saveConfig();
 	}
-	public void options_fullscreenNotif(int frameX, int frameY) {
+	private void options_fullscreenNotif(int frameX, int frameY) {
 		
 		int textX = frameX + gp.tileSize;
 		int textY = frameX + gp.tileSize;
@@ -694,7 +694,7 @@ public class UI {
 			}
 		}
 	}
-	public void options_controls(int frameX, int frameY) {
+	private void options_controls(int frameX, int frameY) {
 		
 		int textX;
 		int textY;
@@ -738,7 +738,7 @@ public class UI {
 			}
 		}
 	}
-	public void options_quitGameConfirm(int frameX, int frameY) {
+	private void options_quitGameConfirm(int frameX, int frameY) {
 		
 		// TITLE
 		String text = "Return to the title screen?";
@@ -778,7 +778,7 @@ public class UI {
 	}
 	
 	// CHARACTER
-	public void drawCharacterScreen() {
+	private void drawCharacterScreen() {
 		
 		// WINDOW
 		final int frameX = gp.tileSize;
@@ -823,18 +823,18 @@ public class UI {
 		drawCharacterText(gp.player.exp, tailX, textY); textY += lineHeight;
 		drawCharacterText(gp.player.nextLevelEXP, tailX, textY);
 	}
-	public void drawCharacterText(int playerValue, int tailX, int textY) {
+	private void drawCharacterText(int playerValue, int tailX, int textY) {
 		String value = String.valueOf(playerValue);
 		int textX = getXforRightAlignText(value, tailX);
 		g2.drawString(value, textX, textY);
 	}
-	public void drawCharacterText(String value, int tailX, int textY) {
+	private void drawCharacterText(String value, int tailX, int textY) {
 		int textX = getXforRightAlignText(value, tailX);
 		g2.drawString(value, textX, textY);
 	}
 	
 	// INVENTORY
-	public void drawInventory(Entity entity, boolean cursor) {
+	private void drawInventory(Entity entity, boolean cursor) {
 		
 		// ITEM WINDOW
 		int frameX = 0;
@@ -958,7 +958,12 @@ public class UI {
 	
 	// DIALOGUE
 	public void drawDialogueScreen() {
-				
+		
+		if (npc.hasCutscene) {
+			gp.csManager.scene = gp.csManager.npc;
+			gp.gameState = gp.cutsceneState;
+		}
+		
 		gp.player.attackCanceled = false;
 		
 		int x = gp.tileSize * 2;
@@ -972,10 +977,11 @@ public class UI {
 		y += gp.tileSize;	
 	
 		// NPC HAS SOMETHING TO SAY
-		if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {		
+		if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {	
 			
 			if (dialogueCounter == textSpeed) {
-				char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();			
+				char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+
 				if (charIndex < characters.length) {
 					
 					playDialogueSE();
@@ -986,11 +992,10 @@ public class UI {
 				}
 	
 				if (gp.keyH.actionPressed) {
-					
 					charIndex = 0;
 					combinedText = "";
 					
-					if (gp.gameState == gp.dialogueState) {
+					if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
 						npc.dialogueIndex++;
 						gp.keyH.actionPressed = false;
 					}				
@@ -1004,15 +1009,17 @@ public class UI {
 		else {			
 			npc.dialogueIndex = 0;
 			
-			if (npc != null && npc.hasItemToGive) {
+			if (gp.gameState == gp.cutsceneState) {
+				gp.csManager.phase++;
+			}			
+			else if (npc != null && npc.hasItemToGive) {
 				gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
 			}		
 			else {
 				gp.ui.playDialogueFinishSE();				
 				gp.gameState = gp.playState;
 			}	
-		}
-		
+		}		
 		
   		for (String line : currentDialogue.split("\n")) { 
 			g2.drawString(line, x, y);	
@@ -1023,11 +1030,11 @@ public class UI {
 		x = getXforCenteredText(text);
 		y = gp.tileSize * 11;
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
-		g2.drawString(text, x, y + 30);
+  		g2.drawString(text, x, y + 30);
 	}
 
-	// ITEM GET
-	public void drawItemGetScreen() {
+	// ITEM GET 
+	private void drawItemGetScreen() {
 	
 		int x = gp.tileSize * 2;
 		int y = gp.screenWidth / 2;
@@ -1052,7 +1059,7 @@ public class UI {
 	}
 			
 	// TRADE
-	public void drawTradeScreen() {
+	private void drawTradeScreen() {
 					
 		switch (subState) {
 			case 0: trade_select(); break;
@@ -1062,7 +1069,7 @@ public class UI {
 		
 		gp.keyH.actionPressed = false;
 	}
-	public void trade_select() {
+	private void trade_select() {
 				
 		npc.dialogueSet = 0;
 		drawDialogueScreen();
@@ -1103,7 +1110,7 @@ public class UI {
 			}	
 		}
 	}
-	public void trade_buy() {
+	private void trade_buy() {
 		
 		drawInventory(gp.player, false);
 		drawInventory(npc, true);
@@ -1171,7 +1178,7 @@ public class UI {
 			} 
 		}		
 	}
-	public void trade_sell() {
+	private void trade_sell() {
 		
 		// DRAW PLAYER INVENTORY
 		drawInventory(gp.player, true);
@@ -1244,7 +1251,7 @@ public class UI {
 	}
 		
 	// TRANSITION
-	public void drawTransition() {
+	private void drawTransition() {
 		
 		// DARKEN SCREEN
 		counter++;
@@ -1268,7 +1275,7 @@ public class UI {
 	}
 	
 	// SLEEP
-	public void drawSleepScreen() {
+	private void drawSleepScreen() {
 		
 		counter++;
 		if (counter < 120) { // DARKEN FOR 2 SECONDS
@@ -1294,7 +1301,7 @@ public class UI {
 	}
 	
 	// GAME OVER
-	public void drawGameOverScreen() {
+	private void drawGameOverScreen() {
 				
 		if (deathSprite < 18)
 			playerDeathAnimation();		
@@ -1344,7 +1351,7 @@ public class UI {
 			}
 		}
 	}
-	public void playerDeathAnimation() {
+	private void playerDeathAnimation() {
 						
 		// CHANGE IMAGE EVERY 6 FRAMES
 		deathCounter++;
@@ -1367,26 +1374,17 @@ public class UI {
 	}
 	
 	// SOUND EFFECTS
-	public void playDialogueSE() {
+	private void playDialogueSE() {
 		gp.playSE(1, 11);
 	}
-	public void playDialogueFinishSE() {
+	private void playDialogueFinishSE() {
 		gp.playSE(1, 12);
 	}
-	public void playMenuOpenSE() {
-		gp.playSE(1, 8);
-	}
-	public void playMenuCloseSE() {
-		gp.playSE(1, 9);
-	}
-	public void playMapOpenSE() {
-		gp.playSE(1, 14);
-	}
-	public void playWalletSE() {
+	private void playWalletSE() {
 		gp.playSE(1, 15);
 	}
 	
-	public void drawSubWindow(int x, int y, int width, int height) {
+	private void drawSubWindow(int x, int y, int width, int height) {
 		
 		// BLACK COLOR (RGB, Transparency)
 		Color c = new Color(0,0,0,220);

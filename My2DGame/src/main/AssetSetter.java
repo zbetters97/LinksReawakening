@@ -1,6 +1,7 @@
 package main;
 
 import collectable.COL_Rupee_Red;
+import data.Progress;
 import enemy.*;
 import entity.*;
 import item.ITM_Axe;
@@ -15,13 +16,13 @@ import tile_interactive.*;
 
 public class AssetSetter {
 	
-	GamePanel gp;
+	private GamePanel gp;
 	
-	public AssetSetter(GamePanel gp) {
+	protected AssetSetter(GamePanel gp) {
 		this.gp = gp;
 	}
 		
-	public void setObject() {		
+	protected void setObject() {		
 		
 		int mapNum = 0;
 		int i = 0;
@@ -35,26 +36,29 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 16;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 21;	
 		i++;	
-		gp.obj[mapNum][i] = new ITM_Boots(gp);
+		gp.obj[mapNum][i] = new OBJ_Chest(gp);
+		gp.obj[mapNum][i].setLoot(new ITM_Boots(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 16;
 		i++;	
-		gp.obj[mapNum][i] = new ITM_Hookshot(gp);
+		gp.obj[mapNum][i] = new OBJ_Chest(gp);
+		gp.obj[mapNum][i].setLoot(new ITM_Hookshot(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 31;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 21;		
 		i++;	
-		gp.obj[mapNum][i] = new ITM_Feather(gp);
+		gp.obj[mapNum][i] = new OBJ_Chest(gp);
+		gp.obj[mapNum][i].setLoot(new ITM_Feather(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 12;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 32;
-		i++;	
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new ITM_Bow(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 34;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 8;		
 		i++;	
 		gp.obj[mapNum][i] = new OBJ_Tent(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 40;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 11;
+		i++;	
+		gp.obj[mapNum][i] = new OBJ_Chest(gp);
+		gp.obj[mapNum][i].setLoot(new ITM_Bow(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 35;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 7;		
 		i++;	
 		
 		mapNum = 2;
@@ -64,8 +68,21 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 23;	
 		i++;
+		
+		mapNum = 3;
+		i = 0;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Iron(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
+		i++;	
+		
+		gp.obj[mapNum][i] = new OBJ_BlueHeart(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 8;	
+		i++;	
 	}	
-	public void setNPC() {
+	protected void setNPC() {
 		
 		int mapNum = 0;
 		int i = 0;
@@ -73,6 +90,15 @@ public class AssetSetter {
 		gp.npc[mapNum][i] = new NPC_OldMan(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 30;
 		gp.npc[mapNum][i].worldY = gp.tileSize * 29;
+		i++;
+		
+		gp.npc[mapNum][i] = new NPC_Traveler_1(gp);
+		gp.npc[mapNum][i].worldX = gp.tileSize * 20;
+		gp.npc[mapNum][i].worldY = gp.tileSize * 21;
+		i++;
+		gp.npc[mapNum][i] = new NPC_Traveler_2(gp);
+		gp.npc[mapNum][i].worldX = gp.tileSize * 24;
+		gp.npc[mapNum][i].worldY = gp.tileSize * 15;
 		i++;
 		
 		mapNum = 1;
@@ -135,11 +161,14 @@ public class AssetSetter {
 		
 		mapNum = 3;
 		i = 0;
-		gp.enemy[mapNum][i] = new BOS_Skeleton(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 16;
+		
+		if (!Progress.bossDefeated) {
+			gp.enemy[mapNum][i] = new BOS_Skeleton(gp);
+			gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
+			gp.enemy[mapNum][i].worldY = gp.tileSize * 16;
+		}
 	}
-	public void setInteractiveTiles() {
+	protected void setInteractiveTiles() {
 		
 		int mapNum = 0;
 		int i = 0;
@@ -150,8 +179,12 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 30, 36, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 27, 16, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 31, 25, new ITM_Lantern(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 30, 21); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 32, 21); i++;		
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 29, 20); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 29, 21); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 29, 22); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 33, 20); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 33, 21); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 33, 22); i++;
 		
 		mapNum = 2;
 		i = 0;
