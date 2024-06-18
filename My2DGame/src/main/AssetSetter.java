@@ -75,8 +75,7 @@ public class AssetSetter {
 		gp.obj[mapNum][i] = new OBJ_Door_Iron(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
-		i++;	
-		
+		i++;			
 		gp.obj[mapNum][i] = new OBJ_BlueHeart(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 8;	
@@ -173,9 +172,9 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.iTile[mapNum][i] = new IT_DryTree(gp, 13, 21); i++;
-		gp.iTile[mapNum][i] = new IT_DryTree(gp, 36, 30); i++;
-		gp.iTile[mapNum][i] = new IT_DryTree(gp, 21, 16); i++;
+//		gp.iTile[mapNum][i] = new IT_DryTree(gp, 13, 21); i++;
+//		gp.iTile[mapNum][i] = new IT_DryTree(gp, 36, 30); i++;
+//		gp.iTile[mapNum][i] = new IT_DryTree(gp, 21, 16); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 30, 36, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 27, 16, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 31, 25, new ITM_Lantern(gp)); i++;

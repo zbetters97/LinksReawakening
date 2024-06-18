@@ -668,8 +668,9 @@ public class Entity {
 		
 		// LONGER DYING ANIMATION FOR BOSSES
 		if (boss) {
-			if (dyingCounter > 180) 
+			if (dyingCounter > 180) {
 				alive = false;		
+			}
 		}
 		else {
 			if (dyingCounter > 40) 

@@ -2,6 +2,7 @@ package main;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 import enemy.BOS_Skeleton;
@@ -37,11 +38,12 @@ public class CutsceneManager {
 		npc2 = null;
 		
 		credits = "Director/Programmer/Writer\n"
-				+ "zbetters97"
+				+ "Zachary Betters"
 				+ "\n\n\n\n\n\n\n\n\n\n"
 				+ "Special thanks to...\n"
 				+ "RyiSnow\n"
-				+ "Nintendo\n\n\n"
+				+ "Nintendo\n"
+				+ "Jenna Betters\n"
 				+ "And you, the player!"
 				+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 				+ "THE END?";
@@ -138,7 +140,7 @@ public class CutsceneManager {
 			scene = NA;
 			phase = 0;
 			
-			gp.playMusic(5);
+			playBossMusic();
 			gp.gameState = gp.playState;			
 		}
 	}
@@ -153,15 +155,13 @@ public class CutsceneManager {
 			gp.ui.drawDialogueScreen();
 		}		
 		else if (phase == 2) {
-			// PLAY VICTORY SOUND EFFECT
+			playEndingMusic();
 			phase++;
 		}
 		else if (phase == 3) {
 			
 			// PAUSE FOR 3 SECONDS
 			if (counterReached(180)) {
-				
-				// PLAY ENDING MUSIC
 				phase++;
 			}
 		}
@@ -200,8 +200,23 @@ public class CutsceneManager {
 		}
 		else if (phase == 6) {
 			drawBlackScreen(1f);			
-			drawString(1f, 100f, gp.screenHeight / 2, "Link's Reawakening", 40);
 			
+			// SUBTITLE NAME
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
+			String text = "The Legend of Zelda";
+			int x = gp.ui.getXforCenteredText(text);
+			int y = gp.tileSize * 5;
+			g2.setColor(Color.RED);
+			g2.drawString(text, x, y);
+			
+			// TITLE NAME
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 90F));
+			text = "LINK'S REAWAKENING";
+			x = gp.ui.getXforCenteredText(text);
+			y += gp.tileSize * 1.5;
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x+10, y);
+						
 			// WAIT 8 SECONDS
 			if (counterReached(360)) {
 				gp.gameState = gp.endingState;
@@ -223,7 +238,7 @@ public class CutsceneManager {
 			drawBlackScreen(1f);
 			
 			// SCROLL CREDITS			
-			if (y >= -920) {
+			if (y >= -880) {
 				y--;
 			}	
 			else {
@@ -232,7 +247,6 @@ public class CutsceneManager {
 			drawString(1f, 38f, y, credits, 40);
 		}
 	}
-	
 	private void scene_npc() {
 		
 		if (phase == 0) {
@@ -262,6 +276,8 @@ public class CutsceneManager {
 				
 				// WAIT UNTIL TRAVELER GETS TO PLAYER
 				if (!npc2.onPath) {
+
+					npc1.direction = "right";
 					
 					npc2.dialogueSet = 1;
 					gp.ui.drawDialogueScreen();
@@ -279,7 +295,7 @@ public class CutsceneManager {
 		}
 		else if (phase == 3) {
 			
-			npc1.setPath(23, 40);
+			npc1.setPath(19, 40);
 			npc2.setPath(21, 41);
 			
 			npc1.onPath = true;
@@ -336,5 +352,12 @@ public class CutsceneManager {
 		}
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+	}
+	
+	private void playBossMusic() {
+		gp.playMusic(5);
+	}
+	private void playEndingMusic() {
+		gp.playMusic(7);
 	}
 }

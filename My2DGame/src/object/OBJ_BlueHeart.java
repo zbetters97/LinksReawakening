@@ -21,8 +21,14 @@ public class OBJ_BlueHeart extends Entity {
 	}	
 	
 	public void setDialogue() {
-		dialogues[0][0] = "You found the treasure!";
-		dialogues[0][1] = "Is this what everyone was fighting over?...";
+		dialogues[0][0] = "You found the Blue Heart!";
+		dialogues[0][1] = "It shines and sparkles as you move it\naround!";
+		dialogues[0][2] = "...";
+		dialogues[0][3] = "...";
+		dialogues[0][4] = "...?";
+		dialogues[0][5] = "Is this what everyone has been\nsearching for?...";
+		dialogues[0][6] = "...what they've been fighting over?";
+		dialogues[0][7] = "...";
 	}
 	
 	public boolean use(Entity entity) {

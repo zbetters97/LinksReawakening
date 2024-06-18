@@ -32,6 +32,8 @@ public class Sound {
 		music[3] = getClass().getResource("/sound/MUSIC_SHOP.wav");
 		music[4] = getClass().getResource("/sound/MUSIC_DUNGEON_LIGHT.wav");
 		music[5] = getClass().getResource("/sound/MUSIC_BOSS.wav");
+		music[6] = getClass().getResource("/sound/MUSIC_BOSS_DEFEAT.wav");
+		music[7] = getClass().getResource("/sound/MUSIC_CREDITS.wav");
 		
 		// 1
 		misc[0] = getClass().getResource("/sound/MENU_CURSOR.wav");

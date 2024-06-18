@@ -45,14 +45,14 @@ public class EMY_Bat extends Entity {
 	
 	public void setAction() {
 		
-		if (onPath) {			
+/*		if (onPath) {			
 			isOffPath(gp.player, 10);				
 			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
 		}
 		else {				
 			isOnPath(gp.player, 5);
-			getDirection(25);
-		}
+*/			getDirection(25);
+//		}	
 	}
 	
 	// BAT CHASES PLAYER WHEN HIT

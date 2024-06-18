@@ -44,7 +44,10 @@ public class NPC_OldMan extends Entity {
 	
 	public void setDialogue() {
 		dialogues[0][0] = "Many years ago, a boy just like you came\nup to me. He faced many challenges...";
-		dialogues[0][1] = "It's dangerous to go alone...\nTake this!";
+		dialogues[0][1] = "He sought after the golden triangle...\nWhat people seek after today\nis far more dangerous.";
+		dialogues[0][2] = "You seem like a brave boy.\nUnderstand the importance of what you are\ndealing with.";
+		dialogues[0][3] = "Don't be foolish when seeking the\nBlue Heart.";
+		dialogues[0][4] = "It's dangerous to go alone...\nTake this!";
 		
 		dialogues[1][0] = "My home lies in the northeast region.\nIs it safe to walk there?";
 		

@@ -103,7 +103,7 @@ public class Player extends Entity {
 		
 		// PLAYER ATTRIBUTES
 		level = 1;
-		maxLife = 8; life = maxLife;
+		maxLife = 10; life = maxLife;
 		strength = 1; dexterity = 1;
 		exp = 0; nextLevelEXP = 10;
 		walletSize = 99; rupees = 0;

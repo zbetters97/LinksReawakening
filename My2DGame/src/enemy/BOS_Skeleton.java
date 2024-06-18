@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 
 import data.Progress;
 import entity.Entity;
-import item.ITM_Hookshot;
 import main.GamePanel;
 import object.OBJ_Door_Iron;
 
@@ -23,10 +22,10 @@ public class BOS_Skeleton extends Entity {
 		name = emyName;
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 10; defense = 2;
+		attack = 4; defense = 1;
 		knockbackPower = 5;
 		exp = 50;
-		maxLife = 3; life = maxLife;
+		maxLife = 12; life = maxLife;
 		currentBossPhase = bossPhase_1;
 		
 		swingSpeed1 = 45;
@@ -166,7 +165,6 @@ public class BOS_Skeleton extends Entity {
 	// DROPPED ITEM
 	public void checkDrop() {		
 		gp.stopMusic();		
-		// PLAY VICTORY MUSIC
 		
 		gp.bossBattleOn = false;
 		Progress.bossDefeated = true;		
@@ -180,6 +178,7 @@ public class BOS_Skeleton extends Entity {
 			}
 		}
 		
-		dropItem(new ITM_Hookshot(gp));
+//		dropItem(new ITM_Hookshot(gp));
+		gp.playSE(0, 6);
 	}
 }
