@@ -49,24 +49,24 @@ public class BOS_Skeleton extends Entity {
 		int scale = gp.tileSize * 5;
 		
 		if (currentBossPhase == bossPhase_1) {
-			up1 = setup("/enemy/skeletonlord_up_1", scale, scale);
-			up2 = setup("/enemy/skeletonlord_up_2", scale, scale);
-			down1 = setup("/enemy/skeletonlord_down_1", scale, scale);
-			down2 = setup("/enemy/skeletonlord_down_2", scale, scale);
-			left1 = setup("/enemy/skeletonlord_left_1", scale, scale);
-			left2 = setup("/enemy/skeletonlord_left_2", scale, scale);
-			right1 = setup("/enemy/skeletonlord_right_1", scale, scale);
-			right2 = setup("/enemy/skeletonlord_right_2", scale, scale);
+			up1 = setup("/boss/skeletonlord_up_1", scale, scale);
+			up2 = setup("/boss/skeletonlord_up_2", scale, scale);
+			down1 = setup("/boss/skeletonlord_down_1", scale, scale);
+			down2 = setup("/boss/skeletonlord_down_2", scale, scale);
+			left1 = setup("/boss/skeletonlord_left_1", scale, scale);
+			left2 = setup("/boss/skeletonlord_left_2", scale, scale);
+			right1 = setup("/boss/skeletonlord_right_1", scale, scale);
+			right2 = setup("/boss/skeletonlord_right_2", scale, scale);
 		}
 		else {
-			up1 = setup("/enemy/skeletonlord_phase2_up_1", scale, scale);
-			up2 = setup("/enemy/skeletonlord_phase2_up_2", scale, scale);
-			down1 = setup("/enemy/skeletonlord_phase2_down_1", scale, scale);
-			down2 = setup("/enemy/skeletonlord_phase2_down_2", scale, scale);
-			left1 = setup("/enemy/skeletonlord_phase2_left_1", scale, scale);
-			left2 = setup("/enemy/skeletonlord_phase2_left_2", scale, scale);
-			right1 = setup("/enemy/skeletonlord_phase2_right_1", scale, scale);
-			right2 = setup("/enemy/skeletonlord_phase2_right_2", scale, scale);
+			up1 = setup("/boss/skeletonlord_phase2_up_1", scale, scale);
+			up2 = setup("/boss/skeletonlord_phase2_up_2", scale, scale);
+			down1 = setup("/boss/skeletonlord_phase2_down_1", scale, scale);
+			down2 = setup("/boss/skeletonlord_phase2_down_2", scale, scale);
+			left1 = setup("/boss/skeletonlord_phase2_left_1", scale, scale);
+			left2 = setup("/boss/skeletonlord_phase2_left_2", scale, scale);
+			right1 = setup("/boss/skeletonlord_phase2_right_1", scale, scale);
+			right2 = setup("/boss/skeletonlord_phase2_right_2", scale, scale);
 		}
 	}	
 	public void getAttackImage() {	
@@ -74,24 +74,24 @@ public class BOS_Skeleton extends Entity {
 		int scale = gp.tileSize * 5;
 		
 		if (currentBossPhase == bossPhase_1) {
-			attackUp1 = setup("/enemy/skeletonlord_attack_up_1", scale, scale * 2); 
-			attackUp2 = setup("/enemy/skeletonlord_attack_up_2", scale, scale * 2);		
-			attackDown1 = setup("/enemy/skeletonlord_attack_down_1", scale, scale * 2); 
-			attackDown2 = setup("/enemy/skeletonlord_attack_down_2", scale, scale * 2);		
-			attackLeft1 = setup("/enemy/skeletonlord_attack_left_1", scale * 2, scale); 
-			attackLeft2 = setup("/enemy/skeletonlord_attack_left_2", scale * 2, scale);		
-			attackRight1 = setup("/enemy/skeletonlord_attack_right_1", scale * 2, scale); 
-			attackRight2 = setup("/enemy/skeletonlord_attack_right_2", scale * 2, scale);			
+			attackUp1 = setup("/boss/skeletonlord_attack_up_1", scale, scale * 2); 
+			attackUp2 = setup("/boss/skeletonlord_attack_up_2", scale, scale * 2);		
+			attackDown1 = setup("/boss/skeletonlord_attack_down_1", scale, scale * 2); 
+			attackDown2 = setup("/boss/skeletonlord_attack_down_2", scale, scale * 2);		
+			attackLeft1 = setup("/boss/skeletonlord_attack_left_1", scale * 2, scale); 
+			attackLeft2 = setup("/boss/skeletonlord_attack_left_2", scale * 2, scale);		
+			attackRight1 = setup("/boss/skeletonlord_attack_right_1", scale * 2, scale); 
+			attackRight2 = setup("/boss/skeletonlord_attack_right_2", scale * 2, scale);			
 		}
 		else {
-			attackUp1 = setup("/enemy/skeletonlord_phase2_attack_up_1", scale, scale * 2); 
-			attackUp2 = setup("/enemy/skeletonlord_phase2_attack_up_2", scale, scale * 2);		
-			attackDown1 = setup("/enemy/skeletonlord_phase2_attack_down_1", scale, scale * 2); 
-			attackDown2 = setup("/enemy/skeletonlord_phase2_attack_down_2", scale, scale * 2);		
-			attackLeft1 = setup("/enemy/skeletonlord_phase2_attack_left_1", scale * 2, scale); 
-			attackLeft2 = setup("/enemy/skeletonlord_phase2_attack_left_2", scale * 2, scale);		
-			attackRight1 = setup("/enemy/skeletonlord_phase2_attack_right_1", scale * 2, scale); 
-			attackRight2 = setup("/enemy/skeletonlord_phase2_attack_right_2", scale * 2, scale);	
+			attackUp1 = setup("/boss/skeletonlord_phase2_attack_up_1", scale, scale * 2); 
+			attackUp2 = setup("/boss/skeletonlord_phase2_attack_up_2", scale, scale * 2);		
+			attackDown1 = setup("/boss/skeletonlord_phase2_attack_down_1", scale, scale * 2); 
+			attackDown2 = setup("/boss/skeletonlord_phase2_attack_down_2", scale, scale * 2);		
+			attackLeft1 = setup("/boss/skeletonlord_phase2_attack_left_1", scale * 2, scale); 
+			attackLeft2 = setup("/boss/skeletonlord_phase2_attack_left_2", scale * 2, scale);		
+			attackRight1 = setup("/boss/skeletonlord_phase2_attack_right_1", scale * 2, scale); 
+			attackRight2 = setup("/boss/skeletonlord_phase2_attack_right_2", scale * 2, scale);	
 		}
 	}
 	

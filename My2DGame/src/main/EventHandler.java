@@ -86,20 +86,6 @@ public class EventHandler {
 			else if (hit(1, 13, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
 			else if (hit(1, 14, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
 			
-			// DAMAGE PIT 1
-			else if (hit(0, 18, 20, Arrays.asList("left","upleft","downleft"), true)) fall(20, 20);
-			else if (hit(0, 18, 21, Arrays.asList("left","upleft","downleft"), true)) fall(20, 21);
-			else if (hit(0, 18, 22, Arrays.asList("left","upleft","downleft"), true)) fall(20, 22);			
-			else if (hit(0, 18, 20, Arrays.asList("right","upright","downright"), true)) fall(16, 20);
-			else if (hit(0, 18, 21, Arrays.asList("right","upright","downright"), true)) fall(16, 21);
-			else if (hit(0, 18, 22, Arrays.asList("right","upright","downright"), true)) fall(16, 22);
-			
-			// DAMAGE PIT 2
-			else if (hit(0, 37, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(37, 10);
-			else if (hit(0, 38, 9, Arrays.asList("up", "upleft", "upright"), true)) fall(38, 10);			
-			else if (hit(0, 10, 22, Arrays.asList("down", "downleft", "downright"), true)) fall(10, 19);
-			else if (hit(0, 10, 21, Arrays.asList("down", "downleft", "downright"), true)) fall(10, 19);
-			
 			// TELEPORT SPOTS
 			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside); // SHOP ENTRANCE
 			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside); // SHOP EXIT
@@ -230,13 +216,6 @@ public class EventHandler {
 			gp.player.attackCanceled = true;
 			npc.speak();
 		}
-	}
-	private void fall(int x, int y) {			
-		gp.playSE(2, 2);
-		gp.player.falling = true;
-		gp.player.invincible = true;
-		gp.player.safeWorldX = x * gp.tileSize;
-		gp.player.safeWorldY = y * gp.tileSize;
 	}
 	private void teleport(int map, int col, int row, int area) {					
 		gp.playSE(1,10);		

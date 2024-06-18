@@ -39,6 +39,8 @@ public class Entity {
 	public boolean collisionOn = false;
 	public boolean hasItem = false;
 	public boolean hasItemToGive = false;
+	public boolean canSwim = false;
+	public boolean swimming = false;     
 	
 	public boolean onPath = false;
 	public boolean pathCompleted = false;

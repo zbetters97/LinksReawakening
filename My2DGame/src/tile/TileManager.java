@@ -23,6 +23,9 @@ public class TileManager {
 	
 	ArrayList<String> fileNames = new ArrayList<>();
 	ArrayList<String> collisionStatus = new ArrayList<>();
+	ArrayList<String> waterStatus = new ArrayList<>();
+	ArrayList<String> grabStatus = new ArrayList<>();
+	ArrayList<String> pitStatus = new ArrayList<>();
 	
 	public TileManager(GamePanel gp) {
 		
@@ -38,6 +41,9 @@ public class TileManager {
 			while ((line = br.readLine()) != null) {
 				fileNames.add(line);
 				collisionStatus.add(br.readLine());	
+				waterStatus.add(br.readLine());
+				grabStatus.add(br.readLine());
+				pitStatus.add(br.readLine());
 			}						
 			br.close();
 		} 
@@ -79,29 +85,49 @@ public class TileManager {
 		for (int i = 0; i< fileNames.size(); i++) {
 			
 			String fileName;
-			boolean collision;
-						
-			fileName = fileNames.get(i); // assign each name to fileName
+			boolean collision, water, grabbable, pit;
 			
-			// assign tile collision status
+			// assign each name to fileName
+			fileName = fileNames.get(i);
+			
+			// assign tile status
 			if (collisionStatus.get(i).equals("true")) 
 				collision = true;
 			else
 				collision = false;
+			
+			if (waterStatus.get(i).equals("true")) 
+				water = true;
+			else
+				water = false;
+			
+			if (grabStatus.get(i).equals("true")) 
+				grabbable = true;
+			else
+				grabbable = false;
+			
+			if (pitStatus.get(i).equals("true")) 
+				pit = true;
+			else
+				pit = false;
 						
-			setup(i, fileName, collision);
+			setup(i, fileName, collision, water, grabbable, pit);
 		}
 	}
 	
-	public void setup(int index, String imageName, boolean collision) {
+	public void setup(int index, String imageName, 
+			boolean collision, boolean water, boolean grabbable, boolean pit) {
 		
 		UtilityTool utility = new UtilityTool();
 		
 		try {
 			tile[index] = new Tile();
-			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/"+imageName));
+			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imageName));
 			tile[index].image = utility.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
 			tile[index].collision = collision;
+			tile[index].water = water;
+			tile[index].grabbable = grabbable;
+			tile[index].pit = pit;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -142,7 +168,7 @@ public class TileManager {
 		catch(Exception e) {
 			e.printStackTrace();
 		}		
-	}
+	}	
 	
 	public void draw(Graphics2D g2) {
 		

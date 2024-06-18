@@ -123,8 +123,156 @@ public class CollisionChecker {
 
 		// if tile 1 or 2 has collision, turn on collision		
 		if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) 
-			entity.collisionOn = true;				
+			entity.collisionOn = true;	
 	}
+	
+	// DAMAGE PIT COLLISION
+	public void checkPit() {
+		
+		// COLLISION BOX (left side, right side, top, bottom)
+		int entityWorldX = gp.player.worldX + gp.player.hitbox.x + (gp.player.hitbox.width / 2);
+		int entityWorldY = gp.player.worldY + gp.player.hitbox.y + (gp.player.hitbox.height / 2);
+		
+		int entityLeftCol = entityWorldX / gp.tileSize;
+		int entityRightCol = entityWorldX / gp.tileSize;
+		int entityTopRow = entityWorldY / gp.tileSize;
+		int entityBottomRow = entityWorldY / gp.tileSize;
+				
+		// detect the two tiles player is interacting with
+		int tileNum1 = 0, tileNum2 = 0;
+		
+		// KNOCKBACK DIRECTION
+		String direction = gp.player.direction;
+		if (gp.player.knockback) {
+			direction = gp.player.knockbackDirection;
+		}
+		if (gp.player.lockon) {
+			direction = gp.player.lockonDirection;
+		}
+				
+		// PREVENT COLLISION DETECTION OUT OF BOUNDS
+		if (entityTopRow <= 0) return;		
+		if (entityBottomRow >= gp.maxWorldRow - 1) return;		
+		if (entityLeftCol <= 0) return;		
+		if (entityRightCol >= gp.maxWorldCol - 1) return;
+		
+		// find tile player will interact with, factoring in speed
+		switch (direction) {
+			case "up":				
+				
+				entityTopRow = entityWorldY / gp.tileSize;	
+					
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
+				
+				gp.player.safeWorldX = gp.player.worldX;
+				gp.player.safeWorldY = gp.player.worldY + 35;
+				
+				break;
+			case "upleft":
+				
+				entityTopRow = entityWorldY / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
+				
+				entityLeftCol = entityWorldX / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];	
+				
+				gp.player.safeWorldX = gp.player.worldX + 35;
+				gp.player.safeWorldY = gp.player.worldY + 35;
+				
+				break;
+			case "upright":
+				
+				entityTopRow = entityWorldY / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
+				
+				entityRightCol = entityWorldX / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];	
+				
+				gp.player.safeWorldX = gp.player.worldX - 35;
+				gp.player.safeWorldY = gp.player.worldY + 35;
+				
+				break;
+			case "down":
+				
+				entityBottomRow = entityWorldY / gp.tileSize;
+				
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];				
+
+				gp.player.safeWorldX = gp.player.worldX;
+				gp.player.safeWorldY = gp.player.worldY - 35;
+				
+				break;
+			case "downleft":
+				
+				entityBottomRow = entityWorldY / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+				
+				entityLeftCol = entityWorldX / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+				
+				gp.player.safeWorldX = gp.player.worldX + 35;
+				gp.player.safeWorldY = gp.player.worldY - 35;
+				
+				break;
+			case "downright":
+				
+				entityBottomRow = entityWorldY / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+				
+				entityRightCol = entityWorldX / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+				
+				gp.player.safeWorldX = gp.player.worldX - 35;
+				gp.player.safeWorldY = gp.player.worldY - 35;
+				
+				break;	
+			case "left":
+				
+				entityLeftCol = entityWorldX / gp.tileSize;
+				
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+				
+				gp.player.safeWorldX = gp.player.worldX + 35;
+				gp.player.safeWorldY = gp.player.worldY;
+				
+				break;				
+			case "right":
+				
+				entityRightCol = entityWorldX / gp.tileSize;
+				
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+				
+				gp.player.safeWorldX = gp.player.worldX - 35;
+				gp.player.safeWorldY = gp.player.worldY;
+				
+				break;
+		}		
+
+		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
+			gp.playSE(2, 2);
+			gp.player.falling = true;
+			gp.player.invincible = true;
+		}
+		
+		if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
+			if (gp.player.canSwim) {
+				gp.player.swimming = true;
+			}
+			else {
+				gp.player.playHurtSE();	
+				gp.player.drowning = true;
+				gp.player.invincible = true;
+			}			
+		}
+		else {
+			gp.player.swimming = false;
+		}
+	}
+	
 	
 	// OBJECT COLLISION
 	public int checkObject(Entity entity, boolean player) {
@@ -290,7 +438,7 @@ public class CollisionChecker {
 		return index;
 	}
 	
-	// ENTITY COLLISION
+	// NPC COLLISION
 	public int checkNPC() {
 		
 		int index = -1;
@@ -528,6 +676,7 @@ public class CollisionChecker {
 		return index;
 	}
 	
+	// CONTACT PLAYER COLLISION
 	public boolean checkPlayer(Entity entity) {
 		
 		boolean contactPlayer = false;

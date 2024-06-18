@@ -71,5 +71,4 @@ public class NPC_Traveler_Template extends Entity {
 			onPath = false;
 		}
 	}
-	
 }

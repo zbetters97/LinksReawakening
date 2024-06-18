@@ -26,7 +26,7 @@ public class IT_DigSpot extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
-		down1 = setup("/tiles/003");
+		down1 = setup("/tiles/017");
 	}
 	
 	public boolean isCorrectItem(Entity entity) {		

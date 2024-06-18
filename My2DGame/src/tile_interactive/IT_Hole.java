@@ -21,6 +21,6 @@ public class IT_Hole extends InteractiveTile {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		down1 = setup("/tiles/017");
+		down1 = setup("/tiles_interactive/hole");
 	}
 }

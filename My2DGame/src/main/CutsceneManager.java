@@ -283,10 +283,12 @@ public class CutsceneManager {
 					gp.ui.drawDialogueScreen();
 					
 					// LOOK AT SPEAKER
-					if (gp.ui.npc.dialogueIndex % 2 == 0)
-						gp.player.direction = "right";
-					else
-						gp.player.direction = "left";
+					if (gp.ui.npc.dialogueIndex % 2 == 0) {						
+						gp.player.direction = gp.player.findTargetDirection(npc2);
+					}
+					else {
+						gp.player.direction = gp.player.findTargetDirection(npc1);
+					}
 				}
 			}	
 			// FAILSAFE

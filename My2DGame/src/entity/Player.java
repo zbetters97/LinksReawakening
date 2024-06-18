@@ -57,6 +57,10 @@ public class Player extends Entity {
 	public int fallNum;
 	public int fallCounter = 0;
 	
+	public boolean drowning = false;
+	public int drownNum;
+	public int drownCounter = 0;
+	
 	// IMAGES
 	public BufferedImage titleScreen, sit, sing, itemGet, fall1, fall2, fall3;	
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
@@ -97,7 +101,7 @@ public class Player extends Entity {
 	
 	// DEFAULT VALUES
 	public void setDefaultValues() {
-						
+					
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
@@ -300,6 +304,7 @@ public class Player extends Entity {
 			}
 		}
 		if (falling) { falling(); return; } 
+		if (drowning) { drowning(); return; } 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ||
 				keyH.guardPressed) {
 			walking();
@@ -334,7 +339,8 @@ public class Player extends Entity {
 			guarding = false;
 		
 			// MOVE PLAYER
-			if (!collisionOn) { 				
+			if (!collisionOn) { 	
+								
 				if (lockon) {
 					switch (lockonDirection) {
 						case "up": worldY -= speed; break;
@@ -424,6 +430,8 @@ public class Player extends Entity {
 	public void checkCollision() {
 		
 		collisionOn = false;
+		
+		if (!jumping) gp.cChecker.checkPit();
 		
 		// CHECK TILE COLLISION
 		gp.cChecker.checkTile(this);
@@ -789,6 +797,29 @@ public class Player extends Entity {
 			safeWorldY = 0;
 		}		
 	}	
+	public void drowning() {
+		
+		drownCounter++;
+				
+		if (6 >= drownCounter) drownNum = 1; 
+		else if (18 > drownCounter && 12 >= drownCounter) drownNum = 2;		
+		else if (24 > drownCounter && drownCounter > 12) drownNum = 3;	
+		else if (60 > drownCounter && drownCounter >= 24) drownNum = 4;		
+		else if (drownCounter >= 60) {
+			life--;
+			drownNum = 1;
+			drownCounter = 0;
+			drowning = false;
+			attackCanceled = false;
+			transparent = true;
+			
+			// MOVE PLAYER TO SAFE SPOT
+			worldX = safeWorldX;
+			worldY = safeWorldY;
+			safeWorldX = 0;
+			safeWorldY = 0;
+		}		
+	}	
 			
 	// DAMAGE
 	public void damageEnemy(int i, Entity attacker, int attack, int knockbackPower) {
@@ -1090,9 +1121,19 @@ public class Player extends Entity {
 			if (fallNum == 3) image1 = fall3;
 			if (fallNum == 4) image1 = null;
 		}
+		if (drowning) {
+			image1 = null;
+		}
 					
-		if (drawing) {		
-			g2.drawImage(image1, tempScreenX, tempScreenY, null); 
+		if (drawing) {	
+			
+			if (swimming) {
+				BufferedImage image2 = image1.getSubimage(0, 0, 48, 30);
+				g2.drawImage(image2, tempScreenX, tempScreenY, null);
+			}
+			else {			
+				g2.drawImage(image1, tempScreenX, tempScreenY, null); 
+			}
 			
 			// DRAW SHADOW UNDER PLAYER
 			if (jumping) {
