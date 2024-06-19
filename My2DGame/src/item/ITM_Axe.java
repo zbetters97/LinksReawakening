@@ -4,9 +4,9 @@ import entity.Entity;
 import main.GamePanel;
 
 public class ITM_Axe extends Entity {
-
+	
 	GamePanel gp;
-	public static final String itmName = "Axe";
+	public static final String itmName = "Wooden Axe";
 	
 	public ITM_Axe(GamePanel gp) {
 		super(gp);
@@ -19,7 +19,7 @@ public class ITM_Axe extends Entity {
 		attack = 1;
 		knockbackPower = 0;
 		
-		down1 = setup("/objects/ITEM_AXE");
+		down1 = setup("/items/ITEM_AXE");
 	}
 	
 	public void use() {				

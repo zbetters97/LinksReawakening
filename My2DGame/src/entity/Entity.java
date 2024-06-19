@@ -45,6 +45,9 @@ public class Entity {
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
 	public boolean isPushed = false;
+	public boolean isCapturable = false;
+	public boolean captured = false;
+	public Entity capturedTarget;
 	
 	// BOSS VALUES
 	public boolean boss = false;
@@ -177,6 +180,8 @@ public class Entity {
 	public void explode() {	}
 	public void setLoot(Entity loot) { }
 	public void playSE() { }
+	public void playOpenSE() { }
+	public void playCloseSE() { }
 	public void playAttackSE() { }
 	public void playHurtSE() { }
 	public void playDeathSE() { }	
@@ -185,6 +190,7 @@ public class Entity {
 	public void update() {
 		
 		if (sleep) return;		
+		if (captured) { isCaptured(); return; }
 		if (knockback) { knockbackEntity();	return; }
 		if (attacking) { attacking(); }
 		if (stunned) { manageValues(); return; }
@@ -235,6 +241,46 @@ public class Entity {
 			}
 		}
 		manageValues();
+	}
+	
+	public void isCaptured() {
+		
+		animationSpeed = 12;
+		
+		if (attacking) { attacking(); return; }
+		if (gp.keyH.actionPressed) { attacking = true; }
+		if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
+			walking();
+		}	
+	}
+	
+	public void walking() {
+		getDirection();
+		
+		checkCollision();
+		if (!collisionOn) {
+			switch (direction) {
+				case "up": worldY -= speed; break;		
+				case "down": worldY += speed; break;		
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}		
+		}
+
+		spriteCounter++;
+		if (spriteCounter > animationSpeed && animationSpeed != 0) {
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}
+	}
+	public void getDirection() {
+		if (gp.keyH.upPressed) direction = "up";
+		if (gp.keyH.downPressed) direction = "down";
+		if (gp.keyH.leftPressed) direction = "left";
+		if (gp.keyH.rightPressed) direction = "right";				
 	}
 			
 	public void resetCounter() {
@@ -549,7 +595,7 @@ public class Entity {
 			hitbox.height = attackbox.height;
 			
 			// ENEMY ATTACKING
-			if (type == type_enemy) {
+			if (type == type_enemy && !captured) {
 				if (gp.cChecker.checkPlayer(this)) 
 					damagePlayer(attack);				
 			}
@@ -565,17 +611,19 @@ public class Entity {
 				else 
 					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
 				
-				// SHOOT SWORD BEAM
-				if (enemyIndex == -1 && gp.keyH.actionPressed) {
-					if (projectile.hasResource(this) && !projectile.alive && 
-							shotAvailableCounter == 30 ) {
-						projectile.playSE();
-						
-						projectile.set(worldX, worldY, direction, true, this);			
-						addProjectile(projectile);					
-						projectile.subtractResource(this);
-						
-						shotAvailableCounter = 0;
+				// SHOOT SWORD BEAM (ONLY PLAYER)				
+				if (type != type_enemy) {
+					if (enemyIndex == -1 && gp.keyH.actionPressed) {
+						if (projectile.hasResource(this) && !projectile.alive && 
+								shotAvailableCounter == 30 ) {
+							projectile.playSE();
+							
+							projectile.set(worldX, worldY, direction, true, this);			
+							addProjectile(projectile);					
+							projectile.subtractResource(this);
+							
+							shotAvailableCounter = 0;
+						}
 					}
 				}
 				
@@ -1092,8 +1140,11 @@ public class Entity {
 				if (invincible) hurtAnimation(g2);
 			}			
 			
-			if (dying) dyingAnimation(g2);		
-						
+
+			if (captured) changeAlpha(g2, 0.7f);
+			
+			if (dying) dyingAnimation(g2);	
+			
 			g2.drawImage(image, tempScreenX, tempScreenY, null);	
 			
 			if (isLocked) {	

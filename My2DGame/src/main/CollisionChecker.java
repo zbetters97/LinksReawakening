@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 
 import entity.Entity;
+import entity.NPC_Boulder;
 import tile_interactive.IT_Plate_Metal;
 
 public class CollisionChecker {
@@ -122,8 +123,17 @@ public class CollisionChecker {
 		}		
 
 		// if tile 1 or 2 has collision, turn on collision		
-		if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) 
-			entity.collisionOn = true;	
+
+		if (entity.type == entity.type_enemy || entity.type == entity.type_npc) {
+			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision ||
+					gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
+					gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) 
+				entity.collisionOn = true;	
+		}
+		else {
+			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) 
+				entity.collisionOn = true;
+		}
 	}
 	
 	// DAMAGE PIT COLLISION
@@ -263,6 +273,7 @@ public class CollisionChecker {
 				gp.player.swimming = true;
 			}
 			else {
+				gp.player.playDrownSE();
 				gp.player.playHurtSE();	
 				gp.player.drowning = true;
 				gp.player.invincible = true;
@@ -271,8 +282,7 @@ public class CollisionChecker {
 		else {
 			gp.player.swimming = false;
 		}
-	}
-	
+	}	
 	
 	// OBJECT COLLISION
 	public int checkObject(Entity entity, boolean player) {
@@ -442,7 +452,7 @@ public class CollisionChecker {
 	public int checkNPC() {
 		
 		int index = -1;
-		
+						
 		gp.player.speed += 30;
 		
 		// KNOCKBACK DIRECTION
@@ -459,6 +469,9 @@ public class CollisionChecker {
 		for (int i  = 0; i < gp.npc[1].length; i++) {
 			
 			if (gp.npc[gp.currentMap][i] != null) {			
+				
+				if (gp.npc[gp.currentMap][i].name.equals(NPC_Boulder.npcName))
+					gp.player.speed = gp.player.defaultSpeed;
 				
 				// get gp.player's solid area position
 				gp.player.hitbox.x = gp.player.worldX + gp.player.hitbox.x;

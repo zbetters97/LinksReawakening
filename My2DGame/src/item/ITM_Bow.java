@@ -7,7 +7,7 @@ import projectile.PRJ_Arrow;
 public class ITM_Bow extends Entity {
 
 	GamePanel gp;
-	public static final String itmName = "Bow";
+	public static final String itmName = "Hylian Bow";
 	
 	public ITM_Bow(GamePanel gp) {
 		super(gp);
@@ -16,7 +16,7 @@ public class ITM_Bow extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to fire an arrow!";
-		down1 = setup("/objects/ITEM_BOW");
+		down1 = setup("/items/ITEM_BOW");
 		
 		projectile = new PRJ_Arrow(gp);
 	}

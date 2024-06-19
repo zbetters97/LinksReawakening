@@ -173,12 +173,12 @@ public class BOS_Skeleton extends Entity {
 		for (int i = 0; i < gp.obj[1].length; i++) {
 			if (gp.obj[gp.currentMap][i] != null &&
 					gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Iron.objName) ) {						
+				gp.obj[gp.currentMap][i].playOpenSE();
 				gp.obj[gp.currentMap][i] = null;				
 				break;
 			}
 		}
 		
-//		dropItem(new ITM_Hookshot(gp));
 		gp.playSE(0, 6);
 	}
 }

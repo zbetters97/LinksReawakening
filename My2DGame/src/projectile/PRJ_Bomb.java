@@ -10,6 +10,7 @@ import main.GamePanel;
 public class PRJ_Bomb extends Projectile {
 
 	GamePanel gp;
+	public static final String prjName = "Bomb";
 	
 	public PRJ_Bomb(GamePanel gp) {
 		super(gp);
@@ -18,7 +19,7 @@ public class PRJ_Bomb extends Projectile {
 		canExplode = true;
 		
 		type = type_projectile;
-		name = "Bomb";
+		name = prjName;
 		animationSpeed = 30;
 		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 
 		attack = 2;

@@ -88,8 +88,8 @@ public class NPC_OldMan extends Entity {
 	
 	public void setAction() {
 					
-		int goalCol = 37;
-		int goalRow = 9;
+		int goalCol = 36;
+		int goalRow = 11;
 		
 		// PATH NOT OPEN
 		if (onPath && !findPath(goalCol, goalRow)) {

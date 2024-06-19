@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
 import collectable.COL_Heart;
 import collectable.COL_Rupee_Blue;
 import entity.Entity;
+import item.ITM_Bomb;
+import item.ITM_Bow;
 
 public class UI {
 	
@@ -361,14 +363,14 @@ public class UI {
 			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.currentItem.name.equals("Bow")) {	
+			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {	
 				String arrowCount = Integer.toString(gp.player.arrows);		
 				g2.setColor(Color.BLACK);
 				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
 				g2.drawString(arrowCount, x + 35, y + gp.tileSize);
 			}
 			// DRAW BOMB COUNT
-			else if (gp.player.currentItem.name.equals("Bomb")) {	
+			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {	
 				String bombCount = Integer.toString(gp.player.bombs);		
 				g2.setColor(Color.BLACK);
 				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));

@@ -30,4 +30,11 @@ public class OBJ_Door extends Entity {
 	public void interact() {		
 		startDialogue(this, 0);
 	}
+	
+	public void playOpenSe() {
+		gp.playSE(3, 14);
+	}
+	public void playCloseSE() {
+		gp.playSE(3, 18);
+	}
 }

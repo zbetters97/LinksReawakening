@@ -11,13 +11,14 @@ import main.GamePanel;
 public class PRJ_Hookshot extends Projectile {
 
 	GamePanel gp;
+	public static final String prjName = "Claw";
 	
 	public PRJ_Hookshot(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_projectile;
-		name = "Hookshot";
+		name = prjName;
 		knockbackPower = 0;
 		speed = 10;
 		maxLife = 30; life = maxLife;	

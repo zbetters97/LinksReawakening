@@ -25,7 +25,7 @@ public class EQP_Sword_Old extends Entity {
 		attackbox.width = 36;
 		attackbox.height = 36;
 		
-		down1 = setup("/objects/ITEM_SWORD");
+		down1 = setup("/items/ITEM_SWORD");
 		image1 = down1;
 	}
 	

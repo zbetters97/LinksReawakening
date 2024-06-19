@@ -8,13 +8,15 @@ import main.GamePanel;
 public class PRJ_Boomerang extends Projectile {
 
 	GamePanel gp;
+	public static final String prjName = "Boomerang";
 	
 	public PRJ_Boomerang(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 						
 		type = type_projectile;
-		name = "Boomerang";
+		name = prjName;
+
 		knockbackPower = 1;
 		speed = 8; 		
 		animationSpeed = 8;			

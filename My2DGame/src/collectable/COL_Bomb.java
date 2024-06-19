@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Bomb extends Entity {
 
-	public static final String colName = "Bomb";
+	public static final String colName = "COL Bomb";
 	GamePanel gp;
 	
 	public COL_Bomb(GamePanel gp) {

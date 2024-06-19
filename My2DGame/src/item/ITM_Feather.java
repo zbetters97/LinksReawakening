@@ -6,7 +6,7 @@ import main.GamePanel;
 public class ITM_Feather extends Entity {
 
 	GamePanel gp;
-	public static final String itmName = "Feather";
+	public static final String itmName = "Rito Feather";
 	
 	public ITM_Feather(GamePanel gp) {
 		super(gp);
@@ -15,7 +15,7 @@ public class ITM_Feather extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to jump over things!";
-		down1 = setup("/objects/ITEM_FEATHER");
+		down1 = setup("/items/ITEM_FEATHER");
 	}
 	
 	public void use() {

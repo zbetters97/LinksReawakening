@@ -3,12 +3,12 @@ package projectile;
 import entity.*;
 import main.GamePanel;
 
-public class PRJ_Sword_Beam extends Projectile {
-
-	public final static String prjName = "Sword Beam";
-	GamePanel gp;
+public class PRJ_Sword extends Projectile {
 	
-	public PRJ_Sword_Beam(GamePanel gp) {
+	GamePanel gp;
+	public final static String prjName = "Sword Beam";
+	
+	public PRJ_Sword(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		

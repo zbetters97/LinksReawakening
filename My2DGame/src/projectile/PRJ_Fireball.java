@@ -9,13 +9,14 @@ import main.GamePanel;
 public class PRJ_Fireball extends Projectile {
 
 	GamePanel gp;
+	public static final String prjName = "Fireball";
 	
 	public PRJ_Fireball(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_projectile;
-		name = "Fireball";
+		name = prjName;
 		attack = 2;	
 		speed = 8; 
 		maxLife = 60; life = maxLife;

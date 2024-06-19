@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Key extends Entity {
 	
-	public static final String colName = "Key";
+	public static final String colName = "COL Key";
 	GamePanel gp;
 
 	public COL_Key(GamePanel gp) {		
@@ -14,10 +14,10 @@ public class COL_Key extends Entity {
 		
 		type = type_consumable;
 		name = colName;
-		description = "[" + name + "]\nThis can unlock a door.\nSingle-use only.";		
+		description = "[Dungeon Key]\nThis can unlock a door.\nSingle-use only.";		
 		stackable = true;
 		
-		down1 = setup("/objects/ITEM_KEY");
+		down1 = setup("/collectables/COL_KEY");
 		setDialogue();
 	}	
 	

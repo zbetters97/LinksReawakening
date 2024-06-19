@@ -16,8 +16,8 @@ public class OBJ_Chest extends Entity {
 		
 		type = type_obstacle;
 		name = objName;
-		image1 = setup("/objects/chest");
-		image2 = setup("/objects/chest_opened");
+		image1 = setup("/objects/OBJ_CHEST");
+		image2 = setup("/objects/OBJ_CHEST_OPENED");
 		down1 = image1;
 		collision = true;
 		
@@ -36,10 +36,19 @@ public class OBJ_Chest extends Entity {
 	}
 	
 	public void interact() {		
-		if (!opened) {		
+		if (!opened) {	
+			playOpenSE();
 			opened = true;	
 			down1 = image2;
 			gp.player.getObject(loot);	
 		}
+	}
+	
+	public void playOpenSE() {
+		gp.playSE(3, 17);
+	}
+	
+	public void playCloseSE() {
+		gp.playSE(3, 18);
 	}
 }

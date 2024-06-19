@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import projectile.*;
 
 public class Projectile extends Entity {
 
@@ -26,10 +27,11 @@ public class Projectile extends Entity {
 		// PREVENT GLITCHED DEATH WHEN ITEM IS IN AIR
 		if (gp.gameState != gp.gameOverState) {
 			
-			if (name.equals("Arrow")) useArrow();
-			else if (name.equals("Bomb")) useBomb();
-			else if (name.equals("Boomerang")) useBoomerang();
-			else if (name.equals("Hookshot")) useHookshot();
+			if (name.equals(PRJ_Arrow.prjName)) useArrow();
+			else if (name.equals(PRJ_Bomb.prjName)) useBomb();
+			else if (name.equals(PRJ_Boomerang.prjName)) useBoomerang();
+			else if (name.equals(PRJ_Hookshot.prjName)) useHookshot();
+			else if (name.equals(PRJ_Orb.prjName)) useRod();
 			else useProjectile();
 		}
 	}	
@@ -54,7 +56,7 @@ public class Projectile extends Entity {
 			if (projectileIndex != -1) {
 				Entity projectile = gp.projectile[gp.currentMap][projectileIndex];	
 				
-				if (projectile.name.equals("Bomb"))
+				if (projectile.name.equals(PRJ_Bomb.prjName))
 					projectile.explode();
 				
 				alive = false;
@@ -186,7 +188,7 @@ public class Projectile extends Entity {
 		if (projectileIndex != -1) {
 			Entity projectile = gp.projectile[gp.currentMap][projectileIndex];
 			
-			if (projectile.name.equals("Bomb"))
+			if (projectile.name.equals(PRJ_Bomb.prjName))
 				projectile.explode();
 			
 			life = 0;
@@ -470,6 +472,59 @@ public class Projectile extends Entity {
 		}
 	}
 	
+	public void useRod() {
+		
+		// CHECK TILE COLLISION
+		collisionOn = false;		
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);		
+
+		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+		if (enemyIndex != -1) {
+			if (gp.enemy[gp.currentMap][enemyIndex].isCapturable && 
+					!gp.enemy[gp.currentMap][enemyIndex].captured) {
+				gp.enemy[gp.currentMap][enemyIndex].captured = true;
+				gp.player.capturedTarget = gp.enemy[gp.currentMap][enemyIndex];
+			}
+			playSE();
+			alive = false;
+		}
+		
+		if (!collisionOn) {		
+			
+			// MOVE IN DIRECTION SHOT
+			switch (direction) {
+				case "up": 
+				case "upleft": 
+				case "upright": worldY -= speed; break;			
+				case "down":
+				case "downleft": 
+				case "downright": worldY += speed; break;			
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
+		}
+		// KILL PROJECTILE IF COLLISION
+		else {
+			alive = false;
+		}
+		
+		life--;
+		if (life <= 0) { // REMOVE AFTER X FRAMES
+			alive = false;
+		}
+		
+		// MOVING ANIMATION
+		spriteCounter++;
+		if (spriteCounter > animationSpeed) { // speed of sprite change
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}		
+	}
+	
 	public void useProjectile() {
 		
 		// CHECK TILE COLLISION
@@ -498,14 +553,14 @@ public class Projectile extends Entity {
 			if (projectileIndex != -1) {
 				Entity projectile = gp.projectile[gp.currentMap][projectileIndex];
 				
-				if (projectile.name.equals("Bomb"))
+				if (projectile.name.equals(PRJ_Bomb.prjName))
 					projectile.explode();
 				
 				alive = false;
 			}
 			
 			// NO COLLISION FOR SWORD BEAM
-			if (name.equals("Sword Beam")) 			
+			if (name.equals(PRJ_Sword.prjName)) 			
 				collisionOn = false;	
 		}
 		// SHOT BY ENEMEY

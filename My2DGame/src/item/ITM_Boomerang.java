@@ -7,7 +7,7 @@ import projectile.PRJ_Boomerang;
 public class ITM_Boomerang extends Entity {
 
 	GamePanel gp;
-	public static final String itmName = "Boomerang";
+	public static final String itmName = "Hylian Boomerang";
 	
 	public ITM_Boomerang(GamePanel gp) {
 		super(gp);
@@ -17,7 +17,7 @@ public class ITM_Boomerang extends Entity {
 		name = itmName;
 		description = "[" + name + "]\nEquip to pull in far away\nitems!";
 		price = 40;
-		down1 = setup("/objects/ITEM_BOOMERANG");
+		down1 = setup("/items/ITEM_BOOMERANG");
 		
 		projectile = new PRJ_Boomerang(gp);
 	}

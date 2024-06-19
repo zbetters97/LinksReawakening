@@ -58,6 +58,8 @@ public class Sound {
 		player[1] = getClass().getResource("/sound/PLAYER_DIE.wav");
 		player[2] = getClass().getResource("/sound/PLAYER_FALL.wav");
 		player[3] = getClass().getResource("/sound/PLAYER_LOCKON.wav");
+		player[4] = getClass().getResource("/sound/PLAYER_DROWN.wav");
+		player[5] = getClass().getResource("/sound/PLAYER_SWIM.wav");
 		
 		// 3
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");
@@ -75,6 +77,10 @@ public class Sound {
 		objects[12] = getClass().getResource("/sound/OBJ_MOVE.wav");
 		objects[13] = getClass().getResource("/sound/OBJ_TINK.wav");
 		objects[14] = getClass().getResource("/sound/OBJ_DOOR_OPEN.wav");
+		objects[15] = getClass().getResource("/sound/ITEM_ROD.wav");
+		objects[16] = getClass().getResource("/sound/ITEM_ROD_CAPTURE.wav");
+		objects[17] = getClass().getResource("/sound/OBJ_CHEST_OPEN.wav");
+		objects[18] = getClass().getResource("/sound/OBJ_DOOR_CLOSE.wav");
 		
 		// 4
 		enemy[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

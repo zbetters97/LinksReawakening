@@ -16,7 +16,7 @@ public class ITM_Bomb extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to blow things up!";
-		down1 = setup("/objects/ITEM_BOMB");
+		down1 = setup("/items/ITEM_BOMB");
 		
 		projectile = new PRJ_Bomb(gp);
 	}	

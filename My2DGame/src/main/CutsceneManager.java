@@ -68,12 +68,12 @@ public class CutsceneManager {
 			// ADD IRON DOOR BEHIND PLAYER
 			for (int i = 0; i < gp.obj[1].length; i++) {
 				if (gp.obj[gp.currentMap][i] == null) {
-					gp.playSE(3, 14);
-					
+										
 					gp.obj[gp.currentMap][i] = new OBJ_Door_Iron(gp);
 					gp.obj[gp.currentMap][i].worldX = gp.tileSize * 25;
 					gp.obj[gp.currentMap][i].worldY = gp.tileSize * 28;
 					gp.obj[gp.currentMap][i].temp = true;
+					gp.obj[gp.currentMap][i].playCloseSE();
 					
 					break;
 				}

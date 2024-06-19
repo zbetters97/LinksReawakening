@@ -260,10 +260,14 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_LEFT) leftPressed = true;
 		if (code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
-		if (code == KeyEvent.VK_Z && lock) { guardPressed = true; lock = false; gp.player.playGuardSE(); }
 		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }		
+		if (code == KeyEvent.VK_Z && lock && !gp.player.swimming) { 
+			guardPressed = true; 
+			lock = false; 
+			gp.player.playGuardSE(); 
+		}
 		
 		if (code == KeyEvent.VK_E) { 
 			playMenuOpenSE();

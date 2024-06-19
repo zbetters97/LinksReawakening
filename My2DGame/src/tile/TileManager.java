@@ -24,7 +24,6 @@ public class TileManager {
 	ArrayList<String> fileNames = new ArrayList<>();
 	ArrayList<String> collisionStatus = new ArrayList<>();
 	ArrayList<String> waterStatus = new ArrayList<>();
-	ArrayList<String> grabStatus = new ArrayList<>();
 	ArrayList<String> pitStatus = new ArrayList<>();
 	
 	public TileManager(GamePanel gp) {
@@ -42,7 +41,6 @@ public class TileManager {
 				fileNames.add(line);
 				collisionStatus.add(br.readLine());	
 				waterStatus.add(br.readLine());
-				grabStatus.add(br.readLine());
 				pitStatus.add(br.readLine());
 			}						
 			br.close();
@@ -85,7 +83,7 @@ public class TileManager {
 		for (int i = 0; i< fileNames.size(); i++) {
 			
 			String fileName;
-			boolean collision, water, grabbable, pit;
+			boolean collision, water, pit;
 			
 			// assign each name to fileName
 			fileName = fileNames.get(i);
@@ -101,22 +99,17 @@ public class TileManager {
 			else
 				water = false;
 			
-			if (grabStatus.get(i).equals("true")) 
-				grabbable = true;
-			else
-				grabbable = false;
-			
 			if (pitStatus.get(i).equals("true")) 
 				pit = true;
 			else
 				pit = false;
 						
-			setup(i, fileName, collision, water, grabbable, pit);
+			setup(i, fileName, collision, water, pit);
 		}
 	}
 	
 	public void setup(int index, String imageName, 
-			boolean collision, boolean water, boolean grabbable, boolean pit) {
+			boolean collision, boolean water, boolean pit) {
 		
 		UtilityTool utility = new UtilityTool();
 		
@@ -126,7 +119,6 @@ public class TileManager {
 			tile[index].image = utility.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
 			tile[index].collision = collision;
 			tile[index].water = water;
-			tile[index].grabbable = grabbable;
 			tile[index].pit = pit;
 		}
 		catch (IOException e) {

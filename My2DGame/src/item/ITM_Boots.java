@@ -6,7 +6,7 @@ import main.GamePanel;
 public class ITM_Boots extends Entity {
 	
 	GamePanel gp;
-	public static final String itmName = "Boots";
+	public static final String itmName = "Running Boots";
 	
 	public ITM_Boots(GamePanel gp) {
 		super(gp);
@@ -15,7 +15,7 @@ public class ITM_Boots extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to run fast!";
-		down1 = setup("/objects/ITEM_BOOTS");
+		down1 = setup("/items/ITEM_BOOTS");
 	}	
 	
 	public void use() {

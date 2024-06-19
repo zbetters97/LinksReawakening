@@ -19,6 +19,9 @@ public class EMY_Goblin_Combat extends Entity {
 		
 		type = type_enemy;
 		name = "Combat Goblin";
+		
+		isCapturable = true;
+		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 4; defense = 1;
@@ -64,18 +67,19 @@ public class EMY_Goblin_Combat extends Entity {
 	
 	public void setAction() {
 		
-		if (onPath) {			
-			isOffPath(gp.player, 8);									
-			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-
-			if (!attacking) {
-				isAttacking(30, gp.tileSize * 3, gp.tileSize);
+		if (!captured) {
+			if (onPath) {			
+				isOffPath(gp.player, 8);									
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+	
+				if (!attacking) {
+					isAttacking(30, gp.tileSize * 3, gp.tileSize);
+				}				
 			}
-			
-		}
-		else {			
-			isOnPath(gp.player, 4);
-			getDirection(60);
+			else {			
+				isOnPath(gp.player, 4);
+				getDirection(60);
+			}
 		}
 	}
 	

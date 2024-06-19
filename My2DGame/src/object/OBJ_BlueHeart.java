@@ -14,7 +14,7 @@ public class OBJ_BlueHeart extends Entity {
 		
 		type = type_pickupOnly;
 		name = objName;
-		image1 = setup("/objects/blueheart");
+		image1 = setup("/objects/OBJ_BLUEHEART");
 		down1 = image1;
 		
 		setDialogue();

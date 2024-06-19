@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class COL_Rupee_Green extends Entity {
 
-	public static final String colName = "Green Rupee";
+	public static final String colName = "COL Green Rupee";
 	GamePanel gp;
 	
 	public COL_Rupee_Green(GamePanel gp) {
@@ -17,7 +17,7 @@ public class COL_Rupee_Green extends Entity {
 		value = 1;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
-		down1 = setup("/objects/COL_RUPEE_GREEN");
+		down1 = setup("/collectables/COL_RUPEE_GREEN");
 	}
 	
 	public boolean use(Entity user) {		

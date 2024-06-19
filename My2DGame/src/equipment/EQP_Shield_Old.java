@@ -15,6 +15,6 @@ public class EQP_Shield_Old extends Entity {
 		description = "[" + name + "]\nA humble starter shield.\n+1 DEF";
 		defenseValue = 1;
 		
-		down1 = setup("/objects/ITEM_SHIELD");
+		down1 = setup("/items/ITEM_SHIELD");
 	}
 }

@@ -3,6 +3,7 @@ package tile_interactive;
 import java.awt.Color;
 
 import entity.Entity;
+import item.ITM_Shovel;
 import main.GamePanel;
 
 public class IT_DigSpot extends InteractiveTile {
@@ -32,7 +33,7 @@ public class IT_DigSpot extends InteractiveTile {
 	public boolean isCorrectItem(Entity entity) {		
 		
 		boolean isCorrectItem = false;				
-		if (entity.currentItem.name.equals("Shovel")) {
+		if (entity.currentItem.name.equals(ITM_Shovel.itmName)) {
 			isCorrectItem = true;
 		}
 		

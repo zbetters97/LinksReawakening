@@ -31,7 +31,10 @@ public class OBJ_Door_Iron extends Entity {
 		startDialogue(this, 0);
 	}
 	
-	public void playSE() {
+	public void playOpenSE() {
 		gp.playSE(3, 14);
+	}
+	public void playCloseSE() {
+		gp.playSE(3, 18);
 	}
 }

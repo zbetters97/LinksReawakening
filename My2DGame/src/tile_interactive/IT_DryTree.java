@@ -3,6 +3,7 @@ package tile_interactive;
 import java.awt.Color;
 
 import entity.Entity;
+import item.ITM_Axe;
 import main.GamePanel;
 
 public class IT_DryTree extends InteractiveTile {
@@ -28,7 +29,7 @@ public class IT_DryTree extends InteractiveTile {
 	public boolean isCorrectItem(Entity entity) {		
 		
 		boolean isCorrectItem = false;				
-		if (entity.currentItem.name.equals("Axe"))
+		if (entity.currentItem.name.equals(ITM_Axe.itmName))
 			isCorrectItem = true;		
 		
 		return isCorrectItem;

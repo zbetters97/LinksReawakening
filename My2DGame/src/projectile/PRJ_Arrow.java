@@ -8,13 +8,14 @@ import main.GamePanel;
 public class PRJ_Arrow extends Projectile {
 
 	GamePanel gp;
+	public static final String prjName = "Arrow";
 	
 	public PRJ_Arrow(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		
 		type = type_projectile;
-		name = "Arrow";
+		name = prjName;
 		speed = 12; 		
 		attack = 2; 	
 		knockbackPower = 0;

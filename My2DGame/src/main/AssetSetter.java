@@ -33,17 +33,17 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldY = gp.tileSize * 41;	
 		i++;				
 		gp.obj[mapNum][i] = new ITM_Axe(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 16;
+		gp.obj[mapNum][i].worldX = gp.tileSize * 15;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 21;	
 		i++;	
 		gp.obj[mapNum][i] = new OBJ_Chest(gp);
 		gp.obj[mapNum][i].setLoot(new ITM_Boots(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 16;
+		gp.obj[mapNum][i].worldX = gp.tileSize * 17;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 15;
 		i++;	
 		gp.obj[mapNum][i] = new OBJ_Chest(gp);
 		gp.obj[mapNum][i].setLoot(new ITM_Hookshot(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 31;
+		gp.obj[mapNum][i].worldX = gp.tileSize * 30;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 21;		
 		i++;	
 		gp.obj[mapNum][i] = new OBJ_Chest(gp);
@@ -57,7 +57,7 @@ public class AssetSetter {
 		i++;	
 		gp.obj[mapNum][i] = new OBJ_Chest(gp);
 		gp.obj[mapNum][i].setLoot(new ITM_Bow(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 35;
+		gp.obj[mapNum][i].worldX = gp.tileSize * 38;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 7;		
 		i++;	
 		
@@ -88,7 +88,7 @@ public class AssetSetter {
 		
 		gp.npc[mapNum][i] = new NPC_OldMan(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 30;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 29;
+		gp.npc[mapNum][i].worldY = gp.tileSize * 30;
 		i++;
 		
 		gp.npc[mapNum][i] = new NPC_Traveler_1(gp);
@@ -96,8 +96,8 @@ public class AssetSetter {
 		gp.npc[mapNum][i].worldY = gp.tileSize * 21;
 		i++;
 		gp.npc[mapNum][i] = new NPC_Traveler_2(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 24;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 15;
+		gp.npc[mapNum][i].worldX = gp.tileSize * 26;
+		gp.npc[mapNum][i].worldY = gp.tileSize * 11;
 		i++;
 		
 		mapNum = 1;
@@ -173,17 +173,19 @@ public class AssetSetter {
 		int i = 0;
 		
 		gp.iTile[mapNum][i] = new IT_DryTree(gp, 13, 21); i++;
-		gp.iTile[mapNum][i] = new IT_DryTree(gp, 36, 30); i++;
 		gp.iTile[mapNum][i] = new IT_DryTree(gp, 21, 16); i++;
+		gp.iTile[mapNum][i] = new IT_DryTree(gp, 35, 30); i++;
+		gp.iTile[mapNum][i] = new IT_DryTree(gp, 36, 30); i++;
+		gp.iTile[mapNum][i] = new IT_DryTree(gp, 37, 30); i++;		
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 30, 36, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 27, 16, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 31, 25, new ITM_Lantern(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 29, 20); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 29, 21); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 29, 22); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 33, 20); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 33, 21); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 33, 22); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 28, 20); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 28, 21); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 28, 22); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 32, 20); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 32, 21); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 32, 22); i++;
 		
 		mapNum = 2;
 		i = 0;
