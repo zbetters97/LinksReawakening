@@ -1055,6 +1055,7 @@ public class UI {
 		
 		// DISPLAY ITEM ABOVE PLAYER
 		if (newItem != null) {			
+			gp.player.drawing = false;
 			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
 			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
 		}			

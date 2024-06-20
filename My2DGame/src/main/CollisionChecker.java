@@ -452,8 +452,7 @@ public class CollisionChecker {
 	public int checkNPC() {
 		
 		int index = -1;
-						
-		gp.player.speed += 30;
+		int speed = 30;
 		
 		// KNOCKBACK DIRECTION
 		String direction = gp.player.direction;
@@ -471,7 +470,7 @@ public class CollisionChecker {
 			if (gp.npc[gp.currentMap][i] != null) {			
 				
 				if (gp.npc[gp.currentMap][i].name.equals(NPC_Boulder.npcName))
-					gp.player.speed = gp.player.defaultSpeed;
+					speed = gp.player.speed;
 				
 				// get gp.player's solid area position
 				gp.player.hitbox.x = gp.player.worldX + gp.player.hitbox.x;
@@ -485,32 +484,32 @@ public class CollisionChecker {
 				// ask if gp.npc and gp.player intersect 
 				switch (direction) {
 					case "up":					
-						gp.player.hitbox.y -= gp.player.speed;
+						gp.player.hitbox.y -= speed;
 						break;					
 					case "upleft":
-						gp.player.hitbox.y -= gp.player.speed;
-						gp.player.hitbox.x -= gp.player.speed;
+						gp.player.hitbox.y -= speed;
+						gp.player.hitbox.x -= speed;
 						break;
 					case "upright":
-						gp.player.hitbox.y -= gp.player.speed;
-						gp.player.hitbox.x += gp.player.speed;
+						gp.player.hitbox.y -= speed;
+						gp.player.hitbox.x += speed;
 						break;
 					case "down":					
-						gp.player.hitbox.y += gp.player.speed;
+						gp.player.hitbox.y += speed;
 						break;
 					case "downleft":					
-						gp.player.hitbox.y += gp.player.speed;
-						gp.player.hitbox.x -= gp.player.speed;
+						gp.player.hitbox.y += speed;
+						gp.player.hitbox.x -= speed;
 						break;
 					case "downright":					
-						gp.player.hitbox.y += gp.player.speed;
-						gp.player.hitbox.x += gp.player.speed;
+						gp.player.hitbox.y += speed;
+						gp.player.hitbox.x += speed;
 						break;
 					case "left":					
-						gp.player.hitbox.x -= gp.player.speed;
+						gp.player.hitbox.x -= speed;
 						break;
 					case "right":					
-						gp.player.hitbox.x += gp.player.speed;
+						gp.player.hitbox.x += speed;
 						break;	
 				}
 				
@@ -531,7 +530,6 @@ public class CollisionChecker {
 			}
 		}		
 		
-		gp.player.speed = gp.player.defaultSpeed;
 		return index;
 	}
 	

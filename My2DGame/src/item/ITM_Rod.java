@@ -30,9 +30,9 @@ public class ITM_Rod extends Entity {
 	public boolean use(Entity user) {		
 
 		gp.player.swinging = true;
-		
+				
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
-				gp.player.capturedTarget == null) {				
+				gp.player.capturedTarget == null) {					
 			playSE();
 			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
@@ -41,6 +41,8 @@ public class ITM_Rod extends Entity {
 			user.shotAvailableCounter = 0;	
 		}	
 		else if (gp.player.capturedTarget != null) {
+			projectile.playSE();
+			
 			gp.player.capturedTarget.captured = false;
 			gp.player.capturedTarget = null;
 		}

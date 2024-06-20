@@ -425,6 +425,7 @@ public class KeyHandler implements KeyListener{
 			
 			gp.ui.newItem = null;
 			gp.player.attackCanceled = false;
+			gp.player.drawing = true;
 			gp.gameState = gp.playState;
 		}
 	}

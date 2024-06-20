@@ -19,8 +19,7 @@ public class OBJ_Tent extends Entity {
 		down1 = setup("/objects/OBJ_TENT");
 	}	
 	
-	public void interact() {	
-		// PLAY SE
+	public void interact() {
 		gp.gameState = gp.sleepState;
 	}
 }

@@ -40,31 +40,28 @@ public class Player extends Entity {
 	// LIGHTING
 	public boolean lightUpdated = false;
 	
-	// TRIGGERS
+	// ACTIONS
 	public boolean guarding = false;
 	public boolean running = false;
-	public boolean chopping = false;	
-		
-	// DIGGING
+	public boolean chopping = false;
 	public boolean digging = false;
+	public boolean jumping = false;
+	public boolean swinging = false;
+	public boolean falling = false;
+	public boolean drowning = false;
+	
 	public int digNum;
 	public int digCounter = 0;	
 
-	// JUMPING
-	public boolean jumping = false;
 	public int jumpNum;
 	public int jumpCounter = 0;
 	
-	public boolean swinging = false;
 	public int rodNum;
 	public int rodCounter = 0;
 
-	// FALLING
-	public boolean falling = false;
 	public int fallNum;
 	public int fallCounter = 0;
 	
-	public boolean drowning = false;
 	public int drownNum;
 	public int drownCounter = 0;
 	
@@ -118,7 +115,7 @@ public class Player extends Entity {
 		
 		// PLAYER ATTRIBUTES
 		level = 1;
-		maxLife = 10; life = maxLife;
+		maxLife = 20; life = maxLife;
 		strength = 1; dexterity = 1;
 		exp = 0; nextLevelEXP = 10;
 		walletSize = 99; rupees = 0;
@@ -126,11 +123,11 @@ public class Player extends Entity {
 		maxArrows = 5; arrows = maxArrows;
 		maxBombs = 5; bombs = maxBombs;
 		
-		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);		
-		currentShield = new EQP_Shield_Old(gp);	
-		
+//		currentWeapon = null;
+		currentWeapon = new EQP_Sword_Old(gp);		
+		currentShield = new EQP_Shield_Old(gp);		
 		currentLight = null;
+		
 		projectile = new PRJ_Sword(gp);
 		
 		attack = getAttack();
@@ -162,7 +159,20 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-		inventory.add(currentShield);
+		inventory.add(currentShield);	
+		
+		inventory.add(new ITM_Axe(gp));
+		inventory.add(new ITM_Bomb(gp));
+		inventory.add(new ITM_Boomerang(gp));
+		inventory.add(new ITM_Boots(gp));
+		inventory.add(new ITM_Bow(gp));
+		inventory.add(new ITM_Feather(gp));		
+		inventory.add(new ITM_Hookshot(gp));
+		inventory.add(new ITM_Rod(gp));				
+		inventory.add(new ITM_Shovel(gp));	
+		
+		hasItem = true;
+		canSwim = true;
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -249,16 +259,6 @@ public class Player extends Entity {
 		attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
 		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
 	}
-	public void getSwimImage() {			
-		swimUp1 = setup("/player/boy_swim_up_1"); 
-		swimUp2 = setup("/player/boy_swim_up_2");			
-		swimDown1 = setup("/player/boy_swim_down_1"); 
-		swimDown2 = setup("/player/boy_swim_down_2");		
-		swimLeft1 = setup("/player/boy_swim_left_1"); 
-		swimLeft2 = setup("/player/boy_swim_left_2");		
-		swimRight1 = setup("/player/boy_swim_right_1"); 
-		swimRight2 = setup("/player/boy_swim_right_2");		
-	}
 	public void getGuardImage() {			
 		guardUp1 = setup("/player/boy_guard_up_1"); 
 		guardUp2 = guardUp1;
@@ -268,7 +268,7 @@ public class Player extends Entity {
 		guardLeft2 = guardLeft1;
 		guardRight1 = setup("/player/boy_guard_right_1"); 
 		guardRight2 = guardRight1;
-	}	
+	}
 	public void getDigImage() {
 		digUp1 = setup("/player/boy_dig_up_1"); 
 		digUp2 = setup("/player/boy_dig_up_2");			
@@ -278,6 +278,16 @@ public class Player extends Entity {
 		digLeft2 = setup("/player/boy_dig_left_2");		
 		digRight1 = setup("/player/boy_dig_right_1"); 
 		digRight2 = setup("/player/boy_dig_right_2");		
+	}
+	public void getSwimImage() {			
+		swimUp1 = setup("/player/boy_swim_up_1"); 
+		swimUp2 = setup("/player/boy_swim_up_2");			
+		swimDown1 = setup("/player/boy_swim_down_1"); 
+		swimDown2 = setup("/player/boy_swim_down_2");		
+		swimLeft1 = setup("/player/boy_swim_left_1"); 
+		swimLeft2 = setup("/player/boy_swim_left_2");		
+		swimRight1 = setup("/player/boy_swim_right_1"); 
+		swimRight2 = setup("/player/boy_swim_right_2");		
 	}
 	public void getJumpImage() {
 		jumpUp1 = setup("/player/boy_jump_up_1");
@@ -324,6 +334,12 @@ public class Player extends Entity {
 	public void update() {	
 		guarding = false;
 		
+		// CHECK COLLISION (NOT ON DEBUG)
+		if(!keyH.debug) checkCollision();
+				
+		if (drowning) { drowning(); return; } 
+		if (falling) { falling(); return; } 
+		if (keyH.tabPressed) { cycleItems(); }
 		if (!swimming) {
 			if (keyH.actionPressed) { action(); }
 			if (attacking) { attacking(); return; }	
@@ -337,22 +353,17 @@ public class Player extends Entity {
 					lockedTarget.isLocked = false;
 					lockedTarget = null;
 				}
-			}
-			if (falling) { falling(); return; } 
+			}			
+			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
+			if (keyH.itemPressed) { useItem(); }
 		}
-		if (drowning) { drowning(); return; } 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ||
 				keyH.guardPressed) {
 			walking();
 		}	
-		if (!swimming) {
-			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
-			if (keyH.itemPressed) { useItem(); }		
-		}
-		if (keyH.tabPressed) { cycleItems(); }	
+		
 		manageValues();		
 		checkDeath();
-		
 	}
 
 /** END UPDATER **/
@@ -366,8 +377,7 @@ public class Player extends Entity {
 		// FIND DIRECTION
 		getDirection();
 		
-		// CHECK COLLISION (NOT ON DEBUG)
-		if(!keyH.debug) checkCollision();
+		
 		
 		// STOP MOVEMENT WHEN GUARDING
 		if (keyH.guardPressed && !swimming) {
@@ -378,7 +388,7 @@ public class Player extends Entity {
 		
 			// MOVE PLAYER
 			if (!collisionOn) { 	
-								
+				
 				if (lockon) {
 					switch (lockonDirection) {
 						case "up": worldY -= speed; break;
@@ -464,9 +474,7 @@ public class Player extends Entity {
 	}
 	
 	// ACTION BUTTON
-	public void action() {
-		checkCollision();
-		
+	public void action() {		
 		if (!attackCanceled) 
 			swingSword();
 	}
@@ -475,7 +483,7 @@ public class Player extends Entity {
 		collisionOn = false;
 		
 		if (!jumping) gp.cChecker.checkPit();
-		
+				
 		// CHECK TILE COLLISION
 		gp.cChecker.checkTile(this);
 
@@ -514,25 +522,6 @@ public class Player extends Entity {
 				gp.npc[gp.currentMap][i].move(direction);
 		}				
 	}
-	public void contactEnemy(int i) {
-		
-		// PLAYER HURT BY ENEMY
-		if (i != -1 && !invincible && !gp.enemy[gp.currentMap][i].dying && 
-				!gp.enemy[gp.currentMap][i].captured) {
-			playHurtSE();
-			
-			if (gp.enemy[gp.currentMap][i].knockbackPower > 0) 
-				setKnockback(gp.player, gp.enemy[gp.currentMap][i], gp.enemy[gp.currentMap][i].knockbackPower);
-			
-			int damage = gp.enemy[gp.currentMap][i].attack - defense;
-			if (damage < 0) damage = 0;				
-			this.life -= damage;
-			
-			invincible = true;
-			transparent = true;
-			
-		}
-	}		
 	public void pickUpObject(int i) {
 		
 		// OBJECT INTERACTION
@@ -564,6 +553,8 @@ public class Player extends Entity {
 			projectile.interact();
 		}
 	}
+	
+	// COMBAT
 	public void swingSword() {
 				
 		if (currentWeapon == null) {		
@@ -656,7 +647,26 @@ public class Player extends Entity {
 		return eDirection;
 	}
 	
-	// KNOCKBACK
+	// ENEMY DAMAGE
+	public void contactEnemy(int i) {
+		
+		// PLAYER HURT BY ENEMY
+		if (i != -1 && !invincible && !gp.enemy[gp.currentMap][i].dying && 
+				!gp.enemy[gp.currentMap][i].captured) {
+			playHurtSE();
+			
+			if (gp.enemy[gp.currentMap][i].knockbackPower > 0) 
+				setKnockback(gp.player, gp.enemy[gp.currentMap][i], gp.enemy[gp.currentMap][i].knockbackPower);
+			
+			int damage = gp.enemy[gp.currentMap][i].attack - defense;
+			if (damage < 0) damage = 0;				
+			this.life -= damage;
+			
+			invincible = true;
+			transparent = true;
+			
+		}
+	}		
 	public void knockbackPlayer() {
 		
 		collisionOn = false;
@@ -819,6 +829,56 @@ public class Player extends Entity {
 			attackCanceled = false;
 		}
 	}
+	public void swinging() {
+
+		rodCounter++;
+				
+		// ATTACK IMAGE 1
+		if (currentItem.swingSpeed1 >= rodCounter) {			
+			rodNum = 1;
+		}		
+		// ATTACK IMAGE 2
+		if (currentItem.swingSpeed2 >= rodCounter && rodCounter > currentItem.swingSpeed1) {
+			rodNum = 2;
+			
+			// CHECK IF WEAPON HITS TARGET	
+			int currentWorldX = worldX;
+			int currentWorldY = worldY;
+			int hitBoxWidth = hitbox.width;
+			int hitBoxHeight = hitbox.height;
+			
+			// ADJUST PLAYER'S X/Y 
+			switch (direction) {
+				case "up": worldY -= attackbox.height; break; 
+				case "upleft": worldY -= attackbox.height; worldX -= attackbox.width; break; 
+				case "upright": worldY -= attackbox.height; worldX += attackbox.width; break; 
+				case "down": worldY += attackbox.height; break;
+				case "downleft": worldY += attackbox.height; worldX -= attackbox.width; break;
+				case "downright": worldY += attackbox.height; worldX += attackbox.width; break;					
+				case "left": worldX -= attackbox.width; break;
+				case "right": worldX += attackbox.width; break;
+			}
+			
+			// CHANGE SIZE OF HIT BOX 
+			hitbox.width = attackbox.width;
+			hitbox.height = attackbox.height;
+						
+			// RESTORE PLAYER HITBOX
+			worldX = currentWorldX;
+			worldY = currentWorldY;
+			hitbox.width = hitBoxWidth;
+			hitbox.height = hitBoxHeight;
+		}
+		
+		// RESET IMAGE
+		if (rodCounter > currentItem.swingSpeed2) {
+			rodNum = 1;
+			rodCounter = 0;
+			swinging = false;
+			attackCanceled = false;
+			gp.keyH.actionPressed = false;
+		}
+	}			
 	public void falling() {
 		
 		fallCounter++;
@@ -864,59 +924,7 @@ public class Player extends Entity {
 			safeWorldX = 0;
 			safeWorldY = 0;
 		}		
-	}	
-	public void swinging() {
-
-		rodCounter++;
-				
-		// ATTACK IMAGE 1
-		if (currentItem.swingSpeed1 >= rodCounter) {			
-			rodNum = 1;
-			if (currentItem.swingSpeed1 == rodCounter)
-				currentItem.playSE();
-		}		
-		// ATTACK IMAGE 2
-		if (currentItem.swingSpeed2 >= rodCounter && rodCounter > currentItem.swingSpeed1) {
-			rodNum = 2;
-			
-			// CHECK IF WEAPON HITS TARGET	
-			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			int hitBoxWidth = hitbox.width;
-			int hitBoxHeight = hitbox.height;
-			
-			// ADJUST PLAYER'S X/Y 
-			switch (direction) {
-				case "up": worldY -= attackbox.height; break; 
-				case "upleft": worldY -= attackbox.height; worldX -= attackbox.width; break; 
-				case "upright": worldY -= attackbox.height; worldX += attackbox.width; break; 
-				case "down": worldY += attackbox.height; break;
-				case "downleft": worldY += attackbox.height; worldX -= attackbox.width; break;
-				case "downright": worldY += attackbox.height; worldX += attackbox.width; break;					
-				case "left": worldX -= attackbox.width; break;
-				case "right": worldX += attackbox.width; break;
-			}
-			
-			// CHANGE SIZE OF HIT BOX 
-			hitbox.width = attackbox.width;
-			hitbox.height = attackbox.height;
-						
-			// RESTORE PLAYER HITBOX
-			worldX = currentWorldX;
-			worldY = currentWorldY;
-			hitbox.width = hitBoxWidth;
-			hitbox.height = hitBoxHeight;
-		}
-		
-		// RESET IMAGE
-		if (rodCounter > currentItem.swingSpeed2) {
-			rodNum = 1;
-			rodCounter = 0;
-			swinging = false;
-			attackCanceled = false;
-			gp.keyH.actionPressed = false;
-		}
-	}				
+	}		
 	
 	// DAMAGE
 	public void damageEnemy(int i, Entity attacker, int attack, int knockbackPower) {
@@ -1085,171 +1093,189 @@ public class Player extends Entity {
 /** DRAW HANDLER **/
 	
 	public void draw(Graphics2D g2) {
-						
-		// DON'T DRAW PLAYER IN ITEMGET STATE
-		if (gp.gameState == gp.itemGetState) 
-			return;
+		
+		if (!drawing) return;
 		
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
 		
 		if (alive) {
-			
-			// change entity sprite based on which direction and which cycle
-			switch (direction) {
-				case "up":
-				case "upleft":
-				case "upright":
-					if (digging) {
-						if (digNum == 1) image1 = digUp1;
-						if (digNum == 2) image1 = digUp2;
-					}
-					else if (jumping) {					
-						tempScreenY -= 15;
-						if (jumpNum == 1) image1 = jumpUp1;
-						if (jumpNum == 2) image1 = jumpUp2; 
-						if (jumpNum == 3) image1 = jumpUp3; 
-					}
-					else if (guarding) {
-						image1 = guardUp1;
-					}
-					else if (attacking) {
-						tempScreenY -= gp.tileSize;
-						if (attackNum == 1) {
-							tempScreenX -= gp.tileSize;
-							image1 = attackUp1;
-						}
-						if (attackNum == 2) image1 = attackUp2;							
-					}	
-					else if (swinging) {
-						tempScreenY -= gp.tileSize;
-						if (rodNum == 1) {
-							tempScreenX -= gp.tileSize;
-							image1 = rodUp1;
-						}
-						if (rodNum == 2) image1 = rodUp2;							
-					}	
-					else if (swimming || drowning) {
-						if (spriteNum == 1) image1 = swimUp1;
-						if (spriteNum == 2) image1 = swimUp2;
-					}
-					else {
-						if (spriteNum == 1) image1 = up1;
-						if (spriteNum == 2) image1 = up2;	
-					}	
-					break;
-				case "down":
-				case "downleft":
-				case "downright":
-					if (digging) {
-						if (digNum == 1) image1 = digDown1;
-						if (digNum == 2) image1 = digDown2;
-					}
-					else if (jumping) {					
-						tempScreenY -= 15;
-						if (jumpNum == 1) image1 = jumpDown1;
-						if (jumpNum == 2) image1 = jumpDown2; 
-						if (jumpNum == 3) image1 = jumpDown3; 
-					}
-					else if (attacking) {		
-						if (attackNum == 1) image1 = attackDown1;
-						if (attackNum == 2) image1 = attackDown2;	
-					}		
-					else if (swinging) {
-						if (rodNum == 1) image1 = rodDown1;
-						if (rodNum == 2) image1 = rodDown2;
-					}
-					else if (guarding) {
-						image1 = guardDown1;
-					}
-					else if (swimming || drowning) {
-						if (spriteNum == 1) image1 = swimDown1;
-						if (spriteNum == 2) image1 = swimDown2;
-					}
-					else {
-						if (spriteNum == 1) image1 = down1;
-						if (spriteNum == 2) image1 = down2;	
-					}										
-					break;
-				case "left":
-					if (digging) {
-						if (digNum == 1) image1 = digLeft1;
-						if (digNum == 2) image1 = digLeft2;
-					}
-					else if (jumping) {					
-						tempScreenY -= 15;
-						if (jumpNum == 1) image1 = jumpLeft1;
-						if (jumpNum == 2) image1 = jumpLeft2; 
-						if (jumpNum == 3) image1 = jumpLeft3; 
-					}
-					else if (attacking) {
-						tempScreenX -= gp.tileSize;
-						if (attackNum == 1) {
+
+			if (falling) {
+				if (fallNum == 1) image1 = fall1;
+				if (fallNum == 2) image1 = fall2;
+				if (fallNum == 3) image1 = fall3;
+				if (fallNum == 4) image1 = null;
+			}	
+			else {			
+				switch (direction) {
+					case "up":
+					case "upleft":
+					case "upright":
+						if (attacking) {
 							tempScreenY -= gp.tileSize;
-							image1 = attackLeft1;
+							if (attackNum == 1) {
+								tempScreenX -= gp.tileSize;
+								image1 = attackUp1;
+							}
+							else if (attackNum == 2) image1 = attackUp2;							
 						}
-						if (attackNum == 2) image1 = attackLeft2;	
-					}	
-					else if (swinging) {
-						tempScreenX -= gp.tileSize;
-						if (rodNum == 1) {
-							tempScreenY -= gp.tileSize;
-							image1 = rodLeft1;
+						else if (guarding) {
+							image1 = guardUp1;
 						}
-						if (rodNum == 2) image1 = rodLeft2;	
-					}	
-					else if (guarding) {
-						image1 = guardLeft1;
-					}
-					else if (swimming || drowning) {
-						if (spriteNum == 1) image1 = swimLeft1;
-						if (spriteNum == 2) image1 = swimLeft2;
-					}
-					else {
-						if (spriteNum == 1) image1 = left1;
-						if (spriteNum == 2) image1 = left2;	
-					}
-						
-					break;
-				case "right":
-					if (digging) {
-						if (digNum == 1) image1 = digRight1;
-						if (digNum == 2) image1 = digRight2;
-					}
-					else if (jumping) {					
-						tempScreenY -= 15;
-						if (jumpNum == 1) image1 = jumpRight1;
-						if (jumpNum == 2) image1 = jumpRight2; 
-						if (jumpNum == 3) image1 = jumpRight3; 
-					}		
-					else if (attacking) {
-						if (attackNum == 1) {
-							tempScreenY -= gp.tileSize;
-							image1 = attackRight1;
+						else if (digging) {
+							if (digNum == 1) image1 = digUp1;
+							else if (digNum == 2) image1 = digUp2;
 						}
-						if (attackNum == 2) image1 = attackRight2;
-					}	
-					else if (swinging) {
-						if (rodNum == 1) {
-							tempScreenY -= gp.tileSize;
-							image1 = rodRight1;
-						}
-						if (rodNum == 2) image1 = rodRight2;
-					}	
-					else if (guarding) {
-						image1 = guardRight1;
-					}
-					else if (swimming || drowning) {
-						if (spriteNum == 1) image1 = swimRight1;
-						if (spriteNum == 2) image1 = swimRight2;
-					}
-					else {
-						if (spriteNum == 1) image1 = right1;
-						if (spriteNum == 2) image1 = right2;	
-					}							
-					break;
-			}
+						else if (jumping) {					
+							tempScreenY -= 15;
+							if (jumpNum == 1) image1 = jumpUp1;
+							else if (jumpNum == 2) image1 = jumpUp2; 
+							else if (jumpNum == 3) image1 = jumpUp3; 
 							
+							g2.setColor(Color.BLACK);
+							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+						} 
+						else if (swinging) {
+							tempScreenY -= gp.tileSize;
+							if (rodNum == 1) {
+								tempScreenX -= gp.tileSize;
+								image1 = rodUp1;
+							}
+							else if (rodNum == 2) image1 = rodUp2;							
+						}	
+						else if (swimming || drowning) {
+							if (spriteNum == 1) image1 = swimUp1;
+							else if (spriteNum == 2) image1 = swimUp2;
+						}
+						else {
+							if (spriteNum == 1) image1 = up1;
+							else if (spriteNum == 2) image1 = up2;	
+						}	
+						break;
+					case "down":
+					case "downleft":
+					case "downright":
+						if (attacking) {		
+							if (attackNum == 1) image1 = attackDown1;
+							else if (attackNum == 2) image1 = attackDown2;	
+						}
+						else if (guarding) {
+							image1 = guardDown1;
+						}
+						else if (digging) {
+							if (digNum == 1) image1 = digDown1;
+							else if (digNum == 2) image1 = digDown2;
+						}
+						else if (jumping) {					
+							tempScreenY -= 15;
+							if (jumpNum == 1) image1 = jumpDown1;
+							else if (jumpNum == 2) image1 = jumpDown2; 
+							else if (jumpNum == 3) image1 = jumpDown3; 
+							
+							g2.setColor(Color.BLACK);
+							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+						}							
+						else if (swinging) {
+							if (rodNum == 1) image1 = rodDown1;
+							else if (rodNum == 2) image1 = rodDown2;
+						}
+						
+						else if (swimming || drowning) {
+							if (spriteNum == 1) image1 = swimDown1;
+							else if (spriteNum == 2) image1 = swimDown2;
+						}
+						else {
+							if (spriteNum == 1) image1 = down1;
+							else if (spriteNum == 2) image1 = down2;	
+						}										
+						break;
+					case "left":
+						if (attacking) {
+							tempScreenX -= gp.tileSize;
+							if (attackNum == 1) {
+								tempScreenY -= gp.tileSize;
+								image1 = attackLeft1;
+							}
+							else if (attackNum == 2) image1 = attackLeft2;	
+						}	
+						else if (guarding) {
+							image1 = guardLeft1;
+						}
+						else if (digging) {
+							if (digNum == 1) image1 = digLeft1;
+							else if (digNum == 2) image1 = digLeft2;
+						}
+						else if (jumping) {					
+							tempScreenY -= 15;
+							if (jumpNum == 1) image1 = jumpLeft1;
+							else if (jumpNum == 2) image1 = jumpLeft2; 
+							else if (jumpNum == 3) image1 = jumpLeft3; 
+							
+							g2.setColor(Color.BLACK);
+							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+						}					
+						else if (swinging) {
+							tempScreenX -= gp.tileSize;
+							if (rodNum == 1) {
+								tempScreenY -= gp.tileSize;
+								image1 = rodLeft1;
+							}
+							else if (rodNum == 2) image1 = rodLeft2;	
+						}						
+						else if (swimming || drowning) {
+							if (spriteNum == 1) image1 = swimLeft1;
+							else if (spriteNum == 2) image1 = swimLeft2;
+						}
+						else {
+							if (spriteNum == 1) image1 = left1;
+							else if (spriteNum == 2) image1 = left2;	
+						}
+							
+						break;
+					case "right":
+						if (attacking) {
+							if (attackNum == 1) {
+								tempScreenY -= gp.tileSize;
+								image1 = attackRight1;
+							}
+							if (attackNum == 2) image1 = attackRight2;
+						}	
+						else if (guarding) {
+							image1 = guardRight1;
+						}
+						else if (digging) {
+							if (digNum == 1) image1 = digRight1;
+							else if (digNum == 2) image1 = digRight2;
+						}
+						else if (jumping) {					
+							tempScreenY -= 15;
+							if (jumpNum == 1) image1 = jumpRight1;
+							else if (jumpNum == 2) image1 = jumpRight2; 
+							else if (jumpNum == 3) image1 = jumpRight3; 
+							
+							g2.setColor(Color.BLACK);
+							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+						}							
+						else if (swinging) {
+							if (rodNum == 1) {
+								tempScreenY -= gp.tileSize;
+								image1 = rodRight1;
+							}
+							else if (rodNum == 2) image1 = rodRight2;
+						}						
+						else if (swimming || drowning) {
+							if (spriteNum == 1) image1 = swimRight1;
+							else if (spriteNum == 2) image1 = swimRight2;
+						}
+						else {
+							if (spriteNum == 1) image1 = right1;
+							else if (spriteNum == 2) image1 = right2;	
+						}							
+						break;
+				}
+			}
+			
 			// PLAYER IS HIT
 			if (transparent) {
 				
@@ -1258,25 +1284,10 @@ public class Player extends Entity {
 					changeAlpha(g2, 0.2f);
 				else
 					changeAlpha(g2, 1f);
-			}	
+			}				
 		}	
 		
-		if (falling) {
-			if (fallNum == 1) image1 = fall1;
-			if (fallNum == 2) image1 = fall2;
-			if (fallNum == 3) image1 = fall3;
-			if (fallNum == 4) image1 = null;
-		}
-									
-		if (drawing) {		
-			g2.drawImage(image1, tempScreenX, tempScreenY, null);			
-			
-			// DRAW SHADOW UNDER PLAYER
-			if (jumping) {
-				g2.setColor(Color.BLACK);
-				g2.fillOval(screenX + 10, screenY + 40, 30, 10);
-			}
-		}
+		g2.drawImage(image1, tempScreenX, tempScreenY, null);			
 
 		// DRAW HITBOX
 		if (keyH.debug) {			
