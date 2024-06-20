@@ -77,7 +77,7 @@ public class EventHandler {
 		if (canTouchEvent) {
 			
 			// FAIRY POOL
-			if (hit(0, 23, 12, Arrays.asList("up"), false)) healingPool();
+			if (hit(0, 23, 11, Arrays.asList("up"), false)) healingPool();
 			
 			// SHOP KEEPER
 			else if (hit(1, 10, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	

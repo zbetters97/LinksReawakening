@@ -109,8 +109,9 @@ public class UI {
 		if (gp.gameState == gp.titleState) {
 			drawTitleScreen();
 		}		
-		// PLAY STATE / PROJECTILE STATE
-		else if (gp.gameState == gp.playState || gp.gameState == gp.objectState) {
+		// PLAY STATE
+		else if (gp.gameState == gp.playState || gp.gameState == gp.objectState ||
+				gp.gameState == gp.fallingState || gp.gameState == gp.drowningState) {
 			drawHUD();
 			drawEnemyHPBar();
 			drawMessage();

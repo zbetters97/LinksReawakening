@@ -19,8 +19,8 @@ public class ITM_Shovel extends Entity {
 	}
 	
 	public void use() {
-		if (!gp.player.digging) {
-			gp.player.digging = true;
+		if (gp.player.action != Action.DIGGING) {
+			gp.player.action = Action.DIGGING;
 			gp.player.attackCanceled = true;
 			playSE();
 		}

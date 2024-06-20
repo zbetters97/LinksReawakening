@@ -80,6 +80,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int cutsceneState = 11;	
 	public final int gameOverState = 12;
 	public final int endingState = 13;
+	public final int fallingState = 13;
+	public final int drowningState = 14;
 	
 	// AREA STATES
 	public int currentArea;
@@ -198,7 +200,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	private void update() {
-				
+		
 		// GAME PLAYING
 		if (gameState == playState || gameState == objectState) {
 			
@@ -273,6 +275,10 @@ public class GamePanel extends JPanel implements Runnable {
 					npc[currentMap][i].update();
 			}
 		}
+		
+		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
+		if (gameState == fallingState) { player.takingDamage(); }
+		if (gameState == drowningState) { player.takingDamage(); }
 		
 		// GAME PAUSED
 		if (gameState == pauseState) { }

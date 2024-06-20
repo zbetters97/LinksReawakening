@@ -3,8 +3,9 @@ package main;
 import java.util.ArrayList;
 
 import entity.Entity;
-import entity.NPC_Boulder;
-import tile_interactive.IT_Plate_Metal;
+import entity.NPC_Block_Pushable;
+import entity.Entity.Action;
+import tile_interactive.IT_Button_Metal;
 
 public class CollisionChecker {
 	
@@ -166,7 +167,6 @@ public class CollisionChecker {
 		if (entityLeftCol <= 0) return;		
 		if (entityRightCol >= gp.maxWorldCol - 1) return;
 		
-		// find tile player will interact with, factoring in speed
 		switch (direction) {
 			case "up":				
 				
@@ -264,23 +264,23 @@ public class CollisionChecker {
 
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 			gp.playSE(2, 2);
-			gp.player.falling = true;
 			gp.player.invincible = true;
+			gp.gameState = gp.fallingState;
 		}
-		
-		if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
+		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
 			if (gp.player.canSwim) {
-				gp.player.swimming = true;
+				gp.player.action = Action.SWIMMING;
 			}
 			else {
 				gp.player.playDrownSE();
 				gp.player.playHurtSE();	
-				gp.player.drowning = true;
 				gp.player.invincible = true;
+				gp.gameState = gp.drowningState;
 			}			
-		}
+		}		
 		else {
-			gp.player.swimming = false;
+			if (gp.player.action == Action.SWIMMING)
+				gp.player.action = Action.IDLE;
 		}
 	}	
 	
@@ -431,7 +431,7 @@ public class CollisionChecker {
 												
 						// ONLY PLAYER CAN PUSH BOMBS
 						if (!target[gp.currentMap][i].diggable && !target[gp.currentMap][i].canExplode &&
-								!target[gp.currentMap][i].name.equals(IT_Plate_Metal.itName))
+								!target[gp.currentMap][i].name.equals(IT_Button_Metal.itName))
 							entity.collisionOn = true;
 					}
 				}
@@ -469,7 +469,7 @@ public class CollisionChecker {
 			
 			if (gp.npc[gp.currentMap][i] != null) {			
 				
-				if (gp.npc[gp.currentMap][i].name.equals(NPC_Boulder.npcName))
+				if (gp.npc[gp.currentMap][i].name.equals(NPC_Block_Pushable.npcName))
 					speed = gp.player.speed;
 				
 				// get gp.player's solid area position

@@ -12,7 +12,7 @@ public class EQP_Sword_Old extends Entity {
 		super(gp);
 		this.gp = gp;
 		
-		type = type_sword;		
+		type = type_sword;	
 		name = eqpName;
 		description = "[" + name + "]\nA humble starter sword.\n+1 ATK";
 				

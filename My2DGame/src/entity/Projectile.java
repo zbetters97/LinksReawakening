@@ -24,6 +24,12 @@ public class Projectile extends Entity {
 	
 	public void update() {
 		
+		// PREVENT GLITCH WHEN RECEIVING AN ITEM
+		if (gp.gameState == gp.itemGetState) {
+			alive = false;
+			return;
+		}
+		
 		// PREVENT GLITCHED DEATH WHEN ITEM IS IN AIR
 		if (gp.gameState != gp.gameOverState) {
 			
@@ -194,7 +200,7 @@ public class Projectile extends Entity {
 			life = 0;
 		}
 		
-		// MAX LENGTH REACHED
+		// MAX LENGTH REACHED OR OBJECT RECIEVED
 		if (life <= 0 || objectIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER

@@ -10,7 +10,7 @@ import entity.Entity;
 import entity.NPC_Traveler_2;
 import entity.PlayerDummy;
 import object.OBJ_BlueHeart;
-import object.OBJ_Door_Iron;
+import object.OBJ_Door_Closed;
 
 public class CutsceneManager {
 
@@ -69,9 +69,10 @@ public class CutsceneManager {
 			for (int i = 0; i < gp.obj[1].length; i++) {
 				if (gp.obj[gp.currentMap][i] == null) {
 										
-					gp.obj[gp.currentMap][i] = new OBJ_Door_Iron(gp);
+					gp.obj[gp.currentMap][i] = new OBJ_Door_Closed(gp);
 					gp.obj[gp.currentMap][i].worldX = gp.tileSize * 25;
 					gp.obj[gp.currentMap][i].worldY = gp.tileSize * 28;
+					gp.obj[gp.currentMap][i].direction = "up";
 					gp.obj[gp.currentMap][i].temp = true;
 					gp.obj[gp.currentMap][i].playCloseSE();
 					

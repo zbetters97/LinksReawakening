@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import entity.Entity.Action;
+
 public class KeyHandler implements KeyListener{
 
 	private GamePanel gp;
@@ -254,7 +256,7 @@ public class KeyHandler implements KeyListener{
 		 * R: RELOAD MAP
 		 * SHIFT: DEBUG
 		 */		
-		
+
 		if (code == KeyEvent.VK_UP) upPressed = true;
 		if (code == KeyEvent.VK_DOWN) downPressed = true;
 		if (code == KeyEvent.VK_LEFT) leftPressed = true;
@@ -263,7 +265,7 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
 		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }		
-		if (code == KeyEvent.VK_Z && lock && !gp.player.swimming) { 
+		if (code == KeyEvent.VK_Z && lock) { 
 			guardPressed = true; 
 			lock = false; 
 			gp.player.playGuardSE(); 
@@ -550,9 +552,19 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
-		if (code == KeyEvent.VK_Z) { guardPressed = false; lock = true;}
+		if (code == KeyEvent.VK_Z) { 
+			guardPressed = false; 
+			lock = true;
+			if (gp.player.action == Action.GUARDING)
+				gp.player.action = Action.IDLE;
+		}
 		if (code == KeyEvent.VK_F) { lockPressed = false; lock = true; }
-		if (code == KeyEvent.VK_Q) { itemPressed = false; gp.player.running = false; lock = true; }	
+		if (code == KeyEvent.VK_Q) { 
+			itemPressed = false; 
+			lock = true; 
+			if (gp.player.action == Action.RUNNING) 
+				gp.player.action = Action.IDLE;			
+		}	
 		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
 	}
 	

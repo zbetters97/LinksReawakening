@@ -64,7 +64,7 @@ public class AssetSetter {
 		mapNum = 2;
 		i = 0;
 		
-		gp.obj[mapNum][i] = new OBJ_Door_Iron(gp);
+		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 23;	
 		i++;
@@ -72,7 +72,7 @@ public class AssetSetter {
 		mapNum = 3;
 		i = 0;
 		
-		gp.obj[mapNum][i] = new OBJ_Door_Iron(gp);
+		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
 		i++;			
@@ -111,15 +111,15 @@ public class AssetSetter {
 		mapNum = 2;
 		i = 0;
 		
-		gp.npc[mapNum][i] = new NPC_Boulder(gp);
+		gp.npc[mapNum][i] = new NPC_Block_Pushable(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 34;
 		gp.npc[mapNum][i].worldY = gp.tileSize * 26;
 		i++;
-		gp.npc[mapNum][i] = new NPC_Boulder(gp);
+		gp.npc[mapNum][i] = new NPC_Block_Pushable(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 11;
 		gp.npc[mapNum][i].worldY = gp.tileSize * 18;
 		i++;
-		gp.npc[mapNum][i] = new NPC_Boulder(gp);
+		gp.npc[mapNum][i] = new NPC_Block_Pushable(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 23;
 		gp.npc[mapNum][i].worldY = gp.tileSize * 14;
 		i++;
@@ -191,8 +191,8 @@ public class AssetSetter {
 		i = 0;
 		
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 10, 22); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 20, 22); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 8, 17); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 39, 31); i++;
+		gp.iTile[mapNum][i] = new IT_Button_Metal(gp, 20, 22); i++;
+		gp.iTile[mapNum][i] = new IT_Button_Metal(gp, 8, 17); i++;
+		gp.iTile[mapNum][i] = new IT_Button_Metal(gp, 39, 31); i++;
 	}
 }

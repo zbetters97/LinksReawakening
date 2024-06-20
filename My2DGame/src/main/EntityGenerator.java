@@ -40,8 +40,8 @@ public class EntityGenerator {
 			case COL_Rupee_Green.colName: obj = new COL_Rupee_Green(gp); break;
 			case COL_Rupee_Red.colName: obj = new COL_Rupee_Red(gp); break;
 			
-			case OBJ_Door.objName: obj = new OBJ_Door(gp); break;
-			case OBJ_Door_Iron.objName: obj = new OBJ_Door_Iron(gp); break;
+			case OBJ_Door_Locked.objName: obj = new OBJ_Door_Locked(gp); break;
+			case OBJ_Door_Closed.objName: obj = new OBJ_Door_Closed(gp); break;
 			case OBJ_Chest.objName: obj = new OBJ_Chest(gp); break;
 			case OBJ_Tent.objName: obj = new OBJ_Tent(gp); break;
 		}

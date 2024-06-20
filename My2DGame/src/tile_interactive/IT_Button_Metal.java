@@ -2,12 +2,12 @@ package tile_interactive;
 
 import main.GamePanel;
 
-public class IT_Plate_Metal extends InteractiveTile {
+public class IT_Button_Metal extends InteractiveTile {
 
 	public static final String itName = "Metal Plate";
 	GamePanel gp;
 	
-	public IT_Plate_Metal(GamePanel gp, int col, int row) {
+	public IT_Button_Metal(GamePanel gp, int col, int row) {
 		super(gp, col, row);
 		this.gp = gp;
 		
@@ -15,7 +15,7 @@ public class IT_Plate_Metal extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
-		down1 = setup("/tiles_interactive/metalplate");
+		down1 = setup("/tiles_interactive/button_metal");
 	}
 	
 	public void playSE() {

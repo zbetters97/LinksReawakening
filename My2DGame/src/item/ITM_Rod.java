@@ -27,18 +27,18 @@ public class ITM_Rod extends Entity {
 		projectile = new PRJ_Orb(gp);
 	}
 	
-	public boolean use(Entity user) {		
+	public void use() {		
 
-		gp.player.swinging = true;
+		gp.player.action = Action.SWINGING;
 				
-		if (!projectile.alive && user.shotAvailableCounter == 30 && 
+		if (!projectile.alive && gp.player.shotAvailableCounter == 30 && 
 				gp.player.capturedTarget == null) {					
 			playSE();
 			
-			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			projectile.set(gp.player.worldX, gp.player.worldY, gp.player.direction, true, gp.player);			
 			addProjectile(projectile);	
 			
-			user.shotAvailableCounter = 0;	
+			gp.player.shotAvailableCounter = 0;	
 		}	
 		else if (gp.player.capturedTarget != null) {
 			projectile.playSE();
@@ -46,7 +46,6 @@ public class ITM_Rod extends Entity {
 			gp.player.capturedTarget.captured = false;
 			gp.player.capturedTarget = null;
 		}
-		return true;
 	}	
 	
 	public void playSE() {

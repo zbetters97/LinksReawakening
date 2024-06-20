@@ -11,13 +11,19 @@ import java.util.Arrays;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-
 import main.GamePanel;
 import main.UtilityTool;
 
 public class Entity {
 	
+	public enum Action {
+		IDLE, GUARDING, RUNNING, CHOPPING, DIGGING, JUMPING, SWINGING, SWIMMING;
+	}
+	
 	GamePanel gp;
+	
+	// ACTIONS
+	public Action action;
 	
 	// GENERAL ATTRIBUTES
 	public int worldX, worldY;		
@@ -39,9 +45,9 @@ public class Entity {
 	public boolean collisionOn = false;
 	public boolean hasItem = false;
 	public boolean hasItemToGive = false;
-	public boolean canSwim = false;
-	public boolean swimming = false;     
+	public boolean canSwim = false;   
 	
+	public boolean attacking = false;
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
 	public boolean isPushed = false;
@@ -105,7 +111,6 @@ public class Entity {
 	public int swingSpeed1;
 	public int swingSpeed2;
 	public int actionLockCounter = 0;
-	public boolean attacking;	
 	public int attackCounter = 0;
 	public int attackNum = 1;	
 	public int shotAvailableCounter;
@@ -192,8 +197,8 @@ public class Entity {
 		if (sleep) return;		
 		if (captured) { isCaptured(); return; }
 		if (knockback) { knockbackEntity();	return; }
-		if (attacking) { attacking(); }
 		if (stunned) { manageValues(); return; }
+		if (attacking) { attacking(); }
 		
 		// CHILD CLASS
 		setAction();
@@ -632,7 +637,7 @@ public class Entity {
 				gp.player.damageProjectile(projectileIndex);	
 				
 				// SWINGING AXE
-				if (gp.player.chopping) {				
+				if (gp.player.action == Action.CHOPPING) {				
 					currentItem.playSE();
 					
 					// CHECK INTERACTIVE TILE
@@ -641,7 +646,8 @@ public class Entity {
 				}
 			}
 			
-			gp.player.chopping = false;
+			if (action == Action.CHOPPING)
+				action = Action.IDLE;
 						
 			// RESTORE PLAYER HITBOX
 			worldX = currentWorldX;
@@ -666,7 +672,7 @@ public class Entity {
 			int damage = attack - gp.player.defense;
 			
 			String canGuardDirection = getOppositeDirection(direction);			
-			if (gp.player.guarding && gp.player.direction.equals(canGuardDirection)) {
+			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(canGuardDirection)) {
 				gp.playSE(3, 13);			
 				if (knockbackPower > 0) 
 					setKnockback(gp.player, this, 1);
@@ -859,7 +865,7 @@ public class Entity {
 		// NOT STACKABLE
 		else {
 			if (inventory.size() != maxInventorySize) {
-				if (this == gp.player) getObject(newItem);				
+				if (this == gp.player) gp.player.getObject(newItem);				
 				else inventory.add(newItem);
 				return true;
 			}
@@ -878,37 +884,6 @@ public class Entity {
 			}
 		}		
 		return itemIndex;
-	}
-	public void getObject(Entity item) {
-		
-		// INVENTORY ITEMS
-		if (item.type == type_item) {
-			hasItem = true;
-		}
-		else if (item.type == type_sword) {
-			currentWeapon = item;
-			attack = gp.player.getAttack();
-		}
-		else if (item.type == type_shield) {
-			currentShield = item;
-			defense = gp.player.getDefense();
-		}
-		else if (item.type == type_collectable) {
-			item.use(this);
-			return;
-		}
-		else if (item.type == type_consumable) {
-			item.use(this);
-			return;
-		}	
-		
-		playGetItemSE();
-		
-		gp.ui.newItem = item;
-		inventory.add(item);
-		gp.ui.currentDialogue = "You got the " + item.name + "!";		
-		gp.ui.subState = 0;
-		gp.gameState = gp.itemGetState;
 	}
 	
 	// ITEM-OBJECT INTERACTION

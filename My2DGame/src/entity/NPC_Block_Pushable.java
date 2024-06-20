@@ -4,25 +4,25 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import main.GamePanel;
-import object.OBJ_Door_Iron;
-import tile_interactive.IT_Plate_Metal;
+import object.OBJ_Door_Closed;
+import tile_interactive.IT_Button_Metal;
 import tile_interactive.InteractiveTile;
 
-public class NPC_Boulder extends Entity{
+public class NPC_Block_Pushable extends Entity{
 	
-	public static final String npcName = "Boulder";
+	public static final String npcName = "Pushable Block";
 	public int pushCounter = 0;
 	public int pushMax = 48;
 	GamePanel gp;
 	
-	public NPC_Boulder(GamePanel gp) {		
+	public NPC_Block_Pushable(GamePanel gp) {		
 		super(gp);
 		this.gp = gp;		
 		
-		hasItemToGive = true;
 		type = type_npc;
 		name = npcName;
 		direction = "down";
+		
 		speed = 15; defaultSpeed = speed;
 		
 		hitbox = new Rectangle(2, 6, 44, 40); 		
@@ -33,7 +33,7 @@ public class NPC_Boulder extends Entity{
 	}
 	
 	public void getImage() {		
-		up1 = setup("/npc/boulder"); 
+		up1 = setup("/tiles_interactive/block_pushable"); 
 		up2 = up1;
 		down1 = up1;
 		down2 = up1;
@@ -100,7 +100,7 @@ public class NPC_Boulder extends Entity{
 		for (int i = 0; i < gp.iTile[1].length; i++) {
 			if (gp.iTile[gp.currentMap][i] != null && 
 					gp.iTile[gp.currentMap][i].name != null &&
-					gp.iTile[gp.currentMap][i].name.equals(IT_Plate_Metal.itName)) {
+					gp.iTile[gp.currentMap][i].name.equals(IT_Button_Metal.itName)) {
 				plateList.add(gp.iTile[gp.currentMap][i]);
 			}
 		}	
@@ -110,7 +110,7 @@ public class NPC_Boulder extends Entity{
 		for (int i = 0; i < gp.npc[1].length; i++) {
 			if (gp.npc[gp.currentMap][i] != null && 
 					gp.npc[gp.currentMap][i].name != null &&
-					gp.npc[gp.currentMap][i].name.equals(NPC_Boulder.npcName)) {
+					gp.npc[gp.currentMap][i].name.equals(NPC_Block_Pushable.npcName)) {
 				boulderList.add(gp.npc[gp.currentMap][i]);
 			}
 		}
@@ -150,7 +150,7 @@ public class NPC_Boulder extends Entity{
 				// REMOVE IRON DOOR
 				if (gp.obj[gp.currentMap][i] != null && 
 						gp.obj[gp.currentMap][i].name != null &&
-						gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Iron.objName)) {
+						gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName)) {
 					
 					gp.obj[gp.currentMap][i].playOpenSE();
 					gp.obj[gp.currentMap][i] = null;

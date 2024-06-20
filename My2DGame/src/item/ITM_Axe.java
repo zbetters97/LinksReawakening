@@ -24,7 +24,7 @@ public class ITM_Axe extends Entity {
 	
 	public void use() {				
 		gp.player.attacking = true;
-		gp.player.chopping = true;
+		gp.player.action = Action.CHOPPING;
 	}
 	public void playSE() {
 		gp.playSE(3, 0);

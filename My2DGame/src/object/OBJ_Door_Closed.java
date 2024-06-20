@@ -5,18 +5,24 @@ import java.awt.Rectangle;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Door_Iron extends Entity {
+public class OBJ_Door_Closed extends Entity {
 	
 	public static final String objName = "Iron Door";
 	GamePanel gp;
 	
-	public OBJ_Door_Iron(GamePanel gp) {
+	public OBJ_Door_Closed(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
-		
+					
 		type = type_obstacle;
 		name = objName;
-		down1 = setup("/objects/OBJ_DOOR_IRON");
+		direction = "down";
+		
+		up1 = setup("/objects/door_closed_up");
+		down1 = setup("/objects/door_closed_down");
+		left1 = setup("/objects/door_closed_left");
+		right1 = setup("/objects/door_closed_right");
+		
 		hitbox = new Rectangle(0, 0, 48, 48);
 		collision = true;
 		

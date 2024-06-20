@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import data.Progress;
 import entity.Entity;
 import main.GamePanel;
-import object.OBJ_Door_Iron;
+import object.OBJ_Door_Closed;
 
 public class BOS_Skeleton extends Entity {
 
@@ -172,7 +172,7 @@ public class BOS_Skeleton extends Entity {
 		// REMOVE IRON DOOR
 		for (int i = 0; i < gp.obj[1].length; i++) {
 			if (gp.obj[gp.currentMap][i] != null &&
-					gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Iron.objName) ) {						
+					gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName) ) {						
 				gp.obj[gp.currentMap][i].playOpenSE();
 				gp.obj[gp.currentMap][i] = null;				
 				break;

@@ -19,8 +19,8 @@ public class ITM_Feather extends Entity {
 	}
 	
 	public void use() {
-		if (!gp.player.jumping) {
-			gp.player.jumping = true;
+		if (gp.player.action != Action.JUMPING) {
+			gp.player.action = Action.JUMPING;
 			gp.player.attackCanceled = true;
 			playSE();
 		}

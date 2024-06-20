@@ -15,11 +15,8 @@ import item.*;
 import projectile.PRJ_Bomb;
 import projectile.PRJ_Sword;
 
-
-
 /** PLAYER CLASS **/
 public class Player extends Entity {
-
 	
 /** PLAYER VARIABLES **/
 	
@@ -40,16 +37,6 @@ public class Player extends Entity {
 	// LIGHTING
 	public boolean lightUpdated = false;
 	
-	// ACTIONS
-	public boolean guarding = false;
-	public boolean running = false;
-	public boolean chopping = false;
-	public boolean digging = false;
-	public boolean jumping = false;
-	public boolean swinging = false;
-	public boolean falling = false;
-	public boolean drowning = false;
-	
 	public int digNum;
 	public int digCounter = 0;	
 
@@ -59,14 +46,11 @@ public class Player extends Entity {
 	public int rodNum;
 	public int rodCounter = 0;
 
-	public int fallNum;
-	public int fallCounter = 0;
-	
-	public int drownNum;
-	public int drownCounter = 0;
+	public int damageNum;
+	public int damageCounter = 0;
 	
 	// IMAGES
-	public BufferedImage titleScreen, sit, sing, itemGet, fall1, fall2, fall3;	
+	public BufferedImage titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3;	
 	public BufferedImage swimUp1, swimUp2, swimDown1, swimDown2, 
 							swimLeft1, swimLeft2, swimRight1, swimRight2;
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
@@ -110,12 +94,14 @@ public class Player extends Entity {
 	// DEFAULT VALUES
 	public void setDefaultValues() {
 					
+		action = Action.IDLE;
+		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
 		level = 1;
-		maxLife = 20; life = maxLife;
+		maxLife = 10; life = maxLife;
 		strength = 1; dexterity = 1;
 		exp = 0; nextLevelEXP = 10;
 		walletSize = 99; rupees = 0;
@@ -160,34 +146,17 @@ public class Player extends Entity {
 	}
 	public void setDefaultItems() {		
 		inventory.add(currentShield);	
-		
-		inventory.add(new ITM_Axe(gp));
-		inventory.add(new ITM_Bomb(gp));
-		inventory.add(new ITM_Boomerang(gp));
-		inventory.add(new ITM_Boots(gp));
-		inventory.add(new ITM_Bow(gp));
-		inventory.add(new ITM_Feather(gp));		
-		inventory.add(new ITM_Hookshot(gp));
-		inventory.add(new ITM_Rod(gp));				
-		inventory.add(new ITM_Shovel(gp));	
-		
-		hasItem = true;
 		canSwim = true;
+		hasItem = true;
 	}
 	public void restoreStatus() {
 		life = maxLife;
 		speed = defaultSpeed;
-		attacking = false;
-		guarding = false;
-		running = false;
-		jumping = false;
-		falling = false;
-		chopping = false;
-		digging = false;
+		action = Action.IDLE;
 		knockback = false;
 		invincible = false;
 		transparent = false;
-		lightUpdated = true;
+		lightUpdated = true;		
 	}	
 
 	// DIALOGUE
@@ -314,6 +283,7 @@ public class Player extends Entity {
 		rodRight2 = setup("/player/boy_rod_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
 	public void getMiscImage() {		
+		drown = setup("/player/boy_drown");
 		fall1 = setup("/player/boy_fall_1");
 		fall2 = setup("/player/boy_fall_2");
 		fall3 = setup("/player/boy_fall_3");		
@@ -332,35 +302,38 @@ public class Player extends Entity {
 /** UPDATER **/
 
 	public void update() {	
-		guarding = false;
-		
+
 		// CHECK COLLISION (NOT ON DEBUG)
-		if(!keyH.debug) checkCollision();
-				
-		if (drowning) { drowning(); return; } 
-		if (falling) { falling(); return; } 
-		if (keyH.tabPressed) { cycleItems(); }
-		if (!swimming) {
+		if (!keyH.debug) checkCollision();
+		
+		if (action == Action.DIGGING) { digging(); return; }
+		else if (action == Action.SWINGING) { swinging(); return; }
+		
+		// MOVEMENT WHILE JUMPING
+		else if (action == Action.JUMPING) { jumping(); }		
+		
+		// DISABLED ACTIONS WHILE SWIMMING
+		if (action != Action.SWIMMING) {			
 			if (keyH.actionPressed) { action(); }
-			if (attacking) { attacking(); return; }	
-			if (swinging) { swinging(); return; }
-			if (knockback) { knockbackPlayer(); return;	}
-			if (digging) { digging(); return; }		
-			if (jumping) { jumping(); }			
+			if (keyH.guardPressed) { action = Action.GUARDING; }					
+			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
+			if (keyH.itemPressed) { useItem(); }	
+			if (attacking) { attacking(); return; }
+			if (knockback) { knockbackPlayer(); return;	}			
 			if (lockon) { lockTarget(); }
 			else {
 				if (lockedTarget != null) {
 					lockedTarget.isLocked = false;
 					lockedTarget = null;
 				}
-			}			
-			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
-			if (keyH.itemPressed) { useItem(); }
-		}
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ||
-				keyH.guardPressed) {
-			walking();
-		}	
+			}				
+		}		
+		
+		// TAB DISABLED WHILE JUMPING
+		if (keyH.tabPressed && action != Action.JUMPING) { cycleItems(); }
+		
+		if (keyH.upPressed || keyH.downPressed || 
+				keyH.leftPressed || keyH.rightPressed) { walking(); }			
 		
 		manageValues();		
 		checkDeath();
@@ -377,74 +350,67 @@ public class Player extends Entity {
 		// FIND DIRECTION
 		getDirection();
 		
+		if (keyH.guardPressed && action != Action.SWIMMING) 
+			return;
 		
-		
-		// STOP MOVEMENT WHEN GUARDING
-		if (keyH.guardPressed && !swimming) {
-			guarding = true;
-		}		
-		else if (!keyH.guardPressed) {
-			guarding = false;
-		
-			// MOVE PLAYER
-			if (!collisionOn) { 	
-				
-				if (lockon) {
-					switch (lockonDirection) {
-						case "up": worldY -= speed; break;
-						case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-						case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-						
-						case "down": worldY += speed; break;
-						case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-						case "downright": worldY += speed; worldX += speed - 0.5; break;
-						
-						case "left": worldX -= speed; break;
-						case "right": worldX += speed; break;
-					}
-				}
-				else {				
-					switch (direction) {
-						case "up": worldY -= speed; break;
-						case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-						case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-						
-						case "down": worldY += speed; break;
-						case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-						case "downright": worldY += speed; worldX += speed - 0.5; break;
-						
-						case "left": worldX -= speed; break;
-						case "right": worldX += speed; break;
-					}
+		// MOVE PLAYER
+		if (!collisionOn) { 	
+			
+			if (lockon) {
+				switch (lockonDirection) {
+					case "up": worldY -= speed; break;
+					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+					
+					case "down": worldY += speed; break;
+					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+					case "downright": worldY += speed; worldX += speed - 0.5; break;
+					
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
 				}
 			}
-			
-			// WALKING ANIMATION
-			spriteCounter++;
-			if (spriteCounter > animationSpeed) {
-								
-				// CYLCE WALKING/SWIMMING SPRITES
-				if (spriteNum == 1) {
-					if (swimming) playSwimSE();					
-					spriteNum = 2;
+			else {				
+				switch (direction) {
+					case "up": worldY -= speed; break;
+					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+					
+					case "down": worldY += speed; break;
+					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+					case "downright": worldY += speed; worldX += speed - 0.5; break;
+					
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
 				}
-				else if (spriteNum == 2) { 
-					spriteNum = 1;
-				}
-				
-				// RUNNING ANIMATION
-				if (running && !swimming) {
-					currentItem.playSE();
-					speed = runSpeed;
-					animationSpeed = 6;
-				}
-				else {
-					speed = defaultSpeed; 
-					animationSpeed = 10; 
-				}					
-				spriteCounter = 0;
 			}
 		}
+		
+		// WALKING ANIMATION
+		spriteCounter++;
+		if (spriteCounter > animationSpeed) {
+							
+			// CYLCE WALKING/SWIMMING SPRITES
+			if (spriteNum == 1) {
+				if (action == Action.SWIMMING) playSwimSE();					
+				spriteNum = 2;
+			}
+			else if (spriteNum == 2) { 
+				spriteNum = 1;
+			}
+			
+			// RUNNING ANIMATION
+			if (action == Action.RUNNING) {
+				currentItem.playSE();
+				speed = runSpeed;
+				animationSpeed = 6;
+			}
+			else {
+				speed = defaultSpeed; 
+				animationSpeed = 10; 
+			}					
+			spriteCounter = 0;
+		}		
 	}
 	public void getDirection() {
 		
@@ -473,7 +439,7 @@ public class Player extends Entity {
 		}
 	}
 	
-	// ACTION BUTTON
+	// INTERACTIONS
 	public void action() {		
 		if (!attackCanceled) 
 			swingSword();
@@ -482,16 +448,17 @@ public class Player extends Entity {
 		
 		collisionOn = false;
 		
-		if (!jumping) gp.cChecker.checkPit();
-				
+		// CHECK EVENTS
+		gp.eHandler.checkEvent();
+		
 		// CHECK TILE COLLISION
 		gp.cChecker.checkTile(this);
 
 		// CHECK INTERACTIVE TILE COLLISION
 		gp.cChecker.checkEntity(this, gp.iTile);
 		
-		// CHECK EVENT HANDLER (ONLY ON GROUND)
-		if (!jumping) gp.eHandler.checkEvent();
+		// DON'T CHECK PITS WHEN JUMPING
+		if (action != Action.JUMPING) gp.cChecker.checkPit();
 					
 		// CHECK NPC COLLISION
 		gp.cChecker.checkEntity(this, gp.npc);		
@@ -553,8 +520,39 @@ public class Player extends Entity {
 			projectile.interact();
 		}
 	}
+	public void getObject(Entity item) {
+		
+		playGetItemSE();
+		
+		// INVENTORY ITEMS
+		if (item.type == type_item) {
+			hasItem = true;
+		}
+		else if (item.type == type_sword) {
+			currentWeapon = item;
+			attack = gp.player.getAttack();
+		}
+		else if (item.type == type_shield) {
+			currentShield = item;
+			defense = gp.player.getDefense();
+		}
+		else if (item.type == type_collectable) {
+			item.use(this);
+			return;
+		}
+		else if (item.type == type_consumable) {
+			item.use(this);
+			return;
+		}	
+				
+		gp.ui.newItem = item;
+		inventory.add(item);
+		gp.ui.currentDialogue = "You got the " + item.name + "!";		
+		gp.ui.subState = 0;
+		gp.gameState = gp.itemGetState;
+	}
 	
-	// COMBAT
+	// SWORD
 	public void swingSword() {
 				
 		if (currentWeapon == null) {		
@@ -711,6 +709,7 @@ public class Player extends Entity {
 				case ITM_Axe.itmName:
 				case ITM_Boots.itmName:
 				case ITM_Feather.itmName:
+				case ITM_Rod.itmName:
 				case ITM_Shovel.itmName:
 					currentItem.use();
 					break;		
@@ -719,8 +718,7 @@ public class Player extends Entity {
 					currentItem.use(this);
 					break;
 				case ITM_Boomerang.itmName: 
-				case ITM_Hookshot.itmName:		
-				case ITM_Rod.itmName:
+				case ITM_Hookshot.itmName:				
 					// STOP MOVEMENT
 					keyH.upPressed = false; keyH.downPressed  = false;
 					keyH.leftPressed  = false; keyH.rightPressed  = false;			
@@ -740,10 +738,12 @@ public class Player extends Entity {
 	public void selectItem() {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
-		if (inventoryIndex < inventory.size()) {
-			
+		if (inventoryIndex < inventory.size()) {			
 			keyH.playSelectSE();
-			running = false;
+			
+			if (action != Action.SWIMMING) 
+				action = Action.IDLE;
+			
 			itemIndex = inventoryIndex;										
 									
 			Entity selectedItem = inventory.get(inventoryIndex);
@@ -782,7 +782,7 @@ public class Player extends Entity {
 		
 		if (currentItem != null) {
 			keyH.playCursorSE();
-			running = false;
+			action = Action.IDLE;
 			keyH.tabPressed = false;
 				
 			do {						
@@ -811,7 +811,7 @@ public class Player extends Entity {
 
 			digNum = 1;
 			digCounter = 0;
-			digging = false;
+			action = Action.IDLE;
 			attackCanceled = false;
 		}
 	}
@@ -825,7 +825,7 @@ public class Player extends Entity {
 		else if (jumpCounter >= 24) {	
 			jumpNum = 1;
 			jumpCounter = 0;
-			jumping = false;
+			action = Action.IDLE;
 			attackCanceled = false;
 		}
 	}
@@ -869,29 +869,28 @@ public class Player extends Entity {
 			hitbox.width = hitBoxWidth;
 			hitbox.height = hitBoxHeight;
 		}
-		
+
 		// RESET IMAGE
 		if (rodCounter > currentItem.swingSpeed2) {
 			rodNum = 1;
 			rodCounter = 0;
-			swinging = false;
+			action = Action.IDLE;
 			attackCanceled = false;
-			gp.keyH.actionPressed = false;
 		}
 	}			
-	public void falling() {
+	public void takingDamage() {
 		
-		fallCounter++;
+		damageCounter++;
 				
-		if (6 >= fallCounter) fallNum = 1; 
-		else if (18 > fallCounter && 12 >= fallCounter) fallNum = 2;		
-		else if (24 > fallCounter && fallCounter > 12) fallNum = 3;	
-		else if (60 > fallCounter && fallCounter >= 24) fallNum = 4;		
-		else if (fallCounter >= 60) {
+		if (6 >= damageCounter) damageNum = 1; 
+		else if (18 > damageCounter && 12 >= damageCounter) damageNum = 2;		
+		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
+		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
+		else if (damageCounter >= 60) {
 			life--;
-			fallNum = 1;
-			fallCounter = 0;
-			falling = false;
+			damageNum = 1;
+			damageCounter = 0;
+			action = Action.IDLE;
 			attackCanceled = false;
 			transparent = true;
 			
@@ -900,29 +899,8 @@ public class Player extends Entity {
 			worldY = safeWorldY;
 			safeWorldX = 0;
 			safeWorldY = 0;
-		}		
-	}	
-	public void drowning() {
-		
-		drownCounter++;
-				
-		if (6 >= drownCounter) drownNum = 1; 
-		else if (18 > drownCounter && 12 >= drownCounter) drownNum = 2;		
-		else if (24 > drownCounter && drownCounter > 12) drownNum = 3;	
-		else if (60 > drownCounter && drownCounter >= 24) drownNum = 4;		
-		else if (drownCounter >= 60) {
-			life--;
-			drownNum = 1;
-			drownCounter = 0;
-			drowning = false;
-			attackCanceled = false;
-			transparent = true;
 			
-			// MOVE PLAYER TO SAFE SPOT
-			worldX = safeWorldX;
-			worldY = safeWorldY;
-			safeWorldX = 0;
-			safeWorldY = 0;
+			gp.gameState = gp.playState;
 		}		
 	}		
 	
@@ -1087,11 +1065,7 @@ public class Player extends Entity {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 
-/** END PLAYER METHODS **/
-	
-	
-/** DRAW HANDLER **/
-	
+	// DRAW HANDLER
 	public void draw(Graphics2D g2) {
 		
 		if (!drawing) return;
@@ -1099,35 +1073,29 @@ public class Player extends Entity {
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
 		
-		if (alive) {
-
-			if (falling) {
-				if (fallNum == 1) image1 = fall1;
-				if (fallNum == 2) image1 = fall2;
-				if (fallNum == 3) image1 = fall3;
-				if (fallNum == 4) image1 = null;
-			}	
-			else {			
-				switch (direction) {
-					case "up":
-					case "upleft":
-					case "upright":
-						if (attacking) {
-							tempScreenY -= gp.tileSize;
-							if (attackNum == 1) {
-								tempScreenX -= gp.tileSize;
-								image1 = attackUp1;
-							}
-							else if (attackNum == 2) image1 = attackUp2;							
+		if (alive) {					
+			switch (direction) {
+				case "up":
+				case "upleft":
+				case "upright":	
+					if (attacking) {
+						tempScreenY -= gp.tileSize;
+						if (attackNum == 1) {
+							tempScreenX -= gp.tileSize;
+							image1 = attackUp1;
 						}
-						else if (guarding) {
+						else if (attackNum == 2) image1 = attackUp2;
+					}
+					else {
+						switch (action) {
+						case GUARDING:
 							image1 = guardUp1;
-						}
-						else if (digging) {
+							break;
+						case DIGGING:
 							if (digNum == 1) image1 = digUp1;
 							else if (digNum == 2) image1 = digUp2;
-						}
-						else if (jumping) {					
+							break;
+						case JUMPING:
 							tempScreenY -= 15;
 							if (jumpNum == 1) image1 = jumpUp1;
 							else if (jumpNum == 2) image1 = jumpUp2; 
@@ -1135,39 +1103,43 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
-						} 
-						else if (swinging) {
+							break;
+						case SWINGING:
 							tempScreenY -= gp.tileSize;
 							if (rodNum == 1) {
 								tempScreenX -= gp.tileSize;
 								image1 = rodUp1;
 							}
-							else if (rodNum == 2) image1 = rodUp2;							
-						}	
-						else if (swimming || drowning) {
+							else if (rodNum == 2) image1 = rodUp2;	
+							break;
+						case SWIMMING:
 							if (spriteNum == 1) image1 = swimUp1;
 							else if (spriteNum == 2) image1 = swimUp2;
-						}
-						else {
+							break;
+						default:
 							if (spriteNum == 1) image1 = up1;
 							else if (spriteNum == 2) image1 = up2;	
-						}	
-						break;
-					case "down":
-					case "downleft":
-					case "downright":
-						if (attacking) {		
-							if (attackNum == 1) image1 = attackDown1;
-							else if (attackNum == 2) image1 = attackDown2;	
+							break;
 						}
-						else if (guarding) {
+					}
+					break;
+				case "down":
+				case "downleft":
+				case "downright":
+					if (attacking) {
+						if (attackNum == 1) image1 = attackDown1;
+						else if (attackNum == 2) image1 = attackDown2;	
+					}
+					else {
+						switch (action) {
+						case GUARDING:
 							image1 = guardDown1;
-						}
-						else if (digging) {
+							break;
+						case DIGGING:
 							if (digNum == 1) image1 = digDown1;
 							else if (digNum == 2) image1 = digDown2;
-						}
-						else if (jumping) {					
+							break;
+						case JUMPING:
 							tempScreenY -= 15;
 							if (jumpNum == 1) image1 = jumpDown1;
 							else if (jumpNum == 2) image1 = jumpDown2; 
@@ -1175,38 +1147,41 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
-						}							
-						else if (swinging) {
+							break;
+						case SWINGING:
 							if (rodNum == 1) image1 = rodDown1;
 							else if (rodNum == 2) image1 = rodDown2;
-						}
-						
-						else if (swimming || drowning) {
+							break;
+						case SWIMMING:
 							if (spriteNum == 1) image1 = swimDown1;
 							else if (spriteNum == 2) image1 = swimDown2;
-						}
-						else {
+							break;
+						default:
 							if (spriteNum == 1) image1 = down1;
 							else if (spriteNum == 2) image1 = down2;	
-						}										
-						break;
-					case "left":
-						if (attacking) {
-							tempScreenX -= gp.tileSize;
-							if (attackNum == 1) {
-								tempScreenY -= gp.tileSize;
-								image1 = attackLeft1;
-							}
-							else if (attackNum == 2) image1 = attackLeft2;	
-						}	
-						else if (guarding) {
-							image1 = guardLeft1;
+							break;
 						}
-						else if (digging) {
+					}
+					break;
+				case "left":
+					if (attacking) {
+						tempScreenX -= gp.tileSize;
+						if (attackNum == 1) {
+							tempScreenY -= gp.tileSize;
+							image1 = attackLeft1;
+						}
+						else if (attackNum == 2) image1 = attackLeft2;	
+					}
+					else {
+						switch (action) {
+						case GUARDING:
+							image1 = guardLeft1;
+							break;
+						case DIGGING:
 							if (digNum == 1) image1 = digLeft1;
 							else if (digNum == 2) image1 = digLeft2;
-						}
-						else if (jumping) {					
+							break;
+						case JUMPING:
 							tempScreenY -= 15;
 							if (jumpNum == 1) image1 = jumpLeft1;
 							else if (jumpNum == 2) image1 = jumpLeft2; 
@@ -1214,41 +1189,44 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
-						}					
-						else if (swinging) {
+							break;
+						case SWINGING:
 							tempScreenX -= gp.tileSize;
 							if (rodNum == 1) {
 								tempScreenY -= gp.tileSize;
 								image1 = rodLeft1;
 							}
 							else if (rodNum == 2) image1 = rodLeft2;	
-						}						
-						else if (swimming || drowning) {
+							break;
+						case SWIMMING:
 							if (spriteNum == 1) image1 = swimLeft1;
 							else if (spriteNum == 2) image1 = swimLeft2;
-						}
-						else {
+							break;
+						default:
 							if (spriteNum == 1) image1 = left1;
 							else if (spriteNum == 2) image1 = left2;	
+							break;
 						}
-							
-						break;
-					case "right":
-						if (attacking) {
-							if (attackNum == 1) {
-								tempScreenY -= gp.tileSize;
-								image1 = attackRight1;
-							}
-							if (attackNum == 2) image1 = attackRight2;
-						}	
-						else if (guarding) {
-							image1 = guardRight1;
+					}
+					break;
+				case "right":
+					if (attacking) {
+						if (attackNum == 1) {
+							tempScreenY -= gp.tileSize;
+							image1 = attackRight1;
 						}
-						else if (digging) {
+						else if (attackNum == 2) image1 = attackRight2;
+					}
+					else {
+						switch (action) {
+						case GUARDING:						
+							image1 = guardRight1;						
+							break;
+						case DIGGING:
 							if (digNum == 1) image1 = digRight1;
 							else if (digNum == 2) image1 = digRight2;
-						}
-						else if (jumping) {					
+							break;
+						case JUMPING:		
 							tempScreenY -= 15;
 							if (jumpNum == 1) image1 = jumpRight1;
 							else if (jumpNum == 2) image1 = jumpRight2; 
@@ -1256,29 +1234,30 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
-						}							
-						else if (swinging) {
+							break;
+						case SWINGING:			
 							if (rodNum == 1) {
 								tempScreenY -= gp.tileSize;
 								image1 = rodRight1;
 							}
 							else if (rodNum == 2) image1 = rodRight2;
-						}						
-						else if (swimming || drowning) {
+							break;
+						case SWIMMING:
 							if (spriteNum == 1) image1 = swimRight1;
 							else if (spriteNum == 2) image1 = swimRight2;
-						}
-						else {
+							break;
+						default:
 							if (spriteNum == 1) image1 = right1;
 							else if (spriteNum == 2) image1 = right2;	
+							break;
 						}							
-						break;
-				}
+					}
+					break;
 			}
 			
+			
 			// PLAYER IS HIT
-			if (transparent) {
-				
+			if (transparent) {				
 				// FLASH OPACITY
 				if (invincibleCounter % 5 == 0)
 					changeAlpha(g2, 0.2f);
@@ -1286,6 +1265,16 @@ public class Player extends Entity {
 					changeAlpha(g2, 1f);
 			}				
 		}	
+		
+		if (gp.gameState == gp.fallingState) {
+			if (damageNum == 1) image1 = fall1;
+			else if (damageNum == 2) image1 = fall2;
+			else if (damageNum == 3) image1 = fall3;
+			else if (damageNum == 4) image1 = null;
+		}	
+		else if (gp.gameState == gp.drowningState) {
+			image1 = drown;			
+		}
 		
 		g2.drawImage(image1, tempScreenX, tempScreenY, null);			
 
@@ -1297,10 +1286,8 @@ public class Player extends Entity {
 		
 		// RESET OPACITY
 		changeAlpha(g2, 1f);
-	}
-
-/** END DRAW HANDLER **/
-	
+	}	
 }
+/** END PLAYER METHODS **/
 
 /** END PLAYER CLASS **/

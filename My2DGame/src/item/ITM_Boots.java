@@ -19,7 +19,7 @@ public class ITM_Boots extends Entity {
 	}	
 	
 	public void use() {
-		gp.player.running = true;
+		gp.player.action = Action.RUNNING;
 	}
 	
 	public void playSE() {
