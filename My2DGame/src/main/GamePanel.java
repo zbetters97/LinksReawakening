@@ -94,9 +94,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
-	public Entity npc[][] = new Entity[maxMap][10]; // total amount of npc displayed at once	
-	public Entity enemy[][] = new Entity[maxMap][20]; // total amount of enemies displayed at once
-	public Entity obj[][] = new Entity[maxMap][20]; // total amount of items displayed at once
+	public Entity npc[][] = new Entity[maxMap][10]; 
+	public Entity enemy[][] = new Entity[maxMap][20]; 
+	public Entity obj[][] = new Entity[maxMap][20];
+	public Entity obj_t[][] = new Entity[maxMap][20]; 
 	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	public Entity projectile[][] = new Entity[maxMap][20];
@@ -129,9 +130,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-//		gameState = titleState;	
+		gameState = titleState;	
 		currentArea = outside;
-		gameState = playState;
+//		gameState = playState;
 // 		currentArea = inside;
 		
 		setupMusic();
@@ -140,6 +141,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		aSetter.setNPC();
 		aSetter.setEnemy();
+		aSetter.setInteractiveObjects();
 		aSetter.setInteractiveTiles();
 		aSetter.setObject();
 		
@@ -239,6 +241,15 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			
+			// UPDATE INTERACTIVE OBJECTS
+			for (int i = 0; i < obj_t[1].length; i++) {
+				if (obj_t[currentMap][i] != null) {
+					obj_t[currentMap][i].update();
+					if (!obj_t[currentMap][i].alive)
+						obj_t[currentMap][i] = null;
+				}
+			}
+			
 			// UPDATE INTERACTIVE TILES
 			for (int i = 0; i < iTile[1].length; i++) {
 				if (iTile[currentMap][i] != null) 
@@ -293,6 +304,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		currentArea = nextArea;
 		aSetter.setEnemy();
+		aSetter.setInteractiveObjects();
 	}
 	
 	private void removeTempEntity() {
@@ -313,7 +325,12 @@ public class GamePanel extends JPanel implements Runnable {
 				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
 					obj[mapNum][i] = null;
 				}
-			}			
+			}	
+			for (int i = 0; i < obj_t[1].length; i++) {
+				if (obj_t[mapNum][i] != null && obj_t[mapNum][i].temp) {
+					obj_t[mapNum][i] = null;
+				}
+			}	
 		}
 	}
 	
@@ -336,6 +353,7 @@ public class GamePanel extends JPanel implements Runnable {
 		if (restart) {
 			player.inventory.clear();
 			player.setDefaultValues();	
+			aSetter.setInteractiveObjects();
 			aSetter.setInteractiveTiles();
 			aSetter.setObject();
 			
@@ -392,6 +410,7 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
+			for (Entity ot : obj_t[currentMap]) { if (ot != null) entityList.add(ot); }
 			for (Entity a : particleList) { if (a != null) entityList.add(a); }
 			
 			for (int i = 0; i < projectile[1].length; i++) {

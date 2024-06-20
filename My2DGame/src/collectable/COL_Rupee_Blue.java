@@ -20,12 +20,8 @@ public class COL_Rupee_Blue extends Entity {
 		down1 = setup("/collectables/COL_RUPEE_BLUE");
 	}
 	
-	public boolean use(Entity user) {		
-		//playSE();
+	public boolean use(Entity user) {	
 		gp.ui.rupeeCount = user.rupees + value;
 		return true;
-	}
-	public void playSE() {
-		gp.playSE(1, 5);
 	}
 }

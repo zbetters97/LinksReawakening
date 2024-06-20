@@ -12,6 +12,7 @@ import item.ITM_Hookshot;
 import item.ITM_Lantern;
 import item.ITM_Shovel;
 import object.*;
+import object_interactive.OT_Block_Pushable;
 import tile_interactive.*;
 
 public class AssetSetter {
@@ -67,7 +68,7 @@ public class AssetSetter {
 		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 23;	
-		i++;
+		i++;		
 		
 		mapNum = 3;
 		i = 0;
@@ -106,22 +107,6 @@ public class AssetSetter {
 		gp.npc[mapNum][i] = new NPC_Merchant(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 12;
 		gp.npc[mapNum][i].worldY = gp.tileSize * 7;
-		i++;
-		
-		mapNum = 2;
-		i = 0;
-		
-		gp.npc[mapNum][i] = new NPC_Block_Pushable(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 34;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 26;
-		i++;
-		gp.npc[mapNum][i] = new NPC_Block_Pushable(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 11;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 18;
-		i++;
-		gp.npc[mapNum][i] = new NPC_Block_Pushable(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 23;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 14;
 		i++;
 	}	
 	public void setEnemy() {		
@@ -166,6 +151,24 @@ public class AssetSetter {
 			gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
 			gp.enemy[mapNum][i].worldY = gp.tileSize * 16;
 		}
+	}
+	protected void setInteractiveObjects() {
+		
+		int mapNum = 2;
+		int i = 0;
+		
+		gp.obj_t[mapNum][i] = new OT_Block_Pushable(gp);
+		gp.obj_t[mapNum][i].worldX = gp.tileSize * 34;
+		gp.obj_t[mapNum][i].worldY = gp.tileSize * 26;
+		i++;
+		gp.obj_t[mapNum][i] = new OT_Block_Pushable(gp);
+		gp.obj_t[mapNum][i].worldX = gp.tileSize * 11;
+		gp.obj_t[mapNum][i].worldY = gp.tileSize * 18;
+		i++;
+		gp.obj_t[mapNum][i] = new OT_Block_Pushable(gp);
+		gp.obj_t[mapNum][i].worldX = gp.tileSize * 23;
+		gp.obj_t[mapNum][i].worldY = gp.tileSize * 14;
+		i++;
 	}
 	protected void setInteractiveTiles() {
 		

@@ -21,9 +21,11 @@ public class COL_Bomb extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		gp.playSE(1, 6);
-		gp.ui.addMessage("Bombs +" + value + "!");
+		playSE();
 		user.bombs += value;
 		return true;
+	}
+	public void playSE() {
+		gp.playSE(1, 6);	
 	}
 }

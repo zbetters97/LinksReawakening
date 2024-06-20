@@ -109,8 +109,8 @@ public class Player extends Entity {
 		maxArrows = 5; arrows = maxArrows;
 		maxBombs = 5; bombs = maxBombs;
 		
-//		currentWeapon = null;
-		currentWeapon = new EQP_Sword_Old(gp);		
+		currentWeapon = null;
+//		currentWeapon = new EQP_Sword_Old(gp);		
 		currentShield = new EQP_Shield_Old(gp);		
 		currentLight = null;
 		
@@ -136,17 +136,13 @@ public class Player extends Entity {
 		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 20;
-//		worldX = gp.tileSize * 25;
-//		worldY = gp.tileSize * 30;
 		
 		gp.currentMap = 0;
-//		gp.currentMap = 3;
 		
 		direction = "down";
 	}
 	public void setDefaultItems() {		
 		inventory.add(currentShield);	
-		canSwim = true;
 		hasItem = true;
 	}
 	public void restoreStatus() {
@@ -330,8 +326,7 @@ public class Player extends Entity {
 		}		
 		
 		// TAB DISABLED WHILE JUMPING
-		if (keyH.tabPressed && action != Action.JUMPING) { cycleItems(); }
-		
+		if (keyH.tabPressed && action != Action.JUMPING) { cycleItems(); }		
 		if (keyH.upPressed || keyH.downPressed || 
 				keyH.leftPressed || keyH.rightPressed) { walking(); }			
 		
@@ -473,6 +468,10 @@ public class Player extends Entity {
 		int objIndex = gp.cChecker.checkObject(this, true);
 		pickUpObject(objIndex);	
 		
+		// CHECK INTERACTIVE OBJECTS COLLISION
+		int objTIndex = gp.cChecker.checkObject_T(this, true);
+		interactObject(objTIndex);	
+		
 		// CHECK PROJECTILE COLLISION
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 		pickUpProjectile(projectileIndex);
@@ -484,11 +483,25 @@ public class Player extends Entity {
 				attackCanceled = true;			
 				gp.npc[gp.currentMap][i].speak();
 			}			
-						
-			if (!gp.npc[gp.currentMap][i].isPushed)
-				gp.npc[gp.currentMap][i].move(direction);
 		}				
-	}
+	}	
+	public void interactObject(int i) {
+		
+		// OBJECT INTERACTION
+		if (i != -1) {
+			
+			// BLOCK TYPES
+			if (gp.obj_t[gp.currentMap][i].type == type_block) {
+				if (!gp.obj_t[gp.currentMap][i].isPushed) 
+					gp.obj_t[gp.currentMap][i].move(direction);					
+				
+				if (keyH.actionPressed) {
+					attackCanceled = true;
+					// DO SOMETHING
+				}
+			}					
+		}
+	}	
 	public void pickUpObject(int i) {
 		
 		// OBJECT INTERACTION
@@ -512,7 +525,7 @@ public class Player extends Entity {
 				gp.obj[gp.currentMap][i] = null;
 			}						
 		}
-	}	
+	}
 	public void pickUpProjectile(int i) {
 		
 		if (i != -1) {
@@ -521,9 +534,7 @@ public class Player extends Entity {
 		}
 	}
 	public void getObject(Entity item) {
-		
-		playGetItemSE();
-		
+
 		// INVENTORY ITEMS
 		if (item.type == type_item) {
 			hasItem = true;
@@ -544,7 +555,9 @@ public class Player extends Entity {
 			item.use(this);
 			return;
 		}	
-				
+		
+		playGetItemSE();
+		
 		gp.ui.newItem = item;
 		inventory.add(item);
 		gp.ui.currentDialogue = "You got the " + item.name + "!";		

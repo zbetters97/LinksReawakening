@@ -159,9 +159,10 @@ public class Entity {
 	public final int type_light = 8;
 	public final int type_projectile = 9;
 	
-	// MAP TYPES
+	// OBJECT TYPES
 	public final int type_obstacle = 10;
 	public final int type_pickupOnly = 11;
+	public final int type_block = 12;
 		
 	public boolean sleep = false;
 	public boolean temp = false;
@@ -307,6 +308,7 @@ public class Entity {
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkObject(this, false);
+		gp.cChecker.checkObject_T(this, false);
 		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		

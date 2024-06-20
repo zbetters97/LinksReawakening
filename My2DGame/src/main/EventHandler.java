@@ -89,10 +89,10 @@ public class EventHandler {
 			// TELEPORT SPOTS
 			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside); // SHOP ENTRANCE
 			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside); // SHOP EXIT
-			else if (hit(0, 12, 9, true)) teleport(2, 9, 41, gp.dungeon); // DUNGEON ENTRANCE
-			else if (hit(2, 9, 41, true)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
-			else if (hit(2, 8, 7, true)) teleport(3, 26, 41, gp.dungeon); // DUNGEON B1
-			else if (hit(3, 26, 41, true)) teleport(2, 8, 7, gp.boss); // DUNEGOEN B2
+			else if (hit(0, 12, 9, true)) teleport(2, 9, 42, gp.dungeon); // DUNGEON ENTRANCE
+			else if (hit(2, 9, 43, true)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
+			else if (hit(2, 8, 7, true)) teleport(3, 26, 42, gp.dungeon); // DUNGEON B1
+			else if (hit(3, 26, 42, true)) teleport(2, 8, 7, gp.boss); // DUNEGOEN B2
 			
 			// CUTSCENES
 			else if (hit(3, 25, 27, false)) boss(); // SKELETON CUTSCENE

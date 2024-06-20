@@ -3,7 +3,6 @@ package main;
 import java.util.ArrayList;
 
 import entity.Entity;
-import entity.NPC_Block_Pushable;
 import entity.Entity.Action;
 import tile_interactive.IT_Button_Metal;
 
@@ -363,6 +362,85 @@ public class CollisionChecker {
 		return index;
 	}
 	
+	// OBJECT COLLISION
+	public int checkObject_T(Entity entity, boolean player) {
+		
+		int index = -1;
+		
+		// KNOCKBACK DIRECTION
+		String direction = entity.direction;
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}
+		// LOCKON DIRECTION
+		if (entity.lockon) {
+			direction = entity.lockonDirection;
+		}
+		
+		for (int i  = 0; i < gp.obj_t[1].length; i++) {
+			
+			if (gp.obj_t[gp.currentMap][i] != null) {
+				
+				// get entity's solid area position
+				entity.hitbox.x = entity.worldX + entity.hitbox.x;
+				entity.hitbox.y = entity.worldY + entity.hitbox.y;
+				
+				// get obj_tect's solid area position
+				gp.obj_t[gp.currentMap][i].hitbox.x = gp.obj_t[gp.currentMap][i].worldX + gp.obj_t[gp.currentMap][i].hitbox.x;
+				gp.obj_t[gp.currentMap][i].hitbox.y = gp.obj_t[gp.currentMap][i].worldY + gp.obj_t[gp.currentMap][i].hitbox.y;
+				
+				// find where entity will be after moving in a direction
+				// ask if obj_tect and entity intersect 
+				switch (direction) {
+					case "up":					
+						entity.hitbox.y -= entity.speed;						
+						break;
+					case "upleft":
+						entity.hitbox.y -= entity.speed;
+						entity.hitbox.x -= entity.speed;
+						break;
+					case "upright":
+						entity.hitbox.y -= entity.speed;
+						entity.hitbox.x += entity.speed;
+						break;
+					case "down":					
+						entity.hitbox.y += entity.speed;
+						break;
+					case "downleft":					
+						entity.hitbox.y += entity.speed;
+						entity.hitbox.x -= entity.speed;
+						break;
+					case "downright":					
+						entity.hitbox.y += entity.speed;
+						entity.hitbox.x += entity.speed;
+						break;
+					case "left":					
+						entity.hitbox.x -= entity.speed;
+						break;
+					case "right":					
+						entity.hitbox.x += entity.speed;
+						break;
+				}
+								
+				if (entity.hitbox.intersects(gp.obj_t[gp.currentMap][i].hitbox)) {						
+					if (gp.obj_t[gp.currentMap][i].collision) 
+						entity.collisionOn = true;	
+					if (player) 
+						index = i;			
+				}
+				
+				// reset entity solid area
+				entity.hitbox.x = entity.hitboxDefaultX;
+				entity.hitbox.y = entity.hitboxDefaultY;
+				
+				// reset obj_tect solid area
+				gp.obj_t[gp.currentMap][i].hitbox.x = gp.obj_t[gp.currentMap][i].hitboxDefaultX;
+				gp.obj_t[gp.currentMap][i].hitbox.y = gp.obj_t[gp.currentMap][i].hitboxDefaultY;
+			}
+		}		
+		return index;
+	}
+	
 	// ENTITY COLLISION
 	public int checkEntity(Entity entity, Entity[][] target) {
 		
@@ -468,9 +546,6 @@ public class CollisionChecker {
 		for (int i  = 0; i < gp.npc[1].length; i++) {
 			
 			if (gp.npc[gp.currentMap][i] != null) {			
-				
-				if (gp.npc[gp.currentMap][i].name.equals(NPC_Block_Pushable.npcName))
-					speed = gp.player.speed;
 				
 				// get gp.player's solid area position
 				gp.player.hitbox.x = gp.player.worldX + gp.player.hitbox.x;

@@ -1,27 +1,30 @@
-package entity;
+package object_interactive;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Door_Closed;
 import tile_interactive.IT_Button_Metal;
 import tile_interactive.InteractiveTile;
 
-public class NPC_Block_Pushable extends Entity{
+public class OT_Block_Pushable extends Entity {
 	
-	public static final String npcName = "Pushable Block";
+	public static final String obj_tName = "Pushable Block";
 	public int pushCounter = 0;
 	public int pushMax = 48;
 	GamePanel gp;
 	
-	public NPC_Block_Pushable(GamePanel gp) {		
+	public OT_Block_Pushable(GamePanel gp) {		
 		super(gp);
 		this.gp = gp;		
 		
-		type = type_npc;
-		name = npcName;
+		type = type_block;
+		name = obj_tName;
 		direction = "down";
+		
+		collision = true;
 		
 		speed = 15; defaultSpeed = speed;
 		
@@ -33,7 +36,7 @@ public class NPC_Block_Pushable extends Entity{
 	}
 	
 	public void getImage() {		
-		up1 = setup("/tiles_interactive/block_pushable"); 
+		up1 = setup("/objects_interactive/block_pushable"); 
 		up2 = up1;
 		down1 = up1;
 		down2 = up1;
@@ -57,11 +60,11 @@ public class NPC_Block_Pushable extends Entity{
 		}
 	}
 	
-	public void move(String dir) {				
+	public void move(String dir) {		
 
 		if (pushCounter == 0 && !isPushed) {			
 			playSE();
-			isPushed = true;				
+			isPushed = true;	
 			direction = dir;			
 		}
 	}
@@ -75,7 +78,6 @@ public class NPC_Block_Pushable extends Entity{
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkObject(this, false);
 		gp.cChecker.checkPlayer(this);
 		
 		// PUSH BOULDER 
@@ -107,11 +109,11 @@ public class NPC_Block_Pushable extends Entity{
 		
 		// CREATE BOULDER LIST
 		ArrayList<Entity> boulderList = new ArrayList<>();		
-		for (int i = 0; i < gp.npc[1].length; i++) {
-			if (gp.npc[gp.currentMap][i] != null && 
-					gp.npc[gp.currentMap][i].name != null &&
-					gp.npc[gp.currentMap][i].name.equals(NPC_Block_Pushable.npcName)) {
-				boulderList.add(gp.npc[gp.currentMap][i]);
+		for (int i = 0; i < gp.obj_t[1].length; i++) {
+			if (gp.obj_t[gp.currentMap][i] != null && 
+					gp.obj_t[gp.currentMap][i].name != null &&
+					gp.obj_t[gp.currentMap][i].name.equals(OT_Block_Pushable.obj_tName)) {
+				boulderList.add(gp.obj_t[gp.currentMap][i]);
 			}
 		}
 		
