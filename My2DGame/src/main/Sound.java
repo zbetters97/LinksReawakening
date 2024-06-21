@@ -46,12 +46,13 @@ public class Sound {
 		misc[7] = getClass().getResource("/sound/MISC_TREE_CUT.wav");
 		misc[8] = getClass().getResource("/sound/MENU_OPEN.wav");
 		misc[9] = getClass().getResource("/sound/MENU_CLOSE.wav");
-		misc[10] = getClass().getResource("/sound/OBJ_DOOR_ENTER.wav");
+		misc[10] = getClass().getResource("/sound/MISC_STAIRS_UP.wav");
 		misc[11] = getClass().getResource("/sound/MENU_DIALOGUE.wav");
 		misc[12] = getClass().getResource("/sound/MENU_DIALOGUE_FINISH.wav");
 		misc[14] = getClass().getResource("/sound/MENU_MAP.wav");
 		misc[15] = getClass().getResource("/sound/MISC_WALLET.wav");
 		misc[16] = getClass().getResource("/sound/MISC_BUTTON.wav");
+		misc[17] = getClass().getResource("/sound/MISC_STAIRS_DOWN.wav");
 		
 		// 2
 		player[0] = getClass().getResource("/sound/PLAYER_HURT.wav");
@@ -81,7 +82,7 @@ public class Sound {
 		objects[16] = getClass().getResource("/sound/ITEM_ROD_CAPTURE.wav");
 		objects[17] = getClass().getResource("/sound/OBJ_CHEST_OPEN.wav");
 		objects[18] = getClass().getResource("/sound/OBJ_DOOR_CLOSE.wav");
-		objects[18] = getClass().getResource("/sound/COL_KEY.wav");
+		objects[19] = getClass().getResource("/sound/OBJ_DOOR_UNLOCK.wav");
 		
 		// 4
 		enemy[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

@@ -79,6 +79,7 @@ public class EventHandler {
 
 			// FAIRY POOL
 			if (hit(0, 23, 11, Arrays.asList("up"), false)) healingPool();
+			if (hit(3, 29, 40, Arrays.asList("right"), false)) healingPool();
 			
 			// SHOP KEEPER
 			else if (hit(1, 10, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
@@ -88,19 +89,19 @@ public class EventHandler {
 			else if (hit(1, 14, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
 			
 			// TELEPORT SPOTS
-			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside); // SHOP ENTRANCE
-			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside); // SHOP EXIT
-			else if (hit(0, 12, 9, true)) teleport(2, 9, 42, gp.dungeon); // DUNGEON ENTRANCE
-			else if (hit(2, 9, 43, true)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
-			else if (hit(2, 8, 7, true)) teleport(3, 26, 42, gp.dungeon); // DUNGEON B1
-			else if (hit(3, 26, 42, true)) teleport(2, 8, 7, gp.dungeon); // DUNEGOEN B2
+			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside, 1); // SHOP ENTRANCE
+			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside, 2); // SHOP EXIT
+			else if (hit(0, 12, 9, true)) teleport(2, 10, 37, gp.dungeon, 2); // DUNGEON ENTRANCE
+			else if (hit(2, 10, 37, true)) teleport(0, 12, 9, gp.outside, 1); // DUNGEON EXIT
+			else if (hit(2, 9, 8, true)) teleport(3, 18, 40, gp.dungeon, 3); // DUNGEON F2
+			else if (hit(3, 18, 40, true)) teleport(2, 9, 8, gp.dungeon, 2); // DUNEGOEN F1
 						
 			// ENEMY SPAWN
 			if (!Progress.enemy_room_1_1) {
-				if (hit(2, 31, 40, true)) {
+				if (hit(2, 29, 39, true)) {
 					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
-							new int[]{29,38}, new int[]{40,37}, new String[]{"right","left"},
+							new int[]{27,38}, new int[]{39,39}, new String[]{"right","left"},
 							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Bat(gp)), 
 							new int[]{34,35}, new int[]{40,39}
 					);
@@ -211,15 +212,14 @@ public class EventHandler {
 		gp.ui.showHint = true;
 		
 		if (gp.keyH.actionPressed) {
-			gp.ui.showHint = false;
 			gp.playSE(1, 4);
+			gp.ui.showHint = false;
 			
 			gp.player.attackCanceled = true;			
 			
 			gp.player.life = gp.player.maxLife;	
 			gp.player.arrows = gp.player.maxArrows;
 			gp.player.bombs = gp.player.maxBombs;
-			gp.aSetter.setEnemy();
 			
 			dekuTree.startDialogue(dekuTree, 0);
 		}
@@ -233,8 +233,10 @@ public class EventHandler {
 		}
 	}
 	
-	private void teleport(int map, int col, int row, int area) {					
-		gp.playSE(1,10);		
+	private void teleport(int map, int col, int row, int area, int level) {		
+		
+		if (level == 1 || level == 3) playStairsUpSE();
+		else if (level == 2) playStairsDownSE();
 		
 		tempMap = map;
 		tempCol = col;
@@ -297,5 +299,12 @@ public class EventHandler {
 			
 			gp.gameState = gp.cutsceneState;			
 		}
+	}
+	
+	private void playStairsUpSE() {
+		gp.playSE(1, 10);
+	}
+	private void playStairsDownSE() {
+		gp.playSE(1, 17);
 	}
 }

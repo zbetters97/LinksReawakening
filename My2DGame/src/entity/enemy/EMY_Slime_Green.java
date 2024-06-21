@@ -6,8 +6,8 @@ import java.util.Random;
 import entity.Entity;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
+import entity.projectile.PRJ_Fireball;
 import main.GamePanel;
-import projectile.PRJ_Fireball;
 
 public class EMY_Slime_Green extends Entity {
 

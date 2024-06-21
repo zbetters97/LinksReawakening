@@ -9,10 +9,12 @@ import java.awt.image.BufferedImage;
 
 import entity.equipment.*;
 import entity.item.*;
+import entity.object.OBJ_Door_Locked;
+import entity.projectile.PRJ_Bomb;
+import entity.projectile.PRJ_Sword;
+import entity.projectile.Projectile;
 import main.GamePanel;
 import main.KeyHandler;
-import projectile.PRJ_Bomb;
-import projectile.PRJ_Sword;
 
 /** PLAYER CLASS **/
 public class Player extends Entity {
@@ -148,7 +150,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-		inventory.add(currentShield);	
+		inventory.add(currentShield);
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -159,6 +161,15 @@ public class Player extends Entity {
 		transparent = false;
 		lightUpdated = true;	
 		onGround = true;
+		
+		digNum = 0;
+		digCounter = 0;	
+		jumpNum = 0;
+		jumpCounter = 0;			
+		rodNum = 0;
+		rodCounter = 0;
+		damageNum = 0;
+		damageCounter = 0;
 	}	
 
 	// DIALOGUE
@@ -327,7 +338,7 @@ public class Player extends Entity {
 			if (lockon) { lockTarget(); }
 			else {
 				if (lockedTarget != null) {
-					lockedTarget.isLocked = false;
+					lockedTarget.locked = false;
 					lockedTarget = null;
 				}
 			}				
@@ -503,12 +514,11 @@ public class Player extends Entity {
 			
 			// BLOCK TYPES
 			if (gp.obj_t[gp.currentMap][i].type == type_block) {
-				if (!gp.obj_t[gp.currentMap][i].isPushed) 
+				if (!gp.obj_t[gp.currentMap][i].pushed) 
 					gp.obj_t[gp.currentMap][i].move(direction);					
 				
 				if (keyH.actionPressed) {
 					attackCanceled = true;
-					// DO SOMETHING
 				}
 			}					
 		}
@@ -520,6 +530,10 @@ public class Player extends Entity {
 			
 			// OBSTACLE ITEMS
 			if (gp.obj[gp.currentMap][i].type == type_obstacle) {
+				if (gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Locked.objName)) {
+					attackCanceled = true;
+					gp.obj[gp.currentMap][i].interact();
+				}
 				if (keyH.actionPressed) {
 					keyH.actionPressed = false;
 					attackCanceled = true;
@@ -616,13 +630,13 @@ public class Player extends Entity {
 		// TARGET FOUND WITHIN 10 TILES
 		if (lockedTarget != null && getTileDistance(lockedTarget) < 12) {
 			if (lockedTarget.alive) {
-				lockedTarget.isLocked = true;
+				lockedTarget.locked = true;
 				direction = findTargetDirection(lockedTarget);
 				lockonDirection = direction;
 			}
 			// TARGET DEFEATED
 			else {				
-				lockedTarget.isLocked = false;
+				lockedTarget.locked = false;
 				lockedTarget = null;
 				lockon = false;
 			}
@@ -767,11 +781,16 @@ public class Player extends Entity {
 					currentItem.use(this);
 					break;
 				case ITM_Boomerang.itmName: 
+					// STOP MOVEMENT
+					keyH.upPressed = false; keyH.downPressed  = false;
+					keyH.leftPressed  = false; keyH.rightPressed  = false;	
+					currentItem.use(this);
+					break;
 				case ITM_Hookshot.itmName:				
 					// STOP MOVEMENT
 					keyH.upPressed = false; keyH.downPressed  = false;
 					keyH.leftPressed  = false; keyH.rightPressed  = false;			
-					currentItem.use(this);		
+					currentItem.use();		
 					break;	
 			}	
 		}
@@ -1017,7 +1036,7 @@ public class Player extends Entity {
 	public void damageInteractiveTile(int i) {
 				
 		if (i != -1 && gp.iTile[gp.currentMap][i].destructible && !gp.iTile[gp.currentMap][i].invincible &&
-				gp.iTile[gp.currentMap][i].isCorrectItem(this)) {
+				gp.iTile[gp.currentMap][i].correctItem(this)) {
 			
 			gp.iTile[gp.currentMap][i].playSE();
 			
@@ -1063,20 +1082,6 @@ public class Player extends Entity {
 				invincibleCounter = 0;
 			}
 		}	
-	}
-	public void checkLevelUp() {
-		
-		if (exp >= nextLevelEXP) {
-			
-			level++;
-			nextLevelEXP *= 2;
-			strength++;
-			dexterity++;
-			attack = getAttack();
-			defense = getDefense();
-			
-			gp.ui.addMessage("Leveled up to level " + level + "!");
-		}
 	}
 	public void checkDeath() {
 		

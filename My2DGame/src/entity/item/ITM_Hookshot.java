@@ -1,8 +1,8 @@
 package entity.item;
 
 import entity.Entity;
+import entity.projectile.PRJ_Hookshot;
 import main.GamePanel;
-import projectile.PRJ_Hookshot;
 
 public class ITM_Hookshot extends Entity {
 
@@ -21,15 +21,14 @@ public class ITM_Hookshot extends Entity {
 		projectile = new PRJ_Hookshot(gp);
 	}	
 	
-	public boolean use(Entity user) {
-		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
+	public void use() {
+		if (!projectile.alive && gp.player.shotAvailableCounter == 30) { 			
 							
-			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			projectile.set(gp.player.worldX, gp.player.worldY, gp.player.direction, true, gp.player);			
 			addProjectile(projectile);
 						
-			user.shotAvailableCounter = 0;	
+			gp.player.shotAvailableCounter = 0;	
 		}		
-		return true;
 	}
 	public void playSE() {
 		gp.playSE(3, 5);

@@ -30,14 +30,14 @@ public class IT_DigSpot extends InteractiveTile {
 		down1 = setup("/tiles/017");
 	}
 	
-	public boolean isCorrectItem(Entity entity) {		
+	public boolean correctItem(Entity entity) {		
 		
-		boolean isCorrectItem = false;				
+		boolean correctItem = false;				
 		if (entity.currentItem.name.equals(ITM_Shovel.itmName)) {
-			isCorrectItem = true;
+			correctItem = true;
 		}
 		
-		return isCorrectItem;
+		return correctItem;
 	}
 	
 	public InteractiveTile getDestroyedForm() {

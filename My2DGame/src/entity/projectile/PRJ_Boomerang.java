@@ -1,25 +1,25 @@
-package projectile;
+package entity.projectile;
 
 import java.awt.Rectangle;
 
-import entity.Projectile;
 import main.GamePanel;
 
-public class PRJ_Orb extends Projectile {
+public class PRJ_Boomerang extends Projectile {
 
 	GamePanel gp;
-	public static final String prjName = "Magical Orb";
+	public static final String prjName = "Boomerang";
 	
-	public PRJ_Orb(GamePanel gp) {
+	public PRJ_Boomerang(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 						
 		type = type_projectile;
 		name = prjName;
-		knockbackPower = 0;
-		speed = 6; 		
+
+		knockbackPower = 1;
+		speed = 8; 		
 		animationSpeed = 8;			
-		maxLife = 40; life = maxLife;			
+		maxLife = 30; life = maxLife;			
 		alive = false;
 		
 		hitbox = new Rectangle(12, 12, 24, 24); 		
@@ -30,8 +30,8 @@ public class PRJ_Orb extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/rod_down_1");
-		up2 = setup("/projectile/rod_down_2");
+		up1 = setup("/projectile/boomerang_down_1");
+		up2 = setup("/projectile/boomerang_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;
@@ -41,6 +41,6 @@ public class PRJ_Orb extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 16);
+		gp.playSE(3, 10);
 	}
 }

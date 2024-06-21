@@ -1,37 +1,37 @@
-package projectile;
+package entity.projectile;
 
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import entity.Projectile;
 import main.GamePanel;
 
-public class PRJ_Fireball extends Projectile {
+public class PRJ_Orb extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Fireball";
+	public static final String prjName = "Magical Orb";
+	GamePanel gp;	
 	
-	public PRJ_Fireball(GamePanel gp) {
+	public PRJ_Orb(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
-		
+						
 		type = type_projectile;
 		name = prjName;
-		attack = 2;	
-		speed = 8; 
-		maxLife = 60; life = maxLife;
+		knockbackPower = 0;
+		speed = 6; 		
+		animationSpeed = 8;			
+		maxLife = 40; life = maxLife;			
 		alive = false;
 		
 		hitbox = new Rectangle(12, 12, 24, 24); 		
 		hitboxDefaultX = hitbox.x;
-	    hitboxDefaultY = hitbox.y;
+		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/fireball_down_1");
-		up2 = setup("/projectile/fireball_down_2");
+		up1 = setup("/projectile/rod_down_1");
+		up2 = setup("/projectile/rod_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;
@@ -41,11 +41,11 @@ public class PRJ_Fireball extends Projectile {
 	}
 	
 	public Color getParticleColor() {
-		Color color = new Color(240,50,0); // RED
+		Color color = new Color(25,132,255); // LIGHT BLUE
 		return color;
 	}	
 	public int getParticleSize() {		
-		int size = 10; // 10px
+		int size = 6; // 6px
 		return size;
 	}	
 	public int getParticleSpeed() {
@@ -58,6 +58,6 @@ public class PRJ_Fireball extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 3);
+		gp.playSE(3, 16);
 	}
 }

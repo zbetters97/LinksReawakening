@@ -1,11 +1,10 @@
-package projectile;
+package entity.projectile;
 
 import java.awt.Color;
 import java.awt.Rectangle;
 
 import entity.Entity;
 import entity.Particle;
-import entity.Projectile;
 import main.GamePanel;
 
 public class PRJ_Hookshot extends Projectile {

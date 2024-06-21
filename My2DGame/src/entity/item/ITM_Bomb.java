@@ -1,8 +1,8 @@
 package entity.item;
 
 import entity.Entity;
+import entity.projectile.PRJ_Bomb;
 import main.GamePanel;
-import projectile.PRJ_Bomb;
 
 public class ITM_Bomb extends Entity {
 	

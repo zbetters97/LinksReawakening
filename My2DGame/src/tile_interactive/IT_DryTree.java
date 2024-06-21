@@ -26,13 +26,13 @@ public class IT_DryTree extends InteractiveTile {
 		down1 = setup("/tiles_interactive/drytree");
 	}
 	
-	public boolean isCorrectItem(Entity entity) {		
+	public boolean correctItem(Entity entity) {		
 		
-		boolean isCorrectItem = false;				
+		boolean correctItem = false;				
 		if (entity.currentItem.name.equals(ITM_Axe.itmName))
-			isCorrectItem = true;		
+			correctItem = true;		
 		
-		return isCorrectItem;
+		return correctItem;
 	}
 	
 	public void playSE() {

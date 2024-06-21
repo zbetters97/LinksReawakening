@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -48,8 +47,6 @@ public class UI {
 	public int npcSlotRow = 0;
 	
 	// DIALOGUE HANDLER	
-	private ArrayList<String> message = new ArrayList<>();
-	private ArrayList<Integer> messageCounter = new ArrayList<>();
 	public boolean messageOn = false;
 	public String currentDialogue = "";
 	public int dialogueIndex = 0;
@@ -116,7 +113,6 @@ public class UI {
 			drawHUD();
 			drawEnemyHPBar(gp.enemy);
 			drawEnemyHPBar(gp.enemy_r);
-			drawMessage();
 		}		
 		// PAUSE STATE
 		else if (gp.gameState == gp.pauseState) {
@@ -268,7 +264,7 @@ public class UI {
 			
 			String keyboard = "";
 			
-			if (gp.keyH.isCapital) keyboard = "QWERTYUIOPASDFGHJKLZXCVBNM";	
+			if (gp.keyH.capital) keyboard = "QWERTYUIOPASDFGHJKLZXCVBNM";	
 			else keyboard = "qwertyuiopasdfghjklzxcvbnm";
 			
 			for (int i = 0; i < keyboard.length(); i++) {	
@@ -426,18 +422,18 @@ public class UI {
 		
 		
 		// DRAW KEYS
-		x = gp.tileSize * 14 - 20;
-		y = gp.tileSize * 9 + 25;	
-		if (gp.player.keys > 0) {
-			
+		if (gp.currentArea == gp.dungeon) {			
+
 			// DRAW KEY IMAGE
+			x = gp.tileSize * 14 - 20;
+			y = gp.tileSize * 9 + 25;					
 			g2.drawImage(key, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
 			
 			// DRAW KEY COUNT
 			x += gp.tileSize - 8;
 			y += gp.tileSize - 12;				
-			g2.drawString(Integer.toString(gp.player.keys), x, y);			
-		}		
+			g2.drawString(Integer.toString(gp.player.keys), x, y);				
+		}
 		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
@@ -462,36 +458,6 @@ public class UI {
 			g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
 			y += lineHeight;
 			g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
-		}
-	}
-	public void addMessage(String text) {
-		message.add(text);		
-		messageCounter.add(0);
-	}
-	private void drawMessage() {
-		
-		int messageX = gp.tileSize;
-		int messageY = gp.tileSize * 4;
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
-		
-		for (int i = 0; i< message.size(); i++) {
-			
-			if (message.get(i) != null) {
-				
-				g2.setColor(Color.BLACK);
-				g2.drawString(message.get(i), messageX+2, messageY+2);
-				g2.setColor(Color.WHITE);
-				g2.drawString(message.get(i), messageX, messageY);
-				
-				int counter = messageCounter.get(i) + 1;
-				messageCounter.set(i, counter);
-				messageY += gp.tileSize;
-				
-				if (messageCounter.get(i) > 180) {
-					message.remove(i);
-					messageCounter.remove(i);
-				}
-			}
 		}
 	}
 	private void drawEnemyHPBar(Entity[][] enemies) {
@@ -979,7 +945,7 @@ public class UI {
 	
 	// DIALOGUE
 	public void drawDialogueScreen() {
-		
+				
 		if (npc.hasCutscene) {
 			gp.csManager.scene = gp.csManager.npc;
 			gp.gameState = gp.cutsceneState;

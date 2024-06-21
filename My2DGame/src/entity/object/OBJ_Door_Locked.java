@@ -25,13 +25,7 @@ public class OBJ_Door_Locked extends Entity {
 		
 		hitbox = new Rectangle(0, 16, 48, 40);
 		collision = true;
-		
-		setDialogue();
 	}	
-	
-	public void setDialogue() {
-		dialogues[0][0] = "There's gotta be a key somewhere...";	
-	}
 	
 	public void interact() {	
 		
@@ -58,9 +52,7 @@ public class OBJ_Door_Locked extends Entity {
 		}
 		
 		if (respond) {		
-			if (gp.player.keys <= 0) 
-				startDialogue(this, 0);
-			else {
+			if (gp.player.keys > 0) {
 				playOpenSE();
 				gp.player.keys--;
 				this.alive = false;
@@ -69,7 +61,7 @@ public class OBJ_Door_Locked extends Entity {
 	}
 	
 	public void playOpenSE() {
-		gp.playSE(3, 14);
+		gp.playSE(3, 19);
 	}
 	public void playCloseSE() {
 		gp.playSE(3, 18);

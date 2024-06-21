@@ -1,8 +1,8 @@
 package entity.item;
 
 import entity.Entity;
+import entity.projectile.PRJ_Boomerang;
 import main.GamePanel;
-import projectile.PRJ_Boomerang;
 
 public class ITM_Boomerang extends Entity {
 

@@ -21,7 +21,7 @@ public class EMY_Goblin_Combat extends Entity {
 		type = type_enemy;
 		name = emyName;
 		
-		isCapturable = true;
+		capturable = true;
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;

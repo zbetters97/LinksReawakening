@@ -123,8 +123,6 @@ public class CollisionChecker {
 				break;
 		}		
 
-		// if tile 1 or 2 has collision, turn on collision		
-
 		if (entity.type == entity.type_enemy || entity.type == entity.type_npc) {
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision ||
 					gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
@@ -277,15 +275,17 @@ public class CollisionChecker {
 		}		
 
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
-			gp.playSE(2, 2);
-			gp.player.invincible = true;
-			gp.gameState = gp.fallingState;
+			if (gp.player.onGround) {
+				gp.playSE(2, 2);
+				gp.player.invincible = true;
+				gp.gameState = gp.fallingState;
+			}
 		}
 		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
 			if (gp.player.canSwim) {
 				gp.player.action = Action.SWIMMING;
 			}
-			else {
+			else if (gp.player.onGround) {
 				gp.player.playDrownSE();
 				gp.player.playHurtSE();	
 				gp.player.invincible = true;

@@ -12,6 +12,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import entity.projectile.Projectile;
 import main.GamePanel;
 import main.UtilityTool;
 
@@ -51,8 +52,8 @@ public class Entity {
 	public boolean attacking = false;
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
-	public boolean isPushed = false;
-	public boolean isCapturable = false;
+	public boolean pushed = false;
+	public boolean capturable = false;
 	public boolean captured = false;
 	public Entity capturedTarget;
 	
@@ -83,23 +84,28 @@ public class Entity {
 	public boolean hpBarOn = false;
 	public int hpBarCounter = 0;
 	
+	// KNOCKBACK
 	public Entity attacker;
 	public boolean knockback = false;
 	public int knockbackCounter = 0;
 	public String knockbackDirection = "";
 	
+	// STUNNED
 	public boolean stunned = false;
 	public int stunnedCounter = 0;
 	
+	// Z-TARGETING
 	public boolean lockon = false;
+	public boolean locked = false;	
 	public Entity lockedTarget;	
 	public String lockonDirection;
-	public boolean isLocked = false;	
 	
+	// INVINCIBLE SHIELD
 	public boolean invincible = false;
 	public int invincibleCounter = 0;
 	public boolean transparent = false;
 	
+	// LIFE
 	public boolean alive = true;
 	public boolean dying = false;
 	public int dyingCounter = 0;	
@@ -269,7 +275,7 @@ public class Entity {
 	
 	public void isCaptured() {
 		
-		animationSpeed = 12;
+		//animationSpeed = 12;
 		
 		if (attacking) { attacking(); return; }
 		if (gp.keyH.actionPressed) { attacking = true; }
@@ -807,10 +813,10 @@ public class Entity {
 	
 	public void manageValues() {
 		 
-		// ENEMY STUNNED
+		// STUNNED TIME (1 SECOND)
 		if (stunned) {
 			stunnedCounter++;
-			if (stunnedCounter > 30) {				
+			if (stunnedCounter > 60) {				
 				stunned = false;
 				stunnedCounter = 0;				
 			}
@@ -832,7 +838,7 @@ public class Entity {
 			shotAvailableCounter++;
 		}
 		
-		// REMOVE ITEMS AFTER X SECONDS
+		// REMOVE ITEM AFTER X SECONDS
 		if (lifeDuration != -1) {
 			lifeDuration--;
 			if (lifeDuration == 0)
@@ -1146,7 +1152,7 @@ public class Entity {
 			
 			g2.drawImage(image, tempScreenX, tempScreenY, null);	
 			
-			if (isLocked) {	
+			if (locked) {	
 				
 				// LOCKON IMAGE X, Y 				
 				if (boss) {

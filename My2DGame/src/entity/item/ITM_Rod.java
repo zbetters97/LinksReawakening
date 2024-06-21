@@ -1,8 +1,8 @@
 package entity.item;
 
 import entity.Entity;
+import entity.projectile.PRJ_Orb;
 import main.GamePanel;
-import projectile.PRJ_Orb;
 
 public class ITM_Rod extends Entity {
 

@@ -23,10 +23,9 @@ public class OT_Block_Pushable extends Entity {
 		type = type_block;
 		name = obj_tName;
 		direction = "down";
-		
-		collision = true;
-		
 		speed = 15; defaultSpeed = speed;
+		
+		collision = true;		
 		
 		hitbox = new Rectangle(2, 6, 44, 40); 		
 		hitboxDefaultX = hitbox.x;
@@ -48,13 +47,13 @@ public class OT_Block_Pushable extends Entity {
 				
 	public void update() { 
 						
-		if (isPushed) {
+		if (pushed) {
 			if (pushCounter < pushMax) {
 				detectMovement(1, direction);
 				pushCounter++;
 			}
 			else {
-				isPushed = false;
+				pushed = false;
 				pushCounter = 0;
 			}
 		}
@@ -62,9 +61,9 @@ public class OT_Block_Pushable extends Entity {
 	
 	public void move(String dir) {		
 
-		if (pushCounter == 0 && !isPushed) {			
+		if (pushCounter == 0 && !pushed) {			
 			playSE();
-			isPushed = true;	
+			pushed = true;	
 			direction = dir;			
 		}
 	}

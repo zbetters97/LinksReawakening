@@ -1,4 +1,4 @@
-package projectile;
+package entity.projectile;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -16,10 +16,12 @@ public class PRJ_Bomb extends Projectile {
 		super(gp);
 		this.gp = gp;
 		
-		canExplode = true;
-		
 		type = type_projectile;
 		name = prjName;
+
+		canExplode = true;
+		capturable = true;
+		
 		animationSpeed = 30;
 		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 
 		attack = 2;

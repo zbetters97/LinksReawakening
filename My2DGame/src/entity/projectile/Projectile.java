@@ -1,16 +1,18 @@
-package entity;
+package entity.projectile;
 
+import entity.Entity;
 import main.GamePanel;
-import projectile.*;
 
 public class Projectile extends Entity {
 
 	public Entity user;
 	public boolean active = false;
 	public boolean grabbable = false;
+	GamePanel gp;
 	
 	public Projectile(GamePanel gp) {
 		super(gp);
+		this.gp = gp;
 	}
 	
 	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {		
@@ -19,27 +21,28 @@ public class Projectile extends Entity {
 		this.direction = direction;
 		this.alive = alive;
 		this.user = user;
-		this.life = this.maxLife; // RESET LIFE WHEN USED		
+		this.life = this.maxLife;
 	}
 	
 	public void update() {
 		
-		// PREVENT GLITCH WHEN RECEIVING AN ITEM
-		if (gp.gameState == gp.itemGetState) {
+		// PREVENT GLITCH
+		if (gp.gameState == gp.itemGetState || 
+				gp.gameState == gp.cutsceneState || 
+				gp.gameState == gp.gameOverState) {
 			alive = false;
 			return;
 		}
 		
-		// PREVENT GLITCHED DEATH WHEN ITEM IS IN AIR
-		if (gp.gameState != gp.gameOverState) {
-			
-			if (name.equals(PRJ_Arrow.prjName)) useArrow();
-			else if (name.equals(PRJ_Bomb.prjName)) useBomb();
-			else if (name.equals(PRJ_Boomerang.prjName)) useBoomerang();
-			else if (name.equals(PRJ_Hookshot.prjName)) useHookshot();
-			else if (name.equals(PRJ_Orb.prjName)) useRod();
-			else useProjectile();
+		if (name.equals(PRJ_Arrow.prjName)) useArrow();
+		else if (name.equals(PRJ_Bomb.prjName)) {
+			if (!captured) useBomb(); 
+			else { speed = 2; isCaptured(); }
 		}
+		else if (name.equals(PRJ_Boomerang.prjName)) useBoomerang();
+		else if (name.equals(PRJ_Hookshot.prjName)) useHookshot();
+		else if (name.equals(PRJ_Orb.prjName)) useRod();
+		else useProjectile();		
 	}	
 	
 	public void useArrow() {
@@ -302,11 +305,14 @@ public class Projectile extends Entity {
 				
 		// PULL PLAYER TOWARDS GRABBALE TILE
 		if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbale) {
+
+			gp.player.onGround = false;
 			
 			// PREVENT COLLISION WITH PLAYER
 			int playeriTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
 			if (playeriTileIndex != -1) {
 				alive = false;	
+				gp.player.onGround = true;
 				gp.gameState = gp.playState;	
 				return;
 			}
@@ -324,6 +330,7 @@ public class Projectile extends Entity {
 					else {
 						gp.player.worldX = worldX;
 						gp.player.worldY = worldY;
+						gp.player.onGround = true;
 						alive = false;
 						gp.gameState = gp.playState;
 					}	
@@ -341,6 +348,7 @@ public class Projectile extends Entity {
 					else {
 						gp.player.worldX = worldX;
 						gp.player.worldY = worldY;
+						gp.player.onGround = true;
 						alive = false; 
 						gp.gameState = gp.playState;
 					}					
@@ -355,6 +363,7 @@ public class Projectile extends Entity {
 					else {
 						gp.player.worldX = worldX;
 						gp.player.worldY = worldY;
+						gp.player.onGround = true;
 						alive = false;
 						gp.gameState = gp.playState;
 					}						
@@ -369,6 +378,7 @@ public class Projectile extends Entity {
 					else {
 						gp.player.worldX = worldX;
 						gp.player.worldY = worldY;
+						gp.player.onGround = true;
 						alive = false;							
 						gp.gameState = gp.playState;
 					}						
@@ -485,9 +495,21 @@ public class Projectile extends Entity {
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);		
 
+		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+		if (projectileIndex != -1) {
+			Entity projectile = gp.projectile[gp.currentMap][projectileIndex];
+			
+			if (projectile.name.equals(PRJ_Bomb.prjName)) {
+				gp.projectile[gp.currentMap][projectileIndex].captured = true;
+				gp.player.capturedTarget = gp.projectile[gp.currentMap][projectileIndex];
+			}
+			
+			life = 0;
+		}
+		
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 		if (enemyIndex != -1) {
-			if (gp.enemy[gp.currentMap][enemyIndex].isCapturable && 
+			if (gp.enemy[gp.currentMap][enemyIndex].capturable && 
 					!gp.enemy[gp.currentMap][enemyIndex].captured) {
 				gp.enemy[gp.currentMap][enemyIndex].captured = true;
 				gp.player.capturedTarget = gp.enemy[gp.currentMap][enemyIndex];
@@ -549,7 +571,7 @@ public class Projectile extends Entity {
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);			
 			if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].pressable && 
-					gp.iTile[gp.currentMap][iTileIndex].isCorrectItem(this)) {		
+					gp.iTile[gp.currentMap][iTileIndex].correctItem(this)) {		
 				
 				gp.iTile[gp.currentMap][10] = null;
 				gp.iTile[gp.currentMap][11] = null;

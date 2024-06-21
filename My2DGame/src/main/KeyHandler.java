@@ -15,7 +15,7 @@ public class KeyHandler implements KeyListener{
 	public boolean actionPressed, guardPressed, lockPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
-	protected boolean isCapital = true;
+	protected boolean capital = true;
 	
 	public KeyHandler(GamePanel gp) {
 		this.gp = gp;
@@ -125,7 +125,7 @@ public class KeyHandler implements KeyListener{
 		// MAP VALUES TO ON-SCREEN KEYBOARD
 		Map<Integer, String> keyboard = new LinkedHashMap<>();
 		
-		if (isCapital) keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";	
+		if (capital) keyboardLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";	
 		else keyboardLetters = "qwertyuiopasdfghjklzxcvbnm";				
 		
 		for (int i = 0; i < keyboardLetters.length(); i++) 
@@ -201,8 +201,8 @@ public class KeyHandler implements KeyListener{
 			// CAPS BUTTON
 			else if (gp.ui.commandNum == 27) {
 				playSelectSE();
-				if (isCapital) isCapital = false;
-				else isCapital = true;
+				if (capital) capital = false;
+				else capital = true;
 			}
 			// BACK BUTTON
 			else if (gp.ui.commandNum == 28) {

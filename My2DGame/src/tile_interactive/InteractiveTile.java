@@ -18,9 +18,9 @@ public class InteractiveTile extends Entity {
 		this.gp = gp;
 	}
 	
-	public boolean isCorrectItem(Entity entity) {		
-		boolean isCorrectItem = false;		
-		return isCorrectItem;
+	public boolean correctItem(Entity entity) {		
+		boolean correctItem = false;		
+		return correctItem;
 	}
 	
 	public void playSE() {

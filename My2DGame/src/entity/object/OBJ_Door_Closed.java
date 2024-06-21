@@ -25,18 +25,8 @@ public class OBJ_Door_Closed extends Entity {
 		
 		hitbox = new Rectangle(0, 0, 48, 48);
 		collision = true;
-		
-		setDialogue();
 	}	
-	
-	public void setDialogue() {
-		dialogues[0][0] = "It won't budge...";
-	}
-	
-	public void interact() {		
-		startDialogue(this, 0);
-	}
-	
+		
 	public void playOpenSE() {
 		gp.playSE(3, 14);
 	}

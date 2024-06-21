@@ -8,6 +8,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -16,6 +17,7 @@ import javax.swing.JPanel;
 import ai.PathFinder;
 import data.SaveLoad;
 import entity.*;
+import entity.Entity.Action;
 import environment.EnvironmentManager;
 import tile.Map;
 import tile.TileManager;
@@ -294,6 +296,17 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		else if (gameState == cutsceneState) {
 			
+			player.action = Action.IDLE;
+			
+			player.digNum = 0;
+			player.digCounter = 0;	
+			player.jumpNum = 0;
+			player.jumpCounter = 0;			
+			player.rodNum = 0;
+			player.rodCounter = 0;
+			player.damageNum = 0;
+			player.damageCounter = 0;
+			
 			// UPDATE NPCs
 			for (int i = 0; i < npc[1].length; i++) {
 				if (npc[currentMap][i] != null)
@@ -311,10 +324,14 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void changeArea() {
 		
+		if (nextArea == outside) player.direction = "down";
+		if (nextArea == inside) player.direction = "up";
+		if (nextArea == dungeon) player.direction = "down";
+		
 		if (nextArea != currentArea) {
 			stopMusic();			
 			setupMusic();
-		}
+		}		
 		
 		currentArea = nextArea;
 		aSetter.setEnemy();
