@@ -95,6 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Player player = new Player(this, keyH);	
 	public Entity npc[][] = new Entity[maxMap][10]; 
 	public Entity enemy[][] = new Entity[maxMap][20]; 
+	public Entity enemy_r[][] = new Entity[maxMap][20]; // HOLDS ENEMY ROOMS
 	public Entity obj[][] = new Entity[maxMap][20];
 	public Entity obj_t[][] = new Entity[maxMap][20]; 
 	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
@@ -231,6 +232,20 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			
+			// UPDATE ENEMY ROOMS			
+			for (int i = 0; i < enemy_r[1].length; i++) {
+				if (enemy_r[currentMap][i] != null) {
+					
+					if (enemy_r[currentMap][i].alive && !enemy_r[currentMap][i].dying) 
+						enemy_r[currentMap][i].update();			
+					
+					if (!enemy_r[currentMap][i].alive) {
+						enemy_r[currentMap][i].checkDrop();
+						enemy_r[currentMap][i] = null;	
+					}
+				}
+			}
+			
 			// UPDATE OBJECTS
 			for (int i = 0; i < obj[1].length; i++) {
 				if (obj[currentMap][i] != null) {
@@ -306,7 +321,7 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setInteractiveObjects();
 	}
 	
-	private void removeTempEntity() {
+	public void removeTempEntity() {
 
 		for (int mapNum = 0; mapNum < maxMap; mapNum++) {
 			
@@ -319,7 +334,12 @@ public class GamePanel extends JPanel implements Runnable {
 				if (enemy[mapNum][i] != null && enemy[mapNum][i].temp) {
 					enemy[mapNum][i] = null;
 				}
-			}				
+			}	
+			for (int i = 0; i < enemy_r[1].length; i++) {
+				if (enemy_r[mapNum][i] != null && enemy_r[mapNum][i].temp) {
+					enemy_r[mapNum][i] = null;
+				}
+			}	
 			for (int i = 0; i < obj[1].length; i++) {
 				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
 					obj[mapNum][i] = null;
@@ -410,6 +430,7 @@ public class GamePanel extends JPanel implements Runnable {
 			entityList.add(player);			
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
+			for (Entity er : enemy_r[currentMap]) { if (er != null) entityList.add(er); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
 			for (Entity ot : obj_t[currentMap]) { if (ot != null) entityList.add(ot); }
 			for (Entity a : particleList) { if (a != null) entityList.add(a); }

@@ -6,12 +6,12 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import data.Progress;
-import enemy.BOS_Skeleton;
 import entity.Entity;
-import entity.NPC_Traveler_2;
 import entity.PlayerDummy;
-import object.OBJ_BlueHeart;
-import object.OBJ_Door_Closed;
+import entity.enemy.BOS_Skeleton;
+import entity.npc.NPC_Traveler_2;
+import entity.object.OBJ_BlueHeart;
+import entity.object.OBJ_Door_Closed;
 
 public class CutsceneManager {
 
@@ -27,8 +27,8 @@ public class CutsceneManager {
 	public final int NA = 0;
 	public final int npc = 1;
 	public final int enemy_spawn = 2;
-	public final int boss = 3;
-	public final int boss_defeat = 4;
+	public final int boss_1 = 3;
+	public final int boss_1_defeat = 4;
 	public final int ending = 5;
 	
 	private Entity npc1, npc2;
@@ -44,9 +44,10 @@ public class CutsceneManager {
 				+ "\n\n\n\n\n\n\n\n\n\n"
 				+ "Special thanks to...\n"
 				+ "RyiSnow\n"
+				+ "Vi_22\n"
 				+ "Nintendo\n"
 				+ "Jenna Betters\n"
-				+ "And you, the player!"
+				+ "You, the player!"
 				+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 				+ "THE END?";
 	}
@@ -57,8 +58,8 @@ public class CutsceneManager {
 		switch(scene) {
 			case npc: scene_npc_1(); break;	
 			case enemy_spawn: scene_enemy_spawn(); break;		
-			case boss: scene_boss(); break;
-			case boss_defeat: scene_boss_defeat(); break;
+			case boss_1: scene_boss_1(); break;
+			case boss_1_defeat: scene_boss_defeat(1); break;
 			case ending: scene_ending(); break;
 		}
 	}
@@ -134,19 +135,22 @@ public class CutsceneManager {
 	}
 	private void scene_enemy_spawn() {
 		if (phase == 0) {
-			// PAUSE FOR 1 SECOND
+			playDoorCloseSE();
+			phase++;
+		}
+		if (phase == 1) {
 			if (counterReached(60)) {
 				phase++;
 			}
 		}
-		else if (phase == 1) {
+		else if (phase == 2) {
 			scene = NA;
 			phase = 0;
 			
 			gp.gameState = gp.playState;
 		}
 	}	
-	private void scene_boss() {
+	private void scene_boss_1() {
 		
 		if (phase == 0) {
 			gp.stopMusic();	
@@ -232,13 +236,14 @@ public class CutsceneManager {
 			gp.gameState = gp.playState;			
 		}
 	}	
-	private void scene_boss_defeat() {
+	private void scene_boss_defeat(int num) {
 		if (phase == 0) {
 			gp.stopMusic();
 			gp.playMusic(6);
 
 			gp.bossBattleOn = false;
-			Progress.bossDefeated = true;
+			
+			if (num == 1) Progress.bossDefeated_1 = true;
 			
 			phase++;
 		}
@@ -399,6 +404,9 @@ public class CutsceneManager {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 	}
 	
+	private void playDoorCloseSE() {
+		gp.playSE(3, 18);
+	}
 	private void playBossMusic() {
 		gp.playMusic(5);
 	}

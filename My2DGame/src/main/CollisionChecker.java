@@ -34,13 +34,14 @@ public class CollisionChecker {
 		
 		// KNOCKBACK DIRECTION
 		String direction = entity.direction;
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
 		if (entity.lockon) {
 			direction = entity.lockonDirection;
 		}
-				
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}
+		
+						
 		// PREVENT COLLISION DETECTION OUT OF BOUNDS
 		if (entityTopRow <= 0) return;		
 		if (entityBottomRow >= gp.maxWorldRow - 1) return;		
@@ -153,12 +154,12 @@ public class CollisionChecker {
 		
 		// KNOCKBACK DIRECTION
 		String direction = gp.player.direction;
-		if (gp.player.knockback) {
-			direction = gp.player.knockbackDirection;
-		}
 		if (gp.player.lockon) {
 			direction = gp.player.lockonDirection;
 		}
+		if (gp.player.knockback) {
+			direction = gp.player.knockbackDirection;
+		}		
 				
 		// PREVENT COLLISION DETECTION OUT OF BOUNDS
 		if (entityTopRow <= 0) return;		
@@ -174,8 +175,10 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
 				
-				gp.player.safeWorldX = gp.player.worldX;
-				gp.player.safeWorldY = gp.player.worldY + 35;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX;
+					gp.player.safeWorldY = gp.player.worldY + 35;
+				}
 				
 				break;
 			case "upleft":
@@ -186,8 +189,10 @@ public class CollisionChecker {
 				entityLeftCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];	
 				
-				gp.player.safeWorldX = gp.player.worldX + 35;
-				gp.player.safeWorldY = gp.player.worldY + 35;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX + 35;
+					gp.player.safeWorldY = gp.player.worldY + 35;
+				}
 				
 				break;
 			case "upright":
@@ -198,8 +203,10 @@ public class CollisionChecker {
 				entityRightCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];	
 				
-				gp.player.safeWorldX = gp.player.worldX - 35;
-				gp.player.safeWorldY = gp.player.worldY + 35;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX - 35;
+					gp.player.safeWorldY = gp.player.worldY + 35;
+				}
 				
 				break;
 			case "down":
@@ -209,8 +216,10 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];				
 
-				gp.player.safeWorldX = gp.player.worldX;
-				gp.player.safeWorldY = gp.player.worldY - 35;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX;
+					gp.player.safeWorldY = gp.player.worldY - 35;
+				}
 				
 				break;
 			case "downleft":
@@ -221,8 +230,10 @@ public class CollisionChecker {
 				entityLeftCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				
-				gp.player.safeWorldX = gp.player.worldX + 35;
-				gp.player.safeWorldY = gp.player.worldY - 35;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX + 35;
+					gp.player.safeWorldY = gp.player.worldY - 35;
+				}
 				
 				break;
 			case "downright":
@@ -244,8 +255,10 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				
-				gp.player.safeWorldX = gp.player.worldX + 35;
-				gp.player.safeWorldY = gp.player.worldY;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX + 35;
+					gp.player.safeWorldY = gp.player.worldY;
+				}
 				
 				break;				
 			case "right":
@@ -255,8 +268,10 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
 				
-				gp.player.safeWorldX = gp.player.worldX - 35;
-				gp.player.safeWorldY = gp.player.worldY;
+				if (gp.player.onGround) {
+					gp.player.safeWorldX = gp.player.worldX - 35;
+					gp.player.safeWorldY = gp.player.worldY;
+				}
 				
 				break;
 		}		
@@ -288,15 +303,14 @@ public class CollisionChecker {
 		
 		int index = -1;
 		
-		// KNOCKBACK DIRECTION
 		String direction = entity.direction;
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
-		// LOCKON DIRECTION
 		if (entity.lockon) {
 			direction = entity.lockonDirection;
 		}
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}
+		
 		
 		for (int i  = 0; i < gp.obj[1].length; i++) {
 			
@@ -367,15 +381,13 @@ public class CollisionChecker {
 		
 		int index = -1;
 		
-		// KNOCKBACK DIRECTION
 		String direction = entity.direction;
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
-		// LOCKON DIRECTION
 		if (entity.lockon) {
 			direction = entity.lockonDirection;
 		}
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
+		}		
 		
 		for (int i  = 0; i < gp.obj_t[1].length; i++) {
 			
@@ -446,15 +458,12 @@ public class CollisionChecker {
 		
 		int index = -1;
 		
-		// KNOCKBACK DIRECTION
 		String direction = entity.direction;
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
-		
-		// LOCKON DIRECTION
 		if (entity.lockon) {
 			direction = entity.lockonDirection;
+		}
+		if (entity.knockback) {
+			direction = entity.knockbackDirection;
 		}
 				
 		for (int i  = 0; i < target[1].length; i++) {
@@ -532,15 +541,12 @@ public class CollisionChecker {
 		int index = -1;
 		int speed = 30;
 		
-		// KNOCKBACK DIRECTION
 		String direction = gp.player.direction;
-		if (gp.player.knockback) {
-			direction = gp.player.knockbackDirection;
-		}
-		
-		// LOCKON DIRECTION
 		if (gp.player.lockon) {
 			direction = gp.player.lockonDirection;
+		}
+		if (gp.player.knockback) {
+			direction = gp.player.knockbackDirection;
 		}
 				
 		for (int i  = 0; i < gp.npc[1].length; i++) {

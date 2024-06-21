@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+
 import main.GamePanel;
 import main.UtilityTool;
 
@@ -156,13 +157,14 @@ public class Entity {
 	public final int type_item = 5;
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
-	public final int type_light = 8;
-	public final int type_projectile = 9;
+	public final int type_key = 8;
+	public final int type_light = 9;
+	public final int type_projectile = 10;	
 	
 	// OBJECT TYPES
-	public final int type_obstacle = 10;
-	public final int type_pickupOnly = 11;
-	public final int type_block = 12;
+	public final int type_obstacle = 11;
+	public final int type_pickupOnly = 12;
+	public final int type_block = 13;	
 		
 	public boolean sleep = false;
 	public boolean temp = false;
@@ -178,7 +180,7 @@ public class Entity {
 	public void setAction() { }	
 	public void setPath(int c, int r) { }	
 	public void damageReaction() { }	
-	public void checkDrop() { }
+	public void checkDrop() { checkEnemyRoom(); }
 	public void use() {	}
 	public boolean use(Entity user) { return true; }
 	public void interact() { }
@@ -249,6 +251,22 @@ public class Entity {
 		manageValues();
 	}
 	
+	protected void checkEnemyRoom() {	
+						
+		if (isRoomClear()) {
+			gp.removeTempEntity();
+		}
+	}
+	private boolean isRoomClear() {
+		
+		for (Entity e : gp.enemy_r[gp.currentMap]) {
+			if (e != null && e.alive)
+				return false;
+		}
+		
+		return true;
+	}
+	
 	public void isCaptured() {
 		
 		animationSpeed = 12;
@@ -304,9 +322,12 @@ public class Entity {
 		
 		collisionOn = false;
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
+		gp.cChecker.checkEntity(this, gp.enemy_r);
+		gp.cChecker.checkEntity(this, gp.obj);
+		gp.cChecker.checkEntity(this, gp.obj_t);
+		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkObject(this, false);
 		gp.cChecker.checkObject_T(this, false);
 		
@@ -611,9 +632,10 @@ public class Entity {
 				
 				// CHECK IF ATTACK LANDS ON ENEMY
 				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-				
+				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
+								
 				// PREVENT AXE GLITCH
-				if(currentWeapon == null) 
+				if (currentWeapon == null) 
 					gp.player.damageEnemy(enemyIndex, this, attack, 0);
 				else 
 					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
@@ -843,7 +865,7 @@ public class Entity {
 		Entity newItem = gp.eGenerator.getObject(item.name);
 		newItem.amount = 1;	
 		
-		// IF STACKABLE ITEM
+		// STACKABLE
 		if (newItem.stackable) {	
 			
 			// ITEM FOUND IN INVENTORY

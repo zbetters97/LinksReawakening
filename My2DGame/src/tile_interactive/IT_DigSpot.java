@@ -3,7 +3,7 @@ package tile_interactive;
 import java.awt.Color;
 
 import entity.Entity;
-import item.ITM_Shovel;
+import entity.item.ITM_Shovel;
 import main.GamePanel;
 
 public class IT_DigSpot extends InteractiveTile {

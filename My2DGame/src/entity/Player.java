@@ -7,11 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import entity.equipment.*;
+import entity.item.*;
 import main.GamePanel;
 import main.KeyHandler;
-import equipment.EQP_Shield_Old;
-import equipment.EQP_Sword_Old;
-import item.*;
 import projectile.PRJ_Bomb;
 import projectile.PRJ_Sword;
 
@@ -27,10 +26,13 @@ public class Player extends Entity {
 	public final int maxItemInventorySize = 10;
 	public int itemIndex = 0;	
 	public int walletSize;
+	public int keys = 0;
 		
 	// POSITIONING
 	public final int screenX;
 	public final int screenY;
+	
+	public boolean onGround;
 	public int safeWorldX = 0;
 	public int safeWorldY = 0;
 
@@ -94,7 +96,8 @@ public class Player extends Entity {
 	// DEFAULT VALUES
 	public void setDefaultValues() {
 					
-		action = Action.IDLE;
+		action = Action.IDLE;		
+		onGround = true;
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
@@ -154,7 +157,8 @@ public class Player extends Entity {
 		knockback = false;
 		invincible = false;
 		transparent = false;
-		lightUpdated = true;		
+		lightUpdated = true;	
+		onGround = true;
 	}	
 
 	// DIALOGUE
@@ -300,9 +304,11 @@ public class Player extends Entity {
 /** UPDATER **/
 
 	public void update() {	
-
+		
 		// CHECK COLLISION (NOT ON DEBUG)
 		if (!keyH.debug) checkCollision();
+		
+		if (action == Action.IDLE) onGround = true;		
 		
 		if (action == Action.DIGGING) { digging(); return; }
 		else if (action == Action.SWINGING) { swinging(); return; }
@@ -464,7 +470,10 @@ public class Player extends Entity {
 		
 		// CHECK ENEMY COLLISION
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-		contactEnemy(enemyIndex);
+		contactEnemy(enemyIndex, gp.enemy);
+		
+		enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r);
+		contactEnemy(enemyIndex, gp.enemy_r);
 		
 		// CHECK OBJECT COLLISION
 		int objIndex = gp.cChecker.checkObject(this, true);
@@ -512,6 +521,7 @@ public class Player extends Entity {
 			// OBSTACLE ITEMS
 			if (gp.obj[gp.currentMap][i].type == type_obstacle) {
 				if (keyH.actionPressed) {
+					keyH.actionPressed = false;
 					attackCanceled = true;
 					gp.obj[gp.currentMap][i].interact();
 				}
@@ -557,6 +567,15 @@ public class Player extends Entity {
 			item.use(this);
 			return;
 		}	
+		else if (item.type == type_key) {
+			playGetItemSE();
+			gp.player.keys++;
+			gp.ui.newItem = item;
+			gp.ui.currentDialogue = "You got the " + item.name + "!";		
+			gp.ui.subState = 0;
+			gp.gameState = gp.itemGetState;
+			return;
+		}
 		
 		playGetItemSE();
 		
@@ -629,6 +648,20 @@ public class Player extends Entity {
 		}
 		if (target != null)
 			playLockOnSE();
+		else {
+			for (int i = 0; i < gp.enemy_r[1].length; i++) {
+				
+				if (gp.enemy_r[gp.currentMap][i] != null) {
+					int enemyDistance = getTileDistance(gp.enemy_r[gp.currentMap][i]);
+					if (enemyDistance < currentDistance) {
+						currentDistance = enemyDistance;
+						target = gp.enemy_r[gp.currentMap][i];
+					}
+				}
+			}
+			if (target != null)
+				playLockOnSE();
+		}
 		
 		return target;
 	}	
@@ -660,32 +693,34 @@ public class Player extends Entity {
 	}
 	
 	// ENEMY DAMAGE
-	public void contactEnemy(int i) {
+	public void contactEnemy(int i, Entity enemyList[][]) {
 		
 		// PLAYER HURT BY ENEMY
-		if (i != -1 && !invincible && !gp.enemy[gp.currentMap][i].dying && 
-				!gp.enemy[gp.currentMap][i].captured) {
+		if (i != -1 &&!invincible && !enemyList[gp.currentMap][i].dying && 		
+				!enemyList[gp.currentMap][i].captured) {
 			playHurtSE();
 			
-			if (gp.enemy[gp.currentMap][i].knockbackPower > 0) 
-				setKnockback(gp.player, gp.enemy[gp.currentMap][i], gp.enemy[gp.currentMap][i].knockbackPower);
+			if (enemyList[gp.currentMap][i].knockbackPower > 0) 
+				setKnockback(gp.player, enemyList[gp.currentMap][i], enemyList[gp.currentMap][i].knockbackPower);
 			
-			int damage = gp.enemy[gp.currentMap][i].attack - defense;
+			int damage = enemyList[gp.currentMap][i].attack - defense;
 			if (damage < 0) damage = 0;				
 			this.life -= damage;
 			
 			invincible = true;
-			transparent = true;
-			
+			transparent = true;				
 		}
 	}		
 	public void knockbackPlayer() {
 		
 		collisionOn = false;
-		gp.cChecker.checkTile(this);
-		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
+		gp.cChecker.checkEntity(this, gp.enemy_r);
+		gp.cChecker.checkEntity(this, gp.obj);
+		gp.cChecker.checkEntity(this, gp.obj_t);
+		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.eHandler.checkEvent();
 		
 		if (collisionOn) {
@@ -835,7 +870,7 @@ public class Player extends Entity {
 				
 		if (6 >= jumpCounter) jumpNum = 1; 
 		else if (18 > jumpCounter && 12 >= jumpCounter) jumpNum = 2;		
-		else if (24 > jumpCounter && jumpCounter > 12) jumpNum = 3;	
+		else if (23 > jumpCounter && jumpCounter > 12) jumpNum = 3;	
 		else if (jumpCounter >= 24) {	
 			jumpNum = 1;
 			jumpCounter = 0;
@@ -921,35 +956,44 @@ public class Player extends Entity {
 	// DAMAGE
 	public void damageEnemy(int i, Entity attacker, int attack, int knockbackPower) {
 		
+		Entity[][] enemies = null;
+		
+		if (i != -1) {
+			if (gp.enemy[gp.currentMap][i] != null)
+				enemies = gp.enemy;
+			if (gp.enemy_r[gp.currentMap][i] != null)
+				enemies = gp.enemy_r;
+		}
+		
 		// ATTACK HITS ENEMY
 		if (i != -1) {
 			
 			// HURT ENEMY (IF NOT CAPTURED)
-			if (!gp.enemy[gp.currentMap][i].invincible && !gp.enemy[gp.currentMap][i].captured) {
-				gp.enemy[gp.currentMap][i].playHurtSE();
+			if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured) {
+				enemies[gp.currentMap][i].playHurtSE();
 				
 				if (knockbackPower > 0) {
-					setKnockback(gp.enemy[gp.currentMap][i], attacker, knockbackPower);
+					setKnockback(enemies[gp.currentMap][i], attacker, knockbackPower);
 				}
 				
 				// HIT BY PROJECTILE (NOT SWORD BEAM)
 				if (attacker.type == type_projectile && 
 						!attacker.name.equals(PRJ_Sword.prjName)) {
-					gp.enemy[gp.currentMap][i].stunned = true;
-					gp.enemy[gp.currentMap][i].spriteCounter = -30;
+					enemies[gp.currentMap][i].stunned = true;
+					enemies[gp.currentMap][i].spriteCounter = -30;
 				}
 								
-				int damage = attack - gp.enemy[gp.currentMap][i].defense;
+				int damage = attack - enemies[gp.currentMap][i].defense;
 				if (damage < 0) damage = 0;				
 				
-				gp.enemy[gp.currentMap][i].life -= damage;					
-				gp.enemy[gp.currentMap][i].invincible = true;
-				gp.enemy[gp.currentMap][i].damageReaction();
+				enemies[gp.currentMap][i].life -= damage;					
+				enemies[gp.currentMap][i].invincible = true;
+				enemies[gp.currentMap][i].damageReaction();
 				
 				// KILL ENEMY
-				if (gp.enemy[gp.currentMap][i].life <= 0) {
-					gp.enemy[gp.currentMap][i].playDeathSE();
-					gp.enemy[gp.currentMap][i].dying = true;
+				if (enemies[gp.currentMap][i].life <= 0) {
+					enemies[gp.currentMap][i].playDeathSE();
+					enemies[gp.currentMap][i].dying = true;
 				}
 			}
 		}

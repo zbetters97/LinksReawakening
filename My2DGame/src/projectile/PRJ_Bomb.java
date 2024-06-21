@@ -76,6 +76,7 @@ public class PRJ_Bomb extends Projectile {
 			gp.cChecker.checkEntity(this, gp.iTile);				
 			gp.cChecker.checkEntity(this, gp.npc);
 			gp.cChecker.checkEntity(this, gp.enemy);
+			gp.cChecker.checkEntity(this, gp.enemy_r);
 			
 			// PUSH BOMB IF NO COLLISION
 			if (!collisionOn) {
@@ -101,6 +102,11 @@ public class PRJ_Bomb extends Projectile {
 		
 		// DAMAGE SURROUNDING ENEMIES
 		ArrayList<Integer> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
+		if (enemyIndexes.size() > 0) {
+			for (Integer e : enemyIndexes) 
+				gp.player.damageEnemy(e, this, attack, knockbackPower);						
+		}
+		enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy_r);
 		if (enemyIndexes.size() > 0) {
 			for (Integer e : enemyIndexes) 
 				gp.player.damageEnemy(e, this, attack, knockbackPower);						

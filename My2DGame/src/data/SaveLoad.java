@@ -31,8 +31,10 @@ public class SaveLoad {
 			ds.bloodMoonCounter = gp.eManager.lighting.bloodMoonCounter;
 			
 			// PLAYER DATA
+			ds.cMap = gp.currentMap;
 			ds.pWorldX = gp.player.worldX;
 			ds.pWorldY = gp.player.worldY;
+			ds.cArea = gp.currentArea;
 			
 			ds.name = gp.player.name;
 			ds.level = gp.player.level;
@@ -110,6 +112,8 @@ public class SaveLoad {
 			gp.eManager.lighting.bloodMoonCounter = ds.bloodMoonCounter;
 			
 			// PLAYER DATA
+			gp.currentMap = ds.cMap;
+			gp.currentArea = ds.cArea;
 			gp.player.worldX = ds.pWorldX;
 			gp.player.worldY = ds.pWorldY;
 			

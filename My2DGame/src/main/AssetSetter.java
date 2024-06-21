@@ -1,18 +1,12 @@
 package main;
 
-import collectable.COL_Rupee_Red;
 import data.Progress;
-import enemy.*;
-import entity.*;
-import item.ITM_Axe;
-import item.ITM_Boots;
-import item.ITM_Bow;
-import item.ITM_Feather;
-import item.ITM_Hookshot;
-import item.ITM_Lantern;
-import item.ITM_Shovel;
-import object.*;
-import object_interactive.OT_Block_Pushable;
+import entity.npc.*;
+import entity.object.*;
+import entity.object_interactive.*;
+import entity.collectable.*;
+import entity.enemy.*;
+import entity.item.*;
 import tile_interactive.*;
 
 public class AssetSetter {
@@ -146,7 +140,7 @@ public class AssetSetter {
 		mapNum = 3;
 		i = 0;
 		
-		if (!Progress.bossDefeated) {
+		if (!Progress.bossDefeated_1) {
 			gp.enemy[mapNum][i] = new BOS_Skeleton(gp);
 			gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
 			gp.enemy[mapNum][i].worldY = gp.tileSize * 16;

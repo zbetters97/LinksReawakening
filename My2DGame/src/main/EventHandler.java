@@ -3,9 +3,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import data.Progress;
-import enemy.*;
 import entity.Entity;
-import object.OBJ_Door_Closed;
+import entity.enemy.*;
+import entity.object.OBJ_Door_Closed;
 
 public class EventHandler {
 	
@@ -96,18 +96,21 @@ public class EventHandler {
 			else if (hit(3, 26, 42, true)) teleport(2, 8, 7, gp.dungeon); // DUNEGOEN B2
 						
 			// ENEMY SPAWN
-			if (!Progress.enemy_room_defeated_1_1) {
+			if (!Progress.enemy_room_1_1) {
 				if (hit(2, 31, 40, true)) {
+					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
-							new int[]{29}, new int[]{40}, new String[]{"right"},
+							new int[]{29,38}, new int[]{40,37}, new String[]{"right","left"},
 							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Bat(gp)), 
 							new int[]{34,35}, new int[]{40,39}
 					);
 				}
 			}
 
-			// CUTSCENES
-			else if (hit(3, 25, 27, false)) boss(); // SKELETON CUTSCENE
+			// BOSS CUTSCENES
+			if (!Progress.bossDefeated_1) { // SKELETON
+				if (hit(3, 25, 27, false)) boss(1); 
+			}
 		}
 	}
 	
@@ -160,7 +163,6 @@ public class EventHandler {
 		
 		return hit;		
 	}
-	
 	private boolean hit(int map, int col, int row, boolean fullTile) {
 		
 		boolean hit = false;
@@ -222,6 +224,7 @@ public class EventHandler {
 			dekuTree.startDialogue(dekuTree, 0);
 		}
 	}
+	
 	private void speak(Entity npc) {		
 		if (gp.keyH.actionPressed) {
 			gp.gameState = gp.dialogueState;
@@ -268,13 +271,13 @@ public class EventHandler {
 		for (int i = 0; i < enemyList.size(); i++) {
 			
 			// FIND OPEN SLOT IN GP ENEMY LIST
-			for (int c = 0; c < gp.enemy[1].length; c++) {
+			for (int c = 0; c < gp.enemy_r[1].length; c++) {
 				
 				// CREATE NEW ENEMY
-				if (gp.enemy[gp.currentMap][c] == null) {
-					gp.enemy[gp.currentMap][c] = enemyList.get(i);
-					gp.enemy[gp.currentMap][c].worldX = worldX[i] * gp.tileSize;
-					gp.enemy[gp.currentMap][c].worldY = worldY[i] * gp.tileSize;
+				if (gp.enemy_r[gp.currentMap][c] == null) {
+					gp.enemy_r[gp.currentMap][c] = enemyList.get(i);
+					gp.enemy_r[gp.currentMap][c].worldX = worldX[i] * gp.tileSize;
+					gp.enemy_r[gp.currentMap][c].worldY = worldY[i] * gp.tileSize;
 					
 					break;
 				}
@@ -287,9 +290,11 @@ public class EventHandler {
 		gp.gameState = gp.cutsceneState;	
 	}
 	
-	private void boss() {		
-		if (!gp.bossBattleOn && !Progress.bossDefeated) {
-			gp.csManager.scene = gp.csManager.boss;
+	private void boss(int num) {	
+		
+		if (!gp.bossBattleOn) {			
+			if (num == 1) gp.csManager.scene = gp.csManager.boss_1;	
+			
 			gp.gameState = gp.cutsceneState;			
 		}
 	}

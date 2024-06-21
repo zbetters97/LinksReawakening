@@ -12,11 +12,12 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import collectable.COL_Heart;
-import collectable.COL_Rupee_Blue;
 import entity.Entity;
-import item.ITM_Bomb;
-import item.ITM_Bow;
+import entity.collectable.COL_Heart;
+import entity.collectable.COL_Key;
+import entity.collectable.COL_Rupee_Blue;
+import entity.item.ITM_Bomb;
+import entity.item.ITM_Bow;
 
 public class UI {
 	
@@ -32,7 +33,7 @@ public class UI {
 	public int commandNum = 0;
 	
 	// HUD
-	private BufferedImage heart_full, heart_half, heart_empty, rupee;
+	private BufferedImage heart_full, heart_half, heart_empty, rupee, key;
 	private String rupee_count = "0";
 	public int rupeeCount = -1;
 	private int rCounter = 0;
@@ -89,13 +90,13 @@ public class UI {
 		}
 		
 		// CREATE HUD
-		Entity heart = new COL_Heart(gp);
-		heart_full = heart.image1;
-		heart_half = heart.image2;
-		heart_empty = heart.image3;
+		heart_full = new COL_Heart(gp).image1;
+		heart_half = new COL_Heart(gp).image2;
+		heart_empty = new COL_Heart(gp).image3;
 		
-		Entity rupees = new COL_Rupee_Blue(gp);
-		rupee = rupees.down1;	
+		rupee = new COL_Rupee_Blue(gp).down1;	
+		
+		key = new COL_Key(gp).down1;
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -113,13 +114,15 @@ public class UI {
 		else if (gp.gameState == gp.playState || gp.gameState == gp.objectState ||
 				gp.gameState == gp.fallingState || gp.gameState == gp.drowningState) {
 			drawHUD();
-			drawEnemyHPBar();
+			drawEnemyHPBar(gp.enemy);
+			drawEnemyHPBar(gp.enemy_r);
 			drawMessage();
 		}		
 		// PAUSE STATE
 		else if (gp.gameState == gp.pauseState) {
 			drawHUD();
-			drawEnemyHPBar();
+			drawEnemyHPBar(gp.enemy);
+			drawEnemyHPBar(gp.enemy_r);
 			drawPauseScreen();
 		}		
 		// CHARACTER STATE
@@ -343,7 +346,7 @@ public class UI {
 			
 			i++;
 			x += gp.tileSize / 1.6;
-		}
+		}			
 		
 		// DRAW ITEM SLOT
 		x = gp.tileSize * 14;
@@ -421,6 +424,21 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(rupee_count, x, y);		
 		
+		
+		// DRAW KEYS
+		x = gp.tileSize * 14 - 20;
+		y = gp.tileSize * 9 + 25;	
+		if (gp.player.keys > 0) {
+			
+			// DRAW KEY IMAGE
+			g2.drawImage(key, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
+			
+			// DRAW KEY COUNT
+			x += gp.tileSize - 8;
+			y += gp.tileSize - 12;				
+			g2.drawString(Integer.toString(gp.player.keys), x, y);			
+		}		
+		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
 			g2.setColor(Color.WHITE);
@@ -476,11 +494,11 @@ public class UI {
 			}
 		}
 	}
-	private void drawEnemyHPBar() {
+	private void drawEnemyHPBar(Entity[][] enemies) {
 		
-		for (int i = 0; i < gp.enemy[1].length; i++) {
+		for (int i = 0; i < enemies[1].length; i++) {
 		
-			Entity enemy = gp.enemy[gp.currentMap][i];
+			Entity enemy = enemies[gp.currentMap][i];
 			
 			if (enemy != null && enemy.inFrame() &&	enemy.hpBarOn) {
 				
@@ -1226,6 +1244,7 @@ public class UI {
 												
 				// MAIN ITEM NOT SELLABLE
 				if (gp.player.inventory.get(itemIndex).type == npc.type_item || 
+						gp.player.inventory.get(itemIndex).type == npc.type_key ||
 						gp.player.inventory.get(itemIndex).type == npc.type_shield ||
 						gp.player.inventory.get(itemIndex).type == npc.type_sword ||
 						gp.player.inventory.get(itemIndex).type == npc.type_light) {

@@ -9,7 +9,7 @@ public class DataStorage implements Serializable {
 	int dayState, dayCounter, bloodMoonCounter;
 	
 	// PLAYER DATA
-	int pWorldX, pWorldY;
+	int cMap, cArea, pWorldX, pWorldY;
 	String name;
 	int level, maxLife, life, strength, dexterity, attack, defense;
 	int rupees, maxArrows, arrows, maxBombs, bombs;
