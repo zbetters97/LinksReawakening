@@ -11,6 +11,7 @@ import projectile.PRJ_Fireball;
 
 public class EMY_Slime_Red extends Entity {
 
+	public static final String emyName = "Red Slime";
 	GamePanel gp;
 	
 	public EMY_Slime_Red(GamePanel gp) {
@@ -18,7 +19,7 @@ public class EMY_Slime_Red extends Entity {
 		this.gp = gp;
 		
 		type = type_enemy;
-		name = "Green Slime";
+		name = emyName;
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;
 		attack = 3; defense = 0;

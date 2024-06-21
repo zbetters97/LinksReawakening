@@ -13,6 +13,7 @@ import main.GamePanel;
 
 public class EMY_Goblin_Archer extends Entity {
 
+	public static final String emyName = "Archer Goblin";
 	GamePanel gp;
 	
 	public EMY_Goblin_Archer(GamePanel gp) {
@@ -20,7 +21,7 @@ public class EMY_Goblin_Archer extends Entity {
 		this.gp = gp;
 		
 		type = type_enemy;
-		name = "Archer Goblin";
+		name = emyName;
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 2; defense = 0;

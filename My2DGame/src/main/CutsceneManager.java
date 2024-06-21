@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
+import data.Progress;
 import enemy.BOS_Skeleton;
 import entity.Entity;
 import entity.NPC_Traveler_2;
@@ -24,10 +25,11 @@ public class CutsceneManager {
 	private String credits;
 	
 	public final int NA = 0;
-	public final int boss = 1;
-	public final int ending = 2;
-	
-	public final int npc = 3;
+	public final int npc = 1;
+	public final int enemy_spawn = 2;
+	public final int boss = 3;
+	public final int boss_defeat = 4;
+	public final int ending = 5;
 	
 	private Entity npc1, npc2;
 	
@@ -53,16 +55,101 @@ public class CutsceneManager {
 		this.g2 = g2;
 		
 		switch(scene) {
+			case npc: scene_npc_1(); break;	
+			case enemy_spawn: scene_enemy_spawn(); break;		
 			case boss: scene_boss(); break;
+			case boss_defeat: scene_boss_defeat(); break;
 			case ending: scene_ending(); break;
-			case npc: scene_npc(); break;
 		}
 	}
-	
+	private void scene_npc_1() {
+		
+		if (phase == 0) {
+			gp.ui.drawDialogueScreen();
+			npc1 = gp.ui.npc;
+		}
+		else if (phase == 1) {
+			for (int i = 0; i < gp.npc[1].length; i++) {
+				if (gp.npc[gp.currentMap][i] != null && 
+						gp.npc[gp.currentMap][i].name.equals(NPC_Traveler_2.npcName)) {
+
+					npc2 = gp.npc[gp.currentMap][i];
+					
+					gp.ui.npc = npc2;
+					npc2.setPath(21, 21);
+					npc2.onPath = true;
+					
+					phase++;
+					
+					break;
+				}
+			}
+		}
+		else if (phase == 2) {		
+			
+			if (npc2 != null) {
+				
+				// WAIT UNTIL TRAVELER GETS TO PLAYER
+				if (!npc2.onPath) {
+
+					npc1.direction = "right";
+					
+					npc2.dialogueSet = 1;
+					gp.ui.drawDialogueScreen();
+					
+					// LOOK AT SPEAKER
+					if (gp.ui.npc.dialogueIndex % 2 == 0) {						
+						gp.player.direction = gp.player.findTargetDirection(npc2);
+					}
+					else {
+						gp.player.direction = gp.player.findTargetDirection(npc1);
+					}
+				}
+			}	
+			// FAILSAFE
+			else
+				gp.gameState = gp.playState;			
+		}
+		else if (phase == 3) {
+			
+			npc1.setPath(19, 40);
+			npc2.setPath(21, 41);
+			
+			npc1.onPath = true;
+			npc2.onPath = true;
+			npc1.pathCompleted = false;
+			npc2.pathCompleted = false;
+			
+			npc1.hasCutscene = false;
+			npc1.dialogueSet = 1;
+			npc2.dialogueSet = 2;
+			
+			gp.ui.npc = null;
+			
+			scene = NA;
+			phase = 0;
+			
+			gp.gameState = gp.playState;
+		}
+	}
+	private void scene_enemy_spawn() {
+		if (phase == 0) {
+			// PAUSE FOR 1 SECOND
+			if (counterReached(60)) {
+				phase++;
+			}
+		}
+		else if (phase == 1) {
+			scene = NA;
+			phase = 0;
+			
+			gp.gameState = gp.playState;
+		}
+	}	
 	private void scene_boss() {
 		
 		if (phase == 0) {
-			gp.stopMusic();			
+			gp.stopMusic();	
 			gp.bossBattleOn = true;
 			
 			// ADD IRON DOOR BEHIND PLAYER
@@ -123,6 +210,7 @@ public class CutsceneManager {
 			gp.ui.drawDialogueScreen();
 		}
 		else if (phase == 4) {
+			playBossMusic();
 			
 			// RETURN CAMERA TO PLAYER
 			for (int i = 0; i < gp.npc[1].length; i++) {
@@ -141,8 +229,32 @@ public class CutsceneManager {
 			scene = NA;
 			phase = 0;
 			
-			playBossMusic();
 			gp.gameState = gp.playState;			
+		}
+	}	
+	private void scene_boss_defeat() {
+		if (phase == 0) {
+			gp.stopMusic();
+			gp.playMusic(6);
+
+			gp.bossBattleOn = false;
+			Progress.bossDefeated = true;
+			
+			phase++;
+		}
+		else if (phase == 1) {
+			// PAUSE FOR MUSIC
+			if (counterReached(610)) {
+				phase++;
+			}
+		}
+		else if (phase == 2) {
+			gp.stopMusic();
+			
+			scene = NA;
+			phase = 0;
+			
+			gp.gameState = gp.playState;
 		}
 	}
 	private void scene_ending() {
@@ -246,76 +358,6 @@ public class CutsceneManager {
 				// AFTER CREDITS STOP
 			}
 			drawString(1f, 38f, y, credits, 40);
-		}
-	}
-	private void scene_npc() {
-		
-		if (phase == 0) {
-			gp.ui.drawDialogueScreen();
-			npc1 = gp.ui.npc;
-		}
-		else if (phase == 1) {
-			for (int i = 0; i < gp.npc[1].length; i++) {
-				if (gp.npc[gp.currentMap][i] != null && 
-						gp.npc[gp.currentMap][i].name.equals(NPC_Traveler_2.npcName)) {
-
-					npc2 = gp.npc[gp.currentMap][i];
-					
-					gp.ui.npc = npc2;
-					npc2.setPath(21, 21);
-					npc2.onPath = true;
-					
-					phase++;
-					
-					break;
-				}
-			}
-		}
-		else if (phase == 2) {		
-			
-			if (npc2 != null) {
-				
-				// WAIT UNTIL TRAVELER GETS TO PLAYER
-				if (!npc2.onPath) {
-
-					npc1.direction = "right";
-					
-					npc2.dialogueSet = 1;
-					gp.ui.drawDialogueScreen();
-					
-					// LOOK AT SPEAKER
-					if (gp.ui.npc.dialogueIndex % 2 == 0) {						
-						gp.player.direction = gp.player.findTargetDirection(npc2);
-					}
-					else {
-						gp.player.direction = gp.player.findTargetDirection(npc1);
-					}
-				}
-			}	
-			// FAILSAFE
-			else
-				gp.gameState = gp.playState;			
-		}
-		else if (phase == 3) {
-			
-			npc1.setPath(19, 40);
-			npc2.setPath(21, 41);
-			
-			npc1.onPath = true;
-			npc2.onPath = true;
-			npc1.pathCompleted = false;
-			npc2.pathCompleted = false;
-			
-			npc1.hasCutscene = false;
-			npc1.dialogueSet = 1;
-			npc2.dialogueSet = 2;
-			
-			gp.ui.npc = null;
-			
-			scene = NA;
-			phase = 0;
-			
-			gp.gameState = gp.playState;
 		}
 	}
 	

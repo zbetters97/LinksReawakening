@@ -151,6 +151,7 @@ public class AssetSetter {
 			gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
 			gp.enemy[mapNum][i].worldY = gp.tileSize * 16;
 		}
+		i++;
 	}
 	protected void setInteractiveObjects() {
 		

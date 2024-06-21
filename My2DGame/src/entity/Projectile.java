@@ -180,16 +180,12 @@ public class Projectile extends Entity {
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkObject(this, false);	
-						
+		
+		int objectIndex = gp.cChecker.checkObject(this, true);
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 		if (enemyIndex != -1) 
 			gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
-		
-		// OBJECT IS NOT GRABBABLE, RETURN
-		int objectIndex = gp.cChecker.checkObject(this, true);
-		if (collisionOn) 
-			life = 0;
-		
+				
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 		if (projectileIndex != -1) {
 			Entity projectile = gp.projectile[gp.currentMap][projectileIndex];
@@ -200,11 +196,15 @@ public class Projectile extends Entity {
 			life = 0;
 		}
 		
+		// OBJECT IS NOT GRABBABLE, RETURN
+		if (collisionOn) 
+			life = 0;
+		
 		// MAX LENGTH REACHED OR OBJECT RECIEVED
 		if (life <= 0 || objectIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER
-			if (objectIndex != -1) {				
+			if (objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].type != type_obstacle) {				
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
 			}		
@@ -379,7 +379,7 @@ public class Projectile extends Entity {
 		else if (life <= 0 || objectIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER
-			if (objectIndex != -1) {
+			if (objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].type != type_obstacle) {
 				hookGrab = true;					
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;

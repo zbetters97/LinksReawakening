@@ -11,6 +11,7 @@ import main.GamePanel;
 
 public class EMY_Goblin_Combat extends Entity {
 
+	public static final String emyName = "Combat Goblin";
 	GamePanel gp;
 	
 	public EMY_Goblin_Combat(GamePanel gp) {
@@ -18,7 +19,7 @@ public class EMY_Goblin_Combat extends Entity {
 		this.gp = gp;
 		
 		type = type_enemy;
-		name = "Combat Goblin";
+		name = emyName;
 		
 		isCapturable = true;
 		

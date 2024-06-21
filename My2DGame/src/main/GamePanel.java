@@ -75,13 +75,13 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int tradeState = 6;
 	public final int itemGetState = 7;
 	public final int objectState = 8;	
-	public final int transitionState = 9;	
-	public final int sleepState = 10;
-	public final int cutsceneState = 11;	
-	public final int gameOverState = 12;
-	public final int endingState = 13;
-	public final int fallingState = 13;
-	public final int drowningState = 14;
+	public final int fallingState = 9;
+	public final int drowningState = 10;
+	public final int transitionState = 11;	
+	public final int cutsceneState = 12;
+	public final int sleepState = 13;
+	public final int gameOverState = 14;
+	public final int endingState = 15;
 	
 	// AREA STATES
 	public int currentArea;
@@ -89,7 +89,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int outside = 50;
 	public final int inside = 51;
 	public final int dungeon = 52;
-	public final int boss = 53;	
 	public boolean bossBattleOn = false;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
@@ -133,7 +132,7 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = titleState;	
 		currentArea = outside;
 //		gameState = playState;
-// 		currentArea = inside;
+//		currentArea = inside;
 		
 		setupMusic();
 
@@ -365,12 +364,14 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupMusic() {
 		
-		if (gameState == titleState) playMusic(0);			
-		else {			
-			if (currentMap == 0) playMusic(2);
-			else if (currentMap == 1) playMusic(3);
-			else if (currentMap == 2) playMusic(4);
-			else if (currentMap == 3) playMusic(4);
+		if (nextArea != currentArea) {		
+			if (gameState == titleState) playMusic(0);			
+			else {			
+				if (currentMap == 0) playMusic(2);
+				else if (currentMap == 1) playMusic(3);
+				else if (currentMap == 2) playMusic(4);
+				else if (currentMap == 3) playMusic(4);
+			}
 		}
 	}	
 	public void playMusic(int c) {		

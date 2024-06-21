@@ -1,10 +1,11 @@
 package main;
-
 import java.util.Arrays;
 import java.util.List;
 
 import data.Progress;
+import enemy.*;
 import entity.Entity;
+import object.OBJ_Door_Closed;
 
 public class EventHandler {
 	
@@ -75,7 +76,7 @@ public class EventHandler {
 		
 		// IF EVENT CAN HAPPEN AT X/Y FACING DIRECTION
 		if (canTouchEvent) {
-			
+
 			// FAIRY POOL
 			if (hit(0, 23, 11, Arrays.asList("up"), false)) healingPool();
 			
@@ -92,8 +93,19 @@ public class EventHandler {
 			else if (hit(0, 12, 9, true)) teleport(2, 9, 42, gp.dungeon); // DUNGEON ENTRANCE
 			else if (hit(2, 9, 43, true)) teleport(0, 12, 9, gp.outside); // DUNGEON EXIT
 			else if (hit(2, 8, 7, true)) teleport(3, 26, 42, gp.dungeon); // DUNGEON B1
-			else if (hit(3, 26, 42, true)) teleport(2, 8, 7, gp.boss); // DUNEGOEN B2
-			
+			else if (hit(3, 26, 42, true)) teleport(2, 8, 7, gp.dungeon); // DUNEGOEN B2
+						
+			// ENEMY SPAWN
+			if (!Progress.enemy_room_defeated_1_1) {
+				if (hit(2, 31, 40, true)) {
+					spawnEnemies(
+							new int[]{29}, new int[]{40}, new String[]{"right"},
+							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Bat(gp)), 
+							new int[]{34,35}, new int[]{40,39}
+					);
+				}
+			}
+
 			// CUTSCENES
 			else if (hit(3, 25, 27, false)) boss(); // SKELETON CUTSCENE
 		}
@@ -217,6 +229,7 @@ public class EventHandler {
 			npc.speak();
 		}
 	}
+	
 	private void teleport(int map, int col, int row, int area) {					
 		gp.playSE(1,10);		
 		
@@ -229,6 +242,50 @@ public class EventHandler {
 		gp.nextArea = area;		
 		gp.gameState = gp.transitionState;
 	}	
+	
+	private void spawnEnemies(int[] dX, int[] dY, String[] dir, List<Entity> enemyList, int[] worldX, int[] worldY) {
+		
+		// LOOP THROUGH ALL PASSED DOORS
+		for (int i = 0; i < dir.length; i++) {
+			
+			// FIND OPEN SLOT IN GP OBJ LIST
+			for (int c = 0; c < gp.obj[1].length; c++) {
+				
+				// CREATE NEW DOOR
+				if (gp.obj[gp.currentMap][c] == null) {					
+					gp.obj[gp.currentMap][c] = new OBJ_Door_Closed(gp);
+					gp.obj[gp.currentMap][c].worldX = dX[i] * gp.tileSize;
+					gp.obj[gp.currentMap][c].worldY = dY[i] * gp.tileSize;
+					gp.obj[gp.currentMap][c].direction = dir[i];
+					gp.obj[gp.currentMap][c].temp = true;
+					
+					break;
+				}
+			}
+		}	
+		
+		// LOOP THROUGH ALL PASSED ENEMIES
+		for (int i = 0; i < enemyList.size(); i++) {
+			
+			// FIND OPEN SLOT IN GP ENEMY LIST
+			for (int c = 0; c < gp.enemy[1].length; c++) {
+				
+				// CREATE NEW ENEMY
+				if (gp.enemy[gp.currentMap][c] == null) {
+					gp.enemy[gp.currentMap][c] = enemyList.get(i);
+					gp.enemy[gp.currentMap][c].worldX = worldX[i] * gp.tileSize;
+					gp.enemy[gp.currentMap][c].worldY = worldY[i] * gp.tileSize;
+					
+					break;
+				}
+			}
+		}
+		
+		canTouchEvent = false;		
+		
+		gp.csManager.scene = gp.csManager.enemy_spawn;
+		gp.gameState = gp.cutsceneState;	
+	}
 	
 	private void boss() {		
 		if (!gp.bossBattleOn && !Progress.bossDefeated) {

@@ -2,7 +2,6 @@ package enemy;
 
 import java.awt.Rectangle;
 
-import data.Progress;
 import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Door_Closed;
@@ -163,12 +162,8 @@ public class BOS_Skeleton extends Entity {
 	}
 	
 	// DROPPED ITEM
-	public void checkDrop() {		
-		gp.stopMusic();		
-		
-		gp.bossBattleOn = false;
-		Progress.bossDefeated = true;		
-		
+	public void checkDrop() {	
+				
 		// REMOVE IRON DOOR
 		for (int i = 0; i < gp.obj[1].length; i++) {
 			if (gp.obj[gp.currentMap][i] != null &&
@@ -179,6 +174,7 @@ public class BOS_Skeleton extends Entity {
 			}
 		}
 		
-		gp.playSE(0, 6);
+		gp.csManager.scene = gp.csManager.boss_defeat;
+		gp.gameState = gp.cutsceneState;		
 	}
 }

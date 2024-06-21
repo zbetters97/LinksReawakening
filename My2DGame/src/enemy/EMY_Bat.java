@@ -10,6 +10,7 @@ import main.GamePanel;
 
 public class EMY_Bat extends Entity {
 
+	public static final String emyName = "Bat";
 	GamePanel gp;
 	
 	public EMY_Bat(GamePanel gp) {
@@ -17,7 +18,7 @@ public class EMY_Bat extends Entity {
 		this.gp = gp;
 		
 		type = type_enemy;
-		name = "Bat";
+		name = emyName;
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
 		attack = 2; defense = 0;

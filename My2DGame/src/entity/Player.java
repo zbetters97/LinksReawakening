@@ -135,15 +135,17 @@ public class Player extends Entity {
 	public void setDefaultPosition() {	
 		
 		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 20;
-		
+		worldY = gp.tileSize * 20;		
 		gp.currentMap = 0;
+		
+//		worldX = gp.tileSize * 29;
+//		worldY = gp.tileSize * 40;
+//		gp.currentMap = 2;
 		
 		direction = "down";
 	}
 	public void setDefaultItems() {		
 		inventory.add(currentShield);	
-		hasItem = true;
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -597,6 +599,7 @@ public class Player extends Entity {
 			if (lockedTarget.alive) {
 				lockedTarget.isLocked = true;
 				direction = findTargetDirection(lockedTarget);
+				lockonDirection = direction;
 			}
 			// TARGET DEFEATED
 			else {				
@@ -607,8 +610,7 @@ public class Player extends Entity {
 		}
 		// NO TARGET FOUND, TURN OFF LOCKON
 		else 
-			lockon = false;	
-			
+			lockon = false;				
 	}	
 	public Entity findTarget() {
 		
@@ -625,7 +627,6 @@ public class Player extends Entity {
 				}
 			}
 		}
-		
 		if (target != null)
 			playLockOnSE();
 		
