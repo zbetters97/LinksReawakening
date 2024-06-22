@@ -1,7 +1,7 @@
 package entity.item;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class ITM_Feather extends Entity {
 

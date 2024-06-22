@@ -2,7 +2,7 @@ package ai;
 
 import java.util.ArrayList;
 
-import main.GamePanel;
+import application.GamePanel;
 
 public class PathFinder {
 
@@ -86,7 +86,7 @@ public class PathFinder {
 			
 			// CHECK TILES
 			int tileNum = gp.tileM.mapTileNum[gp.currentMap][col][row];
-			if (gp.tileM.tile[tileNum].collision || gp.tileM.tile[tileNum].water) 
+			if (gp.tileM.tile[tileNum].collision || gp.tileM.tile[tileNum].water || gp.tileM.tile[tileNum].pit) 
 				node[col][row].solid = true;
 			
 			// CHECK iTILES

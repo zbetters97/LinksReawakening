@@ -1,7 +1,7 @@
 package entity.collectable;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class COL_Heart extends Entity {
 	

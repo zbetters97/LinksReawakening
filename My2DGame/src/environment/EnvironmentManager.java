@@ -2,7 +2,7 @@ package environment;
 
 import java.awt.Graphics2D;
 
-import main.GamePanel;
+import application.GamePanel;
 
 public class EnvironmentManager {
 

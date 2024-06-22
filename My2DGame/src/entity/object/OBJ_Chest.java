@@ -2,8 +2,8 @@ package entity.object;
 
 import java.awt.Rectangle;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class OBJ_Chest extends Entity {
 	
@@ -14,11 +14,13 @@ public class OBJ_Chest extends Entity {
 		super(gp);
 		this.gp = gp;
 		
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = objName;
 		image1 = setup("/objects/OBJ_CHEST");
 		image2 = setup("/objects/OBJ_CHEST_OPENED");
 		down1 = image1;
+		
+		grabbable = true;
 		collision = true;
 		
 		hitbox = new Rectangle(4, 16, 40, 32);
@@ -37,13 +39,12 @@ public class OBJ_Chest extends Entity {
 	
 	public void interact() {		
 		if (!opened) {	
+			gp.player.attackCanceled = true;
 			playOpenSE();
 			opened = true;	
 			down1 = image2;
 			gp.player.getObject(loot);	
 		}
-		else
-			gp.player.attackCanceled = false;
 	}
 	
 	public void playOpenSE() {

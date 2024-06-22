@@ -2,9 +2,9 @@ package entity.enemy;
 
 import java.awt.Rectangle;
 
+import application.GamePanel;
 import entity.Entity;
 import entity.object.OBJ_Door_Closed;
-import main.GamePanel;
 
 public class BOS_Skeleton extends Entity {
 

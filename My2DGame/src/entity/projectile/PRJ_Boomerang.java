@@ -2,7 +2,7 @@ package entity.projectile;
 
 import java.awt.Rectangle;
 
-import main.GamePanel;
+import application.GamePanel;
 
 public class PRJ_Boomerang extends Projectile {
 

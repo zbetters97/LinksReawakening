@@ -2,8 +2,8 @@ package entity.projectile;
 
 import java.awt.Rectangle;
 
+import application.GamePanel;
 import entity.*;
-import main.GamePanel;
 
 public class PRJ_Arrow extends Projectile {
 
@@ -59,7 +59,7 @@ public class PRJ_Arrow extends Projectile {
 	
 	// PICKUP ARROW IF NOT MOVING
 	public void interact() {
-		if (grabbable) {
+		if (canPickup) {
 			gp.player.arrows++;
 			alive = false;
 		}

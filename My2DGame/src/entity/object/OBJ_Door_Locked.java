@@ -2,8 +2,8 @@ package entity.object;
 
 import java.awt.Rectangle;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class OBJ_Door_Locked extends Entity {
 	
@@ -28,7 +28,7 @@ public class OBJ_Door_Locked extends Entity {
 	}	
 	
 	public void interact() {	
-		
+				
 		boolean respond = false;
 		
 		// PLAYER MUST BE FACING DOOR

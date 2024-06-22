@@ -1,6 +1,6 @@
 package entity.npc;
 
-import main.GamePanel;
+import application.GamePanel;
 
 public class NPC_Traveler_2 extends NPC_Traveler_Template {
 	

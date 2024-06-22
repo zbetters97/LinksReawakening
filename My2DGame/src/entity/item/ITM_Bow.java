@@ -1,8 +1,8 @@
 package entity.item;
 
+import application.GamePanel;
 import entity.Entity;
 import entity.projectile.PRJ_Arrow;
-import main.GamePanel;
 
 public class ITM_Bow extends Entity {
 

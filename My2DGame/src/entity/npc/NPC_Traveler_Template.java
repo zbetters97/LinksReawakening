@@ -2,8 +2,8 @@ package entity.npc;
 
 import java.awt.Rectangle;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class NPC_Traveler_Template extends Entity {
 

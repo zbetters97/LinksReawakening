@@ -3,11 +3,11 @@ package entity.enemy;
 import java.awt.Rectangle;
 import java.util.Random;
 
+import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
 import entity.collectable.COL_Rupee_Red;
-import main.GamePanel;
 
 public class EMY_Goblin_Combat extends Entity {
 

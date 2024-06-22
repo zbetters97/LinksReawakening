@@ -1,8 +1,8 @@
 package entity.npc;
 
+import application.GamePanel;
 import entity.Entity;
 import entity.item.ITM_Boomerang;
-import main.GamePanel;
 
 public class NPC_Merchant extends Entity {
 	
@@ -41,8 +41,8 @@ public class NPC_Merchant extends Entity {
 	
 	public void speak() {
 		gp.keyH.actionPressed = false;
-		gp.gameState = gp.tradeState;
 		gp.ui.npc = this;
+		gp.gameState = gp.tradeState;
 	}
 	
 	public void update() {

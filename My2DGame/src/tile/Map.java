@@ -7,8 +7,8 @@ import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class Map extends TileManager {
 

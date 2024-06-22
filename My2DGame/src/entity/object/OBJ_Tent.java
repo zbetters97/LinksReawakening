@@ -1,7 +1,7 @@
 package entity.object;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class OBJ_Tent extends Entity {
 	
@@ -12,7 +12,7 @@ public class OBJ_Tent extends Entity {
 		super(gp);
 		this.gp = gp;
 		
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = objName;
 		collision = true;
 		
@@ -20,6 +20,7 @@ public class OBJ_Tent extends Entity {
 	}	
 	
 	public void interact() {
+		gp.player.attackCanceled = true;
 		gp.gameState = gp.sleepState;
 	}
 }

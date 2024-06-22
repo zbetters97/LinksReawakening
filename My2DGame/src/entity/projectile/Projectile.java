@@ -1,13 +1,12 @@
 package entity.projectile;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class Projectile extends Entity {
 
 	public Entity user;
-	public boolean active = false;
-	public boolean grabbable = false;
+	public boolean canPickup = false;
 	GamePanel gp;
 	
 	public Projectile(GamePanel gp) {
@@ -50,7 +49,8 @@ public class Projectile extends Entity {
 		// CHECK TILE COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);		
+		gp.cChecker.checkEntity(this, gp.iTile);	
+		gp.cChecker.checkObject_I(this, false);
 		
 		// SHOT BY PLAYER
 		if (user == gp.player) {
@@ -70,6 +70,9 @@ public class Projectile extends Entity {
 				
 				alive = false;
 			}	
+			
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+			gp.player.damageInteractiveTile(iTileIndex);
 		}
 		// SHOT BY ENEMEY
 		else {
@@ -82,7 +85,7 @@ public class Projectile extends Entity {
 		
 		if (!collisionOn) {
 			
-			grabbable = false;		
+			canPickup = false;		
 			
 			// MOVE IN DIRECTION SHOT
 			switch (direction) {
@@ -125,6 +128,7 @@ public class Projectile extends Entity {
 			collisionOn = false;		
 			gp.cChecker.checkTile(this);		
 			gp.cChecker.checkEntity(this, gp.iTile);
+			gp.cChecker.checkObject_I(this, false);
 			
 			if (!collisionOn) {
 				
@@ -183,6 +187,7 @@ public class Projectile extends Entity {
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkObject(this, false);	
+		gp.cChecker.checkObject_I(this, false);
 		
 		int objectIndex = gp.cChecker.checkObject(this, true);
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
@@ -199,7 +204,10 @@ public class Projectile extends Entity {
 			life = 0;
 		}
 		
-		// OBJECT IS NOT GRABBABLE, RETURN
+		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+		gp.player.damageInteractiveTile(iTileIndex);
+		
+		// OBJECT IS NOT canPickup, RETURN
 		if (collisionOn) 
 			life = 0;
 		
@@ -284,33 +292,58 @@ public class Projectile extends Entity {
 		// PAUSE PLAYER INPUT
 		gp.gameState = gp.objectState;
 						
-		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
+		// CHECK TILE/iTILE/NPC/ENEMY/OBJECT/iOBJECT
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkObject(this, false);		
 		
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-		if (enemyIndex != -1) 
-			gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
+		if (enemyIndex != -1) gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 		
-		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
 		int objectIndex = gp.cChecker.checkObject(this, true);
-				
-		// OBJECT IS NOT GRABBABLE, RETURN
-		if (collisionOn && iTileIndex == -1) 
+		int objectiIndex = gp.cChecker.checkObject_I(this, true);
+		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+		gp.player.damageInteractiveTile(iTileIndex);
+						
+		// COLLISION DETECTED
+		if (collisionOn)
 			life = 0;
 				
-		// PULL PLAYER TOWARDS GRABBALE TILE
-		if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbale) {
+		// PULL PLAYER TOWARDS GRABBALE ENTITY
+		if ((objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].grabbable) ||
+				(objectiIndex != -1 && gp.obj_i[gp.currentMap][objectiIndex].grabbable) ||
+				(iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbale)) {
 
 			gp.player.onGround = false;
+			
+			gp.cChecker.checkObject(gp.player, true);
+			gp.cChecker.checkObject_I(gp.player, true);
+			gp.cChecker.checkEntity(gp.player, gp.iTile);			
+			if (gp.player.collisionOn) {
+				alive = false;	
+				gp.player.onGround = true;
+				gp.gameState = gp.playState;	
+				return;
+			}		
 			
 			// PREVENT COLLISION WITH PLAYER
 			int playeriTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
 			if (playeriTileIndex != -1) {
+				alive = false;	
+				gp.player.onGround = true;
+				gp.gameState = gp.playState;	
+				return;
+			}			
+			int playerObjIndex = gp.cChecker.checkEntity(gp.player, gp.obj);
+			if (playerObjIndex != -1) {
+				alive = false;	
+				gp.player.onGround = true;
+				gp.gameState = gp.playState;	
+				return;
+			}
+			int playerObjiIndex = gp.cChecker.checkEntity(gp.player, gp.obj_i);
+			if (playerObjiIndex != -1) {
 				alive = false;	
 				gp.player.onGround = true;
 				gp.gameState = gp.playState;	
@@ -493,7 +526,8 @@ public class Projectile extends Entity {
 		// CHECK TILE COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);		
+		gp.cChecker.checkEntity(this, gp.iTile);	
+		gp.cChecker.checkObject_I(this, false);
 
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 		if (projectileIndex != -1) {
@@ -558,7 +592,8 @@ public class Projectile extends Entity {
 		// CHECK TILE COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkObject_I(this, false);
 		
 		// SHOT BY PLAYER
 		if (user == gp.player) {
@@ -569,13 +604,8 @@ public class Projectile extends Entity {
 				alive = false;
 			}
 			
-			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);			
-			if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].pressable && 
-					gp.iTile[gp.currentMap][iTileIndex].correctItem(this)) {		
-				
-				gp.iTile[gp.currentMap][10] = null;
-				gp.iTile[gp.currentMap][11] = null;
-			}
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
+			gp.player.damageInteractiveTile(iTileIndex);
 			
 			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 			if (projectileIndex != -1) {
@@ -602,7 +632,7 @@ public class Projectile extends Entity {
 		
 		if (!collisionOn) {
 			
-			grabbable = false;		
+			canPickup = false;		
 			
 			// MOVE IN DIRECTION SHOT
 			switch (direction) {
@@ -623,7 +653,7 @@ public class Projectile extends Entity {
 		
 		life--;
 		if (life <= 0) { // REMOVE AFTER X FRAMES
-			grabbable = false;
+			canPickup = false;
 			alive = false;
 		}
 		

@@ -1,7 +1,7 @@
 package entity.equipment;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class EQP_Shield_Old extends Entity {
 

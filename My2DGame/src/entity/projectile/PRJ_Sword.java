@@ -1,7 +1,7 @@
 package entity.projectile;
 
+import application.GamePanel;
 import entity.*;
-import main.GamePanel;
 
 public class PRJ_Sword extends Projectile {
 	

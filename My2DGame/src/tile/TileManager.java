@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import main.GamePanel;
-import main.UtilityTool;
+import application.GamePanel;
+import config.UtilityTool;
 
 public class TileManager {
 	

@@ -2,10 +2,10 @@ package entity.npc;
 
 import java.awt.Rectangle;
 
+import application.GamePanel;
 import entity.Entity;
 import entity.equipment.EQP_Sword_Old;
-import entity.item.ITM_Bomb;
-import main.GamePanel;
+import entity.item.ITM_Hookshot;
 
 public class NPC_OldMan extends Entity {
 	
@@ -40,7 +40,7 @@ public class NPC_OldMan extends Entity {
 	}
 	public void setItems() {		
 		inventory.add(new EQP_Sword_Old(gp));
-		inventory.add(new ITM_Bomb(gp));
+		inventory.add(new ITM_Hookshot(gp));
 	}
 	
 	public void setDialogue() {

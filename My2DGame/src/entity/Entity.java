@@ -12,9 +12,9 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import application.GamePanel;
+import config.UtilityTool;
 import entity.projectile.Projectile;
-import main.GamePanel;
-import main.UtilityTool;
 
 public class Entity {
 	
@@ -22,7 +22,7 @@ public class Entity {
 		IDLE, GUARDING, RUNNING, CHOPPING, DIGGING, JUMPING, SWINGING, SWIMMING;
 	}
 	
-	GamePanel gp;
+	protected GamePanel gp;
 	
 	// ACTIONS
 	public Action action;
@@ -48,7 +48,10 @@ public class Entity {
 	public boolean hasItem = false;
 	public boolean hasItemToGive = false;
 	public boolean canSwim = false;   
-	
+
+	public boolean grabbable = false;
+	public boolean active = false;
+	public boolean switchedOn = false;
 	public boolean attacking = false;
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
@@ -144,9 +147,8 @@ public class Entity {
 	
 	// OBJECT ATTRIBUTES
 	public BufferedImage image1, image2, image3;	
-	public boolean collision = false;
+	public boolean collision = true;
 	public boolean diggable = false;
-	public boolean canExplode;
 	public Entity loot;
 	public boolean opened = false;
 	public Entity linkedEntity;
@@ -164,13 +166,14 @@ public class Entity {
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
 	public final int type_key = 8;
-	public final int type_light = 9;
-	public final int type_projectile = 10;	
+	public final int type_boss_key = 9;
+	public final int type_light = 10;
+	public final int type_projectile = 11;	
 	
 	// OBJECT TYPES
-	public final int type_obstacle = 11;
-	public final int type_pickupOnly = 12;
-	public final int type_block = 13;	
+	public final int type_obstacle = 12;
+	public final int type_obstacle_i = 13;
+	public final int type_pickupOnly = 14;
 		
 	public boolean sleep = false;
 	public boolean temp = false;
@@ -332,10 +335,10 @@ public class Entity {
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkEntity(this, gp.enemy_r);
 		gp.cChecker.checkEntity(this, gp.obj);
-		gp.cChecker.checkEntity(this, gp.obj_t);
+		gp.cChecker.checkEntity(this, gp.obj_i);
 		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkObject(this, false);
-		gp.cChecker.checkObject_T(this, false);
+		gp.cChecker.checkObject_I(this, false);
 		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
@@ -639,15 +642,12 @@ public class Entity {
 				// CHECK IF ATTACK LANDS ON ENEMY
 				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
+					
+				gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
 								
-				// PREVENT AXE GLITCH
-				if (currentWeapon == null) 
-					gp.player.damageEnemy(enemyIndex, this, attack, 0);
-				else 
-					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
-				
-				// SHOOT SWORD BEAM (ONLY PLAYER)				
 				if (type != type_enemy) {
+					
+					/* SHOOT SWORD BEAM (ONLY PLAYER)	
 					if (enemyIndex == -1 && gp.keyH.actionPressed) {
 						if (projectile.hasResource(this) && !projectile.alive && 
 								shotAvailableCounter == 30 ) {
@@ -659,7 +659,11 @@ public class Entity {
 							
 							shotAvailableCounter = 0;
 						}
-					}
+					} */
+					
+					// CHECK INTERACTIVE TILE
+					int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
+					gp.player.damageInteractiveTile(iTileIndex);
 				}
 				
 				// CHECK IF ATTACK LANDS ON PROJECTILE
@@ -668,11 +672,7 @@ public class Entity {
 				
 				// SWINGING AXE
 				if (gp.player.action == Action.CHOPPING) {				
-					currentItem.playSE();
-					
-					// CHECK INTERACTIVE TILE
-					int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-					gp.player.damageInteractiveTile(iTileIndex);	
+					currentItem.playSE();	
 				}
 			}
 			

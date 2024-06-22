@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.image.BufferedImage;
 
+import application.GamePanel;
 import entity.Entity;
-import main.GamePanel;
 
 public class Lighting {
 

@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import application.GamePanel;
 import entity.*;
-import main.GamePanel;
+import tile.tile_interactive.IT_Switch;
 
 public class PRJ_Bomb extends Projectile {
 
@@ -19,7 +20,6 @@ public class PRJ_Bomb extends Projectile {
 		type = type_projectile;
 		name = prjName;
 
-		canExplode = true;
 		capturable = true;
 		
 		animationSpeed = 30;
@@ -118,17 +118,23 @@ public class PRJ_Bomb extends Projectile {
 		ArrayList<Integer> iTileIndexes = gp.cChecker.checkiTileExplosion(this);
 		if (iTileIndexes.size() > 0) {
 			for (Integer i : iTileIndexes) {
-
-				gp.iTile[gp.currentMap][i].playSE();
-				gp.iTile[gp.currentMap][i].life--;
-				gp.iTile[gp.currentMap][i].invincible = true;
-						
+				
 				generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
 				
-				if (gp.iTile[gp.currentMap][i].life == 0) {
-					gp.iTile[gp.currentMap][i].checkDrop();
-					gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();	
-				}			
+				if (gp.iTile[gp.currentMap][i].name.equals(IT_Switch.itName) && !gp.iTile[gp.currentMap][i].invincible) {
+					gp.iTile[gp.currentMap][i].invincible = true;
+					gp.iTile[gp.currentMap][i].interact();
+				}
+				else {
+					gp.iTile[gp.currentMap][i].playSE();
+					gp.iTile[gp.currentMap][i].life--;
+					gp.iTile[gp.currentMap][i].invincible = true;
+					
+					if (gp.iTile[gp.currentMap][i].life == 0) {
+						gp.iTile[gp.currentMap][i].checkDrop();
+						gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();	
+					}			
+				}
 			}
 		}			
 		
