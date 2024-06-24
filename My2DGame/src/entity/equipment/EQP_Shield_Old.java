@@ -12,9 +12,10 @@ public class EQP_Shield_Old extends Entity {
 
 		type = type_shield;
 		name = eqpName;
-		description = "[" + name + "]\nA humble starter shield.\n+1 DEF";
+		description = "[" + name + "]\nA humble starter shield.";
+		
 		defenseValue = 1;
 		
-		down1 = setup("/items/ITEM_SHIELD");
+		down1 = setup("/items/EQP_SHIELD");
 	}
 }

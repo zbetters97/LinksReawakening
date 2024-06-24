@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import application.GamePanel;
 import config.KeyHandler;
@@ -26,11 +27,13 @@ public class Player extends Entity {
 	KeyHandler keyH;
 	
 	// INVENTORY
-	public final int maxItemInventorySize = 10;
-	public int itemIndex = 0;	
+	public final int maxItemInventorySize = 20;
+	public int itemIndex = 0;
 	public int walletSize;
 	public int keys = 0;
 	public int boss_key = 0;
+	
+	public ArrayList<Entity> item_inventory = new ArrayList<>();
 		
 	// POSITIONING
 	public final int screenX;
@@ -49,6 +52,9 @@ public class Player extends Entity {
 	public int jumpNum;
 	public int jumpCounter = 0;
 	
+	public int soarNum;
+	public int soarCounter = 0;
+	
 	public int rodNum;
 	public int rodCounter = 0;
 
@@ -63,6 +69,7 @@ public class Player extends Entity {
 							digLeft1, digLeft2, digRight1, digRight2;
 	public BufferedImage jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
 							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3;
+	public BufferedImage soarUp1, soarDown1, soarLeft1, soarRight1;
 	public BufferedImage rodUp1, rodUp2, rodDown1, rodDown2, 
 							rodLeft1, rodLeft2, rodRight1, rodRight2;
 	
@@ -107,19 +114,17 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		level = 1;
 		maxLife = 10; life = maxLife;
 		strength = 1; dexterity = 1;
-		exp = 0; nextLevelEXP = 10;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
 		maxBombs = 10; bombs = maxBombs;
 		
 		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);		
-		currentShield = new EQP_Shield_Old(gp);		
-		currentLight = null;
+//		currentWeapon = new EQP_Sword_Old(gp);
+		currentShield = new EQP_Shield_Old(gp);
+		currentLight = new ITM_Lantern(gp);
 		
 		projectile = new PRJ_Sword(gp);
 		
@@ -136,6 +141,7 @@ public class Player extends Entity {
 		getGuardImage();
 		getDigImage();
 		getJumpImage();
+		getSoarImage();
 		getSwingImage();
 		getMiscImage();
 	}	
@@ -154,16 +160,19 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-		inventory.add(currentShield);
-			
-/*		inventory.add(new ITM_Boomerang(gp));
-		inventory.add(new ITM_Boots(gp));
-		inventory.add(new ITM_Bomb(gp));
-		inventory.add(new ITM_Bow(gp));
-		inventory.add(new ITM_Hookshot(gp));
-		inventory.add(new ITM_Feather(gp));
-		inventory.add(new ITM_Rod(gp));
-		inventory.add(new ITM_Shovel(gp));
+		
+/*		item_inventory.add(new ITM_Shovel(gp));
+		item_inventory.add(new ITM_Boomerang(gp));
+		item_inventory.add(new ITM_Boots(gp));		
+		
+		item_inventory.add(new ITM_Bomb(gp));
+		item_inventory.add(new ITM_Feather(gp));
+		item_inventory.add(new ITM_Bow(gp));
+		
+		item_inventory.add(new ITM_Hookshot(gp));
+		item_inventory.add(new ITM_Cape(gp));		
+		item_inventory.add(new ITM_Rod(gp));
+		
 		hasItem = true;		
 */
 	}
@@ -206,7 +215,11 @@ public class Player extends Entity {
 		}
 	}
 	public int getDefense() {
-		return dexterity * currentShield.defenseValue;
+		if (currentWeapon == null)
+			return 1;
+		else {
+			return dexterity * currentShield.defenseValue;	
+		}		
 	}
 	
 	// EQUIPMENT SLOT
@@ -300,6 +313,12 @@ public class Player extends Entity {
 		jumpRight2 = setup("/player/boy_jump_right_2");
 		jumpRight3 = setup("/player/boy_jump_right_3");
 	}
+	public void getSoarImage() {
+		soarUp1 = setup("/player/boy_soar_up_1");
+		soarDown1 = setup("/player/boy_soar_down_1");
+		soarLeft1 = setup("/player/boy_soar_left_1");
+		soarRight1 = setup("/player/boy_soar_right_1");		
+	}
 	public void getSwingImage() {		
 		rodUp1 = setup("/player/boy_rod_up_1", gp.tileSize * 2, gp.tileSize * 2); 
 		rodUp2 = setup("/player/boy_rod_up_2", gp.tileSize, gp.tileSize * 2);		
@@ -330,17 +349,18 @@ public class Player extends Entity {
 /** UPDATER **/
 
 	public void update() {	
-		
+				
 		// CHECK COLLISION (NOT ON DEBUG)
 		if (!keyH.debug) checkCollision();
 		
-		if (action == Action.IDLE) onGround = true;		
+		if (action == Action.IDLE) onGround = true;	
 		
 		if (action == Action.DIGGING) { digging(); return; }
 		else if (action == Action.SWINGING) { swinging(); return; }
 		
 		// MOVEMENT WHILE JUMPING
-		else if (action == Action.JUMPING) { jumping(); }		
+		else if (action == Action.JUMPING) { jumping(); }	
+		else if (action == Action.SOARING) { jumping(); }	
 		
 		// DISABLED ACTIONS WHILE SWIMMING
 		if (action != Action.SWIMMING) {			
@@ -359,8 +379,8 @@ public class Player extends Entity {
 			}				
 		}		
 		
-		// TAB DISABLED WHILE JUMPING
-		if (keyH.tabPressed && action != Action.JUMPING) { cycleItems(); }		
+		// TAB DISABLED WHILE JUMPING/SOARING
+		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING) { cycleItems(); }		
 		if (keyH.upPressed || keyH.downPressed || 
 				keyH.leftPressed || keyH.rightPressed) { walking(); }			
 		
@@ -487,7 +507,7 @@ public class Player extends Entity {
 		gp.cChecker.checkEntity(this, gp.iTile);
 		
 		// DON'T CHECK PITS WHEN JUMPING
-		if (action != Action.JUMPING) gp.cChecker.checkPit();
+		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkPit();
 					
 		// CHECK NPC COLLISION
 		gp.cChecker.checkEntity(this, gp.npc);		
@@ -580,6 +600,10 @@ public class Player extends Entity {
 			currentShield = item;
 			defense = gp.player.getDefense();
 		}
+		else if (item.type == type_light) {
+			currentLight = item;				
+			lightUpdated = true;
+		}
 		else if (item.type == type_collectable) {
 			item.use(this);
 			return;
@@ -610,7 +634,14 @@ public class Player extends Entity {
 		playGetItemSE();
 		
 		gp.ui.newItem = item;
-		inventory.add(item);
+		
+		if (item.type == type_item) {
+			gp.player.item_inventory.add(item);		
+		}
+		else if (item.type != type_sword && item.type != type_shield) {
+			inventory.add(item);
+		}
+		
 		gp.ui.currentDialogue = "You got the " + item.name + "!";		
 		gp.ui.subState = 0;
 		gp.gameState = gp.itemGetState;
@@ -668,7 +699,7 @@ public class Player extends Entity {
 		int currentDistance = 6;
 		for (int i = 0; i < gp.enemy[1].length; i++) {
 			
-			if (gp.enemy[gp.currentMap][i] != null) {
+			if (gp.enemy[gp.currentMap][i] != null && gp.enemy[gp.currentMap][i].type != type_boss) {
 				int enemyDistance = getTileDistance(gp.enemy[gp.currentMap][i]);
 				if (enemyDistance < currentDistance) {
 					currentDistance = enemyDistance;
@@ -676,12 +707,13 @@ public class Player extends Entity {
 				}
 			}
 		}
-		if (target != null)
+		if (target != null) {
 			playLockOnSE();
+		}
 		else {
 			for (int i = 0; i < gp.enemy_r[1].length; i++) {
 				
-				if (gp.enemy_r[gp.currentMap][i] != null) {
+				if (gp.enemy_r[gp.currentMap][i] != null && gp.enemy_r[gp.currentMap][i].type != type_boss) {
 					int enemyDistance = getTileDistance(gp.enemy_r[gp.currentMap][i]);
 					if (enemyDistance < currentDistance) {
 						currentDistance = enemyDistance;
@@ -695,30 +727,34 @@ public class Player extends Entity {
 		
 		return target;
 	}	
-	public String findTargetDirection(Entity enemy) {
+	public String findTargetDirection(Entity target) {
 		
-		String eDirection = "";
+		String eDirection = "down";
 		
-		int px = worldX / gp.tileSize;
-		int py = worldY / gp.tileSize;
+		int px = (worldX + (hitbox.width / 2)) / gp.tileSize;
+		int py = (worldY + (hitbox.width / 2)) / gp.tileSize;
 		
-		int ex = (enemy.worldX + (enemy.hitbox.width / 2)) / gp.tileSize;
-		int ey = (enemy.worldY + (enemy.hitbox.height / 2)) / gp.tileSize;	
+		int ex = (target.worldX + (target.hitbox.width / 2)) / gp.tileSize;
+		int ey = (target.worldY + (target.hitbox.height / 2)) / gp.tileSize;	
 
-		if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey))
+		
+		if (py > ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
 			eDirection = "up";
-		else if (py >= ey && px-ex >= Math.abs(py-ey))
+		else if (py > ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";
-		else if (py >= ey && px-ex <= Math.abs(py-ey))
+		else if (py > ey && px-ex < Math.abs(py-ey)) 
 			eDirection = "right";
-		
-		else if (py < ey && Math.abs(px-ex) < Math.abs(py-ey))
+		else if (py < ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
 			eDirection = "down";
-		else if (py < ey && px-ex >= Math.abs(py-ey))
+		else if (py < ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";
-		else if (py < ey && px-ex <= Math.abs(py-ey))
+		else if (py < ey && px-ex < Math.abs(py-ey)) 
+			eDirection = "right";		
+		else if (py == ey && px > ex) 
+			eDirection = "left";
+		else if (py == ey && px < ex) 
 			eDirection = "right";
-		
+						
 		return eDirection;
 	}
 	
@@ -787,6 +823,7 @@ public class Player extends Entity {
 			switch (currentItem.name) {
 				case ITM_Axe.itmName:
 				case ITM_Boots.itmName:
+				case ITM_Cape.itmName:
 				case ITM_Feather.itmName:
 				case ITM_Rod.itmName:
 				case ITM_Shovel.itmName:
@@ -819,7 +856,25 @@ public class Player extends Entity {
 			startDialogue(this, 2);
 		}			
 	}
+
 	public void selectItem() {
+		
+		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
+		if (inventoryIndex < item_inventory.size()) {			
+			keyH.playSelectSE();
+			
+			if (action != Action.SWIMMING) 
+				action = Action.IDLE;
+			
+			itemIndex = inventoryIndex;										
+									
+			Entity selectedItem = item_inventory.get(inventoryIndex);
+			currentItem = selectedItem;
+			
+			getAttackImage();
+		}
+	}
+	public void selectInventory() {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
 		if (inventoryIndex < inventory.size()) {			
@@ -831,18 +886,7 @@ public class Player extends Entity {
 			itemIndex = inventoryIndex;										
 									
 			Entity selectedItem = inventory.get(inventoryIndex);
-			if (selectedItem.type == type_sword) {
-				currentWeapon = selectedItem;
-				attack = getAttack();
-			}
-			else if (selectedItem.type == type_shield) {
-				currentShield = selectedItem;
-				defense = getDefense();
-			}
-			else if (selectedItem.type == type_item) {
-				currentItem = selectedItem;
-			}			
-			else if (selectedItem.type == type_consumable) {
+			if (selectedItem.type == type_consumable) {
 				if (selectedItem.use(this)) {
 					
 					if (selectedItem.amount > 1) {
@@ -853,13 +897,6 @@ public class Player extends Entity {
 					}
 				}
 			}
-			else if (selectedItem.type == type_light) {
-				if (currentLight == selectedItem) currentLight = null;				
-				else currentLight = selectedItem;				
-				lightUpdated = true;
-			}
-			
-			getAttackImage();
 		}
 	}
 	public void cycleItems() {
@@ -868,15 +905,12 @@ public class Player extends Entity {
 			keyH.playCursorSE();
 			action = Action.IDLE;
 			keyH.tabPressed = false;
-				
-			do {						
-				itemIndex++;
-				if (itemIndex >= inventory.size())
-					itemIndex = 0;
-			}
-			while (inventory.get(itemIndex).type != type_item);		
+								
+			itemIndex++;
+			if (itemIndex >= item_inventory.size())
+				itemIndex = 0;
 			
-			currentItem = inventory.get(itemIndex);		
+			currentItem = item_inventory.get(itemIndex);		
 		}
 	}	
 
@@ -905,14 +939,72 @@ public class Player extends Entity {
 				
 		if (6 >= jumpCounter) jumpNum = 1; 
 		else if (18 > jumpCounter && 12 >= jumpCounter) jumpNum = 2;		
-		else if (23 > jumpCounter && jumpCounter > 12) jumpNum = 3;	
-		else if (jumpCounter >= 24) {	
+		else if (27 > jumpCounter && jumpCounter > 12) jumpNum = 3;	
+		else if (jumpCounter >= 28) {	
+			
+			if (action == Action.SOARING) {		
+				
+				if (jumpCounter == 30) {
+					currentItem.playSE();
+				}
+				
+				jumpNum = 4;
+				soaring();
+			}
+			else {			
+				jumpNum = 1;
+				jumpCounter = 0;
+				action = Action.IDLE;
+				attackCanceled = false;
+			}
+		}
+	}
+	public void soaring() {
+
+		checkCollision();
+		
+		if (60 > jumpCounter) {		
+			
+			if (!collisionOn) {	
+				if (lockon) { 
+					switch (lockonDirection) {
+						case "up": worldY--; break;
+						case "upleft": worldY -= 0.5; worldX -= 0.5; break;
+						case "upright": worldY -= 0.5; worldX += 0.5; break;
+						
+						case "down": worldY++; break;
+						case "downleft": worldY += 0.5; worldX -= 0.5; break;
+						case "downright": worldY += 0.5; worldX += 0.5; break;
+						
+						case "left": worldX--; break;
+						case "right": worldX++; break;
+					}
+				}
+				else {
+					switch (direction) {
+						case "up": worldY--; break;
+						case "upleft": worldY -= 0.5; worldX -= 0.5; break;
+						case "upright": worldY -= 0.5; worldX += 0.5; break;
+						
+						case "down": worldY++; break;
+						case "downleft": worldY += 0.5; worldX -= 0.5; break;
+						case "downright": worldY += 0.5; worldX += 0.5; break;
+						
+						case "left": worldX--; break;
+						case "right": worldX++; break;
+					}
+				}
+			}
+		}
+		else if (jumpCounter >= 70) {
 			jumpNum = 1;
 			jumpCounter = 0;
 			action = Action.IDLE;
 			attackCanceled = false;
+			gp.gameState = gp.playState;
 		}
 	}
+	
 	public void swinging() {
 
 		rodCounter++;
@@ -977,7 +1069,7 @@ public class Player extends Entity {
 			action = Action.IDLE;
 			attackCanceled = false;
 			transparent = true;
-			
+						
 			// MOVE PLAYER TO SAFE SPOT
 			worldX = safeWorldX;
 			worldY = safeWorldY;
@@ -1187,10 +1279,12 @@ public class Player extends Entity {
 							else if (digNum == 2) image1 = digUp2;
 							break;
 						case JUMPING:
-							tempScreenY -= 15;
+						case SOARING:
+							tempScreenY -= 20;
 							if (jumpNum == 1) image1 = jumpUp1;
 							else if (jumpNum == 2) image1 = jumpUp2; 
 							else if (jumpNum == 3) image1 = jumpUp3; 
+							else if (jumpNum == 4) image1 = soarUp1; 
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
@@ -1231,10 +1325,12 @@ public class Player extends Entity {
 							else if (digNum == 2) image1 = digDown2;
 							break;
 						case JUMPING:
-							tempScreenY -= 15;
+						case SOARING:
+							tempScreenY -= 20;
 							if (jumpNum == 1) image1 = jumpDown1;
 							else if (jumpNum == 2) image1 = jumpDown2; 
 							else if (jumpNum == 3) image1 = jumpDown3; 
+							else if (jumpNum == 4) image1 = soarDown1; 
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
@@ -1273,10 +1369,12 @@ public class Player extends Entity {
 							else if (digNum == 2) image1 = digLeft2;
 							break;
 						case JUMPING:
-							tempScreenY -= 15;
+						case SOARING:
+							tempScreenY -= 20;
 							if (jumpNum == 1) image1 = jumpLeft1;
 							else if (jumpNum == 2) image1 = jumpLeft2; 
 							else if (jumpNum == 3) image1 = jumpLeft3; 
+							else if (jumpNum == 4) image1 = soarLeft1; 
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
@@ -1317,11 +1415,13 @@ public class Player extends Entity {
 							if (digNum == 1) image1 = digRight1;
 							else if (digNum == 2) image1 = digRight2;
 							break;
-						case JUMPING:		
-							tempScreenY -= 15;
+						case JUMPING:	
+						case SOARING:
+							tempScreenY -= 20;
 							if (jumpNum == 1) image1 = jumpRight1;
 							else if (jumpNum == 2) image1 = jumpRight2; 
 							else if (jumpNum == 3) image1 = jumpRight3; 
+							else if (jumpNum == 4) image1 = soarRight1; 
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);

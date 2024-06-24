@@ -33,13 +33,8 @@ public class CollisionChecker {
 		
 		// KNOCKBACK DIRECTION
 		String direction = entity.direction;
-		if (entity.lockon) {
-			direction = entity.lockonDirection;
-		}
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
-		
+		if (entity.lockon) direction = entity.lockonDirection;
+		if (entity.knockback) direction = entity.knockbackDirection;
 						
 		// PREVENT COLLISION DETECTION OUT OF BOUNDS
 		if (entityTopRow <= 0) return;		
@@ -120,9 +115,11 @@ public class CollisionChecker {
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
 				
 				break;
+			default: entity.collision = true; return;
 		}		
 
-		if (entity.type == entity.type_enemy || entity.type == entity.type_npc) {
+		if (entity.type == entity.type_npc || 
+				entity.type == entity.type_enemy || entity.type == entity.type_boss) {
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision ||
 					gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
 					gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) 
@@ -151,13 +148,9 @@ public class CollisionChecker {
 		
 		// KNOCKBACK DIRECTION
 		String direction = gp.player.direction;
-		if (gp.player.lockon) {
-			direction = gp.player.lockonDirection;
-		}
-		if (gp.player.knockback) {
-			direction = gp.player.knockbackDirection;
-		}		
-				
+		if (gp.player.lockon) direction = gp.player.lockonDirection;		
+		if (gp.player.knockback) direction = gp.player.knockbackDirection;
+		
 		// PREVENT COLLISION DETECTION OUT OF BOUNDS
 		if (entityTopRow <= 0) return;		
 		if (entityBottomRow >= gp.maxWorldRow - 1) return;		
@@ -271,20 +264,20 @@ public class CollisionChecker {
 				}
 				
 				break;
+			default: return;
 		}		
 
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
-			if (gp.player.onGround) {
+			if (gp.player.action != Action.JUMPING && gp.player.action != Action.SOARING) {
 				gp.playSE(2, 2);
 				gp.player.invincible = true;
 				gp.gameState = gp.fallingState;
 			}
 		}
 		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
-			if (gp.player.canSwim) {
-				gp.player.action = Action.SWIMMING;
-			}
-			else if (gp.player.onGround) {
+			gp.player.action = Action.SWIMMING;
+			
+			if (!gp.player.canSwim) {
 				gp.player.playDrownSE();
 				gp.player.playHurtSE();	
 				gp.player.invincible = true;
@@ -303,13 +296,8 @@ public class CollisionChecker {
 		int index = -1;
 		
 		String direction = entity.direction;
-		if (entity.lockon) {
-			direction = entity.lockonDirection;
-		}
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
-		
+		if (entity.lockon) direction = entity.lockonDirection;
+		if (entity.knockback) direction = entity.knockbackDirection;
 		
 		for (int i  = 0; i < gp.obj[1].length; i++) {
 			
@@ -354,6 +342,7 @@ public class CollisionChecker {
 					case "right":					
 						entity.hitbox.x += entity.speed;
 						break;
+					default: entity.collision = true; return index;
 				}
 				
 				if (entity.hitbox.intersects(gp.obj[gp.currentMap][i].hitbox)) {						
@@ -381,12 +370,8 @@ public class CollisionChecker {
 		int index = -1;
 		
 		String direction = entity.direction;
-		if (entity.lockon) {
-			direction = entity.lockonDirection;
-		}
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}		
+		if (entity.lockon) direction = entity.lockonDirection;		
+		if (entity.knockback) direction = entity.knockbackDirection;
 		
 		for (int i  = 0; i < gp.obj_i[1].length; i++) {
 			
@@ -431,6 +416,7 @@ public class CollisionChecker {
 					case "right":					
 						entity.hitbox.x += entity.speed;
 						break;
+					default: entity.collision = true; return index;
 				}
 								
 				if (entity.hitbox.intersects(gp.obj_i[gp.currentMap][i].hitbox)) {						
@@ -458,12 +444,8 @@ public class CollisionChecker {
 		int index = -1;
 		
 		String direction = entity.direction;
-		if (entity.lockon) {
-			direction = entity.lockonDirection;
-		}
-		if (entity.knockback) {
-			direction = entity.knockbackDirection;
-		}
+		if (entity.lockon) direction = entity.lockonDirection;
+		if (entity.knockback) direction = entity.knockbackDirection;
 				
 		for (int i  = 0; i < target[1].length; i++) {
 			
@@ -508,6 +490,7 @@ public class CollisionChecker {
 					case "right":					
 						entity.hitbox.x += entity.speed;
 						break;	
+					default: entity.collision = true; return index;
 				}
 				
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
@@ -539,13 +522,9 @@ public class CollisionChecker {
 		int speed = 30;
 		
 		String direction = gp.player.direction;
-		if (gp.player.lockon) {
-			direction = gp.player.lockonDirection;
-		}
-		if (gp.player.knockback) {
-			direction = gp.player.knockbackDirection;
-		}
-				
+		if (gp.player.lockon) direction = gp.player.lockonDirection;
+		if (gp.player.knockback) direction = gp.player.knockbackDirection;
+			
 		for (int i  = 0; i < gp.npc[1].length; i++) {
 			
 			if (gp.npc[gp.currentMap][i] != null) {			
@@ -589,6 +568,7 @@ public class CollisionChecker {
 					case "right":					
 						gp.player.hitbox.x += speed;
 						break;	
+					default: return index;
 				}
 				
 				if (gp.player.hitbox.intersects(gp.npc[gp.currentMap][i].hitbox)) {	
@@ -781,18 +761,18 @@ public class CollisionChecker {
 		// find where entity will be after moving in a direction
 		// ask if object and entity intersect 
 		switch (entity.direction) {
-		case "up":
-			entity.hitbox.y -= entity.speed;
-			break;
-		case "down":
-			entity.hitbox.y += entity.speed;
-			break;
-		case "left":
-			entity.hitbox.x -= entity.speed;
-			break;
-		case "right":
-			entity.hitbox.x += entity.speed;
-			break;
+			case "up":
+				entity.hitbox.y -= entity.speed;
+				break;
+			case "down":
+				entity.hitbox.y += entity.speed;
+				break;
+			case "left":
+				entity.hitbox.x -= entity.speed;
+				break;
+			case "right":
+				entity.hitbox.x += entity.speed;
+				break;
 		}
 		
 		if (entity.hitbox.intersects(gp.player.hitbox)) {						

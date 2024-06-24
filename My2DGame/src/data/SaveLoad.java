@@ -37,7 +37,6 @@ public class SaveLoad {
 			ds.cArea = gp.currentArea;
 			
 			ds.name = gp.player.name;
-			ds.level = gp.player.level;
 			ds.maxLife = gp.player.maxLife;
 			ds.life = gp.player.life;
 			ds.strength = gp.player.strength;
@@ -118,7 +117,6 @@ public class SaveLoad {
 			gp.player.worldY = ds.pWorldY;
 			
 			gp.player.name = ds.name;
-			gp.player.level = ds.level;
 			gp.player.maxLife = ds.maxLife;
 			gp.player.life = ds.life;
 			gp.player.strength = ds.strength;

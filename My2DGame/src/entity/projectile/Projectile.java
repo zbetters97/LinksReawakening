@@ -75,7 +75,7 @@ public class Projectile extends Entity {
 			gp.player.damageInteractiveTile(iTileIndex);
 		}
 		// SHOT BY ENEMEY
-		else {
+		else if (gp.player.onGround) {
 			boolean contactPlayer = gp.cChecker.checkPlayer(this);
 			if (contactPlayer && !gp.player.invincible) {
 				damagePlayer(attack);

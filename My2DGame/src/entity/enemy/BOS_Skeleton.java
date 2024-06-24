@@ -15,15 +15,13 @@ public class BOS_Skeleton extends Entity {
 		super(gp);				
 		this.gp = gp;
 		
-		type = type_enemy;
-		boss = true;
+		type = type_boss;
 		sleep = true;
 		name = emyName;
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 4; defense = 1;
 		knockbackPower = 5;
-		exp = 50;
 		maxLife = 12; life = maxLife;
 		currentBossPhase = bossPhase_1;
 		

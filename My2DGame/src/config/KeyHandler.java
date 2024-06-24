@@ -50,6 +50,10 @@ public class KeyHandler implements KeyListener {
 		else if (gp.gameState == gp.characterState) {
 			characterState(code);
 		}
+		// ITEM STATE
+		else if (gp.gameState == gp.itemInventoryState) {
+			itemInventoryState(code);
+		}
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
 			dialogueState(code);
@@ -251,10 +255,11 @@ public class KeyHandler implements KeyListener {
 		 * Q: ITEM
 		 * T: TAB ITEM
 		 * ESC: PAUSE MENU
-		 * E: CHARACTER MENU
-		 * M: MAP
-		 * N: MINIMAP
-		 * R: RELOAD MAP
+		 * 1: CHARACTER MENU
+		 * 2: ITEM MENU
+		 * 3: MAP
+		 * 4: MINIMAP
+		 * 5: RELOAD MAP
 		 * SHIFT: DEBUG
 		 */		
 
@@ -272,29 +277,33 @@ public class KeyHandler implements KeyListener {
 			gp.player.playGuardSE(); 
 		}
 		
-		if (code == KeyEvent.VK_E) { 
-			playMenuOpenSE();
-			gp.gameState = gp.characterState;
-		}
 		if (code == KeyEvent.VK_ESCAPE) {
 			playMenuOpenSE();
 			gp.gameState = gp.pauseState;
+		}	
+		else if (code == KeyEvent.VK_1) { 
+			playMenuOpenSE();
+			gp.gameState = gp.characterState;
 		}
-		
-		if (code == KeyEvent.VK_M) {
+		else if (code == KeyEvent.VK_2) { 
+			playMenuOpenSE();
+			gp.gameState = gp.itemInventoryState;
+		}
+			
+		else if (code == KeyEvent.VK_3) {
 			playMapOpenSE();
 			gp.gameState = gp.mapState;
 		}
-		if (code == KeyEvent.VK_N) {
+		else if (code == KeyEvent.VK_4) {
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
-		if (code == KeyEvent.VK_R) {			
+		else if (code == KeyEvent.VK_5) {			
 			switch(gp.currentMap) {
 				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
 				case 1: gp.tileM.loadMap("/maps/indoor01.txt", 1); break;
 			}			
 		}		
-		if (code == KeyEvent.VK_SHIFT) {
+		else if (code == KeyEvent.VK_SHIFT) {
 			if (debug) debug = false; 
 			else debug = true;
 		}
@@ -363,7 +372,7 @@ public class KeyHandler implements KeyListener {
 	
 	// MAP
 	private void mapState(int code) {
-		if (code == KeyEvent.VK_M) {
+		if (code == KeyEvent.VK_3) {
 			gp.gameState = gp.playState;
 		}
 	}
@@ -371,7 +380,20 @@ public class KeyHandler implements KeyListener {
 	// CHARACTER
 	private void characterState(int code) { 
 		
-		if (code == KeyEvent.VK_E) {
+		if (code == KeyEvent.VK_1) {
+			playMenuCloseSE();
+			gp.gameState = gp.playState;
+		}
+		if (code == KeyEvent.VK_SPACE) {			
+			gp.player.selectItem();
+		}
+		playerInventory(code);
+	}
+	
+	// ITEM
+	private void itemInventoryState(int code) { 
+		
+		if (code == KeyEvent.VK_2) {
 			playMenuCloseSE();
 			gp.gameState = gp.playState;
 		}

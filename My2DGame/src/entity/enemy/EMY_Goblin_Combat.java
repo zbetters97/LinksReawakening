@@ -27,7 +27,6 @@ public class EMY_Goblin_Combat extends Entity {
 		animationSpeed = 10;
 		attack = 4; defense = 1;
 		knockbackPower = 1;
-		exp = 12;
 		maxLife = 8; life = maxLife;
 		
 		swingSpeed1 = 30;

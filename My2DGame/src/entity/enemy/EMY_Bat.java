@@ -23,7 +23,6 @@ public class EMY_Bat extends Entity {
 		animationSpeed = 5;
 		attack = 2; defense = 0;
 		knockbackPower = 1;
-		exp = 2;
 		maxLife = 6; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);

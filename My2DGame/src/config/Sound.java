@@ -83,6 +83,7 @@ public class Sound {
 		objects[17] = getClass().getResource("/sound/OBJ_CHEST_OPEN.wav");
 		objects[18] = getClass().getResource("/sound/OBJ_DOOR_CLOSE.wav");
 		objects[19] = getClass().getResource("/sound/OBJ_DOOR_UNLOCK.wav");
+		objects[20] = getClass().getResource("/sound/ITEM_CAPE.wav");
 		
 		// 4
 		enemy[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

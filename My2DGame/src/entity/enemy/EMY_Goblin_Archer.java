@@ -26,7 +26,6 @@ public class EMY_Goblin_Archer extends Entity {
 		animationSpeed = 10;
 		attack = 2; defense = 0;
 		knockbackPower = 0;
-		exp = 8;
 		maxLife = 9; life = maxLife;
 						
 		hitbox = new Rectangle(8, 16, 32, 32); 

@@ -19,7 +19,7 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, GUARDING, RUNNING, CHOPPING, DIGGING, JUMPING, SWINGING, SWIMMING;
+		IDLE, GUARDING, RUNNING, CHOPPING, DIGGING, JUMPING, SOARING, SWINGING, SWIMMING;
 	}
 	
 	protected GamePanel gp;
@@ -40,7 +40,6 @@ public class Entity {
 	public int speed, defaultSpeed, runSpeed, animationSpeed;
 	public int strength, dexterity;
 	public int attack, defense;
-	public int level, exp, nextLevelEXP;
 	public int rupees;
 	public Entity currentWeapon, currentShield, currentItem, currentLight;
 	public Projectile projectile;
@@ -61,7 +60,6 @@ public class Entity {
 	public Entity capturedTarget;
 	
 	// BOSS VALUES
-	public boolean boss = false;
 	public int currentBossPhase = 0;
 	public final int bossPhase_1 = 1;
 	public final int bossPhase_2 = 2;
@@ -158,22 +156,23 @@ public class Entity {
 	public final int type_player = 0;
 	public final int type_npc = 1;
 	public final int type_enemy = 2;
+	public final int type_boss = 3;
 	
 	// INVENTORY TYPES
-	public final int type_sword = 3;
-	public final int type_shield = 4;	
-	public final int type_item = 5;
-	public final int type_collectable = 6;
-	public final int type_consumable = 7;
-	public final int type_key = 8;
-	public final int type_boss_key = 9;
-	public final int type_light = 10;
-	public final int type_projectile = 11;	
+	public final int type_sword = 4;
+	public final int type_shield = 5;	
+	public final int type_item = 6;
+	public final int type_collectable = 7;
+	public final int type_consumable = 8;
+	public final int type_key = 9;
+	public final int type_boss_key = 10;
+	public final int type_light = 11;
+	public final int type_projectile = 12;	
 	
 	// OBJECT TYPES
-	public final int type_obstacle = 12;
-	public final int type_obstacle_i = 13;
-	public final int type_pickupOnly = 14;
+	public final int type_obstacle = 13;
+	public final int type_obstacle_i = 14;
+	public final int type_pickupOnly = 15;
 		
 	public boolean sleep = false;
 	public boolean temp = false;
@@ -246,7 +245,7 @@ public class Entity {
 			}
 		}		
 		// ANIMATE ENEMY ALWAYS
-		if (type == type_enemy) {
+		if (type == type_enemy || type == type_boss) {
 			
 			spriteCounter++;
 			if (spriteCounter > animationSpeed && animationSpeed != 0) {
@@ -342,7 +341,7 @@ public class Entity {
 		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
-		if (this.type == type_enemy && contactPlayer) 
+		if ((type == type_enemy || type == type_boss) && contactPlayer) 
 			damagePlayer(attack);  	
 	}
 
@@ -632,7 +631,7 @@ public class Entity {
 			hitbox.height = attackbox.height;
 			
 			// ENEMY ATTACKING
-			if (type == type_enemy && !captured) {
+			if ((type == type_enemy || type == type_boss) && !captured) {
 				if (gp.cChecker.checkPlayer(this)) 
 					damagePlayer(attack);				
 			}
@@ -646,20 +645,6 @@ public class Entity {
 				gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
 								
 				if (type != type_enemy) {
-					
-					/* SHOOT SWORD BEAM (ONLY PLAYER)	
-					if (enemyIndex == -1 && gp.keyH.actionPressed) {
-						if (projectile.hasResource(this) && !projectile.alive && 
-								shotAvailableCounter == 30 ) {
-							projectile.playSE();
-							
-							projectile.set(worldX, worldY, direction, true, this);			
-							addProjectile(projectile);					
-							projectile.subtractResource(this);
-							
-							shotAvailableCounter = 0;
-						}
-					} */
 					
 					// CHECK INTERACTIVE TILE
 					int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
@@ -753,7 +738,7 @@ public class Entity {
 			changeAlpha(g2, 0.2f);
 		
 		// LONGER DYING ANIMATION FOR BOSSES
-		if (boss) {
+		if (type == type_boss) {
 			if (dyingCounter > 180) {
 				alive = false;		
 			}
@@ -886,8 +871,8 @@ public class Entity {
 			}
 			// NEW ITEM
 			else {
-				if (inventory.size() != maxInventorySize) {													
-					inventory.add(newItem);
+				if (inventory.size() != maxInventorySize) {						
+					inventory.add(newItem);					
 					return true;
 				}
 			}	
@@ -1154,15 +1139,9 @@ public class Entity {
 			
 			if (locked) {	
 				
-				// LOCKON IMAGE X, Y 				
-				if (boss) {
-					tempScreenX = (getScreenX() + hitbox.width / 2) + 10;
-					tempScreenY = (getScreenY());	
-				}
-				else {
-					tempScreenX = getScreenX() - 10;
-					tempScreenY = getScreenY() - 10;	
-				}				
+				// LOCKON IMAGE X, Y				
+				tempScreenX = getScreenX() - 10;
+				tempScreenY = getScreenY() - 10;								
 				
 				lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);				
 				changeAlpha(g2, 0.8f);
