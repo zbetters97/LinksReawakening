@@ -13,7 +13,6 @@ public class OT_Block_Pushable extends Entity {
 	
 	public static final String obj_iName = "Pushable Block";
 	public int pushCounter = 0;
-	public int pushMax = 48;
 	GamePanel gp;
 	
 	public OT_Block_Pushable(GamePanel gp) {		
@@ -23,18 +22,18 @@ public class OT_Block_Pushable extends Entity {
 		type = type_obstacle;
 		name = obj_iName;
 		direction = "down";
-		speed = 15; defaultSpeed = speed;
+		speed = 1; defaultSpeed = speed;
 		
 		collision = true;		
 		
-		hitbox = new Rectangle(0, 0, 48, 48); 		
+		hitbox = new Rectangle(1, 1, 46, 46); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 	}
 	
-	public void getImage() {		
+	private void getImage() {		
 		up1 = setup("/objects_interactive/block_pushable"); 
 		up2 = up1;
 		down1 = up1;
@@ -47,37 +46,58 @@ public class OT_Block_Pushable extends Entity {
 				
 	public void update() { 
 						
-		if (pushed) {
-			if (pushCounter < pushMax) {
-				detectMovement(1, direction);
-				pushCounter++;
+		if (moving) {
+			pushCounter++;
+			if (pushCounter <= 48) {	
+				push();
 			}
 			else {
-				pushed = false;
+				moving = false;
 				pushCounter = 0;
 			}
 		}
 	}
 	
-	public void move(String dir) {		
-
-		if (pushCounter == 0 && !pushed) {			
+	public void move(String dir) {	
+		
+		if (!moving) {
 			playSE();
-			pushed = true;	
-			direction = dir;			
+									
+			direction = dir;
+				
+			if (isCorrectTile())
+				moving = true;
 		}
 	}
 	
-	public boolean detectMovement(int spd, String dir) {
+	private boolean isCorrectTile() {
+	
+		int x = worldX / gp.tileSize;
+		int y = worldY / gp.tileSize;
 		
-		direction = dir;
-		speed = spd;
+		switch (direction) {
+			case "up": y--; break;
+			case "down": y++; break;
+			case "left": x--; break;
+			case "right": x++; break;
+			default: return false;
+		}			
 		
+		int tile = gp.tileM.mapTileNum[gp.currentMap][x][y];
+		
+		if (tile == 38) return true;
+		else return false;
+	}
+	
+	private void push() {
+						
 		collisionOn = false;
 		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkEntity(this, gp.obj);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkEntity(this, gp.enemy_r);
+		gp.cChecker.checkEntity(this, gp.enemy_r);		
 		gp.cChecker.checkPlayer(this);
 		
 		// PUSH BOULDER 
@@ -89,13 +109,15 @@ public class OT_Block_Pushable extends Entity {
 				case "right": worldX += speed; break;
 			}
 		}
+		else {
+			moving = false;
+			pushCounter = 0;
+		}
 
-		detectPlate();		
-		speed = defaultSpeed;		
-		return collisionOn;
+		detectPlate();
 	}
 	
-	public void detectPlate() {
+	private void detectPlate() {
 		
 		// CREATE PLATE LIST
 		ArrayList<InteractiveTile> plateList = new ArrayList<>();		

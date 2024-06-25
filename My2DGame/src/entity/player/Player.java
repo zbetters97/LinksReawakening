@@ -9,8 +9,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import application.GamePanel;
-import config.KeyHandler;
+import application.KeyHandler;
 import entity.Entity;
+import entity.collectable.COL_Potion_Red;
 import entity.equipment.*;
 import entity.item.*;
 import entity.projectile.PRJ_Bomb;
@@ -152,8 +153,8 @@ public class Player extends Entity {
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
 		
-//		worldX = gp.tileSize * 15;
-//		worldY = gp.tileSize * 40;
+//		worldX = gp.tileSize * 9;
+//		worldY = gp.tileSize * 21;
 //		gp.currentMap = 2;
 //		gp.currentArea = gp.dungeon;
 		
@@ -161,7 +162,7 @@ public class Player extends Entity {
 	}
 	public void setDefaultItems() {		
 		
-/*		item_inventory.add(new ITM_Shovel(gp));
+		item_inventory.add(new ITM_Shovel(gp));
 		item_inventory.add(new ITM_Boomerang(gp));
 		item_inventory.add(new ITM_Boots(gp));		
 		
@@ -173,8 +174,10 @@ public class Player extends Entity {
 		item_inventory.add(new ITM_Cape(gp));		
 		item_inventory.add(new ITM_Rod(gp));
 		
+		inventory.add(new COL_Potion_Red(gp));
+		
 		hasItem = true;		
-*/
+		canSwim = true;
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -548,8 +551,9 @@ public class Player extends Entity {
 		if (i != -1) {
 			
 			if (gp.obj_i[gp.currentMap][i].type == type_obstacle) {
-				if (!gp.obj_i[gp.currentMap][i].pushed) 
+				if (!gp.obj_i[gp.currentMap][i].moving) {
 					gp.obj_i[gp.currentMap][i].move(direction);	
+				}
 			}					
 		}
 	}	
@@ -870,8 +874,6 @@ public class Player extends Entity {
 									
 			Entity selectedItem = item_inventory.get(inventoryIndex);
 			currentItem = selectedItem;
-			
-			getAttackImage();
 		}
 	}
 	public void selectInventory() {

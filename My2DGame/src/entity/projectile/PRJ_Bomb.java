@@ -21,6 +21,7 @@ public class PRJ_Bomb extends Projectile {
 		name = prjName;
 
 		capturable = true;
+		collision = false;
 		
 		animationSpeed = 30;
 		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import application.GamePanel;
-import config.UtilityTool;
+import application.UtilityTool;
 
 public class TileManager {
 	

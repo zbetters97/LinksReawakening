@@ -14,12 +14,12 @@ import java.util.Comparator;
 import javax.swing.JPanel;
 
 import ai.PathFinder;
-import config.*;
 import data.SaveLoad;
 import entity.Entity;
 import entity.Entity.Action;
 import entity.player.Player;
 import environment.EnvironmentManager;
+import event.EventHandler;
 import tile.Map;
 import tile.TileManager;
 import tile.tile_interactive.InteractiveTile;
@@ -27,7 +27,7 @@ import tile.tile_interactive.InteractiveTile;
 public class GamePanel extends JPanel implements Runnable {
 	
 	// GENERAL CONFIG
-	public Config config = new Config(this);
+	public ConfigManager config = new ConfigManager(this);
 	private Graphics2D g2;
 	private Thread gameThread;
 	private int FPS = 60;
@@ -73,19 +73,18 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int playState = 1;
 	public final int pauseState = 2;		
 	public final int mapState = 3;
-	public final int characterState = 4;
-	public final int itemInventoryState = 5;
-	public final int dialogueState = 6;		
-	public final int tradeState = 7;
-	public final int itemGetState = 8;
-	public final int objectState = 9;	
-	public final int fallingState = 10;
-	public final int drowningState = 11;
-	public final int transitionState = 12;	
-	public final int cutsceneState = 13;
-	public final int sleepState = 14;
-	public final int gameOverState = 15;
-	public final int endingState = 16;
+	public final int inventoryState = 4;
+	public final int dialogueState = 5;		
+	public final int tradeState = 6;
+	public final int itemGetState = 7;
+	public final int objectState = 8;	
+	public final int fallingState = 9;
+	public final int drowningState = 10;
+	public final int transitionState = 11;	
+	public final int cutsceneState = 12;
+	public final int sleepState = 13;
+	public final int gameOverState = 14;
+	public final int endingState = 15;
 	
 	// AREA STATES
 	public int currentArea;

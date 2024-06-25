@@ -38,7 +38,7 @@ public class OBJ_Chest extends Entity {
 	}
 	
 	public void interact() {		
-		if (!opened) {	
+		if (!opened && gp.player.direction.equals("up")) {	
 			gp.player.attackCanceled = true;
 			playOpenSE();
 			opened = true;	

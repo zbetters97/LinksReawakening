@@ -13,7 +13,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import application.GamePanel;
-import config.UtilityTool;
+import application.UtilityTool;
 import entity.projectile.Projectile;
 
 public class Entity {
@@ -54,7 +54,7 @@ public class Entity {
 	public boolean attacking = false;
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
-	public boolean pushed = false;
+	public boolean moving = false;
 	public boolean capturable = false;
 	public boolean captured = false;
 	public Entity capturedTarget;

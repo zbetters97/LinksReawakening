@@ -1,11 +1,10 @@
-package config;
+package application;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import application.GamePanel;
 import entity.Entity.Action;
 
 public class KeyHandler implements KeyListener {
@@ -13,7 +12,7 @@ public class KeyHandler implements KeyListener {
 	private GamePanel gp;
 	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, guardPressed, lockPressed, itemPressed, tabPressed;
+	public boolean actionPressed, selectPressed, guardPressed, lockPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
@@ -46,13 +45,9 @@ public class KeyHandler implements KeyListener {
 		else if (gp.gameState == gp.mapState) {
 			mapState(code);
 		}
-		// CHARACTER STATE
-		else if (gp.gameState == gp.characterState) {
-			characterState(code);
-		}
 		// ITEM STATE
-		else if (gp.gameState == gp.itemInventoryState) {
-			itemInventoryState(code);
+		else if (gp.gameState == gp.inventoryState) {
+			inventoryState(code);
 		}
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
@@ -214,7 +209,7 @@ public class KeyHandler implements KeyListener {
 				playSelectSE();
 				gp.ui.commandNum = 0;
 				gp.ui.titleScreenState = 0;
-				gp.player.name = "Link";
+				gp.player.name = "LINK";
 			}
 			// ENTER BUTTON
 			else if (gp.ui.commandNum == 29) {
@@ -255,11 +250,10 @@ public class KeyHandler implements KeyListener {
 		 * Q: ITEM
 		 * T: TAB ITEM
 		 * ESC: PAUSE MENU
-		 * 1: CHARACTER MENU
-		 * 2: ITEM MENU
-		 * 3: MAP
-		 * 4: MINIMAP
-		 * 5: RELOAD MAP
+		 * E: INVENTORY
+		 * M: MAP
+		 * N: MINIMAP
+		 * 1: RELOAD MAP
 		 * SHIFT: DEBUG
 		 */		
 
@@ -281,23 +275,18 @@ public class KeyHandler implements KeyListener {
 			playMenuOpenSE();
 			gp.gameState = gp.pauseState;
 		}	
-		else if (code == KeyEvent.VK_1) { 
+		else if (code == KeyEvent.VK_E) { 
 			playMenuOpenSE();
-			gp.gameState = gp.characterState;
-		}
-		else if (code == KeyEvent.VK_2) { 
-			playMenuOpenSE();
-			gp.gameState = gp.itemInventoryState;
-		}
-			
-		else if (code == KeyEvent.VK_3) {
+			gp.gameState = gp.inventoryState;
+		}			
+		else if (code == KeyEvent.VK_M) {
 			playMapOpenSE();
 			gp.gameState = gp.mapState;
 		}
-		else if (code == KeyEvent.VK_4) {
+		else if (code == KeyEvent.VK_N) {
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
-		else if (code == KeyEvent.VK_5) {			
+		else if (code == KeyEvent.VK_1) {			
 			switch(gp.currentMap) {
 				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
 				case 1: gp.tileM.loadMap("/maps/indoor01.txt", 1); break;
@@ -370,40 +359,32 @@ public class KeyHandler implements KeyListener {
 		}
 	}
 	
-	// MAP
-	private void mapState(int code) {
-		if (code == KeyEvent.VK_3) {
-			gp.gameState = gp.playState;
-		}
-	}
-	
-	// CHARACTER
-	private void characterState(int code) { 
+	// INVENTORY
+	private void inventoryState(int code) { 
 		
-		if (code == KeyEvent.VK_1) {
+		if (code == KeyEvent.VK_E) {
 			playMenuCloseSE();
 			gp.gameState = gp.playState;
 		}
-		if (code == KeyEvent.VK_SPACE) {			
-			gp.player.selectItem();
+		if (code == KeyEvent.VK_SPACE) {	
+						
+			if (gp.ui.inventoryScreen == 0) {
+				gp.player.selectInventory();
+			}
+			else {
+				gp.player.selectItem();	
+			}
+		}
+		if (code == KeyEvent.VK_T) {
+			if (gp.ui.inventoryScreen == 0)
+				gp.ui.inventoryScreen = 1;
+			else
+				gp.ui.inventoryScreen = 0;
 		}
 		playerInventory(code);
 	}
 	
-	// ITEM
-	private void itemInventoryState(int code) { 
-		
-		if (code == KeyEvent.VK_2) {
-			playMenuCloseSE();
-			gp.gameState = gp.playState;
-		}
-		if (code == KeyEvent.VK_SPACE) {			
-			gp.player.selectItem();
-		}
-		playerInventory(code);
-	}
-	
-	//INVENTORY	
+	// PLAYER INVENTORY	
 	private void playerInventory(int code) {
 		if (code == KeyEvent.VK_UP) { 
 			if (gp.ui.playerSlotRow != 0) {
@@ -428,6 +409,13 @@ public class KeyHandler implements KeyListener {
 				playCursorSE(); 
 				gp.ui.playerSlotCol++; 
 			}
+		}
+	}
+	
+	// MAP
+	private void mapState(int code) {
+		if (code == KeyEvent.VK_M) {
+			gp.gameState = gp.playState;
 		}
 	}
 	

@@ -1,4 +1,4 @@
-package config;
+package application;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,12 +11,12 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Key;
 import entity.collectable.COL_Key_Boss;
 import entity.collectable.COL_Rupee_Blue;
+import entity.equipment.EQP_Flippers;
 import entity.item.ITM_Bomb;
 import entity.item.ITM_Bow;
 
@@ -34,7 +34,7 @@ public class UI {
 	public int commandNum = 0;
 	
 	// HUD
-	private BufferedImage heart_full, heart_half, heart_empty, rupee, key, boss_key;
+	private BufferedImage flippers, heart_full, heart_half, heart_empty, rupee, key, boss_key;
 	private String rupee_count = "0";
 	public int rupeeCount = -1;
 	private int rCounter = 0;
@@ -47,6 +47,8 @@ public class UI {
 	public int playerSlotRow = 0;	
 	public int npcSlotCol = 0;
 	public int npcSlotRow = 0;
+	
+	public int inventoryScreen = 0;
 	
 	// DIALOGUE HANDLER	
 	public boolean messageOn = false;
@@ -88,6 +90,8 @@ public class UI {
 			e.printStackTrace();
 		}
 		
+		flippers = new EQP_Flippers(gp).down1;
+		
 		// CREATE HUD
 		heart_full = new COL_Heart(gp).image1;
 		heart_half = new COL_Heart(gp).image2;
@@ -125,14 +129,18 @@ public class UI {
 			drawPauseScreen();
 		}		
 		// CHARACTER STATE
-		else if (gp.gameState == gp.characterState) {
-			drawInventory(gp.player, true);
+		else if (gp.gameState == gp.inventoryState) {
 			drawHUD();
-		}
-		// CHARACTER STATE
-		else if (gp.gameState == gp.itemInventoryState) {
-			drawItemInventory();
-			drawHUD();
+			
+			drawEquipment();
+			drawInventoryTitle();
+
+			if (inventoryScreen == 0) {
+				drawInventory(gp.player, true);
+			}
+			else {
+				drawItemInventory();			
+			}			
 		}
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.dialogueState) {
@@ -374,17 +382,13 @@ public class UI {
 				
 				// DRAW ARROW COUNT
 				if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {	
-					String arrowCount = Integer.toString(gp.player.arrows);		
-					g2.setColor(Color.BLACK);
-					g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
-					g2.drawString(arrowCount, x + 35, y + gp.tileSize);
+					String arrowCount = Integer.toString(gp.player.arrows);	
+					drawItemCount(arrowCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
 				}
 				// DRAW BOMB COUNT
 				else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {	
-					String bombCount = Integer.toString(gp.player.bombs);		
-					g2.setColor(Color.BLACK);
-					g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
-					g2.drawString(bombCount, x + 35, y + gp.tileSize);
+					String bombCount = Integer.toString(gp.player.bombs);
+					drawItemCount(bombCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
 				}
 			}
 		}
@@ -782,82 +786,86 @@ public class UI {
 	}
 	
 	// INVENTORY	
-	private void drawItemInventory() {
+	private void drawInventoryTitle() {
 		
-		// ITEM WINDOW
-		int frameX = 0;
-		int frameY = 0;
-		int frameWidth = 0;
-		int frameHeight = 0;
-		int slotCol = 0;
-		int slotRow = 0;
+		int x = gp.tileSize * 9;
+		int y = 0;
+		int width = gp.tileSize * 6;
+		int height = gp.tileSize;
+		drawSubWindow(x, y, width, height);
 		
-		frameX = gp.tileSize * 9;
-		frameY = gp.tileSize;
-		frameWidth = gp.tileSize * 6;
-		frameHeight = gp.tileSize * 5;		
-		slotCol = playerSlotCol;
-		slotRow = playerSlotRow;
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 34F));
 		
-		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
-				
+		String text = null;
+		
+		if (inventoryScreen == 0) text = "INVENTORY";
+		else text = "ITEMS";
+		
+		x = getXforCenteredText(text);
+		g2.drawString(text, x + gp.tileSize * 4, y+35);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
+	}
+	private void drawEquipment() {
+
+		int frameX = gp.tileSize * 7;
+		int frameY = gp.tileSize;
+		int frameWidth = gp.tileSize * 2;
+		int frameHeight = gp.tileSize * 5;
+		
+		Color c = new Color(255,255,255);
+		g2.setColor(c);
+		g2.fillRoundRect(frameX, frameY, frameWidth, frameHeight, 25, 25); 
+		
+		c = new Color(0, 0, 0);
+		g2.setColor(c);
+		g2.setStroke(new BasicStroke(5));
+		g2.drawRoundRect(frameX + 5, frameY + 5, frameWidth - 10, frameHeight - 10, 15, 15);
+		
 		// SLOTS
-		final int slotXStart = frameX + 20;
-		final int slotYStart = frameY + 20;
-		int slotX = slotXStart; 
-		int slotY = slotYStart;
-		int slotSize = gp.tileSize + 3;
+		int slotX = frameX + 15;
+		int slotY = frameY + 20;
+		int itemX = slotX + gp.tileSize;
+			
+		Entity sword = gp.player.currentWeapon;
+		Entity shield = gp.player.currentShield;	
+		Entity item = gp.player.currentItem;
+		String count = "";
 		
-		// DRAW ITEMS
-		for (int i = 0; i < gp.player.item_inventory.size(); i++) {
+		if (sword != null) {
+			g2.drawImage(sword.down1, slotX, slotY, null);	
 			
-			// EQUIPPED CURSOR
-			if (gp.player.item_inventory.get(i) == gp.player.currentItem) {				
-				g2.setColor(new Color(240,190,90));
-				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}	
-			
-			g2.drawImage(gp.player.item_inventory.get(i).down1, slotX, slotY, null);
-			
-			slotX += slotSize;			
-			if (slotX == slotXStart + (slotSize * 5)) {
-				slotX = slotXStart;
-				slotY += gp.tileSize + 3;
-			}
+			count = Integer.toString(sword.attackValue);				
+			drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
 		}
 		
-		int cursorX = slotXStart + (slotSize * slotCol);
-		int cursorY = slotYStart + (slotSize * slotRow);
-		int cursorWidth = gp.tileSize;
-		int cursorHeight = gp.tileSize;		
-		
-		// DRAW CURSOR
-		g2.setColor(Color.white);
-		g2.setStroke(new BasicStroke(3));
-		g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
-		
-		// DESCRIPTION WINDOW
-		int dFrameX = frameX;
-		int dFrameY = frameY + frameHeight;
-		int dFrameWidth = frameWidth;
-		int dFrameHeight = gp.tileSize * 3;
-		
-		// DESCRIPTION TEXT
-		int textX = dFrameX + 20;
-		int textY = dFrameY + gp.tileSize;
-		
-		g2.setFont(g2.getFont().deriveFont(28F));
-		
-		int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
-		if (itemIndex < gp.player.item_inventory.size()) {
+		if (shield != null) {
+			slotY = (frameY + 20) + (gp.tileSize + 3);	
+			g2.drawImage(shield.down1, slotX, slotY, null);
 			
-			drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+			count = Integer.toString(shield.defenseValue);		
+			drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
+		}		
+		
+		if (item != null) {
+			slotY = (frameY + 20) + ((gp.tileSize + 3) * 2);	
+			g2.drawImage(item.down1, slotX, slotY, null);
 			
-			for (String line : gp.player.item_inventory.get(itemIndex).description.split("\n")) {
-				g2.drawString(line, textX, textY);	
-				textY += 32;
+			// DRAW ARROW COUNT
+			if (item.name.equals(ITM_Bow.itmName)) {	
+				count = Integer.toString(gp.player.arrows);
+				drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
+			}
+			// DRAW BOMB COUNT
+			else if (item.name.equals(ITM_Bomb.itmName)) {	
+				count = Integer.toString(gp.player.bombs);
+				drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
 			}
 		}
+		if (gp.player.canSwim) {
+			slotY = (frameY + 20) + ((gp.tileSize + 3) * 3);	
+			g2.drawImage(flippers, slotX, slotY, null);
+		}
+		
 	}
 	private void drawInventory(Entity entity, boolean cursor) {
 		
@@ -961,7 +969,7 @@ public class UI {
 			int textX = dFrameX + 20;
 			int textY = dFrameY + gp.tileSize;
 			
-			g2.setFont(g2.getFont().deriveFont(28F));
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 28F));;
 			
 			int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
 			if (itemIndex < entity.inventory.size()) {
@@ -975,9 +983,89 @@ public class UI {
 			}
 		}			
 	}
-	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
-		int itemIndex = slotCol + (slotRow * 5);
-		return itemIndex;
+	private void drawItemInventory() {
+
+		int frameX = gp.tileSize * 9;
+		int frameY = gp.tileSize;
+		int frameWidth = gp.tileSize * 6;
+		int frameHeight = gp.tileSize * 5;		
+		
+		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+				
+		final int slotXStart = frameX + 20;
+		final int slotYStart = frameY + 20;
+		int slotX = slotXStart; 
+		int slotY = slotYStart;
+		int slotCol = playerSlotCol;
+		int slotRow = playerSlotRow;
+		int slotSize = gp.tileSize + 3;
+		
+		// DRAW ITEMS
+		for (int i = 0; i < gp.player.item_inventory.size(); i++) {
+			
+			// EQUIPPED CURSOR
+			if (gp.player.item_inventory.get(i) == gp.player.currentItem) {				
+				g2.setColor(new Color(240,190,90));
+				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+			}	
+			
+			g2.drawImage(gp.player.item_inventory.get(i).down1, slotX, slotY, null);
+			
+			// DRAW ARROW COUNT
+			if (gp.player.item_inventory.get(i).name.equals(ITM_Bow.itmName)) {	
+				String arrowCount = Integer.toString(gp.player.arrows);
+				drawItemCount(arrowCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
+			}
+			// DRAW BOMB COUNT
+			else if (gp.player.item_inventory.get(i).name.equals(ITM_Bomb.itmName)) {	
+				String bombCount = Integer.toString(gp.player.bombs);
+				drawItemCount(bombCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
+			}
+			
+			slotX += slotSize;			
+			if (slotX == slotXStart + (slotSize * 5)) {
+				slotX = slotXStart;
+				slotY += gp.tileSize + 3;
+			}
+		}
+		
+		int cursorX = slotXStart + (slotSize * slotCol);
+		int cursorY = slotYStart + (slotSize * slotRow);
+		int cursorWidth = gp.tileSize;
+		int cursorHeight = gp.tileSize;		
+		
+		// DRAW CURSOR
+		g2.setColor(Color.white);
+		g2.setStroke(new BasicStroke(3));
+		g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+		
+		// DESCRIPTION WINDOW
+		int dFrameX = frameX;
+		int dFrameY = frameY + frameHeight;
+		int dFrameWidth = frameWidth;
+		int dFrameHeight = gp.tileSize * 3;
+		
+		// DESCRIPTION TEXT
+		int textX = dFrameX + 20;
+		int textY = dFrameY + gp.tileSize;
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 28F));
+		
+		int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
+		if (itemIndex < gp.player.item_inventory.size()) {
+			
+			drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+			
+			for (String line : gp.player.item_inventory.get(itemIndex).description.split("\n")) {
+				g2.drawString(line, textX, textY);	
+				textY += 32;
+			}
+		}
+	}
+	private void drawItemCount(String count, int x, int y, Color color, float fontSize) {
+		g2.setColor(color);
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, fontSize));
+		g2.drawString(count, x, y);	
 	}
 	
 	// DIALOGUE
@@ -1171,8 +1259,7 @@ public class UI {
 			int price = npc.inventory.get(itemIndex).price;
 			String text = Integer.toString(price);
 			x = getXforRightAlignText(text, gp.tileSize * 7);
-			g2.drawString(text, x+32, y+35);	
-			
+			g2.drawString(text, x+32, y+35);				
 			
 			// BUY AN ITEM
 			if (gp.keyH.actionPressed) {
@@ -1186,7 +1273,8 @@ public class UI {
 					if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {
 						
 						gp.player.rupees -= npc.inventory.get(itemIndex).price;	
-												
+						rupeeCount = gp.player.rupees;			
+						
 						// STACKABLE ITEM
 						if (npc.inventory.get(itemIndex).amount > 1) {
 							npc.inventory.get(itemIndex).amount--;
@@ -1428,6 +1516,10 @@ public class UI {
 		g2.setStroke(new BasicStroke(5));
 		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
 	}	
+	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
+		int itemIndex = slotCol + (slotRow * 5);
+		return itemIndex;
+	}
 	public int getXforCenteredText(String text) {
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		int x = (gp.screenWidth / 2) - (length / 2);

@@ -1,7 +1,8 @@
-package application;
+package event;
 import java.util.Arrays;
 import java.util.List;
 
+import application.GamePanel;
 import data.Progress;
 import entity.Entity;
 import entity.enemy.*;

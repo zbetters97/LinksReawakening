@@ -18,7 +18,7 @@ public class PRJ_Boomerang extends Projectile {
 
 		knockbackPower = 1;
 		speed = 8; 		
-		animationSpeed = 8;			
+		animationSpeed = 5;			
 		maxLife = 30; life = maxLife;			
 		alive = false;
 		

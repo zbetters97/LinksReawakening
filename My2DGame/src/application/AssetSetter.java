@@ -3,7 +3,6 @@ package application;
 import data.Progress;
 import entity.collectable.*;
 import entity.enemy.*;
-import entity.equipment.*;
 import entity.item.*;
 import entity.npc.*;
 import entity.object.*;
@@ -179,16 +178,16 @@ public class AssetSetter {
 		int i = 0;
 		
 		gp.obj_i[mapNum][i] = new OT_Block_Pushable(gp);
-		gp.obj_i[mapNum][i].worldX = gp.tileSize * 34;
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 35;
 		gp.obj_i[mapNum][i].worldY = gp.tileSize * 26;
 		i++;
 		gp.obj_i[mapNum][i] = new OT_Block_Pushable(gp);
 		gp.obj_i[mapNum][i].worldX = gp.tileSize * 11;
-		gp.obj_i[mapNum][i].worldY = gp.tileSize * 18;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 20;
 		i++;
 		gp.obj_i[mapNum][i] = new OT_Block_Pushable(gp);
-		gp.obj_i[mapNum][i].worldX = gp.tileSize * 23;
-		gp.obj_i[mapNum][i].worldY = gp.tileSize * 14;
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 27;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 11;
 		i++;
 	}
 	protected void setInteractiveTiles() {
@@ -210,12 +209,13 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 10, 22); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Switch(gp, 26, 34); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 38, 28); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 39, 28); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 40, 28); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 38, 18); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 20, 22); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 8, 17); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 39, 31); i++;
+		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 9, 18); i++;
+		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 39, 30); i++;
 	}
 }

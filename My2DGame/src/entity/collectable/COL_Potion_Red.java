@@ -19,7 +19,7 @@ public class COL_Potion_Red extends Entity implements Cloneable {
 		price = 20;
 		stackable = true;
 		
-		down1 = setup("/colellectables/COL_POTION_RED");
+		down1 = setup("/collectables/COL_POTION_RED");
 		setDialogue();
 	}
 	
@@ -29,6 +29,8 @@ public class COL_Potion_Red extends Entity implements Cloneable {
 	
 	public boolean use(Entity user) {		
 		user.life += value;
+		if (user.life > user.maxLife) 
+			user.life = user.maxLife;
 		startDialogue(this, 0);
 		return true;
 	}
