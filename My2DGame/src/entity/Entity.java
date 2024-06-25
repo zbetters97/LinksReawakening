@@ -688,7 +688,8 @@ public class Entity {
 			
 			String canGuardDirection = getOppositeDirection(direction);			
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(canGuardDirection)) {
-				gp.playSE(3, 13);			
+				gp.playSE(4, 8);	
+				
 				if (knockbackPower > 0) 
 					setKnockback(gp.player, this, 1);
 				damage = 0;
@@ -999,10 +1000,10 @@ public class Entity {
 	
 	// SOUND EFFECTS
 	public void playGetItemSE() {
-		gp.playSE(3, 1);
+		gp.playSE(5, 0);
 	}
 	public void playMoveObjectSE() {
-		gp.playSE(3, 12);
+		gp.playSE(4, 7);
 	}
 	
 	// IMAGE MANAGERS

@@ -39,6 +39,6 @@ public class IT_Switch extends InteractiveTile {
 	}
 		
 	public void playSE() {
-		gp.playSE(1, 16);
+		gp.playSE(6, 0);
 	}
 }

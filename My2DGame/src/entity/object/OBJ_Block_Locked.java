@@ -33,6 +33,6 @@ public class OBJ_Block_Locked extends Entity {
 	}
 	
 	public void playOpenSE() {
-		gp.playSE(3, 19);
+		gp.playSE(4, 4);
 	}
 }

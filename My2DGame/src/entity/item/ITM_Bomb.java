@@ -37,6 +37,6 @@ public class ITM_Bomb extends Entity {
 		return true;
 	}
 	public void playSE() {
-		gp.playSE(3, 8);
+		gp.playSE(5, 4);
 	}
 }

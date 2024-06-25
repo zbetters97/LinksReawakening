@@ -150,13 +150,13 @@ public class BOS_Skeleton extends Entity {
 	}
 	
 	public void playAttackSE() {
-		gp.playSE(4, 3);
+		gp.playSE(3, 3);
 	}
 	public void playHurtSE() {
-		gp.playSE(4, 4);
+		gp.playSE(3, 4);
 	}
 	public void playDeathSE() {
-		gp.playSE(4, 5);
+		gp.playSE(3, 5);
 	}
 	
 	// DROPPED ITEM

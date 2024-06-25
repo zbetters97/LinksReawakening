@@ -29,6 +29,6 @@ public class COL_Heart extends Entity {
 		return true;
 	}
 	public void playSE() {
-		gp.playSE(1, 6);	
+		gp.playSE(6, 2);	
 	}
 }

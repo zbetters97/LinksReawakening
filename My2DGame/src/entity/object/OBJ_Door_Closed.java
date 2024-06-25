@@ -28,9 +28,9 @@ public class OBJ_Door_Closed extends Entity {
 	}	
 		
 	public void playOpenSE() {
-		gp.playSE(3, 14);
+		gp.playSE(4, 4);
 	}
 	public void playCloseSE() {
-		gp.playSE(3, 18);
+		gp.playSE(4, 5);
 	}
 }

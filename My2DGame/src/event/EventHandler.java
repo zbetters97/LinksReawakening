@@ -214,7 +214,7 @@ public class EventHandler {
 		gp.ui.showHint = true;
 		
 		if (gp.keyH.actionPressed) {
-			gp.playSE(1, 4);			
+			gp.playSE(6, 3);			
 			gp.ui.showHint = false;
 			
 			gp.keyH.actionPressed = false;
@@ -305,9 +305,9 @@ public class EventHandler {
 	}
 	
 	private void playStairsUpSE() {
-		gp.playSE(1, 10);
+		gp.playSE(6, 4);
 	}
 	private void playStairsDownSE() {
-		gp.playSE(1, 17);
+		gp.playSE(6, 5);
 	}
 }

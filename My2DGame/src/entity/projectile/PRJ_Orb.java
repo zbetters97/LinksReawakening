@@ -58,6 +58,6 @@ public class PRJ_Orb extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 16);
+		gp.playSE(5, 11);
 	}
 }

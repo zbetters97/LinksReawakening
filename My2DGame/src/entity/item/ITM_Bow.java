@@ -38,6 +38,6 @@ public class ITM_Bow extends Entity {
 	}	
 	
 	public void playSE() {
-		gp.playSE(3, 2);
+		gp.playSE(5, 7);
 	}
 }

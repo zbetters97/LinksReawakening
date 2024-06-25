@@ -61,9 +61,9 @@ public class OBJ_Door_Locked extends Entity {
 	}
 	
 	public void playOpenSE() {
-		gp.playSE(3, 19);
+		gp.playSE(4, 4);
 	}
 	public void playCloseSE() {
-		gp.playSE(3, 18);
+		gp.playSE(4, 5);
 	}
 }

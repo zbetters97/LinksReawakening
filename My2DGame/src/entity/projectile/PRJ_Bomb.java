@@ -100,7 +100,7 @@ public class PRJ_Bomb extends Projectile {
 	
 	public void explode() {
 		
-		gp.playSE(3, 9);
+		gp.playSE(5, 5);
 		generateParticle(this, this);
 		
 		// DAMAGE SURROUNDING ENEMIES

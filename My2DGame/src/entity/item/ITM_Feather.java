@@ -30,6 +30,6 @@ public class ITM_Feather extends Entity {
 	}	
 	
 	public void playSE() {
-		gp.playSE(3, 11);
+		gp.playSE(5, 6);
 	}
 }

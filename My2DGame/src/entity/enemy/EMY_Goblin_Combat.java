@@ -88,10 +88,10 @@ public class EMY_Goblin_Combat extends Entity {
 	}
 	
 	public void playHurtSE() {
-		gp.playSE(4, 0);
+		gp.playSE(3, 0);
 	}
 	public void playDeathSE() {
-		gp.playSE(4, 2);
+		gp.playSE(3, 2);
 	}
 	
 	// DROPPED ITEM

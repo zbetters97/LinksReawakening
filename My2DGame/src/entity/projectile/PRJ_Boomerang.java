@@ -41,6 +41,6 @@ public class PRJ_Boomerang extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 10);
+		gp.playSE(5, 2);
 	}
 }

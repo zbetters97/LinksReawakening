@@ -25,11 +25,11 @@ public class ITM_Cape extends Entity {
 			gp.player.safeWorldY = gp.player.worldY;
 			gp.player.action = Action.SOARING;
 			gp.player.attackCanceled = true;
-			gp.playSE(3, 11);
+			gp.playSE(5, 6);
 		}
 	}	
 	
 	public void playSE() {
-		gp.playSE(3, 20);
+		gp.playSE(5, 9);
 	}
 }

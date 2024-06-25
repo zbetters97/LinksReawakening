@@ -1494,13 +1494,13 @@ public class UI {
 	
 	// SOUND EFFECTS
 	private void playDialogueSE() {
-		gp.playSE(1, 11);
+		gp.playSE(1, 5);
 	}
 	private void playDialogueFinishSE() {
-		gp.playSE(1, 12);
+		gp.playSE(1, 6);
 	}
 	private void playWalletSE() {
-		gp.playSE(1, 15);
+		gp.playSE(2, 0);
 	}
 	
 	private void drawSubWindow(int x, int y, int width, int height) {

@@ -43,16 +43,8 @@ public class EMY_Bat extends Entity {
 		right2 = up2;
 	}
 	
-	public void setAction() {
-		
-/*		if (onPath) {			
-			isOffPath(gp.player, 10);				
-			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-		}
-		else {				
-			isOnPath(gp.player, 5);
-*/			getDirection(25);
-//		}	
+	public void setAction() {	
+		getDirection(25);
 	}
 	
 	// BAT CHASES PLAYER WHEN HIT
@@ -62,10 +54,10 @@ public class EMY_Bat extends Entity {
 	}
 	
 	public void playHurtSE() {
-		gp.playSE(4, 0);
+		gp.playSE(3, 0);
 	}
 	public void playDeathSE() {
-		gp.playSE(4, 2);
+		gp.playSE(3, 2);
 	}
 	
 	// DROPPED ITEM

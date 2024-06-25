@@ -175,7 +175,7 @@ public class KeyHandler implements KeyListener {
 				
 				// STOP PLAYER FROM STARTING IF NO LETTERS
 				if (gp.ui.commandNum == 29 && gp.player.name.length() < 1) {
-					gp.playSE(1, 2);
+					playErrorSE();
 					gp.ui.commandNum = 28;
 				}
 				else 
@@ -196,7 +196,7 @@ public class KeyHandler implements KeyListener {
 					);							
 				}
 				else
-					gp.playSE(1, 2);
+					playErrorSE();
 			}			
 			// CAPS BUTTON
 			else if (gp.ui.commandNum == 27) {
@@ -376,6 +376,8 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		if (code == KeyEvent.VK_T) {
+			playCursorSE();
+			
 			if (gp.ui.inventoryScreen == 0)
 				gp.ui.inventoryScreen = 1;
 			else
@@ -586,14 +588,17 @@ public class KeyHandler implements KeyListener {
 	public void playSelectSE() {
 		gp.playSE(1, 1);
 	}
+	public void playErrorSE() {
+		gp.playSE(1, 2);
+	}
 	public void playMenuOpenSE() {
-		gp.playSE(1, 8);
+		gp.playSE(1, 3);
 	}
 	public void playMenuCloseSE() {
-		gp.playSE(1, 9);
+		gp.playSE(1, 4);
 	}
 	public void playMapOpenSE() {
-		gp.playSE(1, 14);
+		gp.playSE(1, 7);
 	}
 
 }

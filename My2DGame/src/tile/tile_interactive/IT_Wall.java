@@ -28,7 +28,7 @@ public class IT_Wall extends InteractiveTile {
 	}
 	
 	public void playSE() {
-		gp.playSE(1, 7);
+		gp.playSE(6, 6);
 	}
 	public Color getParticleColor() {
 		Color color = new Color(65,50,30); // BROWN

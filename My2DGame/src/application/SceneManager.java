@@ -405,7 +405,7 @@ public class SceneManager {
 	}
 	
 	private void playDoorCloseSE() {
-		gp.playSE(3, 18);
+		gp.playSE(4, 5);
 	}
 	private void playBossMusic() {
 		gp.playMusic(5);

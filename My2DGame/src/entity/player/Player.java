@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import application.GamePanel;
 import application.KeyHandler;
 import entity.Entity;
-import entity.collectable.COL_Potion_Red;
 import entity.equipment.*;
 import entity.item.*;
 import entity.projectile.PRJ_Bomb;
@@ -161,7 +160,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-		
+/*		
 		item_inventory.add(new ITM_Shovel(gp));
 		item_inventory.add(new ITM_Boomerang(gp));
 		item_inventory.add(new ITM_Boots(gp));		
@@ -176,8 +175,8 @@ public class Player extends Entity {
 		
 		inventory.add(new COL_Potion_Red(gp));
 		
-		hasItem = true;		
-		canSwim = true;
+		hasItem = true;	
+*/
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -733,14 +732,13 @@ public class Player extends Entity {
 	}	
 	public String findTargetDirection(Entity target) {
 		
-		String eDirection = "down";
+		String eDirection = direction;
 		
 		int px = (worldX + (hitbox.width / 2)) / gp.tileSize;
 		int py = (worldY + (hitbox.width / 2)) / gp.tileSize;
 		
 		int ex = (target.worldX + (target.hitbox.width / 2)) / gp.tileSize;
 		int ey = (target.worldY + (target.hitbox.height / 2)) / gp.tileSize;	
-
 		
 		if (py > ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
 			eDirection = "up";
@@ -1224,25 +1222,22 @@ public class Player extends Entity {
 	
 	// SOUND EFFECTS	
 	public void playGuardSE() {
-		gp.playSE(2, 3);
+		gp.playSE(2, 1);
 	}
 	public void playLockOnSE() {
-		gp.playSE(2, 3);
+		gp.playSE(2, 1);
 	}	
-	public void playLevelUpSE() {
-		gp.playSE(1, 3);
-	}
 	public void playDrownSE() {
-		gp.playSE(2, 4);
+		gp.playSE(2, 3);
 	}
 	public void playSwimSE() {
-		gp.playSE(2, 5);
+		gp.playSE(2, 2);
 	}
 	public void playHurtSE() {
-		gp.playSE(2, 0);
+		gp.playSE(2, 5);
 	}
 	public void playDeathSE() {
-		gp.playSE(2, 1);
+		gp.playSE(2, 6);
 	}
 
 	// IMAGE MANAGER

@@ -57,6 +57,6 @@ public class PRJ_Fireball extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 3);
+		gp.playSE(4, 2);
 	}
 }

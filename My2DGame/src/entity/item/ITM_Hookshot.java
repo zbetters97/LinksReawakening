@@ -31,6 +31,6 @@ public class ITM_Hookshot extends Entity {
 		}		
 	}
 	public void playSE() {
-		gp.playSE(3, 5);
+		gp.playSE(5, 8);
 	}
 }

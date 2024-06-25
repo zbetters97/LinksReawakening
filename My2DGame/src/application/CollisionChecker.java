@@ -273,7 +273,7 @@ public class CollisionChecker {
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 			if (gp.player.action != Action.JUMPING && gp.player.action != Action.SOARING &&
 					gp.gameState == gp.playState) {
-				gp.playSE(2, 2);
+				gp.playSE(2, 4);
 				gp.player.invincible = true;
 				gp.gameState = gp.fallingState;
 			}

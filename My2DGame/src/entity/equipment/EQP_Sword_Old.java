@@ -28,6 +28,6 @@ public class EQP_Sword_Old extends Entity {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 0);
+		gp.playSE(4, 0);
 	}
 }

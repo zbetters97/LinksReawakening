@@ -48,10 +48,6 @@ public class OBJ_Chest extends Entity {
 	}
 	
 	public void playOpenSE() {
-		gp.playSE(3, 17);
-	}
-	
-	public void playCloseSE() {
-		gp.playSE(3, 18);
+		gp.playSE(4, 3);
 	}
 }

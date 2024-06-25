@@ -47,6 +47,6 @@ public class PRJ_Sword extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 4);
+		gp.playSE(4, 1);
 	}
 }

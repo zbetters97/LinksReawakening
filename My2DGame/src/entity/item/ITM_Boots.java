@@ -23,6 +23,6 @@ public class ITM_Boots extends Entity {
 	}
 	
 	public void playSE() {
-		gp.playSE(3, 6);
+		gp.playSE(5, 3);
 	}
 }

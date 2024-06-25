@@ -49,6 +49,6 @@ public class ITM_Rod extends Entity {
 	}	
 	
 	public void playSE() {
-		gp.playSE(3, 15);
+		gp.playSE(5, 10);
 	}
 }
