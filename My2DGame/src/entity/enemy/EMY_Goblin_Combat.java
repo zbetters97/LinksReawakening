@@ -20,18 +20,17 @@ public class EMY_Goblin_Combat extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
-		
 		capturable = true;
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 4; defense = 1;
+		attack = 2; 
 		knockbackPower = 1;
 		maxLife = 8; life = maxLife;
 		
 		swingSpeed1 = 30;
-		swingSpeed2 = 60;
-						
+		swingSpeed2 = 60;		
+		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;

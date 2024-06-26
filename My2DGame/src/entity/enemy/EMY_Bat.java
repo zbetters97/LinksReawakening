@@ -19,11 +19,13 @@ public class EMY_Bat extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		onGround = false;
+		
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
-		attack = 2; defense = 0;
+		attack = 1;
 		knockbackPower = 1;
-		maxLife = 6; life = maxLife;
+		maxLife = 4; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;

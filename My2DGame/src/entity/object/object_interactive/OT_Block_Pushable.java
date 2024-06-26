@@ -60,13 +60,13 @@ public class OT_Block_Pushable extends Entity {
 	
 	public void move(String dir) {	
 		
-		if (!moving) {
-			playSE();
-									
+		if (!moving) {									
 			direction = dir;
 				
-			if (isCorrectTile())
+			if (isCorrectTile()) {
+				playSE();
 				moving = true;
+			}
 		}
 	}
 	
@@ -184,6 +184,6 @@ public class OT_Block_Pushable extends Entity {
 	}
 		
 	public void playSE() {
-		gp.playSE(3, 12);
+		gp.playSE(4, 7);
 	}
 }

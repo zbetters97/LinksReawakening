@@ -39,18 +39,13 @@ public class SaveLoad {
 			ds.name = gp.player.name;
 			ds.maxLife = gp.player.maxLife;
 			ds.life = gp.player.life;
-			ds.strength = gp.player.strength;
-			ds.dexterity = gp.player.dexterity;
 			ds.attack = gp.player.attack;
-			ds.defense = gp.player.defense;
 						
 			ds.rupees = gp.player.rupees;
 			ds.maxArrows = gp.player.maxArrows;
 			ds.arrows = gp.player.arrows;
 			ds.maxBombs = gp.player.maxBombs;
 			ds.bombs = gp.player.bombs;
-			
-			ds.hasItem = gp.player.hasItem;
 			
 			// PLAYER INVENTORY
 			for (Entity item : gp.player.inventory) {				
@@ -119,18 +114,13 @@ public class SaveLoad {
 			gp.player.name = ds.name;
 			gp.player.maxLife = ds.maxLife;
 			gp.player.life = ds.life;
-			gp.player.strength = ds.strength;
-			gp.player.dexterity = ds.dexterity;
 			gp.player.attack = ds.attack;
-			gp.player.defense = ds.defense;
 						
 			gp.player.rupees = ds.rupees;
 			gp.player.maxArrows = ds.maxArrows;
 			gp.player.arrows = ds.arrows;
 			gp.player.maxBombs = ds.maxBombs;
 			gp.player.bombs = ds.bombs;
-			
-			gp.player.hasItem = ds.hasItem;
 			
 			// PLAYER ITEMS
 			gp.player.inventory.clear();			
@@ -144,7 +134,6 @@ public class SaveLoad {
 			gp.player.currentShield = gp.player.inventory.get(ds.currentShieldSlot);
 			
 			gp.player.getAttack();
-			gp.player.getDefense();
 			
 			// MAP OBJECTS
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {

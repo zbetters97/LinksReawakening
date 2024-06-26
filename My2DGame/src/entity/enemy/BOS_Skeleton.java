@@ -16,13 +16,14 @@ public class BOS_Skeleton extends Entity {
 		this.gp = gp;
 		
 		type = type_boss;
-		sleep = true;
 		name = emyName;
+		sleep = true;		
+		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 4; defense = 1;
+		attack = 4;
 		knockbackPower = 5;
-		maxLife = 12; life = maxLife;
+		maxLife = 16; life = maxLife;
 		currentBossPhase = bossPhase_1;
 		
 		swingSpeed1 = 45;
@@ -119,7 +120,7 @@ public class BOS_Skeleton extends Entity {
 			
 			if (life < maxLife / 2) {
 				currentBossPhase = 2;
-				attack++; defense--;
+				attack++; 
 				defaultSpeed++; speed = defaultSpeed;
 				getImage();
 				getAttackImage();

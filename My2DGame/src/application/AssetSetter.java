@@ -3,6 +3,7 @@ package application;
 import data.Progress;
 import entity.collectable.*;
 import entity.enemy.*;
+import entity.equipment.*;
 import entity.item.*;
 import entity.npc.*;
 import entity.object.*;
@@ -54,7 +55,7 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldY = gp.tileSize * 32;
 		i++;	
 		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new ITM_Bow(gp));
+		gp.obj[mapNum][i].setLoot(new EQP_Flippers(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 38;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 7;		
 		i++;	
@@ -197,6 +198,7 @@ public class AssetSetter {
 		
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 30, 36, new COL_Rupee_Red(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 27, 16, new COL_Rupee_Red(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 8, 24, new EQP_Sword_Master(gp)); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 20, 16); i++;
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 35, 30); i++;

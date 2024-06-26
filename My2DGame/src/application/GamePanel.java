@@ -142,6 +142,8 @@ public class GamePanel extends JPanel implements Runnable {
 
 		eManager.setup();
 		
+		player.setDefaultValues();	
+		
 		aSetter.setNPC();
 		aSetter.setEnemy();
 		aSetter.setInteractiveObjects();
@@ -389,6 +391,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		if (restart) {
 			player.inventory.clear();
+			player.inventory_item.clear();
 			player.setDefaultValues();	
 			aSetter.setInteractiveObjects();
 			aSetter.setInteractiveTiles();

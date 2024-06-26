@@ -20,11 +20,12 @@ public class EMY_Slime_Green extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 13;
-		attack = 4; defense = 0;
+		attack = 1; 
 		knockbackPower = 1;
-		maxLife = 9; life = maxLife;
+		maxLife = 6; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;

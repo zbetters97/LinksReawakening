@@ -50,7 +50,15 @@ public class Projectile extends Entity {
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);	
+		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkObject_I(this, false);
+		
+		int objectIndex = gp.cChecker.checkObject(this, true);
+		if (objectIndex != -1 &&
+				gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
+				gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {
+			collisionOn = true;
+		}
 		
 		// SHOT BY PLAYER
 		if (user == gp.player) {
@@ -74,9 +82,11 @@ public class Projectile extends Entity {
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
 			gp.player.damageInteractiveTile(iTileIndex);
 		}
-		// SHOT BY ENEMEY
+		
+		// SHOT BY ENEMEY AND PLAYER ON GROUND
 		else if (gp.player.onGround) {
 			boolean contactPlayer = gp.cChecker.checkPlayer(this);
+			
 			if (contactPlayer && !gp.player.invincible) {
 				damagePlayer(attack);
 				alive = false;
@@ -99,9 +109,9 @@ public class Projectile extends Entity {
 				case "right": worldX += speed; break;
 			}
 		}
-		// KILL PROJECTILE IF COLLISION
+		// ARROW CAN BE PICKED UP BY PLAYER
 		else {
-			alive = false;
+			canPickup = true;
 		}
 		
 		life--;
@@ -215,7 +225,9 @@ public class Projectile extends Entity {
 		if (life <= 0 || objectIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER
-			if (objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].type != type_obstacle) {				
+			if (objectIndex != -1 && 
+					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
+					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {				
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
 			}		
@@ -422,7 +434,9 @@ public class Projectile extends Entity {
 		else if (life <= 0 || objectIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER
-			if (objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].type != type_obstacle) {
+			if (objectIndex != -1 && 
+					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
+					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {
 				hookGrab = true;					
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;

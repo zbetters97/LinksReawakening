@@ -1,6 +1,7 @@
 package entity.npc;
 
 import application.GamePanel;
+import entity.item.ITM_Shovel;
 
 public class NPC_Traveler_2 extends NPC_Traveler_Template {
 	
@@ -35,7 +36,7 @@ public class NPC_Traveler_2 extends NPC_Traveler_Template {
 	
 	public void speak() {	
 		
-		if (gp.player.searchItemInventory("Shovel") != -1)
+		if (gp.player.searchItemInventory(ITM_Shovel.itmName) != -1)
 			dialogueSet = 3;
 		
 		if (!onPath) {

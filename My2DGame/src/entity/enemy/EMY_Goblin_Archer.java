@@ -22,11 +22,12 @@ public class EMY_Goblin_Archer extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 2; defense = 0;
+		attack = 1;
 		knockbackPower = 0;
-		maxLife = 9; life = maxLife;
+		maxLife = 6; life = maxLife;
 						
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;

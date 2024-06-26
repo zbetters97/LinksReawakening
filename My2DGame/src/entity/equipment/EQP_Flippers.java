@@ -10,7 +10,7 @@ public class EQP_Flippers extends Entity {
 	public EQP_Flippers(GamePanel gp) {
 		super(gp);
 
-		type = type_shield;
+		type = type_equipment;
 		name = eqpName;
 		description = "[" + name + "]\nSwim through water!";
 		

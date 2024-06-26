@@ -28,50 +28,37 @@ public class Player extends Entity {
 	
 	// INVENTORY
 	public final int maxItemInventorySize = 20;
+	public ArrayList<Entity> inventory_item = new ArrayList<>();
 	public int itemIndex = 0;
 	public int walletSize;
 	public int keys = 0;
-	public int boss_key = 0;
+	public int boss_key = 0;	
 	
-	public ArrayList<Entity> item_inventory = new ArrayList<>();
+	public boolean canSwim = false;
+	public Entity capturedTarget;
 		
 	// POSITIONING
 	public final int screenX;
-	public final int screenY;
-	
-	public boolean onGround;
+	public final int screenY;	
 	public int safeWorldX = 0;
 	public int safeWorldY = 0;
-
-	// LIGHTING
-	public boolean lightUpdated = false;
 	
-	public int digNum;
-	public int digCounter = 0;	
-
-	public int jumpNum;
-	public int jumpCounter = 0;
-	
-	public int soarNum;
-	public int soarCounter = 0;
-	
-	public int rodNum;
-	public int rodCounter = 0;
-
-	public int damageNum;
-	public int damageCounter = 0;
+	// COUNTERS
+	public int digNum, jumpNum, soarNum, rodNum, damageNum;
+	public int digCounter = 0, jumpCounter = 0, soarCounter = 0, 
+				rodCounter = 0, damageCounter = 0;
 	
 	// IMAGES
-	public BufferedImage titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3;	
-	public BufferedImage swimUp1, swimUp2, swimDown1, swimDown2, 
-							swimLeft1, swimLeft2, swimRight1, swimRight2;
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
-							digLeft1, digLeft2, digRight1, digRight2;
-	public BufferedImage jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
-							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3;
-	public BufferedImage soarUp1, soarDown1, soarLeft1, soarRight1;
-	public BufferedImage rodUp1, rodUp2, rodDown1, rodDown2, 
-							rodLeft1, rodLeft2, rodRight1, rodRight2;
+							digLeft1, digLeft2, digRight1, digRight2,
+							jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
+							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3,
+							soarUp1, soarDown1, soarLeft1, soarRight1,
+							rodUp1, rodUp2, rodDown1, rodDown2, 
+							rodLeft1, rodLeft2, rodRight1, rodRight2,
+							swimUp1, swimUp2, swimDown1, swimDown2, 
+							swimLeft1, swimLeft2, swimRight1, swimRight2,
+							titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3;	
 	
 /** END PLAYER VARIABLES **/		
 	
@@ -95,8 +82,6 @@ public class Player extends Entity {
 		
 		attackbox.width = 36;
 		attackbox.height = 36;
-		
-		setDefaultValues();  
 	}
 
 /** END PLAYER CONSTRUCTOR **/
@@ -109,13 +94,13 @@ public class Player extends Entity {
 			
 		action = Action.IDLE;		
 		onGround = true;
+		canSwim = false;
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
 		maxLife = 10; life = maxLife;
-		strength = 1; dexterity = 1;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
@@ -123,13 +108,12 @@ public class Player extends Entity {
 		
 		currentWeapon = null;
 //		currentWeapon = new EQP_Sword_Old(gp);
-		currentShield = new EQP_Shield_Old(gp);
+		currentShield = new EQP_Shield(gp);
 		currentLight = new ITM_Lantern(gp);
 		
 		projectile = new PRJ_Sword(gp);
 		
 		attack = getAttack();
-		defense = getDefense();
 		
 		setDefaultPosition();
 		setDefaultItems();	
@@ -137,12 +121,12 @@ public class Player extends Entity {
 
 		getImage();
 		getAttackImage();
-		getSwimImage();
-		getGuardImage();
+		getGuardImage();		
 		getDigImage();
 		getJumpImage();
 		getSoarImage();
-		getSwingImage();
+		getRodImage();
+		getSwimImage();	
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
@@ -160,23 +144,18 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-/*		
-		item_inventory.add(new ITM_Shovel(gp));
-		item_inventory.add(new ITM_Boomerang(gp));
-		item_inventory.add(new ITM_Boots(gp));		
+/*		inventory_item.add(new ITM_Shovel(gp));
+		inventory_item.add(new ITM_Boomerang(gp));
+		inventory_item.add(new ITM_Boots(gp));		
 		
-		item_inventory.add(new ITM_Bomb(gp));
-		item_inventory.add(new ITM_Feather(gp));
-		item_inventory.add(new ITM_Bow(gp));
+		inventory_item.add(new ITM_Bomb(gp));
+		inventory_item.add(new ITM_Feather(gp));
+		inventory_item.add(new ITM_Bow(gp));
 		
-		item_inventory.add(new ITM_Hookshot(gp));
-		item_inventory.add(new ITM_Cape(gp));		
-		item_inventory.add(new ITM_Rod(gp));
-		
-		inventory.add(new COL_Potion_Red(gp));
-		
-		hasItem = true;	
-*/
+		inventory_item.add(new ITM_Hookshot(gp));
+		inventory_item.add(new ITM_Cape(gp));		
+		inventory_item.add(new ITM_Rod(gp));
+		*/
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -185,7 +164,6 @@ public class Player extends Entity {
 		knockback = false;
 		invincible = false;
 		transparent = false;
-		lightUpdated = true;	
 		onGround = true;
 		
 		digNum = 0;
@@ -213,15 +191,8 @@ public class Player extends Entity {
 			attackbox = currentWeapon.attackbox;
 			swingSpeed1 = currentWeapon.swingSpeed1;
 			swingSpeed2 = currentWeapon.swingSpeed2;
-			return strength * currentWeapon.attackValue;
+			return currentWeapon.attackValue;
 		}
-	}
-	public int getDefense() {
-		if (currentWeapon == null)
-			return 1;
-		else {
-			return dexterity * currentShield.defenseValue;	
-		}		
 	}
 	
 	// EQUIPMENT SLOT
@@ -261,15 +232,27 @@ public class Player extends Entity {
 		right1 = setup("/player/boy_right_1"); 
 		right2 = setup("/player/boy_right_2"); 
 	}		
-	public void getAttackImage() {		
-		attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);		
-		attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);		
-		attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);		
-		attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
-		attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
+	public void getAttackImage() {				
+		if (currentWeapon != null && currentWeapon.name.equals(EQP_Sword_Old.eqpName)) {	
+			attackUp1 = setup("/player/boy_attack_old_up_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackUp2 = setup("/player/boy_attack_old_up_2", gp.tileSize, gp.tileSize * 2);		
+			attackDown1 = setup("/player/boy_attack_old_down_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackDown2 = setup("/player/boy_attack_old_down_2", gp.tileSize, gp.tileSize * 2);		
+			attackLeft1 = setup("/player/boy_attack_old_left_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackLeft2 = setup("/player/boy_attack_old_left_2", gp.tileSize * 2, gp.tileSize);		
+			attackRight1 = setup("/player/boy_attack_old_right_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackRight2 = setup("/player/boy_attack_old_right_2", gp.tileSize * 2, gp.tileSize);		
+		}
+		else {
+			attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);		
+			attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);		
+			attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);		
+			attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
+			attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
+		}
 	}
 	public void getGuardImage() {			
 		guardUp1 = setup("/player/boy_guard_up_1"); 
@@ -291,16 +274,6 @@ public class Player extends Entity {
 		digRight1 = setup("/player/boy_dig_right_1"); 
 		digRight2 = setup("/player/boy_dig_right_2");		
 	}
-	public void getSwimImage() {			
-		swimUp1 = setup("/player/boy_swim_up_1"); 
-		swimUp2 = setup("/player/boy_swim_up_2");			
-		swimDown1 = setup("/player/boy_swim_down_1"); 
-		swimDown2 = setup("/player/boy_swim_down_2");		
-		swimLeft1 = setup("/player/boy_swim_left_1"); 
-		swimLeft2 = setup("/player/boy_swim_left_2");		
-		swimRight1 = setup("/player/boy_swim_right_1"); 
-		swimRight2 = setup("/player/boy_swim_right_2");		
-	}
 	public void getJumpImage() {
 		jumpUp1 = setup("/player/boy_jump_up_1");
 		jumpUp2 = setup("/player/boy_jump_up_2");
@@ -321,7 +294,7 @@ public class Player extends Entity {
 		soarLeft1 = setup("/player/boy_soar_left_1");
 		soarRight1 = setup("/player/boy_soar_right_1");		
 	}
-	public void getSwingImage() {		
+	public void getRodImage() {		
 		rodUp1 = setup("/player/boy_rod_up_1", gp.tileSize * 2, gp.tileSize * 2); 
 		rodUp2 = setup("/player/boy_rod_up_2", gp.tileSize, gp.tileSize * 2);		
 		rodDown1 = setup("/player/boy_rod_down_1", gp.tileSize * 2, gp.tileSize * 2); 
@@ -331,6 +304,16 @@ public class Player extends Entity {
 		rodRight1 = setup("/player/boy_rod_right_1", gp.tileSize * 2, gp.tileSize * 2); 
 		rodRight2 = setup("/player/boy_rod_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
+	public void getSwimImage() {			
+		swimUp1 = setup("/player/boy_swim_up_1"); 
+		swimUp2 = setup("/player/boy_swim_up_2");			
+		swimDown1 = setup("/player/boy_swim_down_1"); 
+		swimDown2 = setup("/player/boy_swim_down_2");		
+		swimLeft1 = setup("/player/boy_swim_left_1"); 
+		swimLeft2 = setup("/player/boy_swim_left_2");		
+		swimRight1 = setup("/player/boy_swim_right_1"); 
+		swimRight2 = setup("/player/boy_swim_right_2");		
+	}
 	public void getMiscImage() {		
 		drown = setup("/player/boy_drown");
 		fall1 = setup("/player/boy_fall_1");
@@ -492,8 +475,7 @@ public class Player extends Entity {
 	
 	// INTERACTIONS
 	public void action() {		
-		if (!attackCanceled) 
-			swingSword();
+		if (!attackCanceled) swingSword();
 	}
 	public void checkCollision() {
 		
@@ -509,7 +491,7 @@ public class Player extends Entity {
 		gp.cChecker.checkEntity(this, gp.iTile);
 		
 		// DON'T CHECK PITS WHEN JUMPING
-		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkPit();
+		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkPit(this, true);
 					
 		// CHECK NPC COLLISION
 		gp.cChecker.checkEntity(this, gp.npc);		
@@ -591,21 +573,16 @@ public class Player extends Entity {
 	}
 	public void getObject(Entity item) {
 
-		// INVENTORY ITEMS
-		if (item.type == type_item) {
-			hasItem = true;
-		}
-		else if (item.type == type_sword) {
-			currentWeapon = item;
-			attack = gp.player.getAttack();
-		}
-		else if (item.type == type_shield) {
-			currentShield = item;
-			defense = gp.player.getDefense();
-		}
-		else if (item.type == type_light) {
-			currentLight = item;				
-			lightUpdated = true;
+		if (item.type == type_equipment) {			
+			if (item.name.equals(EQP_Sword_Old.eqpName) || 
+					item.name.equals(EQP_Sword_Master.eqpName)) {
+				currentWeapon = item;
+				attack = gp.player.getAttack();
+				getAttackImage();	
+			}			
+			else if (item.name.equals(EQP_Flippers.eqpName)) {
+				canSwim = true;
+			}
 		}
 		else if (item.type == type_collectable) {
 			item.use(this);
@@ -628,7 +605,7 @@ public class Player extends Entity {
 			playGetItemSE();
 			gp.player.boss_key++;
 			gp.ui.newItem = item;
-			gp.ui.currentDialogue = "You got a " + item.name + "!";		
+			gp.ui.currentDialogue = "You got the " + item.name + "!";		
 			gp.ui.subState = 0;
 			gp.gameState = gp.itemGetState;
 			return;
@@ -636,15 +613,14 @@ public class Player extends Entity {
 		
 		playGetItemSE();
 		
-		gp.ui.newItem = item;
-		
 		if (item.type == type_item) {
-			gp.player.item_inventory.add(item);		
+			gp.player.inventory_item.add(item);		
 		}
-		else if (item.type != type_sword && item.type != type_shield) {
+		else if (item.type != type_equipment) {
 			inventory.add(item);
 		}
 		
+		gp.ui.newItem = item;
 		gp.ui.currentDialogue = "You got the " + item.name + "!";		
 		gp.ui.subState = 0;
 		gp.gameState = gp.itemGetState;
@@ -771,7 +747,7 @@ public class Player extends Entity {
 			if (enemyList[gp.currentMap][i].knockbackPower > 0) 
 				setKnockback(gp.player, enemyList[gp.currentMap][i], enemyList[gp.currentMap][i].knockbackPower);
 			
-			int damage = enemyList[gp.currentMap][i].attack - defense;
+			int damage = enemyList[gp.currentMap][i].attack;
 			if (damage < 0) damage = 0;				
 			this.life -= damage;
 			
@@ -821,7 +797,7 @@ public class Player extends Entity {
 	public void useItem() {
 		keyH.itemPressed = false;
 		
-		if (hasItem && currentItem != null) {							
+		if (currentItem != null) {							
 			switch (currentItem.name) {
 				case ITM_Axe.itmName:
 				case ITM_Boots.itmName:
@@ -849,10 +825,6 @@ public class Player extends Entity {
 					break;	
 			}	
 		}
-		else if (!hasItem) {
-			gp.gameState = gp.dialogueState;
-			startDialogue(this, 1);
-		}
 		else if (currentItem == null) {
 			gp.gameState = gp.dialogueState;
 			startDialogue(this, 2);
@@ -862,7 +834,7 @@ public class Player extends Entity {
 	public void selectItem() {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
-		if (inventoryIndex < item_inventory.size()) {			
+		if (inventoryIndex < inventory_item.size()) {			
 			keyH.playSelectSE();
 			
 			if (action != Action.SWIMMING) 
@@ -870,7 +842,7 @@ public class Player extends Entity {
 			
 			itemIndex = inventoryIndex;										
 									
-			Entity selectedItem = item_inventory.get(inventoryIndex);
+			Entity selectedItem = inventory_item.get(inventoryIndex);
 			currentItem = selectedItem;
 		}
 	}
@@ -903,14 +875,13 @@ public class Player extends Entity {
 		
 		if (currentItem != null) {
 			keyH.playCursorSE();
-			action = Action.IDLE;
 			keyH.tabPressed = false;
 								
 			itemIndex++;
-			if (itemIndex >= item_inventory.size())
+			if (itemIndex >= inventory_item.size())
 				itemIndex = 0;
 			
-			currentItem = item_inventory.get(itemIndex);		
+			currentItem = inventory_item.get(itemIndex);		
 		}
 	}	
 
@@ -1110,7 +1081,7 @@ public class Player extends Entity {
 					enemies[gp.currentMap][i].spriteCounter = -30;
 				}
 								
-				int damage = attack - enemies[gp.currentMap][i].defense;
+				int damage = attack;
 				if (damage < 0) damage = 0;				
 				
 				enemies[gp.currentMap][i].life -= damage;					

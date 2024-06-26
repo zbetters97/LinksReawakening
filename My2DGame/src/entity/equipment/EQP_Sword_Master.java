@@ -3,18 +3,18 @@ package entity.equipment;
 import application.GamePanel;
 import entity.Entity;
 
-public class EQP_Sword_Old extends Entity {
+public class EQP_Sword_Master extends Entity {
 
-	public static final String eqpName = "Traveler's Sword";
+	public static final String eqpName = "Master Sword";
 	
-	public EQP_Sword_Old(GamePanel gp) {
+	public EQP_Sword_Master(GamePanel gp) {
 		super(gp);
 		
 		type = type_equipment;	
 		name = eqpName;
-		description = "[" + name + "]\nA humble starter sword.";
+		description = "[" + name + "]\nThe sword of a true hero.";
 				
-		attackValue = 2;
+		attackValue = 4;
 		knockbackPower = 1;
 		
 		swingSpeed1 = 3;
@@ -23,7 +23,7 @@ public class EQP_Sword_Old extends Entity {
 		attackbox.width = 36;
 		attackbox.height = 36;
 		
-		down1 = setup("/items/EQP_SWORD_OLD");
+		down1 = setup("/items/EQP_SWORD_MASTER");
 		image1 = down1;
 	}
 	

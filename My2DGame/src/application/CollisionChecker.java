@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import entity.Entity;
 import entity.Entity.Action;
+import entity.projectile.PRJ_Bomb;
 
 public class CollisionChecker {
 	
@@ -120,12 +121,13 @@ public class CollisionChecker {
 				return;
 		}		
 
-		if (entity.type == entity.type_npc || 
-				entity.type == entity.type_enemy || entity.type == entity.type_boss) {
+		if (entity.type == entity.type_npc || entity.type == entity.type_enemy || entity.type == entity.type_boss) {
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision ||
 					gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
 					gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) 
-				entity.collisionOn = true;	
+				
+				// ENEMY CAN FALL IN PIT IF HIT
+				if (!entity.knockback) entity.collisionOn = true;	
 		}
 		else {
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) 
@@ -134,11 +136,11 @@ public class CollisionChecker {
 	}
 	
 	// DAMAGE PIT COLLISION
-	public void checkPit() {
+	public void checkPit(Entity entity, boolean player) {
 		
 		// COLLISION BOX (left side, right side, top, bottom)
-		int entityWorldX = gp.player.worldX + gp.player.hitbox.x + (gp.player.hitbox.width / 2);
-		int entityWorldY = gp.player.worldY + gp.player.hitbox.y + (gp.player.hitbox.height / 2);
+		int entityWorldX = entity.worldX + entity.hitbox.x + (entity.hitbox.width / 2);
+		int entityWorldY = entity.worldY + entity.hitbox.y + (entity.hitbox.height / 2);
 		
 		int entityLeftCol = entityWorldX / gp.tileSize;
 		int entityRightCol = entityWorldX / gp.tileSize;
@@ -155,9 +157,9 @@ public class CollisionChecker {
 		int tileNum1 = 0, tileNum2 = 0;
 		
 		// KNOCKBACK DIRECTION
-		String direction = gp.player.direction;
-		if (gp.player.lockon) direction = gp.player.lockonDirection;		
-		if (gp.player.knockback) direction = gp.player.knockbackDirection;
+		String direction = entity.direction;
+		if (entity.lockon) direction = entity.lockonDirection;		
+		if (entity.knockback) direction = entity.knockbackDirection;
 				
 		switch (direction) {
 			case "up":				
@@ -167,9 +169,11 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
 				
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX;
-					gp.player.safeWorldY = gp.player.worldY + 35;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX;
+						gp.player.safeWorldY = gp.player.worldY + 35;
+					}
 				}
 				
 				break;
@@ -181,9 +185,11 @@ public class CollisionChecker {
 				entityLeftCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];	
 				
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX + 35;
-					gp.player.safeWorldY = gp.player.worldY + 35;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX + 35;
+						gp.player.safeWorldY = gp.player.worldY + 35;
+					}
 				}
 				
 				break;
@@ -195,9 +201,11 @@ public class CollisionChecker {
 				entityRightCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];	
 				
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX - 35;
-					gp.player.safeWorldY = gp.player.worldY + 35;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX - 35;
+						gp.player.safeWorldY = gp.player.worldY + 35;
+					}
 				}
 				
 				break;
@@ -208,9 +216,11 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];				
 
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX;
-					gp.player.safeWorldY = gp.player.worldY - 35;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX;
+						gp.player.safeWorldY = gp.player.worldY - 35;
+					}
 				}
 				
 				break;
@@ -222,9 +232,11 @@ public class CollisionChecker {
 				entityLeftCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX + 35;
-					gp.player.safeWorldY = gp.player.worldY - 35;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX + 35;
+						gp.player.safeWorldY = gp.player.worldY - 35;
+					}
 				}
 				
 				break;
@@ -236,9 +248,12 @@ public class CollisionChecker {
 				entityRightCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
 				
-				gp.player.safeWorldX = gp.player.worldX - 35;
-				gp.player.safeWorldY = gp.player.worldY - 35;
-				
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX - 35;
+						gp.player.safeWorldY = gp.player.worldY - 35;
+					}
+				}
 				break;	
 			case "left":
 				
@@ -247,9 +262,11 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX + 35;
-					gp.player.safeWorldY = gp.player.worldY;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX + 35;
+						gp.player.safeWorldY = gp.player.worldY;
+					}
 				}
 				
 				break;				
@@ -260,9 +277,11 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
 				
-				if (gp.player.onGround) {
-					gp.player.safeWorldX = gp.player.worldX - 35;
-					gp.player.safeWorldY = gp.player.worldY;
+				if (player) {
+					if (gp.player.onGround) {
+						gp.player.safeWorldX = gp.player.worldX - 35;
+						gp.player.safeWorldY = gp.player.worldY;
+					}
 				}
 				
 				break;
@@ -271,26 +290,43 @@ public class CollisionChecker {
 		}		
 
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
-			if (gp.player.action != Action.JUMPING && gp.player.action != Action.SOARING &&
+			if (entity.action != Action.JUMPING && entity.action != Action.SOARING &&
 					gp.gameState == gp.playState) {
-				gp.playSE(2, 4);
-				gp.player.invincible = true;
-				gp.gameState = gp.fallingState;
+				
+				if (player) {
+					gp.playSE(2, 4);			
+					gp.player.invincible = true;
+					gp.gameState = gp.fallingState;
+				}
+				else {
+					if (entity.name.equals(PRJ_Bomb.prjName)) {
+						entity.animationSpeed = 30;
+						entity.active = false;	
+					}
+					if (entity.onGround) entity.alive = false;
+				}
+				
 			}
 		}
-		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
-			gp.player.action = Action.SWIMMING;
+		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {			
 			
-			if (!gp.player.canSwim) {
-				gp.player.playDrownSE();
-				gp.player.playHurtSE();	
-				gp.player.invincible = true;
-				gp.gameState = gp.drowningState;
-			}			
+			if (player) {
+				gp.player.action = Action.SWIMMING;
+				
+				if (!gp.player.canSwim && gp.gameState == gp.playState) {
+					gp.player.playDrownSE();
+					gp.player.playHurtSE();	
+					gp.player.invincible = true;
+					gp.gameState = gp.drowningState;
+				}			
+			}
+			else {
+				entity.alive = false;
+			}
 		}		
 		else {
-			if (gp.player.action == Action.SWIMMING)
-				gp.player.action = Action.IDLE;
+			if (entity.action == Action.SWIMMING)
+				entity.action = Action.IDLE;
 		}
 	}	
 	

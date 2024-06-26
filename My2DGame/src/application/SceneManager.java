@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 
 import data.Progress;
 import entity.Entity;
+import entity.Entity.Action;
 import entity.enemy.BOS_Skeleton;
 import entity.npc.NPC_Traveler_2;
 import entity.object.OBJ_BlueHeart;
@@ -63,9 +64,11 @@ public class SceneManager {
 			case ending: scene_ending(); break;
 		}
 	}
+	
 	private void scene_npc_1() {
 		
-		if (phase == 0) {
+		if (phase == 0) {	
+			resetPlayerCounters();	
 			gp.ui.drawDialogueScreen();
 			npc1 = gp.ui.npc;
 		}
@@ -135,6 +138,7 @@ public class SceneManager {
 	}
 	private void scene_enemy_spawn() {
 		if (phase == 0) {
+			resetPlayerCounters();
 			playDoorCloseSE();
 			phase++;
 		}
@@ -153,6 +157,7 @@ public class SceneManager {
 	private void scene_boss_1() {
 		
 		if (phase == 0) {
+			resetPlayerCounters();
 			gp.stopMusic();	
 			gp.bossBattleOn = true;
 			
@@ -238,6 +243,7 @@ public class SceneManager {
 	}	
 	private void scene_boss_defeat(int num) {
 		if (phase == 0) {
+			resetPlayerCounters();
 			gp.stopMusic();
 			gp.playMusic(6);
 
@@ -265,6 +271,7 @@ public class SceneManager {
 	private void scene_ending() {
 						
 		if (phase == 0) {
+			resetPlayerCounters();
 			gp.stopMusic();
 			gp.ui.npc = new OBJ_BlueHeart(gp);
 			phase++;
@@ -364,6 +371,21 @@ public class SceneManager {
 			}
 			drawString(1f, 38f, y, credits, 40);
 		}
+	}
+	
+	private void resetPlayerCounters() {
+		
+		gp.player.action = Action.IDLE;
+		gp.player.onGround = true;
+		
+		gp.player.digNum = 0;
+		gp.player.digCounter = 0;	
+		gp.player.jumpNum = 0;
+		gp.player.jumpCounter = 0;			
+		gp.player.rodNum = 0;
+		gp.player.rodCounter = 0;
+		gp.player.damageNum = 0;
+		gp.player.damageCounter = 0;
 	}
 	
 	private boolean counterReached(int target) {

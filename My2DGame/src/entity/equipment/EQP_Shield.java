@@ -3,18 +3,16 @@ package entity.equipment;
 import application.GamePanel;
 import entity.Entity;
 
-public class EQP_Shield_Old extends Entity {
+public class EQP_Shield extends Entity {
 
 	public static final String eqpName = "Old Shield";
 	
-	public EQP_Shield_Old(GamePanel gp) {
+	public EQP_Shield(GamePanel gp) {
 		super(gp);
 
-		type = type_shield;
+		type = type_equipment;
 		name = eqpName;
 		description = "[" + name + "]\nA humble starter shield.";
-		
-		defenseValue = 1;
 		
 		down1 = setup("/items/EQP_SHIELD");
 	}

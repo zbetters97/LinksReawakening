@@ -798,7 +798,7 @@ public class UI {
 		
 		String text = null;
 		
-		if (inventoryScreen == 0) text = "INVENTORY";
+		if (inventoryScreen == 0) text = "COLLECTABLES";
 		else text = "ITEMS";
 		
 		x = getXforCenteredText(text);
@@ -807,47 +807,54 @@ public class UI {
 	}
 	private void drawEquipment() {
 
-		int frameX = gp.tileSize * 7;
-		int frameY = gp.tileSize;
-		int frameWidth = gp.tileSize * 2;
-		int frameHeight = gp.tileSize * 5;
+		int frameX = (gp.tileSize * 7) + 15;
+		int frameY = gp.tileSize + 5;
+		int frameWidth = (gp.tileSize * 2) - 20;
+		int frameHeight = (gp.tileSize * 5) - 10;
 		
-		Color c = new Color(255,255,255);
-		g2.setColor(c);
-		g2.fillRoundRect(frameX, frameY, frameWidth, frameHeight, 25, 25); 
+		int slotX = frameX + 16;
+		int slotY = frameY + 10;
+		int itemX = slotX + 35;
 		
-		c = new Color(0, 0, 0);
-		g2.setColor(c);
-		g2.setStroke(new BasicStroke(5));
-		g2.drawRoundRect(frameX + 5, frameY + 5, frameWidth - 10, frameHeight - 10, 15, 15);
+		int cursorX = frameX;
+		int cursorY = slotY - 6;
+		int cursorWidth = frameWidth;
+		int cursorHeight = (frameHeight - 4) / 4;
 		
-		// SLOTS
-		int slotX = frameX + 15;
-		int slotY = frameY + 20;
-		int itemX = slotX + gp.tileSize;
-			
 		Entity sword = gp.player.currentWeapon;
 		Entity shield = gp.player.currentShield;	
 		Entity item = gp.player.currentItem;
 		String count = "";
 		
+		// DRAW WINDOW
+		g2.setColor(Color.WHITE);
+		g2.fillRoundRect(frameX, frameY, frameWidth, frameHeight, 15, 15); 
+		
+		g2.setColor(Color.BLACK);
+		g2.setStroke(new BasicStroke(5));
+		g2.drawRoundRect(frameX, frameY, frameWidth, frameHeight, 15, 15);
+		
+		// DRAW DIVIDERS
+		g2.setStroke(new BasicStroke(4));
+		for (int i = 0; i < 4; i++) {			
+			g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+			cursorY += cursorHeight;
+		}				
+		
+		// DRAW SWORD
 		if (sword != null) {
 			g2.drawImage(sword.down1, slotX, slotY, null);	
-			
-			count = Integer.toString(sword.attackValue);				
-			drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
-		}
-		
-		if (shield != null) {
-			slotY = (frameY + 20) + (gp.tileSize + 3);	
-			g2.drawImage(shield.down1, slotX, slotY, null);
-			
-			count = Integer.toString(shield.defenseValue);		
-			drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
 		}		
 		
+		// DRAW SHIELD
+		if (shield != null) {
+			slotY = frameY + (gp.tileSize + 15);	
+			g2.drawImage(shield.down1, slotX, slotY, null);
+		}				
+		
+		// DRAW CURRENT ITEM
 		if (item != null) {
-			slotY = (frameY + 20) + ((gp.tileSize + 3) * 2);	
+			slotY = (frameY + 15) + ((gp.tileSize + 5) * 2);	
 			g2.drawImage(item.down1, slotX, slotY, null);
 			
 			// DRAW ARROW COUNT
@@ -861,8 +868,10 @@ public class UI {
 				drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
 			}
 		}
+		
+		// DRAW ZORA FLIPPERS
 		if (gp.player.canSwim) {
-			slotY = (frameY + 20) + ((gp.tileSize + 3) * 3);	
+			slotY = (frameY + 15) + ((gp.tileSize + 5) * 3);	
 			g2.drawImage(flippers, slotX, slotY, null);
 		}
 		
@@ -1001,23 +1010,23 @@ public class UI {
 		int slotSize = gp.tileSize + 3;
 		
 		// DRAW ITEMS
-		for (int i = 0; i < gp.player.item_inventory.size(); i++) {
+		for (int i = 0; i < gp.player.inventory_item.size(); i++) {
 			
 			// EQUIPPED CURSOR
-			if (gp.player.item_inventory.get(i) == gp.player.currentItem) {				
+			if (gp.player.inventory_item.get(i) == gp.player.currentItem) {				
 				g2.setColor(new Color(240,190,90));
 				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
 			}	
 			
-			g2.drawImage(gp.player.item_inventory.get(i).down1, slotX, slotY, null);
+			g2.drawImage(gp.player.inventory_item.get(i).down1, slotX, slotY, null);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.item_inventory.get(i).name.equals(ITM_Bow.itmName)) {	
+			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {	
 				String arrowCount = Integer.toString(gp.player.arrows);
 				drawItemCount(arrowCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
 			}
 			// DRAW BOMB COUNT
-			else if (gp.player.item_inventory.get(i).name.equals(ITM_Bomb.itmName)) {	
+			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {	
 				String bombCount = Integer.toString(gp.player.bombs);
 				drawItemCount(bombCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
 			}
@@ -1052,11 +1061,11 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 28F));
 		
 		int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
-		if (itemIndex < gp.player.item_inventory.size()) {
+		if (itemIndex < gp.player.inventory_item.size()) {
 			
 			drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
 			
-			for (String line : gp.player.item_inventory.get(itemIndex).description.split("\n")) {
+			for (String line : gp.player.inventory_item.get(itemIndex).description.split("\n")) {
 				g2.drawString(line, textX, textY);	
 				textY += 32;
 			}
@@ -1333,33 +1342,27 @@ public class UI {
 			// SELL AN ITEM
 			if (gp.keyH.actionPressed) {
 												
-				// MAIN ITEM NOT SELLABLE
-				if (gp.player.inventory.get(itemIndex).type == npc.type_item || 
-						gp.player.inventory.get(itemIndex).type == npc.type_key ||
-						gp.player.inventory.get(itemIndex).type == npc.type_boss_key ||
-						gp.player.inventory.get(itemIndex).type == npc.type_shield ||
-						gp.player.inventory.get(itemIndex).type == npc.type_sword ||
-						gp.player.inventory.get(itemIndex).type == npc.type_light) {
+				// CAN SELL
+				if (npc.canObtainItem(gp.player.inventory.get(itemIndex)) &&
+						(gp.player.inventory.get(itemIndex).type == npc.type_collectable ||
+						gp.player.inventory.get(itemIndex).type == npc.type_consumable)) {
 					
+					gp.ui.rupeeCount = gp.player.rupees + price;	
+											
+					// STACKABLE ITEM
+					if (gp.player.inventory.get(itemIndex).amount > 1) {
+						gp.player.inventory.get(itemIndex).amount--;
+					}
+					// NON-STACKABLE ITEM
+					else {
+						gp.player.inventory.remove(itemIndex);														
+					}	
+				}
+				// NOT SELLABLE
+				else {					
 					subState = 0;
 					commandNum = 0;					
 					npc.startDialogue(npc, 3);
-				}
-				// CAN SELL
-				else {					
-					if (npc.canObtainItem(gp.player.inventory.get(itemIndex))) {	
-						
-						gp.ui.rupeeCount = gp.player.rupees + price;	
-												
-						// STACKABLE ITEM
-						if (gp.player.inventory.get(itemIndex).amount > 1) {
-							gp.player.inventory.get(itemIndex).amount--;
-						}
-						// NON-STACKABLE ITEM
-						else {
-							gp.player.inventory.remove(itemIndex);
-						}												
-					}	
 				}
 			}
 		}		

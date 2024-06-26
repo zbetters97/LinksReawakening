@@ -21,6 +21,6 @@ public class IT_Plate_Metal extends InteractiveTile {
 	}
 	
 	public void playSE() {
-		gp.playSE(6, 1);
+		gp.playSE(6, 0);
 	}
 }

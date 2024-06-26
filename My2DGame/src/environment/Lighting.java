@@ -35,18 +35,11 @@ public class Lighting {
 	}
 	
 	public void setDialogue() {
-		eventMaster.dialogues[0][0] = "\"It's getting dark.\nI better find a light...\"";
-		eventMaster.dialogues[1][0] = "The blood moon rises once again...";
+		eventMaster.dialogues[0][0] = "The blood moon rises once again...";
 	}
 	
 	public void update() {
-		
-		// CHECK PLAYER LIGHT SOURCE
-		if (gp.player.lightUpdated) {
-			setLightSource();
-			gp.player.lightUpdated = false;
-		}
-		
+				
 		// ONLY PASS TIME WHEN OUTSIDE
 		if (gp.currentArea == gp.outside) {
 		
@@ -58,11 +51,6 @@ public class Lighting {
 					dayCounter = 0;
 					bloodMoonCounter++;				
 					setLightSource();
-					
-					if (gp.player.currentLight == null && gp.gameState == gp.playState) {
-						gp.keyH.actionPressed = false;
-						eventMaster.startDialogue(eventMaster, 0);
-					}
 				}
 			}
 			// DUSK

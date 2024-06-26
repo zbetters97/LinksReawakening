@@ -76,6 +76,7 @@ public class PRJ_Bomb extends Projectile {
 		if (!contactPlayer) {					
 			
 			gp.cChecker.checkTile(this);				
+			gp.cChecker.checkPit(this, false);
 			gp.cChecker.checkEntity(this, gp.iTile);				
 			gp.cChecker.checkEntity(this, gp.npc);
 			gp.cChecker.checkEntity(this, gp.enemy);
@@ -160,8 +161,7 @@ public class PRJ_Bomb extends Projectile {
 	public int getParticleSpeed() {
 		int speed = 1;
 		return speed;		
-	}
-	
+	}	
 	public int getParticleMaxLife() {
 		int maxLife = 20; // 20 frames
 		return maxLife;
