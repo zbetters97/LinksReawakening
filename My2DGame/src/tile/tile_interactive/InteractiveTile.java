@@ -9,10 +9,6 @@ import entity.Entity;
 public class InteractiveTile extends Entity {
 
 	GamePanel gp;
-	public boolean destructible = false;
-	public boolean grabbale = false;
-	public boolean bombable = false;
-	public boolean pressable = false;
 	
 	public InteractiveTile(GamePanel gp, int col, int row) {
 		super(gp);

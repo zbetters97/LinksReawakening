@@ -34,7 +34,7 @@ public class IT_DigSpot extends InteractiveTile {
 	public boolean correctItem(Entity entity) {		
 		
 		boolean correctItem = false;				
-		if (entity.currentItem.name.equals(ITM_Shovel.itmName)) {
+		if (entity.name.equals(ITM_Shovel.itmName)) {
 			correctItem = true;
 		}
 		

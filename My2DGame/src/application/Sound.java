@@ -74,6 +74,7 @@ public class Sound {
 		objects[6] = getClass().getResource("/sound/OBJ_DOOR_UNLOCK.wav");
 		objects[7] = getClass().getResource("/sound/OBJ_MOVE.wav");
 		objects[8] = getClass().getResource("/sound/OBJ_TINK.wav");		
+		objects[9] = getClass().getResource("/sound/OBJ_POT.wav");		
 		
 		// 5
 		items[0] = getClass().getResource("/sound/ITEM_GET.wav");	

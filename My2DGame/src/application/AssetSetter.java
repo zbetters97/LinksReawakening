@@ -134,6 +134,11 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 		
+		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 22;
+		i++;
+		
 		gp.enemy[mapNum][i] = new EMY_Bat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 40;

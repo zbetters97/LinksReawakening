@@ -67,6 +67,7 @@ public class Projectile extends Entity {
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 				alive = false;
+				canPickup = false;
 			}
 									
 			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
@@ -77,10 +78,11 @@ public class Projectile extends Entity {
 					projectile.explode();
 				
 				alive = false;
+				canPickup = false;
 			}	
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-			gp.player.damageInteractiveTile(iTileIndex);
+			gp.player.damageInteractiveTile(iTileIndex, this);
 		}
 		
 		// SHOT BY ENEMEY AND PLAYER ON GROUND
@@ -90,14 +92,11 @@ public class Projectile extends Entity {
 			if (contactPlayer && !gp.player.invincible) {
 				damagePlayer(attack);
 				alive = false;
+				canPickup = false;
 			}
 		}
-		
-		if (!collisionOn) {
-			
-			canPickup = false;		
-			
-			// MOVE IN DIRECTION SHOT
+		// MOVE IN DIRECTION SHOT
+		if (!canPickup) {
 			switch (direction) {
 				case "up": 
 				case "upleft": 
@@ -109,14 +108,14 @@ public class Projectile extends Entity {
 				case "right": worldX += speed; break;
 			}
 		}
-		// ARROW CAN BE PICKED UP BY PLAYER
-		else {
-			canPickup = true;
+		if (collisionOn) {
+			canPickup = true;		
 		}
 		
 		life--;
 		if (life <= 0) { // REMOVE AFTER X FRAMES
 			alive = false;
+			canPickup = false;
 		}
 		
 		// MOVING ANIMATION
@@ -215,7 +214,7 @@ public class Projectile extends Entity {
 		}
 		
 		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-		gp.player.damageInteractiveTile(iTileIndex);
+		gp.player.damageInteractiveTile(iTileIndex, this);
 		
 		// OBJECT IS NOT canPickup, RETURN
 		if (collisionOn) 
@@ -314,9 +313,9 @@ public class Projectile extends Entity {
 		if (enemyIndex != -1) gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 		
 		int objectIndex = gp.cChecker.checkObject(this, true);
-		int objectiIndex = gp.cChecker.checkObject_I(this, true);
-		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-		gp.player.damageInteractiveTile(iTileIndex);
+		int objectiIndex = gp.cChecker.checkObject_I(this, true);		
+		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);		
+		gp.player.damageInteractiveTile(iTileIndex, this);
 						
 		// COLLISION DETECTED
 		if (collisionOn)
@@ -325,7 +324,7 @@ public class Projectile extends Entity {
 		// PULL PLAYER TOWARDS GRABBALE ENTITY
 		if ((objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].grabbable) ||
 				(objectiIndex != -1 && gp.obj_i[gp.currentMap][objectiIndex].grabbable) ||
-				(iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbale)) {
+				(iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbable)) {
 
 			gp.player.onGround = false;
 			
@@ -619,7 +618,7 @@ public class Projectile extends Entity {
 			}
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
-			gp.player.damageInteractiveTile(iTileIndex);
+			gp.player.damageInteractiveTile(iTileIndex, this);
 			
 			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 			if (projectileIndex != -1) {

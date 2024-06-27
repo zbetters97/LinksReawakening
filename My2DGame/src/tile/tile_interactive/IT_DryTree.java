@@ -17,7 +17,6 @@ public class IT_DryTree extends InteractiveTile {
 		
 		name = itName;
 		destructible = true;
-		grabbale = true;
 		life = 3;
 		
 		this.worldX = gp.tileSize * col;

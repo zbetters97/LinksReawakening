@@ -124,13 +124,16 @@ public class Entity {
 	public Entity loot;	
 	public Entity linkedEntity;
 	public int pushAvailableCounter = 0;	
+	public boolean destructible = false;
+	public boolean bombable = false;
+	public boolean diggable = false;
 	public boolean grabbable = false;
 	public boolean hookGrab = false;
-	public boolean diggable = false;
 	public boolean opened = false;
-	public boolean active = false;
+	public boolean pressable = false;
+	public boolean active = false;	
 	public boolean switchedOn = false;
-		
+	
 	// ITEM ATTRIBUTES
 	public int value, attackValue;
 	public int knockbackPower = 0;
@@ -609,7 +612,7 @@ public class Entity {
 					
 					// CHECK INTERACTIVE TILE
 					int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-					gp.player.damageInteractiveTile(iTileIndex);
+					gp.player.damageInteractiveTile(iTileIndex, this);
 				}
 				
 				// CHECK IF ATTACK LANDS ON PROJECTILE
@@ -1051,7 +1054,9 @@ public class Entity {
 		// DRAW TILES WITHIN SCREEN BOUNDARY
 		if (inFrame()) {
 			
-			if (hookGrab) image = this.image1;			
+			if (hookGrab) {
+				image = this.image1;			
+			}
 			else {							
 				switch (direction) {
 					case "up":

@@ -20,7 +20,7 @@ public class PRJ_Arrow extends Projectile {
 		attack = 2; 	
 		knockbackPower = 0;
 		useCost = 1;		
-		maxLife = 60; life = maxLife;
+		maxLife = 120; life = maxLife;
 		alive = false;
 		
 		hitbox = new Rectangle(12, 16, 24, 24);
@@ -62,6 +62,7 @@ public class PRJ_Arrow extends Projectile {
 		if (canPickup) {
 			gp.player.arrows++;
 			alive = false;
+			canPickup = false;
 		}
 	}
 }

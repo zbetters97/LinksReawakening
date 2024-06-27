@@ -106,8 +106,8 @@ public class Player extends Entity {
 		maxArrows = 10; arrows = maxArrows;
 		maxBombs = 10; bombs = maxBombs;
 		
-		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);
+//		currentWeapon = null;
+		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		currentLight = new ITM_Lantern(gp);
 		
@@ -144,7 +144,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-/*		inventory_item.add(new ITM_Shovel(gp));
+		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
 		
@@ -155,7 +155,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-		*/
+		
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -896,7 +896,7 @@ public class Player extends Entity {
 			
 			// CHECK INTERACTIVE TILE
 			int iTileIndex = gp.cChecker.checkDigging();
-			damageInteractiveTile(iTileIndex);
+			damageInteractiveTile(iTileIndex, currentItem);
 
 			digNum = 1;
 			digCounter = 0;
@@ -1116,7 +1116,7 @@ public class Player extends Entity {
 			}
 		}
 	}		
-	public void damageInteractiveTile(int i) {
+	public void damageInteractiveTile(int i, Entity entity) {
 		
 		if (i != -1) {
 		
@@ -1126,7 +1126,7 @@ public class Player extends Entity {
 			}
 		
 			else if (i != -1 && gp.iTile[gp.currentMap][i].destructible && !gp.iTile[gp.currentMap][i].invincible &&
-					gp.iTile[gp.currentMap][i].correctItem(this)) {
+					gp.iTile[gp.currentMap][i].correctItem(entity)) {
 				
 				gp.iTile[gp.currentMap][i].playSE();
 				
