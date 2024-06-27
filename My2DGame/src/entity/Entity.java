@@ -1114,12 +1114,11 @@ public class Entity {
 				
 				// DISPLAY HP
 				hpBarOn = true;
-				hpBarCounter = 0;
+				hpBarCounter = 0;	
 				
 				// FLASH OPACITY
-				if (invincible) hurtAnimation(g2);
-			}			
-			
+				hurtAnimation(g2);
+			}						
 
 			if (captured) changeAlpha(g2, 0.7f);
 			

@@ -133,9 +133,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-//		gameState = titleState;	
+		gameState = titleState;	
 		currentArea = outside;
-		gameState = playState;
+//		gameState = playState;
 //		currentArea = inside;
 		
 		setupMusic();

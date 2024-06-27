@@ -47,14 +47,8 @@ public class EMY_Slime_Green extends Entity {
 		right2 = setup("/enemy/greenslime_down_2");
 	}
 
-	public void setAction() {
-		if (onPath) {			
-			isOffPath(gp.player, 8);				
-			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-		}
-		else {	
-			getDirection(120);
-		}
+	public void setAction() {		
+		getDirection(120);		
 	}
 	
 	// ONLY FOLLOW PLAYER WHEN HIT

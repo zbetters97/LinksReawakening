@@ -48,12 +48,20 @@ public class EMY_Slime_Red extends Entity {
 	}
 	
 	public void setAction() {
-		getDirection(120);
-		useProjectile(120);
+		if (onPath) {			
+			isOffPath(gp.player, 8);				
+			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+			useProjectile(90);
+		}
+		else {	
+			isOnPath(gp.player, 6);
+			getDirection(120);
+		}
 	}
 	
 	public void damageReaction() {
 		actionLockCounter = 0;
+		onPath = true;
 	}
 	
 	public void playHurtSE() {

@@ -106,8 +106,8 @@ public class Player extends Entity {
 		maxArrows = 10; arrows = maxArrows;
 		maxBombs = 10; bombs = maxBombs;
 		
-//		currentWeapon = null;
-		currentWeapon = new EQP_Sword_Old(gp);
+		currentWeapon = null;
+//		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		currentLight = new ITM_Lantern(gp);
 		
@@ -144,6 +144,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -155,7 +156,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-		
+*/		
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -740,7 +741,8 @@ public class Player extends Entity {
 	public void contactEnemy(int i, Entity enemyList[][]) {
 		
 		// PLAYER HURT BY ENEMY
-		if (i != -1 &&!invincible && !enemyList[gp.currentMap][i].dying && 		
+		if (i != -1 && !invincible && enemyList[gp.currentMap][i].collision &&
+				!enemyList[gp.currentMap][i].dying && 		
 				!enemyList[gp.currentMap][i].captured) {
 			playHurtSE();
 			
@@ -752,7 +754,7 @@ public class Player extends Entity {
 			this.life -= damage;
 			
 			invincible = true;
-			transparent = true;				
+			transparent = true;	
 		}
 	}		
 	public void knockbackPlayer() {

@@ -487,7 +487,7 @@ public class UI {
 		
 			Entity enemy = enemies[gp.currentMap][i];
 			
-			if (enemy != null && enemy.inFrame() &&	enemy.hpBarOn) {
+			if (enemy != null && enemy.inFrame()) {
 				
 				// BOSS HEALTH BAR
 				if (enemy.type == enemy.type_boss) {
@@ -517,7 +517,7 @@ public class UI {
 				}
 				
 				// REGULAR ENEMY HEALTH BAR
-				else {
+/*				else {
 					
 					// LENGTH OF HALF HEART
 					double oneScale = (double)gp.tileSize / enemy.maxLife; 
@@ -538,7 +538,8 @@ public class UI {
 						enemy.hpBarOn = false;
 						
 					}
-				}				
+				}
+*/				
 			}			
 		}				
 	}

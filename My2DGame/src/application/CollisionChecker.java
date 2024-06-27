@@ -670,7 +670,7 @@ public class CollisionChecker {
 				return false;
 		}
 		
-		if (entity.hitbox.intersects(gp.player.hitbox)) {						
+		if (entity.hitbox.intersects(gp.player.hitbox) && entity.collision) {						
 			entity.collisionOn = true;
 			contactPlayer = true;
 		}

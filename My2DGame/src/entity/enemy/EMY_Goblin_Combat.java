@@ -76,7 +76,7 @@ public class EMY_Goblin_Combat extends Entity {
 				}				
 			}
 			else {			
-				isOnPath(gp.player, 4);
+				isOnPath(gp.player, 5);
 				getDirection(60);
 			}
 		}

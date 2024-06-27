@@ -39,6 +39,6 @@ public class PRJ_Magic extends Projectile {
 	}
 	
 	public void playSE() {
-		
+		gp.playSE(4, 2);
 	}
 }

@@ -1,21 +1,20 @@
 package entity.enemy;
 
-import java.awt.Rectangle;
 import java.util.Random;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.collectable.COL_Arrow;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
-import entity.collectable.COL_Rupee_Red;
-import entity.item.ITM_Bow;
+import entity.collectable.COL_Rupee_Green;
 import entity.projectile.PRJ_Magic;
 
 public class EMY_Wizard extends Entity {
 
 	public static final String emyName = "Wizard";
 	GamePanel gp;
+	
+	private int teleportCounter = 0;
 	private boolean teleporting = false;
 	
 	public EMY_Wizard(GamePanel gp) {
@@ -25,15 +24,11 @@ public class EMY_Wizard extends Entity {
 		type = type_enemy;
 		name = emyName;
 		
-		speed = 1; defaultSpeed = speed; 
-		animationSpeed = 0;
-		attack = 0;
-		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
-						
-		hitbox = new Rectangle(8, 16, 32, 32); 
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
+		collision = false;
+		
+		speed = 2; defaultSpeed = speed; 
+		animationSpeed = 10;
+		maxLife = 8; life = maxLife;
 		
 		projectile = new PRJ_Magic(gp);
 		
@@ -41,25 +36,49 @@ public class EMY_Wizard extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/enemy/wizard_down_1");
-		down2 = setup("/enemy/wizard_down_2");
 		up1 = setup("/enemy/wizard_up_1");
-		up2 = down2;		
+		up2 = setup("/enemy/wizard_down_2");		
+		down1 = setup("/enemy/wizard_down_1");
+		down2 = up2;		
 		left1 = setup("/enemy/wizard_left_1");
-		left2 = down2;
+		left2 = up2;
 		right1 = setup("/enemy/wizard_right_1");
-		right2 = down2;
+		right2 = up2;
 	}	
 	
+	// OVERRIDE ENTITY UPDATE
 	public void update() {	
+				
+		if (sleep) return;		
+		if (knockback) { knockbackEntity();	return; }
 		
-		setAction();
+		if (teleporting) { teleport(); }		
+		else { attack(); }		
 		
-		if (teleporting) {
+		manageValues();
+	}
+	
+	public void teleport() {
+		
+		// TELEPORTING ANIMATION
+		spriteCounter++;
+		if (animationSpeed >= spriteCounter) spriteNum = 2;
+		else spriteNum = 3;	
+		
+		if (spriteNum == 3) {	
 			
-			checkCollision();
-			if (!collisionOn) { 
-							
+			invincible = true;
+			
+			if (locked) {
+				gp.player.lockon = false;
+				gp.player.lockedTarget = null;				
+				locked = false;
+			}
+			
+			// MOVE IN RANDOM DIRECTION
+			getDirection(60);			
+			checkCollision();				
+			if (!collisionOn) { 							
 				switch (direction) {
 					case "up": worldY -= speed; break;
 					case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
@@ -72,67 +91,57 @@ public class EMY_Wizard extends Entity {
 					case "left": worldX -= speed; break;
 					case "right": worldX += speed; break;
 				}
-			}	
-		}
-		
-		manageValues();
-	}
-	
-	public void setAction() {
-		
-		if (teleporting) {
-			
-			// SEARCH FOR PLAYER
-			if (onPath) {			
-				isOffPath(gp.player, 12);									
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));		
-			}
-			// PLAYER NOT FOUND
-			else {				
-				isOnPath(gp.player, 8);
-				getDirection(60);
 			}
 			
-			// STOP TELEPORTING
-			int i = new Random().nextInt(200) + 1;
-			if (i == 1) {
-				teleporting = false;
-				collision = true;
-				spriteNum = 1;
-				spriteCounter = 0;
-			}
-		}		
-		// WIZARD NOT MOVING
-		else {
-			
-			// LOOK AT PLAYER AND SHOOT
-			approachPlayer(60);
-			useProjectile(120);
-			
-			// TELEPORT
-			int i = new Random().nextInt(300) + 1;
-			if (i == 1 || spriteNum == 2) {
-				teleport();
-			}
-		}
-	}
-	
-	public void teleport() {
-		
-		spriteCounter++;
-		if (spriteCounter > animationSpeed && !teleporting) {
-			
-			if (spriteNum == 1) spriteNum = 2;
-			else if (spriteNum == 2) {
+			// RE-APPEAR AFTER 2 SECONDS
+			teleportCounter++;
+			if (teleportCounter > 120) {
 				spriteNum = 3;
-				teleporting = true;
-			}			
+				spriteCounter = 0;
+				teleporting = false;				
+				teleportCounter = 0;
+			}
+		}	
+	}
+	
+	private void attack() {
+		
+		// TELEPORTING ANIMATION
+		spriteCounter++;
+		if (animationSpeed >= spriteCounter) spriteNum = 2;
+		else spriteNum = 1;	
+		
+		if (spriteNum == 1) {
+			
+			invincible = false;
+			
+			// FIND PLAYER AND SHOOT PROJECTILE
+			if (onPath) {
+				isOffPath(gp.player, 10);
+				approachPlayer(45);
+				useProjectile(45);
+			}
+			else {
+				isOnPath(gp.player, 6);	
+			}
+			
+			// DISAPEAR AFTER 3 SECONDS
+			teleportCounter++;
+			if (teleportCounter > 180) {	
+				spriteNum = 2;
+				spriteCounter = 0;
+				teleporting = true;					
+				teleportCounter = 0;					
+			}
 		}
 	}
 	
+	// TELEPORT IF HIT
 	public void damageReaction() {
-		actionLockCounter = 0;
-		onPath = true;
+		spriteNum = 2;
+		spriteCounter = 0;
+		teleporting = true;					
+		teleportCounter = 0;		
 	}
 	
 	public void playHurtSE() {
@@ -147,16 +156,9 @@ public class EMY_Wizard extends Entity {
 		super.checkDrop();
 		
 		int i = new Random().nextInt(100) + 1;
-		
-		if (gp.player.inventory.contains(new ITM_Bow(gp))) {
-			if (i < 50) dropItem(new COL_Heart(gp));
-			if (i >= 50 && i < 90) dropItem(new COL_Arrow(gp));
-			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));	
-		}
-		else {
-			if (i < 50) dropItem(new COL_Heart(gp));
-			if (i >= 50 && i < 90) dropItem(new COL_Rupee_Blue(gp));
-			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));
-		}
+
+		if (i < 50) dropItem(new COL_Heart(gp));
+		if (i >= 50 && i < 90) dropItem(new COL_Rupee_Green(gp));
+		if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Blue(gp));		
 	}
 }

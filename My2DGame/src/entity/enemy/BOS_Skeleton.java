@@ -104,14 +104,14 @@ public class BOS_Skeleton extends Entity {
 			
 			// DON'T CHASE PLAYER WHEN ATTACKING
 			if (getTileDistance(gp.player) < 10 && !attacking) {			
-				approachPlayer(90);
+				approachPlayer(75);
 			}
 			else if (!attacking) {			
-				getDirection(90);
+				getDirection(75);
 			}						
 			
 			if (!attacking) {
-				isAttacking(90, gp.tileSize * 7, gp.tileSize * 5);
+				isAttacking(75, gp.tileSize * 7, gp.tileSize * 5);
 				speed = defaultSpeed;
 			}
 			// STOP MOVEMENT WHEN ATTACKING

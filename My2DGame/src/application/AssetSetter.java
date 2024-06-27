@@ -134,11 +134,6 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 22;
-		i++;
-		
 		gp.enemy[mapNum][i] = new EMY_Bat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 40;
@@ -166,6 +161,26 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 29;
+		i++;
+		
+		mapNum = 2;
+		i = 0;
+		
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 20;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 28;
+		i++;
+		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 17;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
+		i++;		
+		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 28;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 19;
+		i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 18;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 10;
 		i++;
 		
 		mapNum = 3;
