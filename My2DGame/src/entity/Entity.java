@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import application.GamePanel;
 import application.UtilityTool;
+import entity.projectile.PRJ_Seed;
 import entity.projectile.Projectile;
 
 public class Entity {
@@ -38,12 +39,12 @@ public class Entity {
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
 	public BufferedImage image1, image2, image3,
-							up1, up2, down1, down2, left1, left2, right1, right2,
+							up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3,
 							attackUp1, attackUp2, attackDown1, attackDown2, 
 							attackLeft1, attackLeft2, attackRight1, attackRight2,
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,
-							lockedImage, die1, die2, die3, die4;
+							buzzUp1, buzzUp2, lockedImage, die1, die2, die3, die4;
 		
 	// CHARACTER ATTRIBUTES
 	public int type;
@@ -64,11 +65,14 @@ public class Entity {
 	public boolean pathCompleted = false;	
 	public boolean capturable = false;
 	public boolean captured = false;
+	public boolean canSwim = false;
+	public boolean buzzing = false;
 		
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
 	public int dialogueSet = 0;
 	public int dialogueIndex = 0;		
+	public String responses[][] = new String[10][3];
 		
 	// LOCKON
 	public boolean lockon = false;
@@ -144,6 +148,10 @@ public class Entity {
 	public int lifeDuration = -1;
 	public int lightRadius;
 	public boolean stackable = false;	
+	
+	// PROJECTILE ATTRIBUTES
+	public Entity user;
+	public boolean canPickup = false;
 	
 	// INVENTORY
 	public ArrayList<Entity> inventory = new ArrayList<>();
@@ -224,31 +232,26 @@ public class Entity {
 			
 			// ANIMATE NPC IF MOVING
 			if (type == type_npc) {
-			
-				spriteCounter++;
-				if (spriteCounter > animationSpeed && animationSpeed != 0) {
-					
-					if (spriteNum == 1) spriteNum = 2;
-					else if (spriteNum == 2) spriteNum = 1;
-					
-					spriteCounter = 0;
-				}
+				cycleSprites();
 			}
 		}		
 		// ANIMATE ENEMY ALWAYS
-		if (type == type_enemy || type == type_boss) {
-			
-			spriteCounter++;
-			if (spriteCounter > animationSpeed && animationSpeed != 0) {
-				
-				if (spriteNum == 1) spriteNum = 2;
-				else if (spriteNum == 2) spriteNum = 1;
-				
-				spriteCounter = 0;
-			}
+		if (type == type_enemy || type == type_boss) {			
+			cycleSprites();
 		}
 		
 		manageValues();
+	}
+	
+	public void cycleSprites() {
+		spriteCounter++;
+		if (spriteCounter > animationSpeed && animationSpeed != 0) {
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}
 	}
 	
 	public void walking() {
@@ -315,7 +318,15 @@ public class Entity {
 		dialogueSet = setNum;
 		gp.ui.npc = entity;		
 		gp.gameState = gp.dialogueState;
-	}	
+	}
+	public void startDialogue(Entity entity, int setNum, int responseSet, int offset) {
+		dialogueSet = setNum;
+		gp.ui.responseSet = responseSet;	
+		gp.ui.offset = offset;
+		gp.ui.npc = entity;		
+		gp.ui.response = true;
+		gp.gameState = gp.dialogueState;
+	}
 	public void facePlayer() {
 		switch (gp.player.direction) {		
 			case "up":
@@ -328,8 +339,33 @@ public class Entity {
 			case "right": direction = "left"; break;		
 		}	
 	}
-
+	
 	// PATH FINDING
+	public void approachPlayer(int rate) {
+		
+		actionLockCounter++;
+		if (actionLockCounter >= rate) {
+			
+			if (getXdistance(gp.player) >= getYdistance(gp.player)) {
+				if (gp.player.getCenterX() < getCenterX()) {
+					direction = "left";
+				}
+				else {
+					direction = "right";
+				}
+			}
+			else if (getXdistance(gp.player) < getYdistance(gp.player)) {
+				if (gp.player.getCenterY() < getCenterY()) {
+					direction = "up";
+				}
+				else {
+					direction = "down";
+				}
+			}
+			
+			actionLockCounter = 0;
+		}
+	}
 	public void getDirection(int rate) {
 		
 		actionLockCounter++;			
@@ -353,7 +389,7 @@ public class Entity {
 	}
 	public void isOffPath(Entity target, int distance) {
 		if (getTileDistance(target) > distance) {
-			onPath = false;
+			onPath = false;			
 		}
 	}	
 	public int getTileDistance(Entity target) {
@@ -383,9 +419,7 @@ public class Entity {
 	public int getScreenY() {
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 		return screenY;
-	}
-	
-	// PATH FINDING
+	}	
 	public boolean findPath(int goalCol, int goalRow) {
 		
 		boolean pathFound = false;
@@ -479,34 +513,9 @@ public class Entity {
 		int goalRow = (target.worldY + target.hitbox.y) / gp.tileSize;
 		return goalRow;
 	}
-	public void approachPlayer(int rate) {
-		
-		actionLockCounter++;
-		if (actionLockCounter >= rate) {
-			
-			if (getXdistance(gp.player) >= getYdistance(gp.player)) {
-				if (gp.player.getCenterX() < getCenterX()) {
-					direction = "left";
-				}
-				else {
-					direction = "right";
-				}
-			}
-			else if (getXdistance(gp.player) < getYdistance(gp.player)) {
-				if (gp.player.getCenterY() < getCenterY()) {
-					direction = "up";
-				}
-				else {
-					direction = "down";
-				}
-			}
-			
-			actionLockCounter = 0;
-		}
-	}
 	
 	// ATTACKING / DAMAGE
-	public void isAttacking(int rate, int straight, int horizontal) {
+	public boolean isAttacking(int rate, int straight, int horizontal) {
 				
 		boolean targetInRange = false;
 		int xDis = getXdistance(gp.player);
@@ -546,11 +555,13 @@ public class Entity {
 			// RANDOM CHANCE TO SWING WEAPON
 			int i = new Random().nextInt(rate);
 			if (i == 0) {
-				attacking = true;
 				spriteNum = 1;
 				spriteCounter = 0;
+				return true;				
 			}
-		} 		
+		} 	
+			
+		return false;
 	}
 	public void attacking() {
 
@@ -654,8 +665,16 @@ public class Entity {
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
 				gp.playSE(4, 8);	
 				
-				if (knockbackPower > 0) setKnockback(gp.player, this, 1);
-				damage = 0;
+				if (name.equals(PRJ_Seed.prjName)) {
+					direction = gp.player.direction;
+					collisionOn = false;
+					user = gp.player;
+					life = maxLife;
+				}
+				else {				
+					if (knockbackPower > 0) setKnockback(gp.player, this, 1);
+					damage = 0;
+				}
 			}
 			else {
 				gp.player.playHurtSE();
@@ -925,6 +944,9 @@ public class Entity {
 	public void playMoveObjectSE() {
 		gp.playSE(4, 7);
 	}
+	public void playShockSE() {
+		gp.playSE(3, 6);
+	}
 	
 	// GET X,Y
 	public int getLeftX() { return worldX + hitbox.x; }
@@ -1057,6 +1079,10 @@ public class Entity {
 			if (hookGrab) {
 				image = this.image1;			
 			}
+			else if (buzzing) {
+				if (spriteNum == 1) image = buzzUp1;
+				else if (spriteNum == 2) image = buzzUp2;
+			}
 			else {							
 				switch (direction) {
 					case "up":
@@ -1065,11 +1091,12 @@ public class Entity {
 						if (attacking) {
 							tempScreenY -= up1.getHeight();
 							if (attackNum == 1) image = attackUp1;
-							if (attackNum == 2) image = attackUp2;
+							else if (attackNum == 2) image = attackUp2;
 						}		
 						else {							
 							if (spriteNum == 1) image = up1;
-							if (spriteNum == 2) image = up2;	
+							else if (spriteNum == 2) image = up2;	
+							else if (spriteNum == 3) image = up3;	
 						}
 						break;
 					case "down":
@@ -1077,11 +1104,12 @@ public class Entity {
 					case "downright":
 						if (attacking) {		
 							if (attackNum == 1) image = attackDown1;
-							if (attackNum == 2) image = attackDown2;	
+							else if (attackNum == 2) image = attackDown2;	
 						}	
 						else {
 							if (spriteNum == 1) image = down1;
-							if (spriteNum == 2) image = down2;	
+							else if (spriteNum == 2) image = down2;	
+							else if (spriteNum == 3) image = down3;	
 						}					
 							
 						break;
@@ -1089,21 +1117,23 @@ public class Entity {
 						if (attacking) {
 							tempScreenX -= left1.getWidth();
 							if (attackNum == 1)	image = attackLeft1;							
-							if (attackNum == 2) image = attackLeft2;	
+							else if (attackNum == 2) image = attackLeft2;	
 						}		
 						else {
 							if (spriteNum == 1) image = left1;
-							if (spriteNum == 2) image = left2;	
+							else if (spriteNum == 2) image = left2;	
+							else if (spriteNum == 3) image = left3;	
 						}
 						break;
 					case "right":
 						if (attacking) {
 							if (attackNum == 1) image = attackRight1;
-							if (attackNum == 2) image = attackRight2;
+							else if (attackNum == 2) image = attackRight2;
 						}	
 						else {
 							if (spriteNum == 1) image = right1;
-							if (spriteNum == 2) image = right2;	
+							else if (spriteNum == 2) image = right2;	
+							else if (spriteNum == 3) image = right3;	
 						}								
 						break;
 				}

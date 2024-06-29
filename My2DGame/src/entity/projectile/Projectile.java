@@ -5,8 +5,6 @@ import entity.Entity;
 
 public class Projectile extends Entity {
 
-	public Entity user;
-	public boolean canPickup = false;
 	GamePanel gp;
 	
 	public Projectile(GamePanel gp) {
@@ -599,7 +597,7 @@ public class Projectile extends Entity {
 			spriteCounter = 0;
 		}		
 	}
-	
+		
 	public void useProjectile() {
 		
 		// CHECK TILE COLLISION
@@ -635,11 +633,18 @@ public class Projectile extends Entity {
 				collisionOn = false;	
 		}
 		// SHOT BY ENEMEY
-		else {
+		else if (gp.player.onGround) {
 			boolean contactPlayer = gp.cChecker.checkPlayer(this);
 			if (contactPlayer && !gp.player.invincible) {
-				damagePlayer(attack);
-				alive = false;
+								
+				// BOUNCE BACK PROJECTILE
+				if (name.equals(PRJ_Seed.prjName)) {
+					damagePlayer(attack);
+				}
+				else {
+					damagePlayer(attack);
+					alive = false;
+				}
 			}
 		}
 		

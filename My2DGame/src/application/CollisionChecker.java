@@ -117,18 +117,49 @@ public class CollisionChecker {
 				
 				break;
 			default: 
-				entity.collision = false; 
+				entity.collisionOn = false; 
 				return;
 		}		
 
+		// NPC AND EMNEMIES
 		if (entity.type == entity.type_npc || entity.type == entity.type_enemy || entity.type == entity.type_boss) {
-			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision ||
-					gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
-					gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) 
-				
+			
+			// PIT
+			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
+												
 				// ENEMY CAN FALL IN PIT IF HIT
-				if (!entity.knockback) entity.collisionOn = true;	
+				if (!entity.knockback) {
+					entity.collisionOn = true;	
+				}
+			}
+			// WATER
+			else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
+				
+				// ENEMY CAN FALL IN WATER IF HIT
+				if (!entity.canSwim && !entity.knockback) {
+					entity.collisionOn = true;
+				}
+			}
+			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+				entity.collisionOn = true;
+			}
 		}
+		// PROJECTILES
+		else if (entity.type == entity.type_projectile) {
+			
+			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
+					gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
+				entity.collisionOn = false;
+			}
+			// NO COLLISION FOR BOUNDARY WATER
+			else if (tileNum1 == 19 || tileNum2 == 19) {
+				entity.collisionOn = false;
+			}
+			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {				
+				entity.collisionOn = true;
+			}				
+		}
+		// OTHER
 		else {
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) 
 				entity.collisionOn = true;
@@ -289,6 +320,7 @@ public class CollisionChecker {
 				return;
 		}		
 
+		// PIT
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 			if (entity.action != Action.JUMPING && entity.action != Action.SOARING &&
 					gp.gameState == gp.playState) {
@@ -303,11 +335,13 @@ public class CollisionChecker {
 						entity.animationSpeed = 30;
 						entity.active = false;	
 					}
-					if (entity.onGround) entity.alive = false;
-				}
-				
+					if (entity.onGround) {
+						entity.alive = false;
+					}
+				}				
 			}
 		}
+		// WATER
 		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {			
 			
 			if (player) {
@@ -321,7 +355,13 @@ public class CollisionChecker {
 				}			
 			}
 			else {
-				entity.alive = false;
+				if (entity.name.equals(PRJ_Bomb.prjName)) {
+					entity.animationSpeed = 30;
+					entity.active = false;	
+				}
+				if (!entity.canSwim) {
+					entity.alive = false;
+				}
 			}
 		}		
 		else {
@@ -543,11 +583,16 @@ public class CollisionChecker {
 						return index;
 				}
 				
-				if (entity.hitbox.intersects(gp.obj[gp.currentMap][i].hitbox)) {						
+				if (entity.hitbox.intersects(gp.obj[gp.currentMap][i].hitbox)) {
+					
 					if (gp.obj[gp.currentMap][i].collision) 
 						entity.collisionOn = true;	
-					if (player) 
-						index = i;			
+					if (player) {
+						index = i;
+					}
+					else if (gp.obj[gp.currentMap][i].type == gp.obj[gp.currentMap][i].type_collectable) {
+						entity.collisionOn = false;
+					}
 				}
 				
 				// reset entity solid area

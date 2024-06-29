@@ -63,9 +63,9 @@ public class EMY_Wizard extends Entity {
 		// TELEPORTING ANIMATION
 		spriteCounter++;
 		if (animationSpeed >= spriteCounter) spriteNum = 2;
-		else spriteNum = 3;	
+		else spriteNum = 4;	
 		
-		if (spriteNum == 3) {	
+		if (spriteNum == 4) {	
 			
 			invincible = true;
 			
@@ -96,7 +96,7 @@ public class EMY_Wizard extends Entity {
 			// RE-APPEAR AFTER 2 SECONDS
 			teleportCounter++;
 			if (teleportCounter > 120) {
-				spriteNum = 3;
+				spriteNum = 4;
 				spriteCounter = 0;
 				teleporting = false;				
 				teleportCounter = 0;
@@ -118,7 +118,7 @@ public class EMY_Wizard extends Entity {
 			// FIND PLAYER AND SHOOT PROJECTILE
 			if (onPath) {
 				isOffPath(gp.player, 10);
-				approachPlayer(45);
+				approachPlayer(10);
 				useProjectile(45);
 			}
 			else {

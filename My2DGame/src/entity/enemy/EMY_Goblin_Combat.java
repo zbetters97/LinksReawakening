@@ -66,18 +66,24 @@ public class EMY_Goblin_Combat extends Entity {
 	
 	public void setAction() {
 		
-		if (!captured) {
-			if (onPath) {			
-				isOffPath(gp.player, 8);									
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-	
-				if (!attacking) {
-					isAttacking(30, gp.tileSize * 3, gp.tileSize);
-				}				
+		if (!captured) {			
+			if (onPath) {
+				isOffPath(gp.player, 8);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+					if (!attacking) {
+						if (isAttacking(30, gp.tileSize * 3, gp.tileSize))
+							attacking = true;
+					}	
+				}
 			}
-			else {			
-				isOnPath(gp.player, 5);
+			else {				
 				getDirection(60);
+				isOnPath(gp.player, 5);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+					isOffPath(gp.player, 8);
+				}		
 			}
 		}
 	}

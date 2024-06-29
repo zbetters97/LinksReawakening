@@ -111,7 +111,8 @@ public class BOS_Skeleton extends Entity {
 			}						
 			
 			if (!attacking) {
-				isAttacking(75, gp.tileSize * 7, gp.tileSize * 5);
+				if (isAttacking(75, gp.tileSize * 7, gp.tileSize * 5))
+					attacking = true;
 				speed = defaultSpeed;
 			}
 			// STOP MOVEMENT WHEN ATTACKING
@@ -137,7 +138,8 @@ public class BOS_Skeleton extends Entity {
 			}			
 			
 			if (!attacking) {
-				isAttacking(60, gp.tileSize * 7, gp.tileSize * 5);
+				if (isAttacking(60, gp.tileSize * 7, gp.tileSize * 5)) 
+					attacking = true;
 				speed = defaultSpeed;
 			}
 			// STOP MOVEMENT WHEN ATTACKING

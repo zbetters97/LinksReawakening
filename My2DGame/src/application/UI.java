@@ -59,6 +59,11 @@ public class UI {
 	private int charIndex = 0;
 	private String combinedText = "";
 	
+	// PLAYER RESPONSE
+	public boolean response = false;
+	public int responseSet = 0;
+	public int offset = 0;
+	
 	// HINT
 	public String hint = "";
 	public boolean showHint = false;
@@ -149,6 +154,7 @@ public class UI {
 		}
 		// TRADE STATE
 		else if (gp.gameState == gp.tradeState) {
+			drawHUD();
 			drawTradeScreen();
 		}
 		// ITEM GET STATE
@@ -1097,7 +1103,7 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
 		x += gp.tileSize;
 		y += gp.tileSize;	
-	
+		
 		// NPC HAS SOMETHING TO SAY
 		if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {	
 			
@@ -1126,17 +1132,24 @@ public class UI {
 			}
 			else
 				dialogueCounter++;
+			
 		}
 		// NPC HAS NO MORE DIALOGUE
 		else {			
 			npc.dialogueIndex = 0;
 			
-			if (gp.gameState == gp.cutsceneState) {
+			// PLAYER HAS DIALOGUE RESPONSE
+			if (response) {
+				npc.dialogueSet++;
+				gp.gameState = gp.tradeState;
+			}
+			
+			else if (gp.gameState == gp.cutsceneState) {
 				gp.csManager.phase++;
 			}			
 			else if (npc != null && npc.hasItemToGive) {
 				gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
-			}		
+			}	
 			else {
 				gp.ui.playDialogueFinishSE();				
 				gp.gameState = gp.playState;
@@ -1154,7 +1167,7 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
   		g2.drawString(text, x, y + 30);
 	}
-
+	
 	// ITEM GET 
 	private void drawItemGetScreen() {
 	
@@ -1183,15 +1196,62 @@ public class UI {
 			
 	// TRADE
 	private void drawTradeScreen() {
-					
-		switch (subState) {
-			case 0: trade_select(); break;
-			case 1: trade_buy(); break;
-			case 2: trade_sell(); break;
+		
+		// PLAYER HAS DIALOGUE RESPONSE
+		if (response) {
+			dialogue_select();
+		}
+		else {
+			switch (subState) {
+				case 0: trade_select(); break;
+				case 1: trade_buy(); break;
+				case 2: trade_sell(); break;
+			}
 		}
 		
 		gp.keyH.actionPressed = false;
 	}
+	
+	private void dialogue_select() {
+	
+		drawDialogueScreen();
+		int x = gp.tileSize * 8;
+		int y = gp.tileSize * 4;
+		int width = gp.tileSize * 6;
+		int height = gp.tileSize * 4;
+		drawSubWindow(x, y, width, height);
+				
+		x += gp.tileSize;	
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
+		
+		// LOOP THROUGH EACH DIALOGUE RESPONSE
+		for (int i = 0; i < npc.responses[responseSet].length; i++) {
+			
+			if (npc.responses[responseSet][i] != null) {
+				
+				y += gp.tileSize * 1.2;
+				g2.drawString(npc.responses[responseSet][i], x, y);
+				
+				// IF RESPONSE IS SELECTED, DRAW DIALOGUE ANSWER
+				if (commandNum == i) {
+					g2.drawString(">", x-24, y);
+					if (gp.keyH.actionPressed) {
+						commandNum = 0;
+						subState = 0;
+						responseSet = 0;
+						response = false;
+						
+						// CORROSPONDING ANSWER
+						npc.dialogueSet = i + offset;	
+						
+						gp.gameState = gp.dialogueState;
+					}
+				}		
+			}
+		}		
+		
+	}
+	
 	private void trade_select() {
 				
 		npc.dialogueSet = 0;
@@ -1227,8 +1287,8 @@ public class UI {
 		if (commandNum == 2) {
 			g2.drawString(">", x-24, y);
 			if (gp.keyH.actionPressed) {				
-				gp.ui.commandNum = 0;
-				gp.ui.subState = 0;
+				commandNum = 0;
+				subState = 0;
 				npc.startDialogue(npc, 4);
 			}	
 		}
@@ -1533,5 +1593,14 @@ public class UI {
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		int x = tailX - length;
 		return x;
+	}
+	public <T> int getLength(T[][] arr, int set){
+	    int count = 0;
+	    
+	    for(T el : arr[set])
+	        if (el != null)
+	            ++count;
+	    
+	    return count;
 	}
 }

@@ -455,7 +455,8 @@ public class KeyHandler implements KeyListener {
 
 			gp.ui.dialogueIndex = 0;
 		}
-		if (gp.ui.subState == 0) {
+		
+		if (gp.ui.response) {
 			if (code == KeyEvent.VK_UP) { 				
 				gp.ui.commandNum--;
 				if (gp.ui.commandNum < 0)					
@@ -465,21 +466,39 @@ public class KeyHandler implements KeyListener {
 			}
 			if (code == KeyEvent.VK_DOWN) { 
 				gp.ui.commandNum++;
-				if (gp.ui.commandNum > 2)					
-					gp.ui.commandNum = 2;
+				if (gp.ui.commandNum > gp.ui.getLength(gp.ui.npc.responses, gp.ui.responseSet) - 1)					
+					gp.ui.commandNum = gp.ui.getLength(gp.ui.npc.responses, gp.ui.responseSet) - 1;
 				else
 					playCursorSE(); 
 			}
-		}
-		if (gp.ui.subState == 1) {
-			npcInventory(code);
-			if (code == KeyEvent.VK_ESCAPE)
-				gp.ui.subState = 0;						
-		}
-		if (gp.ui.subState == 2) {
-			playerInventory(code); 
-			if (code == KeyEvent.VK_ESCAPE)
-				gp.ui.subState = 0;			
+		}		
+		else {		
+			if (gp.ui.subState == 0) {
+				if (code == KeyEvent.VK_UP) { 				
+					gp.ui.commandNum--;
+					if (gp.ui.commandNum < 0)					
+						gp.ui.commandNum = 0;
+					else
+						playCursorSE(); 
+				}
+				if (code == KeyEvent.VK_DOWN) { 
+					gp.ui.commandNum++;
+					if (gp.ui.commandNum > 2)					
+						gp.ui.commandNum = 2;
+					else
+						playCursorSE(); 
+				}
+			}
+			if (gp.ui.subState == 1) {
+				npcInventory(code);
+				if (code == KeyEvent.VK_ESCAPE)
+					gp.ui.subState = 0;						
+			}
+			if (gp.ui.subState == 2) {
+				playerInventory(code); 
+				if (code == KeyEvent.VK_ESCAPE)
+					gp.ui.subState = 0;			
+			}
 		}
 	}
 	
@@ -600,5 +619,4 @@ public class KeyHandler implements KeyListener {
 	public void playMapOpenSE() {
 		gp.playSE(1, 7);
 	}
-
 }

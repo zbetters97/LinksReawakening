@@ -52,14 +52,20 @@ public class EMY_Goblin_Archer extends Entity {
 	
 	public void setAction() {
 		
-		if (onPath) {			
-			isOffPath(gp.player, 10);									
-			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-			useItem(120);
+		if (onPath) {
+			isOffPath(gp.player, 10);
+			if (onPath) {
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				useItem(90);
+			}
 		}
 		else {				
-			isOnPath(gp.player, 6);
 			getDirection(60);
+			isOnPath(gp.player, 5);
+			if (onPath) {
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				isOffPath(gp.player, 8);
+			}		
 		}
 	}
 	

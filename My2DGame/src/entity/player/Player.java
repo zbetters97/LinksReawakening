@@ -34,7 +34,6 @@ public class Player extends Entity {
 	public int keys = 0;
 	public int boss_key = 0;	
 	
-	public boolean canSwim = false;
 	public Entity capturedTarget;
 		
 	// POSITIONING
@@ -100,7 +99,7 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		maxLife = 10; life = maxLife;
+		maxLife = 12; life = maxLife;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
@@ -156,7 +155,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-*/		
+*/
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -366,9 +365,9 @@ public class Player extends Entity {
 		}		
 		
 		// TAB DISABLED WHILE JUMPING/SOARING
-		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING) { cycleItems(); }		
-		if (keyH.upPressed || keyH.downPressed || 
-				keyH.leftPressed || keyH.rightPressed) { walking(); }			
+		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING) { cycleItems(); }	
+		
+		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) { walking(); }			
 		
 		manageValues();		
 		checkDeath();
@@ -836,12 +835,13 @@ public class Player extends Entity {
 	public void selectItem() {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
-		if (inventoryIndex < inventory_item.size()) {			
+		if (inventoryIndex < inventory_item.size()) {		
+			
+			if (action != Action.IDLE && action != Action.SWIMMING) {
+				return;
+			}
+			
 			keyH.playSelectSE();
-			
-			if (action != Action.SWIMMING) 
-				action = Action.IDLE;
-			
 			itemIndex = inventoryIndex;										
 									
 			Entity selectedItem = inventory_item.get(inventoryIndex);
@@ -1069,16 +1069,16 @@ public class Player extends Entity {
 		if (i != -1) {
 			
 			// HURT ENEMY (IF NOT CAPTURED)
-			if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured) {
+			if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured &&
+					!enemies[gp.currentMap][i].buzzing) {
 				enemies[gp.currentMap][i].playHurtSE();
 				
 				if (knockbackPower > 0) {
 					setKnockback(enemies[gp.currentMap][i], attacker, knockbackPower);
 				}
 				
-				// HIT BY PROJECTILE (NOT SWORD BEAM)
-				if (attacker.type == type_projectile && 
-						!attacker.name.equals(PRJ_Sword.prjName)) {
+				// HIT BY PROJECTILE (NOT PROJECTILE BEAM)
+				if (attacker.type == type_projectile && attacker.type != type_projectile) {
 					enemies[gp.currentMap][i].stunned = true;
 					enemies[gp.currentMap][i].spriteCounter = -30;
 				}
@@ -1095,6 +1095,12 @@ public class Player extends Entity {
 					enemies[gp.currentMap][i].playDeathSE();
 					enemies[gp.currentMap][i].dying = true;
 				}
+			}
+			else if (enemies[gp.currentMap][i].buzzing) {
+				if (!attacker.invincible) {
+					enemies[gp.currentMap][i].playShockSE();
+				}
+				enemies[gp.currentMap][i].damagePlayer(enemies[gp.currentMap][i].attack);
 			}
 		}
 	}

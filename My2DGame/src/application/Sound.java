@@ -63,6 +63,7 @@ public class Sound {
 		enemies[3] = getClass().getResource("/sound/ENEMY_SWORD_LARGE.wav");
 		enemies[4] = getClass().getResource("/sound/BOSS_HIT.wav");
 		enemies[5] = getClass().getResource("/sound/BOSS_DIE.wav");
+		enemies[6] = getClass().getResource("/sound/ENEMY_SHOCK.wav");
 		
 		// 4
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");			

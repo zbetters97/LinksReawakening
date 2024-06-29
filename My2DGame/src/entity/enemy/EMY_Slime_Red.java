@@ -7,7 +7,6 @@ import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
-import entity.projectile.PRJ_Fireball;
 
 public class EMY_Slime_Red extends Entity {
 
@@ -21,17 +20,15 @@ public class EMY_Slime_Red extends Entity {
 		type = type_enemy;
 		name = emyName;
 		
-		speed = 1; defaultSpeed = speed;
-		animationSpeed = 15;
+		speed = 0; defaultSpeed = speed;
+		animationSpeed = 12;
 		attack = 2; 
 		knockbackPower = 1;
-		maxLife = 6; life = maxLife;
+		maxLife = 8; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-
-		projectile = new PRJ_Fireball(gp);
 		
 		getImage();
 	}
@@ -39,23 +36,50 @@ public class EMY_Slime_Red extends Entity {
 	public void getImage() {
 		up1 = setup("/enemy/redslime_down_1");
 		up2 = setup("/enemy/redslime_down_2");
-		down1 = setup("/enemy/redslime_down_1");
-		down2 = setup("/enemy/redslime_down_2");
-		left1 = setup("/enemy/redslime_down_1");
-		left2 = setup("/enemy/redslime_down_2");
-		right1 = setup("/enemy/redslime_down_1");
-		right2 = setup("/enemy/redslime_down_2");
+		up3 = setup("/enemy/redslime_down_3");
+		down1 = up1;
+		down2 = up2;
+		down3 = up3;
+		left1 = up1;
+		left2 = up2;
+		left3 = up3;
+		right1 = up1;
+		right2 = up2;
+		right3 = up3;
+	}
+	
+	public void cycleSprites() {
+		spriteCounter++;
+		if (spriteCounter > animationSpeed && animationSpeed != 0) {
+			
+			if (onPath) {
+				speed = 1;
+				if (spriteNum == 1 || spriteNum == 2) spriteNum = 3;
+				else if (spriteNum == 3) spriteNum = 2;
+			}
+			else {			
+				spriteNum = 1;
+				speed = defaultSpeed;
+			}
+			
+			spriteCounter = 0;
+		}		
 	}
 	
 	public void setAction() {
-		if (onPath) {			
-			isOffPath(gp.player, 8);				
-			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-			useProjectile(90);
+		
+		if (onPath) {
+			isOffPath(gp.player, 6);
+			if (onPath) {
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+			}
 		}
-		else {	
-			isOnPath(gp.player, 6);
-			getDirection(120);
+		else {				
+			isOnPath(gp.player, 4);
+			if (onPath) {
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				isOffPath(gp.player, 8);
+			}		
 		}
 	}
 	
