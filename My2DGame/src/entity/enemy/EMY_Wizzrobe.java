@@ -9,15 +9,15 @@ import entity.collectable.COL_Rupee_Blue;
 import entity.collectable.COL_Rupee_Green;
 import entity.projectile.PRJ_Magic;
 
-public class EMY_Wizard extends Entity {
+public class EMY_Wizzrobe extends Entity {
 
-	public static final String emyName = "Wizard";
+	public static final String emyName = "Wizzrobe";
 	GamePanel gp;
 	
 	private int teleportCounter = 0;
 	private boolean teleporting = false;
 	
-	public EMY_Wizard(GamePanel gp) {
+	public EMY_Wizzrobe(GamePanel gp) {
 		super(gp);				
 		this.gp = gp;
 		
@@ -36,13 +36,13 @@ public class EMY_Wizard extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/wizard_up_1");
-		up2 = setup("/enemy/wizard_down_2");		
-		down1 = setup("/enemy/wizard_down_1");
+		up1 = setup("/enemy/wizzrobe_up_1");
+		up2 = setup("/enemy/wizzrobe_down_2");		
+		down1 = setup("/enemy/wizzrobe_down_1");
 		down2 = up2;		
-		left1 = setup("/enemy/wizard_left_1");
+		left1 = setup("/enemy/wizzrobe_left_1");
 		left2 = up2;
-		right1 = setup("/enemy/wizard_right_1");
+		right1 = setup("/enemy/wizzrobe_right_1");
 		right2 = up2;
 	}	
 	
@@ -119,15 +119,17 @@ public class EMY_Wizard extends Entity {
 			if (onPath) {
 				isOffPath(gp.player, 10);
 				approachPlayer(10);
-				useProjectile(45);
+				if (teleportCounter == 45) {
+					useProjectile(1);
+				}
 			}
 			else {
 				isOnPath(gp.player, 6);	
 			}
-			
+
 			// DISAPEAR AFTER 3 SECONDS
 			teleportCounter++;
-			if (teleportCounter > 180) {	
+			if (teleportCounter > 120) {	
 				spriteNum = 2;
 				spriteCounter = 0;
 				teleporting = true;					

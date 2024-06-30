@@ -14,15 +14,16 @@ public class EMY_Octorok extends Entity {
 	public static final String emyName = "Octorok";
 	GamePanel gp;
 	
-	public EMY_Octorok(GamePanel gp) {
+	public EMY_Octorok(GamePanel gp, String direction) {
 		super(gp);			
 		this.gp = gp;
+		this.direction = direction;
 		
 		type = type_enemy;
 		name = emyName;
 		canSwim = true;
 		
-		speed = 0; defaultSpeed = speed;
+		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;
 		attack = 1; 
 		knockbackPower = 0;
@@ -48,15 +49,60 @@ public class EMY_Octorok extends Entity {
 		right2 = setup("/enemy/octo_right_2");
 	}
 	
+	// UPDATER
+	public void update() {
+		
+		if (sleep) return;		
+		if (knockback) { knockbackEntity();	return; }
+		if (stunned) { manageValues(); return; }
+		if (captured) { isCaptured(); return; }
+		if (attacking) { attacking(); }
+		
+		setAction();
+		
+		if (onPath) {
+			
+			switch(direction) {
+				case "up":
+				case "down":
+					if (gp.player.worldX > worldX) {
+						lockonDirection = "right";
+						checkCollision();
+						if (!collisionOn) worldX += speed;
+					}
+					else if (gp.player.worldX < worldX) {
+						lockonDirection = "left";
+						checkCollision();
+						if (!collisionOn) worldX -= speed;
+					}
+					break;
+				case "left":
+				case "right":
+					if (gp.player.worldY > worldY) {
+						lockonDirection = "down";
+						checkCollision();
+						if (!collisionOn) worldY += speed;
+					}
+					else if (gp.player.worldY < worldY) {
+						lockonDirection = "up";
+						checkCollision();
+						if (!collisionOn) worldY -= speed;
+					}
+					break;
+			}		
+		}
+		cycleSprites();
+		
+		manageValues();
+	}
+	
 	public void setAction() {
 		if (onPath) {			
-			isOffPath(gp.player, 10);			
-			approachPlayer(10);
+			isOffPath(gp.player, 8);
 			useProjectile(60);
 		}
 		else {	
-			isOnPath(gp.player, 8);
-			getDirection(120);
+			isOnPath(gp.player, 5);
 		}
 	}
 	

@@ -34,9 +34,9 @@ public class EMY_Slime_Red extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/redslime_down_1");
-		up2 = setup("/enemy/redslime_down_2");
-		up3 = setup("/enemy/redslime_down_3");
+		up1 = setup("/enemy/slime_red_down_1");
+		up2 = setup("/enemy/slime_red_down_2");
+		up3 = setup("/enemy/slime_red_down_3");
 		down1 = up1;
 		down2 = up2;
 		down3 = up3;

@@ -34,18 +34,18 @@ public class EMY_Slime_Green extends Entity {
 	}
 	
 	public void getImage() {	
-		up1 = setup("/enemy/greenslime_down_1");
-		up2 = setup("/enemy/greenslime_down_2");
-		up3 = setup("/enemy/greenslime_down_3");
-		down1 = setup("/enemy/greenslime_down_1");
-		down2 = setup("/enemy/greenslime_down_2");
-		down3 = setup("/enemy/greenslime_down_3");
-		left1 = setup("/enemy/greenslime_down_1");
-		left2 = setup("/enemy/greenslime_down_2");
-		left3 = setup("/enemy/greenslime_down_3");
-		right1 = setup("/enemy/greenslime_down_1");
-		right2 = setup("/enemy/greenslime_down_2");
-		right3 = setup("/enemy/greenslime_down_3");
+		up1 = setup("/enemy/slime_green_down_1");
+		up2 = setup("/enemy/slime_green_down_2");
+		up3 = setup("/enemy/slime_green_down_3");
+		down1 = up1;
+		down2 = up2;
+		down3 = up3;
+		left1 = up1;
+		left2 = up2;
+		left3 = up3;
+		right1 = up1;
+		right2 = up2;
+		right3 = up3;
 	}
 	
 	public void cycleSprites() {

@@ -23,20 +23,18 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new ITM_Shovel(gp));
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Shovel(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 38;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 41;	
 		i++;		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new ITM_Boots(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 17;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 15;
-		i++;
 		gp.obj[mapNum][i] = new ITM_Bomb(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 15;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 21;
 		i++;
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Boots(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 17;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 15;
+		i++;	
 		gp.obj[mapNum][i] = new OBJ_Tent(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 40;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 11;
@@ -49,15 +47,13 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 27;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 21;
 		i++;
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new ITM_Feather(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 12;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 32;
-		i++;	
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new EQP_Flippers(gp));
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new EQP_Flippers(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 38;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 7;		
+		i++;	
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Feather(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 12;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 32;
 		i++;	
 		
 		mapNum = 2;
@@ -68,8 +64,7 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldY = gp.tileSize * 34;	
 		i++;
 		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new COL_Key(gp));
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 41;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 39;
 		i++;	
@@ -79,8 +74,7 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldY = gp.tileSize * 23;	
 		i++;	
 		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp);
-		gp.obj[mapNum][i].setLoot(new COL_Key_Boss(gp));
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key_Boss(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 27;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
 		i++;	
@@ -154,11 +148,12 @@ public class AssetSetter {
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 36;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 27;
 		i++;
-		gp.enemy[mapNum][i] = new EMY_Octorok(gp);
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp,"left");
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 21;
+		gp.enemy[mapNum][i].direction = "left";
 		i++;	
-		gp.enemy[mapNum][i] = new EMY_Octorok(gp);
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, "left");
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
 		i++;	
@@ -174,15 +169,19 @@ public class AssetSetter {
 		mapNum = 2;
 		i = 0;
 	
+		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 18;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 35;
+		i++;
 		gp.enemy[mapNum][i] = new EMY_Bat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 17;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
 		i++;
-		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 17;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
 		i++;
-		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 28;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 19;
 		i++;					
@@ -190,9 +189,13 @@ public class AssetSetter {
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 18;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 10;
 		i++;
-		gp.enemy[mapNum][i] = new EMY_Wizard(gp);
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 20;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 11;
+		i++;
+		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 19;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 9;
 		i++;
 		
 		mapNum = 3;

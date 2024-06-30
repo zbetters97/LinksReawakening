@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import entity.Entity;
 import entity.Entity.Action;
+import entity.enemy.EMY_Octorok;
 import entity.projectile.PRJ_Bomb;
 
 public class CollisionChecker {
@@ -142,6 +143,12 @@ public class CollisionChecker {
 			}
 			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
+			}
+			
+			if (entity.name.equals(EMY_Octorok.emyName)) {
+				if (tileNum1 != 4 || tileNum2 != 4) {
+					entity.collisionOn = true;
+				}
 			}
 		}
 		// PROJECTILES
