@@ -20,7 +20,7 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, GUARDING, RUNNING, CHOPPING, DIGGING, JUMPING, SOARING, SWINGING, SWIMMING;
+		IDLE, GUARDING, RUNNING, AIMING, CHOPPING, DIGGING, JUMPING, SOARING, SWINGING, SWIMMING;
 	}
 	
 	protected GamePanel gp;
@@ -140,6 +140,7 @@ public class Entity {
 	
 	// ITEM ATTRIBUTES
 	public int value, attackValue;
+	public int charge = 0;
 	public int knockbackPower = 0;
 	public String description = "";
 	public int price;
@@ -191,6 +192,7 @@ public class Entity {
 	public void checkDrop() { checkEnemyRoom(); }
 	public void use() {	}
 	public boolean use(Entity user) { return true; }
+	public void setPower(Entity user) { }
 	public void interact() { }
 	public void move(String direction) { }
 	public void explode() {	}

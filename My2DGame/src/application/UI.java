@@ -355,12 +355,14 @@ public class UI {
 		i = 0;
 		
 		// DRAW CURRENT LIFE
-		while (i < gp.player.life) {			
+		while (i < gp.player.life) {
+			
 			g2.drawImage(heart_half, x, y, null);
 			i++;
 			
-			if (i < gp.player.life) 
+			if (i < gp.player.life) {
 				g2.drawImage(heart_full, x, y, null);
+			}
 			
 			i++;
 			x += gp.tileSize / 1.6;
@@ -369,34 +371,16 @@ public class UI {
 		if (gp.gameState == gp.playState || gp.gameState == gp.objectState) {
 			
 			// DRAW ITEM SLOT
-			x = gp.tileSize * 14;
-			y = gp.tileSize / 2;
-			g2.setColor(new Color(240,190,90));
-			g2.fillRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);		
-			g2.setColor(Color.WHITE);
-			g2.setStroke(new BasicStroke(3));
-			g2.drawRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);	
+			drawItemSlot();
 			
-			// DRAW ITEM
-			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 25F));
-			g2.setColor(Color.BLACK);
-			g2.drawString("Q", x-2, y+10);
+			// DRAW BOW CHARGE
+			drawChargeBar();
+		}
+		
+		if (gp.currentArea == gp.dungeon) {	
 			
-			if (gp.player.currentItem != null) {	
-							
-				g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
-				
-				// DRAW ARROW COUNT
-				if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {	
-					String arrowCount = Integer.toString(gp.player.arrows);	
-					drawItemCount(arrowCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
-				}
-				// DRAW BOMB COUNT
-				else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {	
-					String bombCount = Integer.toString(gp.player.bombs);
-					drawItemCount(bombCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
-				}
-			}
+			// DRAW KEYS
+			drawKeys();			
 		}
 						
 		// DRAW RUPEE IMAGE
@@ -430,37 +414,13 @@ public class UI {
 			}
 		}
 								
-		if (gp.player.walletSize == 99)
-			rupee_count = String.format("%02d", gp.player.rupees);
-		else if (gp.player.walletSize == 999)
-			rupee_count = String.format("%03d", gp.player.rupees);
-		else if (gp.player.walletSize == 9999)
-			rupee_count = String.format("%04d", gp.player.rupees);
+		if (gp.player.walletSize == 99) rupee_count = String.format("%02d", gp.player.rupees);
+		else if (gp.player.walletSize == 999) rupee_count = String.format("%03d", gp.player.rupees);
+		else if (gp.player.walletSize == 9999) rupee_count = String.format("%04d", gp.player.rupees);
 		
 		g2.setColor(Color.WHITE);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(rupee_count, x, y);		
-		
-		// DRAW KEYS
-		if (gp.currentArea == gp.dungeon) {	
-			
-			// DRAW BOSS KEY IMAGE
-			if (gp.player.boss_key > 0) {				
-				x = gp.tileSize * 14 - 20;
-				y = gp.tileSize * 8 + 30;					
-				g2.drawImage(boss_key, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
-			}
-			
-			// DRAW DUNGEON KEY IMAGE
-			x = gp.tileSize * 14 - 20;
-			y = gp.tileSize * 9 + 25;					
-			g2.drawImage(key, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
-			
-			// DRAW DUNGEON KEY COUNT
-			x += gp.tileSize - 8;
-			y += gp.tileSize - 12;				
-			g2.drawString(Integer.toString(gp.player.keys), x, y);				
-		}
 		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
@@ -472,20 +432,89 @@ public class UI {
 		}
 		
 		// DEBUG HUD
-		if (gp.keyH.debug) {			
-			
-			x = 10; y = gp.tileSize * 6; int lineHeight = 20;
-			g2.setFont(new Font("Arial", Font.PLAIN, 20));
-			g2.setColor(Color.white);
-			
-			g2.drawString("WorldX: " + gp.player.worldX, x , y); 
-			y += lineHeight;
-			g2.drawString("WorldY: " + gp.player.worldY, x , y); 
-			y += lineHeight;
-			g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
-			y += lineHeight;
-			g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
+		if (gp.keyH.debug) {				
+			drawDebug();
 		}
+	}
+	private void drawItemSlot() {
+		
+		int x = gp.tileSize * 14;
+		int y = gp.tileSize / 2;
+		
+		// DRAW ITEM BOX
+		g2.setColor(new Color(240,190,90));
+		g2.fillRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);		
+		g2.setColor(Color.WHITE);
+		g2.setStroke(new BasicStroke(3));
+		g2.drawRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);	
+		
+		// DRAW ITEM BUTTON
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 25F));
+		g2.setColor(Color.BLACK);
+		g2.drawString("Q", x-2, y+10);
+		
+		if (gp.player.currentItem != null) {	
+						
+			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
+			
+			// DRAW ARROW COUNT
+			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {	
+				String arrowCount = Integer.toString(gp.player.arrows);	
+				drawItemCount(arrowCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
+			}
+			// DRAW BOMB COUNT
+			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {	
+				String bombCount = Integer.toString(gp.player.bombs);
+				drawItemCount(bombCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
+			}
+		}	
+	}
+	private void drawChargeBar() {
+		
+		if (gp.player.currentItem != null && gp.player.currentItem.charge > 0 &&
+				gp.keyH.itemPressed) {
+			
+			int x = gp.player.getScreenX() - 7;
+			int y = gp.player.getScreenY() - 20;			
+			int width = 62;
+			int height = 10;		
+			int charge = gp.player.currentItem.charge;						
+			
+			g2.setColor(new Color(0,0,0));
+			g2.fillRect(x, y, width, height);		
+			g2.setColor(Color.WHITE);
+			g2.setStroke(new BasicStroke(2));
+			g2.drawRect(x, y, width, height);	
+			
+			if (40 > charge) g2.setColor(new Color(0,105,0)); 	
+			if (80 > charge && charge >= 40) g2.setColor(new Color(0,155,0)); 	
+			else if (120 > charge && charge >= 80) g2.setColor(new Color(0,205,0)); 	
+			else if (charge >= 120) g2.setColor(new Color(0,240,0));
+			
+			g2.fillRect(x + 1, y + 1, (charge / 2), height - 2);
+		}
+	}
+	private void drawKeys() {
+		
+		int x;
+		int y;
+		
+		// DRAW BOSS KEY IMAGE
+		if (gp.player.boss_key > 0) {				
+			x = gp.tileSize * 14 - 20;
+			y = gp.tileSize * 8 + 30;					
+			g2.drawImage(boss_key, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
+		}
+		
+		// DRAW DUNGEON KEY IMAGE
+		x = gp.tileSize * 14 - 20;
+		y = gp.tileSize * 9 + 25;					
+		g2.drawImage(key, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
+		
+		// DRAW DUNGEON KEY COUNT
+		x += gp.tileSize - 8;
+		y += gp.tileSize - 12;				
+		g2.drawString(Integer.toString(gp.player.keys), x, y);				
 	}
 	private void drawEnemyHPBar(Entity[][] enemies) {
 		
@@ -541,14 +570,29 @@ public class UI {
 					enemy.hpBarCounter++;
 					if (enemy.hpBarCounter > 600) {
 						enemy.hpBarCounter = 0;
-						enemy.hpBarOn = false;
-						
+						enemy.hpBarOn = false;						
 					}
 				}
 */				
 			}			
 		}				
 	}
+	private void drawDebug() {
+		int x = 10; 
+		int y = gp.tileSize * 6; 
+		int lineHeight = 20;
+		
+		g2.setFont(new Font("Arial", Font.PLAIN, 20));
+		g2.setColor(Color.white);
+		
+		g2.drawString("WorldX: " + gp.player.worldX, x , y); 
+		y += lineHeight;
+		g2.drawString("WorldY: " + gp.player.worldY, x , y); 
+		y += lineHeight;
+		g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
+		y += lineHeight;
+		g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
+	}	
 	
 	// PAUSE
 	private void drawPauseScreen() {

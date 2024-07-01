@@ -16,7 +16,7 @@ public class PRJ_Seed extends Projectile {
 		type = type_projectile;
 		name = prjName;
 		attack = 2;	
-		speed = 8; 
+		speed = 7; 
 		maxLife = 45; life = maxLife;
 		alive = false;
 		

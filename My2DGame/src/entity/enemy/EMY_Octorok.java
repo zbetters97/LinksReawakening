@@ -29,7 +29,7 @@ public class EMY_Octorok extends Entity {
 		knockbackPower = 0;
 		maxLife = 6; life = maxLife;
 		
-		hitbox = new Rectangle(2, 18, 44, 30);
+		hitbox = new Rectangle(0, 0, 48, 48);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 

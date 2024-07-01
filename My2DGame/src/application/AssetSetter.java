@@ -151,7 +151,6 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp,"left");
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 21;
-		gp.enemy[mapNum][i].direction = "left";
 		i++;	
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, "left");
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;

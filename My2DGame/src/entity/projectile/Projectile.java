@@ -12,6 +12,8 @@ public class Projectile extends Entity {
 		this.gp = gp;
 	}
 	
+	public void resetValues() { }
+	
 	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {		
 		this.worldX = worldX;
 		this.worldY = worldY;
@@ -43,12 +45,12 @@ public class Projectile extends Entity {
 	}	
 	
 	public void useArrow() {
-		
+				
 		// CHECK TILE COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);	
 		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.iTile);		
 		gp.cChecker.checkObject_I(this, false);
 		
 		int objectIndex = gp.cChecker.checkObject(this, true);
@@ -64,8 +66,7 @@ public class Projectile extends Entity {
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
-				alive = false;
-				canPickup = false;
+				resetValues();
 			}
 									
 			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
@@ -75,8 +76,7 @@ public class Projectile extends Entity {
 				if (projectile.name.equals(PRJ_Bomb.prjName))
 					projectile.explode();
 				
-				alive = false;
-				canPickup = false;
+				resetValues();			
 			}	
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
@@ -89,9 +89,8 @@ public class Projectile extends Entity {
 			
 			if (contactPlayer && !gp.player.invincible) {
 				damagePlayer(attack);
-				alive = false;
-				canPickup = false;
-			}
+				resetValues();
+			}			
 		}
 		// MOVE IN DIRECTION SHOT
 		if (!canPickup) {
@@ -107,13 +106,14 @@ public class Projectile extends Entity {
 			}
 		}
 		if (collisionOn) {
+			attack = 2;
+			speed = 6;
 			canPickup = true;		
 		}
 		
 		life--;
 		if (life <= 0) { // REMOVE AFTER X FRAMES
-			alive = false;
-			canPickup = false;
+			resetValues();
 		}
 		
 		// MOVING ANIMATION
@@ -227,7 +227,7 @@ public class Projectile extends Entity {
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {				
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
-			}		
+			}	
 			
 			switch (direction) {
 				case "up":

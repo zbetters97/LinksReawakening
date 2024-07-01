@@ -93,7 +93,7 @@ public class Player extends Entity {
 			
 		action = Action.IDLE;		
 		onGround = true;
-		canSwim = false;
+		canSwim = true;
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
@@ -143,7 +143,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-/*
+
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -155,7 +155,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-*/
+
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -343,12 +343,21 @@ public class Player extends Entity {
 		if (action == Action.DIGGING) { digging(); return; }
 		else if (action == Action.SWINGING) { swinging(); return; }
 		
+		else if (action == Action.AIMING) {
+			if (gp.keyH.itemPressed) {
+				currentItem.setPower(this);
+			}
+			else {
+				currentItem.use(this);
+			}
+		}
+		
 		// MOVEMENT WHILE JUMPING
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.SOARING) { jumping(); }	
 		
 		// DISABLED ACTIONS WHILE SWIMMING
-		if (action != Action.SWIMMING) {			
+		if (action != Action.SWIMMING && action != Action.AIMING) {			
 			if (keyH.actionPressed) { action(); }
 			if (keyH.guardPressed) { action = Action.GUARDING; }					
 			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
@@ -365,9 +374,11 @@ public class Player extends Entity {
 		}		
 		
 		// TAB DISABLED WHILE JUMPING/SOARING
-		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING) { cycleItems(); }	
+		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING
+				&& action != Action.AIMING) { cycleItems(); }	
 		
-		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) { walking(); }			
+		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
+				action != Action.AIMING) { walking(); }			
 		
 		manageValues();		
 		checkDeath();
@@ -796,7 +807,6 @@ public class Player extends Entity {
 	
 	// ITEM HANDLING
 	public void useItem() {
-		keyH.itemPressed = false;
 		
 		if (currentItem != null) {							
 			switch (currentItem.name) {
@@ -806,20 +816,26 @@ public class Player extends Entity {
 				case ITM_Feather.itmName:
 				case ITM_Rod.itmName:
 				case ITM_Shovel.itmName:
+					keyH.itemPressed = false;
 					currentItem.use();
 					break;		
 				case ITM_Bomb.itmName:
-				case ITM_Bow.itmName:
+					keyH.itemPressed = false;
 					currentItem.use(this);
+					break;
+				case ITM_Bow.itmName:
+					currentItem.setPower(this);
 					break;
 				case ITM_Boomerang.itmName: 
 					// STOP MOVEMENT
+					keyH.itemPressed = false;
 					keyH.upPressed = false; keyH.downPressed  = false;
 					keyH.leftPressed  = false; keyH.rightPressed  = false;	
 					currentItem.use(this);
 					break;
 				case ITM_Hookshot.itmName:				
 					// STOP MOVEMENT
+					keyH.itemPressed = false;
 					keyH.upPressed = false; keyH.downPressed  = false;
 					keyH.leftPressed  = false; keyH.rightPressed  = false;			
 					currentItem.use();		
@@ -827,6 +843,7 @@ public class Player extends Entity {
 			}	
 		}
 		else if (currentItem == null) {
+			keyH.itemPressed = false;
 			gp.gameState = gp.dialogueState;
 			startDialogue(this, 2);
 		}			

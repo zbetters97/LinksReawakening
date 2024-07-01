@@ -16,7 +16,7 @@ public class PRJ_Arrow extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
-		speed = 12; 		
+		speed = 6; 		
 		attack = 2; 	
 		knockbackPower = 0;
 		useCost = 1;		
@@ -64,5 +64,12 @@ public class PRJ_Arrow extends Projectile {
 			alive = false;
 			canPickup = false;
 		}
+	}
+	
+	public void resetValues() {
+		attack = 2;
+		speed = 6; 
+		alive = false;
+		canPickup = false;	
 	}
 }
