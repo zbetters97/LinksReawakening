@@ -133,9 +133,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-//		gameState = titleState;	
+		gameState = titleState;	
 		currentArea = outside;
-		gameState = playState;
+//		gameState = playState;
 //		currentArea = inside;
 		
 		setupMusic();
@@ -337,8 +337,7 @@ public class GamePanel extends JPanel implements Runnable {
 		}		
 		
 		currentArea = nextArea;
-		aSetter.setEnemy();
-		aSetter.setInteractiveObjects();
+		aSetter.setInteractiveObjects();		
 	}
 	
 	public void removeTempEntity() {
@@ -370,6 +369,16 @@ public class GamePanel extends JPanel implements Runnable {
 					obj_i[mapNum][i] = null;
 				}
 			}	
+		}
+	}
+	
+	public void removeProjectiles() {		
+		for (int i = 0; i < projectile[1].length; i++) {
+			if (projectile[currentMap][i] != null) {
+				projectile[currentMap][i].resetValues();
+				projectile[currentMap][i].alive = false; 
+				projectile[currentMap][i] = null;
+			}
 		}
 	}
 	

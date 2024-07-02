@@ -192,11 +192,13 @@ public class Entity {
 	public void checkDrop() { checkEnemyRoom(); }
 	public void use() {	}
 	public boolean use(Entity user) { return true; }
-	public void setPower(Entity user) { }
+	public void setCharge(Entity user) { }
+	public void resetValues() { }
 	public void interact() { }
-	public void move(String direction) { }
+	public void move(String direction) { }	
 	public void explode() {	}
 	public void setLoot(Entity loot) { }
+	public void setLoot(Entity lootOne, Entity lootTwo) { }
 	public void playSE() { }
 	public void playOpenSE() { }
 	public void playCloseSE() { }
@@ -662,11 +664,10 @@ public class Entity {
 		if (!gp.player.invincible && gp.player.alive) {
 									
 			int damage = attack;
-			
-			String guardDirection = getOppositeDirection(direction);			
+			String guardDirection = getOppositeDirection(direction);
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
 				gp.playSE(4, 8);	
-				
+								
 				if (name.equals(PRJ_Seed.prjName)) {
 					direction = gp.player.direction;
 					collisionOn = false;
@@ -683,7 +684,6 @@ public class Entity {
 				
 				if (knockbackPower > 0) setKnockback(gp.player, this, knockbackPower);
 				if (damage < 0) damage = 0;	
-				
 				gp.player.life -= damage;
 				gp.player.transparent = true;
 			}			
@@ -790,7 +790,7 @@ public class Entity {
 		
 		int i = new Random().nextInt(rate);
 		if (i == 0 && !projectile.alive && shotAvailableCounter == 30) {
-			
+
 			projectile.set(worldX, worldY, direction, true, this);
 			addProjectile(projectile);
 			

@@ -24,7 +24,8 @@ public class ITM_Bow extends Entity {
 		projectile = new PRJ_Arrow(gp);
 	}
 	
-	public void setPower(Entity user) {
+	public void setCharge(Entity user) {
+		
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {	
 			
@@ -34,14 +35,14 @@ public class ITM_Bow extends Entity {
 		}
 	}
 	
-	public boolean use(Entity user) {				
+	public boolean use(Entity user) {	
 		
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
-				projectile.hasResource(user)) {				
+				projectile.hasResource(user)) {			
 			playSE();
 			
 			if (user == gp.player) {			
-				gp.player.action = Action.IDLE; 			
+				gp.player.action = Action.IDLE; 	
 				
 				if (80 > charge && charge >= 40) {
 					projectile.attack++;
@@ -59,17 +60,18 @@ public class ITM_Bow extends Entity {
 				charge = 0;	
 			}
 			else {
-				projectile.attack = 6;
-				projectile.speed = 12;
+				projectile.attack = 2;
+				projectile.speed = 10;
 			}
 			
-			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);		
 			addProjectile(projectile);	
 			
 			projectile.subtractResource(user);
 			
-			user.shotAvailableCounter = 0;											
-		}	
+			user.shotAvailableCounter = 0;					
+		}
+		
 		return true;
 	}	
 	

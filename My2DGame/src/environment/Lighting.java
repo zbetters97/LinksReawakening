@@ -24,7 +24,7 @@ public class Lighting {
 	final int dawn = 3;
 	public int dayState = day;
 	public int bloodMoonCounter = 0;
-	public int bloodMoonMax = 5;
+	public int bloodMoonMax = 3;
 	public float filterAlpha = 0f;
 	
 	public Lighting(GamePanel gp) {

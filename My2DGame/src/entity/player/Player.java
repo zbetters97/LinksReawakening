@@ -93,7 +93,6 @@ public class Player extends Entity {
 			
 		action = Action.IDLE;		
 		onGround = true;
-		canSwim = true;
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
@@ -106,7 +105,7 @@ public class Player extends Entity {
 		maxBombs = 10; bombs = maxBombs;
 		
 		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);
+//		currentWeapon = new EQP_Sword_Master(gp);
 		currentShield = new EQP_Shield(gp);
 		currentLight = new ITM_Lantern(gp);
 		
@@ -143,7 +142,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -155,7 +154,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-
+*/
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -345,7 +344,7 @@ public class Player extends Entity {
 		
 		else if (action == Action.AIMING) {
 			if (gp.keyH.itemPressed) {
-				currentItem.setPower(this);
+				currentItem.setCharge(this);
 			}
 			else {
 				currentItem.use(this);
@@ -751,20 +750,31 @@ public class Player extends Entity {
 	public void contactEnemy(int i, Entity enemyList[][]) {
 		
 		// PLAYER HURT BY ENEMY
-		if (i != -1 && !invincible && enemyList[gp.currentMap][i].collision &&
+		if (i != -1 && !invincible && 
+				enemyList[gp.currentMap][i].collision &&
 				!enemyList[gp.currentMap][i].dying && 		
 				!enemyList[gp.currentMap][i].captured) {
-			playHurtSE();
+						
+			Entity enemy = enemyList[gp.currentMap][i];
 			
-			if (enemyList[gp.currentMap][i].knockbackPower > 0) 
-				setKnockback(gp.player, enemyList[gp.currentMap][i], enemyList[gp.currentMap][i].knockbackPower);
+			if (enemy.knockbackPower > 0) {
+				setKnockback(gp.player, enemy, enemy.knockbackPower);
+			}
 			
-			int damage = enemyList[gp.currentMap][i].attack;
-			if (damage < 0) damage = 0;				
-			this.life -= damage;
-			
-			invincible = true;
-			transparent = true;	
+			String guardDirection = getOppositeDirection(enemy.direction);
+			if (action == Action.GUARDING && direction.equals(guardDirection)) {
+				gp.playSE(4, 8);			
+			}
+			else {					
+				playHurtSE();
+				
+				int damage = enemy.attack;								
+				if (damage < 0) damage = 0;				
+				this.life -= damage;
+				
+				invincible = true;
+				transparent = true;	
+			}
 		}
 	}		
 	public void knockbackPlayer() {
@@ -824,7 +834,7 @@ public class Player extends Entity {
 					currentItem.use(this);
 					break;
 				case ITM_Bow.itmName:
-					currentItem.setPower(this);
+					currentItem.setCharge(this);
 					break;
 				case ITM_Boomerang.itmName: 
 					// STOP MOVEMENT

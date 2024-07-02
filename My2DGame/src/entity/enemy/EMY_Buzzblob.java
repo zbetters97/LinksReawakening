@@ -28,7 +28,7 @@ public class EMY_Buzzblob extends Entity {
 		knockbackPower = 1;
 		maxLife = 8; life = maxLife;
 		
-		hitbox = new Rectangle(2, 18, 44, 30);
+		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
@@ -101,7 +101,7 @@ public class EMY_Buzzblob extends Entity {
 			isOffPath(gp.player, 6);									
 			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));	
 			if (!buzzing) {
-				if (isAttacking(180, gp.tileSize * 3, gp.tileSize * 3)) {
+				if (isAttacking(200, gp.tileSize * 3, gp.tileSize * 3)) {
 					playShockSE();
 					buzzing = true;					
 					attack *= 2;
@@ -118,7 +118,6 @@ public class EMY_Buzzblob extends Entity {
 	
 	public void damageReaction() {
 		actionLockCounter = 0;
-		onPath = true;
 	}
 	
 	public void playHurtSE() {

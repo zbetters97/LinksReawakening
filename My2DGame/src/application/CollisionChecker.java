@@ -592,8 +592,9 @@ public class CollisionChecker {
 				
 				if (entity.hitbox.intersects(gp.obj[gp.currentMap][i].hitbox)) {
 					
-					if (gp.obj[gp.currentMap][i].collision) 
+					if (gp.obj[gp.currentMap][i].collision) {
 						entity.collisionOn = true;	
+					}
 					if (player) {
 						index = i;
 					}

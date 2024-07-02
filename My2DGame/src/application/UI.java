@@ -513,7 +513,9 @@ public class UI {
 		
 		// DRAW DUNGEON KEY COUNT
 		x += gp.tileSize - 8;
-		y += gp.tileSize - 12;				
+		y += gp.tileSize - 12;		
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(Integer.toString(gp.player.keys), x, y);				
 	}
 	private void drawEnemyHPBar(Entity[][] enemies) {
@@ -767,22 +769,24 @@ public class UI {
 		// LABELS
 		textX = frameX + gp.tileSize;
 		textY = frameY + gp.tileSize * 2;		
-		g2.drawString("MOVE", textX, textY); textY += gp.tileSize;
-		g2.drawString("ACTION", textX, textY); textY += gp.tileSize;
-		g2.drawString("USE ITEM", textX, textY); textY += gp.tileSize;
-		g2.drawString("CYCLE ITEMS", textX, textY); textY += gp.tileSize;
-		g2.drawString("INVENTORY", textX, textY); textY += gp.tileSize;
-		g2.drawString("ITEM SCREEN", textX, textY); textY += gp.tileSize;
+		g2.drawString("ACTION", textX, textY); textY += 35;
+		g2.drawString("INVENTORY", textX, textY); textY += 35;
+		g2.drawString("MAP", textX, textY); textY += 35;
+		g2.drawString("GUARD", textX, textY); textY += 35;
+		g2.drawString("LOCK-ON", textX, textY); textY += 35;
+		g2.drawString("USE ITEM", textX, textY); textY += 35;
+		g2.drawString("CYCLE ITEMS", textX, textY); textY += 35;	
 		
 		// VALUES
 		textX = frameX + gp.tileSize * 6;
 		textY = frameY + gp.tileSize * 2;
-		g2.drawString("ARROW KEYS", textX, textY); textY += gp.tileSize;
-		g2.drawString("SPACEBAR", textX, textY); textY += gp.tileSize;
-		g2.drawString("Q", textX, textY); textY += gp.tileSize;
-		g2.drawString("T", textX, textY); textY += gp.tileSize;
-		g2.drawString("1", textX, textY); textY += gp.tileSize;
-		g2.drawString("2", textX, textY); textY += gp.tileSize;
+		g2.drawString("SPACEBAR", textX, textY); textY += 35;
+		g2.drawString("E", textX, textY); textY += 35;
+		g2.drawString("M", textX, textY); textY += 35;
+		g2.drawString("Z", textX, textY); textY += 35;
+		g2.drawString("F", textX, textY); textY += 35;
+		g2.drawString("Q", textX, textY); textY += 35;
+		g2.drawString("T", textX, textY); textY += 35;		
 		
 		// BACK
 		textX = frameX + gp.tileSize;
@@ -845,15 +849,25 @@ public class UI {
 		int height = gp.tileSize;
 		drawSubWindow(x, y, width, height);
 		
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 34F));
+		x = (gp.tileSize * 7) + 12;
+		width = (gp.tileSize * 2) - 15;
+		drawSubWindow(x, y, width, height);
 		
-		String text = null;
-		
-		if (inventoryScreen == 0) text = "COLLECTABLES";
-		else text = "ITEMS";
+		x = (gp.tileSize * 8);
+		y = 35;
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 34F));	
+		String text = null;		
+		if (inventoryScreen == 0) {
+			g2.drawString("T >", x, y);
+			text = "COLLECTABLES";
+		}
+		else {
+			g2.drawString("< T", x - 20, y);
+			text = "ITEMS";
+		}
 		
 		x = getXforCenteredText(text);
-		g2.drawString(text, x + gp.tileSize * 4, y+35);
+		g2.drawString(text, x + gp.tileSize * 4, y);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
 	}
 	private void drawEquipment() {

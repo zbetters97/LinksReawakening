@@ -54,6 +54,10 @@ public class AssetSetter {
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Feather(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 12;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 32;
+		i++;		
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Bow(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 8;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 9;
 		i++;	
 		
 		mapNum = 2;
@@ -100,19 +104,19 @@ public class AssetSetter {
 		
 		int mapNum = 0;
 		int i = 0;
-		
-		gp.npc[mapNum][i] = new NPC_OldMan(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 30;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 30;
-		i++;
-		
+						
 		gp.npc[mapNum][i] = new NPC_Traveler_1(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize * 20;
 		gp.npc[mapNum][i].worldY = gp.tileSize * 21;
-		i++;
-		gp.npc[mapNum][i] = new NPC_Traveler_2(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 26;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 11;
+		i++;		
+		gp.npc[mapNum][i] = new NPC_OldMan(gp);
+		gp.npc[mapNum][i].worldX = gp.tileSize * 30;
+		gp.npc[mapNum][i].worldY = gp.tileSize * 30;
+		i++;		
+		gp.npc[mapNum][i] = new NPC_Dialogue_Exchange(gp);
+		gp.npc[mapNum][i].worldX = gp.tileSize * 20;
+		gp.npc[mapNum][i].worldY = gp.tileSize * 10;
+		gp.npc[mapNum][i].direction = "up";
 		i++;
 		
 		mapNum = 1;
@@ -136,15 +140,19 @@ public class AssetSetter {
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 21;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 37;
 		i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 36;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 31;
-		i++;
 		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 38;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 40;
 		i++;
-		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp);
+		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 37;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 41;
+		i++;
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, "up");
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 46;
+		i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 36;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 27;
 		i++;
@@ -156,13 +164,13 @@ public class AssetSetter {
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
 		i++;	
-		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 31;
-		i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 29;
+		i++;
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 31;
 		i++;
 		
 		mapNum = 2;
@@ -239,10 +247,25 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 36, 30); i++;
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 37, 30); i++;
 		
+		mapNum = 1;
+		i = 0;
+		
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 10, 12);
+		gp.iTile[mapNum][i].setLoot(new COL_Rupee_Blue(gp), new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 14, 12);
+		gp.iTile[mapNum][i].setLoot(new COL_Rupee_Green(gp), new COL_Potion_Red(gp)); i++;
+		
 		mapNum = 2;
 		i = 0;
 		
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 26, 38);
+		gp.iTile[mapNum][i].setLoot(new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 32, 25);
+		gp.iTile[mapNum][i].setLoot(new COL_Heart(gp)); i++;
+		
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 10, 22); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 30, 18); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 30, 19); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Switch(gp, 26, 34); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 38, 28); i++;

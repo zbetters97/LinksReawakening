@@ -73,10 +73,14 @@ public class SceneManager {
 			npc1 = gp.ui.npc;
 		}
 		else if (phase == 1) {
+			
 			for (int i = 0; i < gp.npc[1].length; i++) {
-				if (gp.npc[gp.currentMap][i] != null && 
-						gp.npc[gp.currentMap][i].name.equals(NPC_Traveler_2.npcName)) {
-
+				if (gp.npc[gp.currentMap][i] == null) {
+					
+					gp.npc[gp.currentMap][i] = new NPC_Traveler_2(gp);
+					gp.npc[gp.currentMap][i].worldX = gp.tileSize * 24;
+					gp.npc[gp.currentMap][i].worldY = gp.tileSize * 32;
+					
 					npc2 = gp.npc[gp.currentMap][i];
 					
 					gp.ui.npc = npc2;
@@ -98,6 +102,7 @@ public class SceneManager {
 
 					npc1.direction = "right";
 					
+					npc2.pathCompleted = false;
 					npc2.dialogueSet = 1;
 					gp.ui.drawDialogueScreen();
 					

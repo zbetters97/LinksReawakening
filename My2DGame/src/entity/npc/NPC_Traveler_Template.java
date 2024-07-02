@@ -70,6 +70,7 @@ public class NPC_Traveler_Template extends Entity {
 			speed = defaultSpeed;		
 			animationSpeed = 0;
 			onPath = false;
+			getDirection(90);
 		}
 	}
 }

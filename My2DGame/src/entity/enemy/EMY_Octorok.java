@@ -1,12 +1,10 @@
 package entity.enemy;
 
 import java.awt.Rectangle;
-import java.util.Random;
 
 import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
-import entity.collectable.COL_Rupee_Blue;
 import entity.projectile.PRJ_Seed;
 
 public class EMY_Octorok extends Entity {
@@ -99,7 +97,7 @@ public class EMY_Octorok extends Entity {
 	public void setAction() {
 		if (onPath) {			
 			isOffPath(gp.player, 8);
-			useProjectile(60);
+			useProjectile(90);
 		}
 		else {	
 			isOnPath(gp.player, 5);
@@ -120,11 +118,7 @@ public class EMY_Octorok extends Entity {
 	
 	// DROPPED ITEM
 	public void checkDrop() {
-		super.checkDrop();
-		
-		int i = new Random().nextInt(100) + 1;
-		
-		if (i < 50) dropItem(new COL_Heart(gp));
-		else dropItem(new COL_Rupee_Blue(gp));
+		super.checkDrop();		
+		dropItem(new COL_Heart(gp));
 	}
 }

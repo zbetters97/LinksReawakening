@@ -3,8 +3,8 @@ LINK
 Fullscreen
 False
 Music volume
-0
+2
 Sound effects volume
-4
+3
 Text speed
 0

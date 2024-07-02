@@ -145,7 +145,13 @@ public class PRJ_Bomb extends Projectile {
 		if (contactPlayer && !gp.player.invincible) 
 			damagePlayer(attack);				
 		
+		resetValues();
+	}
+	
+	public void resetValues() {
+		spriteNum = 1;
 		speed = defaultSpeed;
+		animationSpeed = 30;
 		active = false;
 		alive = false;	
 	}

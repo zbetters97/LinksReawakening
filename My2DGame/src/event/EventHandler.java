@@ -104,7 +104,7 @@ public class EventHandler {
 					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
 							new int[]{27,38}, new int[]{39,39}, new String[]{"right","left"},
-							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Bat(gp)), 
+							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Buzzblob(gp)), 
 							new int[]{34,35}, new int[]{40,39}
 					);
 				}
@@ -246,6 +246,7 @@ public class EventHandler {
 		tempRow = row;
 		
 		canTouchEvent = false;
+		gp.removeProjectiles();
 		
 		gp.nextArea = area;		
 		gp.gameState = gp.transitionState;

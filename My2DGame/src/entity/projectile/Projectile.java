@@ -12,8 +12,6 @@ public class Projectile extends Entity {
 		this.gp = gp;
 	}
 	
-	public void resetValues() { }
-	
 	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {		
 		this.worldX = worldX;
 		this.worldY = worldY;
@@ -45,31 +43,30 @@ public class Projectile extends Entity {
 	}	
 	
 	public void useArrow() {
-				
+						
 		// CHECK TILE COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.npc);
-		gp.cChecker.checkEntity(this, gp.iTile);		
-		gp.cChecker.checkObject_I(this, false);
+		gp.cChecker.checkEntity(this, gp.npc);				
+		gp.cChecker.checkObject(this, false);
 		
-		int objectIndex = gp.cChecker.checkObject(this, true);
-		if (objectIndex != -1 &&
-				gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
-				gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {
-			collisionOn = true;
-		}
+		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+		int objectIIndex = gp.cChecker.checkObject_I(this, false);		
 		
 		// SHOT BY PLAYER
 		if (user == gp.player) {
+						
+			gp.player.damageInteractiveTile(iTileIndex, this);
+			if (iTileIndex != -1) resetValues();
+			if (objectIIndex != -1) resetValues();
 			
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 				resetValues();
-			}
-									
-			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			}									
+			
 			if (projectileIndex != -1) {
 				Entity projectile = gp.projectile[gp.currentMap][projectileIndex];	
 				
@@ -77,10 +74,7 @@ public class Projectile extends Entity {
 					projectile.explode();
 				
 				resetValues();			
-			}	
-			
-			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-			gp.player.damageInteractiveTile(iTileIndex, this);
+			}			
 		}
 		
 		// SHOT BY ENEMEY AND PLAYER ON GROUND
@@ -105,26 +99,16 @@ public class Projectile extends Entity {
 				case "right": worldX += speed; break;
 			}
 		}
-		if (collisionOn) {
+		if (collisionOn && alive) {
 			attack = 2;
 			speed = 6;
-			canPickup = true;		
+			canPickup = true;	
 		}
 		
 		life--;
 		if (life <= 0) { // REMOVE AFTER X FRAMES
 			resetValues();
 		}
-		
-		// MOVING ANIMATION
-		spriteCounter++;
-		if (spriteCounter > animationSpeed) { // speed of sprite change
-			
-			if (spriteNum == 1) spriteNum = 2;
-			else if (spriteNum == 2) spriteNum = 1;
-			
-			spriteCounter = 0;
-		}		
 	}
 	
 	public void useBomb() {
@@ -175,9 +159,6 @@ public class Projectile extends Entity {
 			life--;
 			if (life <= 0) { 
 				explode();
-				animationSpeed = 30;
-				active = false;
-				alive = false;				
 			}
 		}
 	}
