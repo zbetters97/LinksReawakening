@@ -7,6 +7,7 @@ import entity.Entity;
 
 public class NPC_Dialogue_Exchange extends Entity {
 	
+	public static final String npcName = "Wise Man";
 	GamePanel gp;
 	
 	public NPC_Dialogue_Exchange(GamePanel gp) {		
@@ -14,7 +15,7 @@ public class NPC_Dialogue_Exchange extends Entity {
 		this.gp = gp;		
 		
 		type = type_npc;
-		name = "Old Man";
+		name = npcName;
 		direction = "down";
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 0; 

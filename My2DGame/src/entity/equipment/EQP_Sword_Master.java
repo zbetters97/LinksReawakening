@@ -12,9 +12,9 @@ public class EQP_Sword_Master extends Entity {
 		
 		type = type_equipment;	
 		name = eqpName;
-		description = "[" + name + "]\nThe sword of a true hero.";
+		description = "[" + name + "]\nThe sword of the hero of legends.";
 				
-		attackValue = 4;
+		attackValue = 3;
 		knockbackPower = 1;
 		
 		swingSpeed1 = 3;

@@ -12,10 +12,9 @@ public class ITM_Lantern extends Entity {
 		super(gp);
 		this.gp = gp;
 
-		type = type_light;
 		name = itmName;
 		description = "[" + name + "]\nEquip to light up the\ndarkness!";
-		lightRadius = 300;		
+//		lightRadius = 300;		
 		
 		down1 = setup("/items/ITEM_LANTERN", gp.tileSize, gp.tileSize);
 	}

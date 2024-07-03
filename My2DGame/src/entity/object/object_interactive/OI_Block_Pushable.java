@@ -9,13 +9,13 @@ import entity.object.OBJ_Door_Closed;
 import tile.tile_interactive.IT_Plate_Metal;
 import tile.tile_interactive.InteractiveTile;
 
-public class OT_Block_Pushable extends Entity {
+public class OI_Block_Pushable extends Entity {
 	
 	public static final String obj_iName = "Pushable Block";
 	public int pushCounter = 0;
 	GamePanel gp;
 	
-	public OT_Block_Pushable(GamePanel gp) {		
+	public OI_Block_Pushable(GamePanel gp) {		
 		super(gp);
 		this.gp = gp;		
 		
@@ -134,7 +134,7 @@ public class OT_Block_Pushable extends Entity {
 		for (int i = 0; i < gp.obj_i[1].length; i++) {
 			if (gp.obj_i[gp.currentMap][i] != null && 
 					gp.obj_i[gp.currentMap][i].name != null &&
-					gp.obj_i[gp.currentMap][i].name.equals(OT_Block_Pushable.obj_iName)) {
+					gp.obj_i[gp.currentMap][i].name.equals(OI_Block_Pushable.obj_iName)) {
 				boulderList.add(gp.obj_i[gp.currentMap][i]);
 			}
 		}

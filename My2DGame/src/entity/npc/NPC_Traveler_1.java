@@ -4,7 +4,7 @@ import application.GamePanel;
 
 public class NPC_Traveler_1 extends NPC_Traveler_Template {
 	
-	public static final String npcName = "Traveler";
+	public static final String npcName = "Traveler 1";
 	
 	public NPC_Traveler_1(GamePanel gp) {		
 		super(gp);

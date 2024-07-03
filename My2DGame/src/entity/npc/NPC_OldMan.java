@@ -9,6 +9,7 @@ import entity.item.ITM_Hookshot;
 
 public class NPC_OldMan extends Entity {
 	
+	public static final String npcName = "Old Man";
 	GamePanel gp;
 	int itemIndex = 0;
 	
@@ -18,7 +19,7 @@ public class NPC_OldMan extends Entity {
 		
 		hasItemToGive = true;
 		type = type_npc;
-		name = "Old Man";
+		name = npcName;
 		direction = "down";
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 0; 

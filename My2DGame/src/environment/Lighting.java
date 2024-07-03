@@ -70,7 +70,7 @@ public class Lighting {
 			}
 			// NIGHT
 			else if (dayState == night) {				
-				dayCounter++;
+				dayCounter+=2;
 				if (dayCounter > dayLength) {
 					dayState = dawn;
 					dayCounter = 0;				
@@ -91,66 +91,55 @@ public class Lighting {
 		
 		darknessFilter = new BufferedImage(gp.screenWidth, gp.screenHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = (Graphics2D)darknessFilter.getGraphics();
+
+		// LIGHTING CIRCLE CENTER POINT ON PLAYER
+		int centerX = gp.player.screenX + gp.tileSize / 2;
+		int centerY = gp.player.screenY + gp.tileSize / 2;
 		
-		if (gp.player.currentLight == null) {
+		// GRADIENT AFFECT
+		Color color[] = new Color[12];	
+		float fraction[] = new float[12];
 			
-			// BLUE OR RED MOON FILTER
-			float red = 0;
-			float blue = 0;						
-			if (bloodMoonCounter == bloodMoonMax) red = 0.1f; 
-			else blue = 0.1f;
-			g2.setColor(new Color(red,0,blue,0.97f));
-		}
-		else {
-			// LIGHTING CIRCLE CENTER POINT ON PLAYER
-			int centerX = gp.player.screenX + gp.tileSize / 2;
-			int centerY = gp.player.screenY + gp.tileSize / 2;
-			
-			// GRADIENT AFFECT
-			Color color[] = new Color[12];	
-			float fraction[] = new float[12];
-				
-			
-			// BLUE OR RED MOON FILTER
-			float red = 0;
-			float blue = 0;					
-			if (bloodMoonCounter == bloodMoonMax) red = 0.1f;			
-			else blue = 0.1f;			
-			
-			// OPACITY OF GRADIENT (1 = DARK, 0 = LIGHT)
-			color[0] = new Color(red,0,blue,0.1f);
-			color[1] = new Color(red,0,blue,0.42f);
-			color[2] = new Color(red,0,blue,0.52f);
-			color[3] = new Color(red,0,blue,0.61f);
-			color[4] = new Color(red,0,blue,0.69f);
-			color[5] = new Color(red,0,blue,0.76f);
-			color[6] = new Color(red,0,blue,0.82f);
-			color[7] = new Color(red,0,blue,0.87f);
-			color[8] = new Color(red,0,blue,0.91f);
-			color[9] = new Color(red,0,blue,0.92f);
-			color[10] = new Color(red,0,blue,0.93f);
-			color[11] = new Color(red,0,blue,0.94f);
-			
-			// DISTANCE FROM CIRCLE (1 = EDGE, 0 = CENTER)
-			fraction[0] = 0f;
-			fraction[1] = 0.4f;
-			fraction[2] = 0.5f;
-			fraction[3] = 0.6f;
-			fraction[4] = 0.65f;
-			fraction[5] = 0.7f;
-			fraction[6] = 0.75f;
-			fraction[7] = 0.8f;
-			fraction[8] = 0.85f;
-			fraction[9] = 0.9f;
-			fraction[10] = 0.95f;
-			fraction[11] = 1f;	
-			
-			// DRAW GRAIDENT ON LIGHT CIRCLE
-			RadialGradientPaint gPaint = new RadialGradientPaint(
-					centerX, centerY, (gp.player.currentLight.lightRadius / 2), fraction, color
-			);
-			g2.setPaint(gPaint);
-		}
+		
+		// BLUE OR RED MOON FILTER
+		float red = 0;
+		float blue = 0;					
+		if (bloodMoonCounter == bloodMoonMax) red = 0.1f;			
+		else blue = 0.1f;			
+		
+		// OPACITY OF GRADIENT (1 = DARK, 0 = LIGHT)
+		color[0] = new Color(red,0,blue,0.1f);
+		color[1] = new Color(red,0,blue,0.42f);
+		color[2] = new Color(red,0,blue,0.52f);
+		color[3] = new Color(red,0,blue,0.61f);
+		color[4] = new Color(red,0,blue,0.69f);
+		color[5] = new Color(red,0,blue,0.76f);
+		color[6] = new Color(red,0,blue,0.82f);
+		color[7] = new Color(red,0,blue,0.87f);
+		color[8] = new Color(red,0,blue,0.91f);
+		color[9] = new Color(red,0,blue,0.92f);
+		color[10] = new Color(red,0,blue,0.93f);
+		color[11] = new Color(red,0,blue,0.94f);
+		
+		// DISTANCE FROM CIRCLE (1 = EDGE, 0 = CENTER)
+		fraction[0] = 0f;
+		fraction[1] = 0.4f;
+		fraction[2] = 0.5f;
+		fraction[3] = 0.6f;
+		fraction[4] = 0.65f;
+		fraction[5] = 0.7f;
+		fraction[6] = 0.75f;
+		fraction[7] = 0.8f;
+		fraction[8] = 0.85f;
+		fraction[9] = 0.9f;
+		fraction[10] = 0.95f;
+		fraction[11] = 1f;	
+						
+		// DRAW GRAIDENT ON LIGHT CIRCLE
+		RadialGradientPaint gPaint = new RadialGradientPaint(
+				centerX, centerY, 150, fraction, color
+		);
+		g2.setPaint(gPaint);
 		
 		// DRAW DARKNESS RECTANGLE
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
@@ -158,8 +147,7 @@ public class Lighting {
 		g2.dispose();
 	}
 	
-	public void resetDay() {
-		
+	public void resetDay() {		
 		dayState = day;
 		filterAlpha = 0f;
 		bloodMoonCounter = 0;
@@ -172,22 +160,6 @@ public class Lighting {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha));
 			g2.drawImage(darknessFilter, 0, 0, null);
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-		}
-		
-		// DEBUG
-		if (gp.keyH.debug) {
-			
-			String timeOfDay = "";
-			switch (dayState) {
-				case day: timeOfDay = "DAY"; break;
-				case dusk: timeOfDay = "DUSK"; break;
-				case night: timeOfDay = "NIGHT"; break;
-				case dawn: timeOfDay = "DAWN"; break;
-			}
-			
-			g2.setColor(Color.WHITE);
-			g2.setFont(g2.getFont().deriveFont(50f));		
-			g2.drawString(timeOfDay, 10, gp.tileSize * 5);
 		}
 	}
 }

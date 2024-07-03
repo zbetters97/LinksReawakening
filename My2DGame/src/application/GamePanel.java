@@ -395,16 +395,17 @@ public class GamePanel extends JPanel implements Runnable {
 		player.restoreStatus();
 		player.setDefaultPosition();	
 		player.resetCounter();
-		aSetter.setNPC();
-		aSetter.setEnemy();		
 		
 		if (restart) {
 			player.inventory.clear();
 			player.inventory_item.clear();
 			player.setDefaultValues();	
+			
+			aSetter.setNPC();
+			aSetter.setEnemy();		
+			aSetter.setObject();
 			aSetter.setInteractiveObjects();
 			aSetter.setInteractiveTiles();
-			aSetter.setObject();
 			
 			eManager.lighting.resetDay();
 		}
@@ -484,7 +485,7 @@ public class GamePanel extends JPanel implements Runnable {
 			// EMPTY ENTITY LIST
 			entityList.clear();
 			
-			// DRAW ENVIRONMENT
+			// DRAW ENVIRONMENT			
 			eManager.draw(g2);
 			
 			// DRAW UI

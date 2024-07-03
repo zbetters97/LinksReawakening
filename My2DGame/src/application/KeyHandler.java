@@ -304,7 +304,8 @@ public class KeyHandler implements KeyListener {
 		int maxCommandNum = 0;
 		switch (gp.ui.subState) {
 			case 0: maxCommandNum = 6; break;
-			case 3: maxCommandNum = 1; break;
+			case 3:
+			case 4: maxCommandNum = 1; break;
 		}
 		
 		if (code == KeyEvent.VK_UP) { 
@@ -432,6 +433,7 @@ public class KeyHandler implements KeyListener {
 	// ITEM GET	
 	private void itemGetState(int code) {
 		if (code == KeyEvent.VK_SPACE) {
+			gp.ui.playDialogueFinishSE();	
 						
 			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
 				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);				

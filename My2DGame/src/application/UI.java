@@ -34,6 +34,7 @@ public class UI {
 	public int commandNum = 0;
 	
 	// HUD
+	private BufferedImage dialogue_next, dialogue_finish;
 	private BufferedImage flippers, heart_full, heart_half, heart_empty, rupee, key, boss_key;
 	private String rupee_count = "0";
 	public int rupeeCount = -1;
@@ -58,6 +59,7 @@ public class UI {
 	private int dialogueCounter = 0;	
 	private int charIndex = 0;
 	private String combinedText = "";
+	private boolean canSkip = false;
 	
 	// PLAYER RESPONSE
 	public boolean response = false;
@@ -95,17 +97,19 @@ public class UI {
 			e.printStackTrace();
 		}
 		
-		flippers = new EQP_Flippers(gp).down1;
+		dialogue_next = setup("/font/dialogue_next"); 
+		dialogue_finish = setup("/font/dialogue_finish"); 
+		
 		
 		// CREATE HUD
 		heart_full = new COL_Heart(gp).image1;
 		heart_half = new COL_Heart(gp).image2;
-		heart_empty = new COL_Heart(gp).image3;
-		
-		rupee = new COL_Rupee_Blue(gp).down1;	
-		
+		heart_empty = new COL_Heart(gp).image3;		
+		rupee = new COL_Rupee_Blue(gp).down1;			
 		key = new COL_Key(gp).down1;
 		boss_key = new COL_Key_Boss(gp).down1;
+		
+		flippers = new EQP_Flippers(gp).down1;
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -580,12 +584,24 @@ public class UI {
 		}				
 	}
 	private void drawDebug() {
+		
 		int x = 10; 
 		int y = gp.tileSize * 6; 
 		int lineHeight = 20;
 		
-		g2.setFont(new Font("Arial", Font.PLAIN, 20));
-		g2.setColor(Color.white);
+		String timeOfDay = "";
+		switch (gp.eManager.lighting.dayState) {
+			case 0: timeOfDay = "DAY"; break;
+			case 1: timeOfDay = "DUSK"; break;
+			case 2: timeOfDay = "NIGHT"; break;
+			case 3: timeOfDay = "DAWN"; break;
+		}
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(new Font("Arial", Font.BOLD, 50));
+		g2.drawString(timeOfDay, x, y - gp.tileSize);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20f));						
 		
 		g2.drawString("WorldX: " + gp.player.worldX, x , y); 
 		y += lineHeight;
@@ -594,6 +610,10 @@ public class UI {
 		g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
 		y += lineHeight;
 		g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
+		y += lineHeight;
+		g2.drawString("Time Counter: " + gp.eManager.lighting.dayCounter, x, y);
+		
+		g2.setFont(PK_DS);
 	}	
 	
 	// PAUSE
@@ -614,7 +634,8 @@ public class UI {
 			case 0: options_top(frameX, frameY); break;
 			case 1: options_fullscreenNotif(frameX, frameY); break;
 			case 2: options_controls(frameX, frameY); break;
-			case 3: options_quitGameConfirm(frameX, frameY); break;
+			case 3: options_saveGameConfirm(frameX, frameY); break;
+			case 4: options_quitGameConfirm(frameX, frameY); break;
 		}
 		gp.keyH.actionPressed = false;
 	}
@@ -681,14 +702,13 @@ public class UI {
 				
 		// BACK
 		textY += gp.tileSize;
-		g2.drawString("Save and Close", textX, textY);
+		g2.drawString("Save Progress", textX, textY);
 		if (commandNum == 5) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.actionPressed) {				
+				subState = 3;
 				commandNum = 0;
-				subState = 0;
 				gp.saveLoad.save();			
-				gp.gameState = gp.playState;
 			}
 		}
 
@@ -698,7 +718,7 @@ public class UI {
 		if (commandNum == 6) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.actionPressed) {
-				subState = 3;
+				subState = 4;
 				commandNum = 0;
 			}
 		}
@@ -801,6 +821,46 @@ public class UI {
 			}
 		}
 	}
+	private void options_saveGameConfirm(int frameX, int frameY) {
+		
+		// TITLE
+		String text = "GAME SAVED";
+		int textX = getXforCenteredText(text);
+		int textY = frameX + gp.tileSize * 2;		
+		g2.drawString(text, textX, textY);
+		
+		text = "Continue playing?";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize;		
+		g2.drawString(text, textX, textY);
+		
+		text = "YES";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize * 2;
+		g2.drawString(text, textX, textY);
+		if (commandNum == 0) {
+			g2.drawString(">", textX - 25, textY);
+			
+			if (gp.keyH.actionPressed) {
+				subState = 0;					
+				commandNum = 0;
+				gp.gameState = gp.playState;
+			}
+		}
+		
+		text = "NO";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize;
+		g2.drawString(text, textX, textY);
+		if (commandNum == 1) {
+			g2.drawString(">", textX - 25, textY);
+			
+			if (gp.keyH.actionPressed) {
+				subState = 4;
+				commandNum = 0;
+			}
+		}
+	}
 	private void options_quitGameConfirm(int frameX, int frameY) {
 		
 		// TITLE
@@ -834,7 +894,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.actionPressed) {
-				commandNum = 6;
+				commandNum = 0;
 				subState = 0;
 			}
 		}
@@ -981,17 +1041,7 @@ public class UI {
 		
 		// DRAW ITEMS
 		for (int i = 0; i < entity.inventory.size(); i++) {
-			
-			// EQUIPPED CURSOR
-			if (entity.inventory.get(i) == entity.currentItem) {				
-				g2.setColor(new Color(240,190,90));
-				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}	
-			else if (entity.inventory.get(i) == entity.currentLight) {				
-				g2.setColor(new Color(90,190,240));
-				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}	
-			
+						
 			g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
 			
 			// STACKABLE ITEMS
@@ -1153,7 +1203,7 @@ public class UI {
 		gp.player.attackCanceled = false;
 		
 		int x = gp.tileSize * 2;
-		int y = gp.screenWidth / 2;
+		int y = (gp.screenWidth / 2 ) - gp.tileSize;
 		int width = gp.screenWidth - (gp.tileSize * 4);
 		int height = gp.tileSize * 4;		
 		drawSubWindow(x, y, width, height);
@@ -1176,8 +1226,12 @@ public class UI {
 					currentDialogue = combinedText;					
 					charIndex++;
 				}
+				if (charIndex >= characters.length) {
+					canSkip = true;
+				}
 	
-				if (gp.keyH.actionPressed) {
+				if (gp.keyH.actionPressed && canSkip) {
+					canSkip = false;
 					charIndex = 0;
 					combinedText = "";
 					
@@ -1209,7 +1263,7 @@ public class UI {
 				gp.player.canObtainItem(gp.ui.npc.inventory.get(0));
 			}	
 			else {
-				gp.ui.playDialogueFinishSE();				
+				playDialogueFinishSE();				
 				gp.gameState = gp.playState;
 			}	
 		}		
@@ -1219,18 +1273,25 @@ public class UI {
 			y += 40;
 		} 
   		
-		String text = "[Press SPACE to continue]";
-		x = getXforCenteredText(text);
-		y = gp.tileSize * 11;
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
-  		g2.drawString(text, x, y + 30);
+  		// DRAW ICON BELOW DIALOGUE BOX
+  		int nextIndex = npc.dialogueIndex + 1;
+  		if (canSkip && npc.dialogues[npc.dialogueSet][nextIndex] != null) {  		
+  			x = (gp.screenWidth / 2) - 24;
+			y = gp.tileSize * 10;
+	  		g2.drawImage(dialogue_next, x, y + 30, null);
+  		}
+  		else if (canSkip && npc.dialogues[npc.dialogueSet][nextIndex] == null) {  		
+			x = (gp.screenWidth / 2) - 24;
+			y = gp.tileSize * 10;
+	  		g2.drawImage(dialogue_finish, x, y + 30, null);
+  		}
 	}
 	
 	// ITEM GET 
 	private void drawItemGetScreen() {
 	
 		int x = gp.tileSize * 2;
-		int y = gp.screenWidth / 2;
+		int y = (gp.screenWidth / 2 ) - gp.tileSize;
 		int width = gp.screenWidth - (gp.tileSize * 4);
 		int height = gp.tileSize * 4;		
 		drawSubWindow(x, y, width, height);
@@ -1243,6 +1304,10 @@ public class UI {
 			g2.drawString(line, x, y);	
 			y += 40;
 		} 
+		
+		x = (gp.screenWidth / 2) - 24;
+		y = gp.tileSize * 10;
+  		g2.drawImage(dialogue_finish, x, y + 30, null);
 		
 		// DISPLAY ITEM ABOVE PLAYER
 		if (newItem != null) {			
@@ -1618,7 +1683,7 @@ public class UI {
 	private void playDialogueSE() {
 		gp.playSE(1, 5);
 	}
-	private void playDialogueFinishSE() {
+	public void playDialogueFinishSE() {
 		gp.playSE(1, 6);
 	}
 	private void playWalletSE() {
@@ -1660,5 +1725,20 @@ public class UI {
 	            ++count;
 	    
 	    return count;
+	}
+	public BufferedImage setup(String imagePath) {	
+		
+		UtilityTool utility = new UtilityTool();
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+			image = utility.scaleImage(image, gp.tileSize, gp.tileSize);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return image;
 	}
 }

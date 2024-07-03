@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import application.GamePanel;
 import entity.Entity;
@@ -30,6 +32,10 @@ public class SaveLoad {
 			ds.dayCounter = gp.eManager.lighting.dayCounter;
 			ds.bloodMoonCounter = gp.eManager.lighting.bloodMoonCounter;
 			
+			// PROGRESS DATA
+			ds.enemy_room_1_1 = Progress.enemy_room_1_1;
+			ds.bossDefeated_1 = Progress.bossDefeated_1;
+			
 			// PLAYER DATA
 			ds.cMap = gp.currentMap;
 			ds.pWorldX = gp.player.worldX;
@@ -47,15 +53,76 @@ public class SaveLoad {
 			ds.maxBombs = gp.player.maxBombs;
 			ds.bombs = gp.player.bombs;
 			
-			// PLAYER INVENTORY
-			for (Entity item : gp.player.inventory) {				
-				ds.itemNames.add(item.name);
-				ds.itemAmounts.add(item.amount);				
+			// PLAYER COLLECTABLES
+			for (Entity collectable : gp.player.inventory) {				
+				ds.colNames.add(collectable.name);
+				ds.colAmounts.add(collectable.amount);				
 			}
 			
-			// PLAYER EQUIPMENT
-			ds.currentWeaponSlot = gp.player.getCurrentWeaponSlot();
-			ds.currentShieldSlot = gp.player.getCurrentShieldSlot();
+			// PLAYER ITEMS
+			for (Entity item : gp.player.inventory_item) {				
+				ds.itemNames.add(item.name);	
+			}
+			
+			// PLAYER EQUIPMENT			
+			if (gp.player.currentWeapon != null) 
+				ds.sword = gp.player.currentWeapon.name;
+			if (gp.player.currentShield != null)
+				ds.shield = gp.player.currentShield.name;
+			
+			ds.canSwim = gp.player.canSwim;
+			
+			// NPCs
+			ds.npcNames = new String[gp.maxMap][gp.npc[1].length];
+			ds.npcWorldX = new int[gp.maxMap][gp.npc[1].length];
+			ds.npcWorldY = new int[gp.maxMap][gp.npc[1].length];
+			ds.npcDialogueSet = new int[gp.maxMap][gp.npc[1].length];
+			ds.npcHasCutscene = new boolean[gp.maxMap][gp.npc[1].length];
+			ds.npcHasItem = new boolean[gp.maxMap][gp.npc[1].length];
+			
+			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
+				
+				for (int i = 0; i < gp.npc[1].length; i++) {
+					
+					if (gp.npc[mapNum][i] == null) {
+						ds.npcNames[mapNum][i] = "NULL";
+					}
+					else {
+						ds.npcNames[mapNum][i] = gp.npc[mapNum][i].name;
+						ds.npcWorldX[mapNum][i] = gp.npc[mapNum][i].worldX;
+						ds.npcWorldY[mapNum][i] = gp.npc[mapNum][i].worldY;
+						ds.npcDialogueSet[mapNum][i] = gp.npc[mapNum][i].dialogueSet;
+						ds.npcHasCutscene[mapNum][i] = gp.npc[mapNum][i].hasCutscene;
+						ds.npcHasItem[mapNum][i] = gp.npc[mapNum][i].hasItemToGive;
+						
+						// IF NPC HAS ITEMS
+						if (gp.npc[mapNum][i].inventory.size() > 0) {
+							
+							List<String> items = new ArrayList<>();
+							
+							// LOOP THROUGH INVENTORY
+							for (int c = 0; c < gp.npc[mapNum][i].inventory.size(); c++) {	
+								if (gp.npc[mapNum][i].inventory.get(c) != null) {									
+									items.add(gp.npc[mapNum][i].inventory.get(c).name);
+								}
+							}
+							
+							// KEY: NPC NAME, VALUE: ITEMS LIST
+							ds.npcInventory.put(gp.npc[mapNum][i].name, items);
+						}
+					}					
+				}				
+			}
+			
+			// ENEMIES
+			ds.emyAlive = new boolean[gp.maxMap][gp.enemy[1].length];
+			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {				
+				for (int i = 0; i < gp.enemy[1].length; i++) {
+					if (gp.enemy[mapNum][i] == null) {
+						ds.emyAlive[mapNum][i] = false;
+					}
+				}
+			}			
 			
 			// MAP OBJECTS
 			ds.mapObjectNames = new String[gp.maxMap][gp.obj[1].length];
@@ -82,14 +149,15 @@ public class SaveLoad {
 						
 						ds.mapObjectOpened[mapNum][i] = gp.obj[mapNum][i].opened;
 					}					
-				}
-				
+				}				
 			}
 			
 			// WRITE THE DS OBJECT
 			oos.writeObject(ds);
 		}
-		catch(Exception e) { }
+		catch(Exception e) { 
+			System.out.println(e);
+		}
 	}
 	
 	public void load() {
@@ -104,6 +172,10 @@ public class SaveLoad {
 			gp.eManager.lighting.dayState = ds.dayState;
 			gp.eManager.lighting.dayCounter = ds.dayCounter;
 			gp.eManager.lighting.bloodMoonCounter = ds.bloodMoonCounter;
+			
+			// PROGRESS DATA
+			Progress.enemy_room_1_1 = ds.enemy_room_1_1;
+			Progress.bossDefeated_1 = ds.bossDefeated_1;
 			
 			// PLAYER DATA
 			gp.currentMap = ds.cMap;
@@ -122,18 +194,69 @@ public class SaveLoad {
 			gp.player.maxBombs = ds.maxBombs;
 			gp.player.bombs = ds.bombs;
 			
-			// PLAYER ITEMS
+			// PLAYER COLLECTABLES
 			gp.player.inventory.clear();			
+			for (int i = 0; i < ds.colNames.size(); i++) {				
+				gp.player.inventory.add(gp.eGenerator.getObject(ds.colNames.get(i)));
+				gp.player.inventory.get(i).amount = ds.colAmounts.get(i);
+			}
+			
+			// PLAYER ITEMS
+			gp.player.inventory_item.clear();			
 			for (int i = 0; i < ds.itemNames.size(); i++) {				
-				gp.player.inventory.add(gp.eGenerator.getObject(ds.itemNames.get(i)));
-				gp.player.inventory.get(i).amount = ds.itemAmounts.get(i);
+				gp.player.inventory_item.add(gp.eGenerator.getObject(ds.itemNames.get(i)));
 			}
 			
 			// PLAYER EQUIPMENT
-			gp.player.currentWeapon = gp.player.inventory.get(ds.currentWeaponSlot);
-			gp.player.currentShield = gp.player.inventory.get(ds.currentShieldSlot);
+			gp.player.currentWeapon = gp.eGenerator.getObject(ds.sword);
+			gp.player.currentShield = gp.eGenerator.getObject(ds.shield);
+			gp.player.canSwim = ds.canSwim;
 			
 			gp.player.getAttack();
+			
+			// NPCs
+			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
+				
+				for (int i = 0; i < gp.npc[1].length; i++) {
+					
+					if (ds.npcNames[mapNum][i].equals("NULL")) {
+						gp.npc[mapNum][i] = null;
+					}
+					else {
+						gp.npc[mapNum][i].worldX = ds.npcWorldX[mapNum][i];
+						gp.npc[mapNum][i].worldY = ds.npcWorldY[mapNum][i];		
+						gp.npc[mapNum][i].dialogueSet = ds.npcDialogueSet[mapNum][i];
+						gp.npc[mapNum][i].hasCutscene = ds.npcHasCutscene[mapNum][i];
+						gp.npc[mapNum][i].hasItemToGive = ds.npcHasItem[mapNum][i];
+						
+						// LOOP THROUGH NPC NAMES IN NPC INVENTORY
+						for (String name : ds.npcInventory.keySet()) {
+							
+							// IF NAME FOUND IN KEY-VALUE PAIR
+							if (gp.npc[mapNum][i].name.equals(name)) {
+								
+								// RESET INVENTORY
+								gp.npc[mapNum][i].inventory.clear();
+								
+								// GET ITEMS FROM KEY-VALUE AND ADD TO INVENTORY
+								List<String> items = ds.npcInventory.get(name);								
+								for (String item : items) {
+									gp.npc[mapNum][i].inventory.add(gp.eGenerator.getObject(item));
+								}
+							}
+						}
+					}			
+				}				
+			}
+			
+			// ENEMIES	
+			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {				
+				for (int i = 0; i < gp.enemy[1].length; i++) {
+					if (!ds.emyAlive[mapNum][i]) {
+						gp.enemy[mapNum][i] = null;
+					}
+				}
+			}		
 			
 			// MAP OBJECTS
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
@@ -143,12 +266,11 @@ public class SaveLoad {
 					if (ds.mapObjectNames[mapNum][i].equals("NULL")) {
 						gp.obj[mapNum][i] = null;
 					}
-					else {
+					else {						
 						gp.obj[mapNum][i] = gp.eGenerator.getObject(ds.mapObjectNames[mapNum][i]);
 						gp.obj[mapNum][i].worldX = ds.mapObjectWorldX[mapNum][i];
 						gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];
-						
-						
+					
 						if (ds.mapObjectLootNames[mapNum][i] != null) {
 							gp.obj[mapNum][i].setLoot(gp.eGenerator.getObject(ds.mapObjectLootNames[mapNum][i]));
 						}
@@ -156,11 +278,14 @@ public class SaveLoad {
 						gp.obj[mapNum][i].opened = ds.mapObjectOpened[mapNum][i];
 						if (gp.obj[mapNum][i].opened) {
 							gp.obj[mapNum][i].down1 = gp.obj[mapNum][i].image2; 
-						}
+						}		
+						
 					}			
 				}				
 			}
 		}
-		catch(Exception e) { }
+		catch(Exception e) { 
+			System.out.println(e);
+		}
 	}
 }

@@ -107,7 +107,6 @@ public class Player extends Entity {
 		currentWeapon = null;
 //		currentWeapon = new EQP_Sword_Master(gp);
 		currentShield = new EQP_Shield(gp);
-		currentLight = new ITM_Lantern(gp);
 		
 		projectile = new PRJ_Sword(gp);
 		
@@ -177,8 +176,8 @@ public class Player extends Entity {
 
 	// DIALOGUE
 	public void setDialogue() {
-		dialogues[0][0] = "\"I need to find a sword!\nBut where?...\"";
-		dialogues[1][0] = "\"I need to find an item!\nBut where?...\"";
+		dialogues[0][0] = "\"I need to find a sword! But where?...\"";
+		dialogues[1][0] = "\"I need to find an item! But where?...\"";
 		dialogues[2][0] = "\"I should equip an item first...\"";
 	}
 	
@@ -192,32 +191,6 @@ public class Player extends Entity {
 			swingSpeed2 = currentWeapon.swingSpeed2;
 			return currentWeapon.attackValue;
 		}
-	}
-	
-	// EQUIPMENT SLOT
-	public int getCurrentWeaponSlot() {
-		
-		int currentWeaponSlot = 0;
-		
-		for (int i = 0; i < inventory.size(); i++) {
-			if (inventory.get(i) == currentWeapon) {
-				currentWeaponSlot = i;
-			}
-		}
-		
-		return currentWeaponSlot;
-	}
-	public int getCurrentShieldSlot() {
-		
-		int currentShieldSlot = 0;
-		
-		for (int i = 0; i < inventory.size(); i++) {
-			if (inventory.get(i) == currentShield) {
-				currentShieldSlot = i;
-			}
-		}
-		
-		return currentShieldSlot;
 	}
 	
 	// PLAYER IMAGES
@@ -1095,9 +1068,14 @@ public class Player extends Entity {
 		// ATTACK HITS ENEMY
 		if (i != -1) {
 			
-			// HURT ENEMY (IF NOT CAPTURED)
-			if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured &&
-					!enemies[gp.currentMap][i].buzzing) {
+			// BUZZING ENEMY
+			if (enemies[gp.currentMap][i].buzzing && attacker == gp.player) {
+				if (!attacker.invincible) {
+					enemies[gp.currentMap][i].playShockSE();
+				}
+				enemies[gp.currentMap][i].damagePlayer(enemies[gp.currentMap][i].attack);
+			}			
+			else if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured) {
 				enemies[gp.currentMap][i].playHurtSE();
 				
 				if (knockbackPower > 0) {
@@ -1123,12 +1101,7 @@ public class Player extends Entity {
 					enemies[gp.currentMap][i].dying = true;
 				}
 			}
-			else if (enemies[gp.currentMap][i].buzzing) {
-				if (!attacker.invincible) {
-					enemies[gp.currentMap][i].playShockSE();
-				}
-				enemies[gp.currentMap][i].damagePlayer(enemies[gp.currentMap][i].attack);
-			}
+			
 		}
 	}
 	public void damageProjectile(int i) {

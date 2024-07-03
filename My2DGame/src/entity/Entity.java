@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import application.GamePanel;
 import application.UtilityTool;
+import entity.enemy.EMY_Zora;
 import entity.projectile.PRJ_Seed;
 import entity.projectile.Projectile;
 
@@ -55,7 +56,7 @@ public class Entity {
 	public int speed, defaultSpeed, runSpeed, animationSpeed;
 	public int attack;
 	public int rupees;
-	public Entity currentWeapon, currentShield, currentItem, currentLight;
+	public Entity currentWeapon, currentShield, currentItem;
 	public Projectile projectile;	
 	public boolean hasItemToGive = false;	
 	public boolean hasCutscene = false;	
@@ -147,7 +148,6 @@ public class Entity {
 	public int useCost;	
 	public int amount = 1;
 	public int lifeDuration = -1;
-	public int lightRadius;
 	public boolean stackable = false;	
 	
 	// PROJECTILE ATTRIBUTES
@@ -170,15 +170,14 @@ public class Entity {
 	public final int type_collectable = 6;
 	public final int type_consumable = 7;
 	public final int type_quest = 8;
-	public final int type_light = 9;
-	public final int type_key = 10;
-	public final int type_boss_key = 11;
+	public final int type_key = 9;
+	public final int type_boss_key = 10;
 	
 	// OBJECT TYPES
-	public final int type_projectile = 12;	
-	public final int type_obstacle = 13;
-	public final int type_obstacle_i = 14;
-	public final int type_pickupOnly = 15;
+	public final int type_projectile = 11;	
+	public final int type_obstacle = 12;
+	public final int type_obstacle_i = 13;
+	public final int type_pickupOnly = 14;
 	
 	// CONSTRUCTOR
 	public Entity(GamePanel gp) {
@@ -620,9 +619,12 @@ public class Entity {
 				// CHECK IF ATTACK LANDS ON ENEMY
 				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
-					
-				gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
-								
+				
+				if (currentWeapon == null) 					
+					gp.player.damageEnemy(enemyIndex, this, attack, 0);
+				else
+					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
+				
 				if (type != type_enemy) {
 					
 					// CHECK INTERACTIVE TILE
@@ -1140,6 +1142,12 @@ public class Entity {
 						break;
 				}
 			}
+			
+			// AVOIDS BUG WITH ZORA ATTACKING SPRITE
+			if (name.equals(EMY_Zora.emyName)) {
+				tempScreenX = getScreenX();
+				tempScreenY = getScreenY();
+			}
 						
 			// ENEMY IS HIT
 			if (invincible) {
@@ -1150,8 +1158,8 @@ public class Entity {
 				
 				// FLASH OPACITY
 				hurtAnimation(g2);
-			}						
-
+			}		
+			
 			if (captured) changeAlpha(g2, 0.7f);
 			
 			if (dying) dyingAnimation(g2);	

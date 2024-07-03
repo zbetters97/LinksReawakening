@@ -6,6 +6,7 @@ import entity.item.ITM_Boomerang;
 
 public class NPC_Merchant extends Entity {
 	
+	public static final String npcName = "Merchant 1";
 	GamePanel gp;
 	
 	public NPC_Merchant(GamePanel gp) {		
@@ -13,7 +14,7 @@ public class NPC_Merchant extends Entity {
 		this.gp = gp;		
 		
 		type = type_npc;
-		name = "Shopkeeper";
+		name = npcName;
 		direction = "down";
 		speed = 0;
 		animationSpeed = 25; 

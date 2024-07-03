@@ -164,6 +164,10 @@ public class AssetSetter {
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
 		i++;	
+		gp.enemy[mapNum][i] = new EMY_Zora(gp);
+		gp.enemy[mapNum][i].worldX = gp.tileSize * 38;
+		gp.enemy[mapNum][i].worldY = gp.tileSize * 9;
+		i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
 		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
 		gp.enemy[mapNum][i].worldY = gp.tileSize * 29;
@@ -220,15 +224,15 @@ public class AssetSetter {
 		int mapNum = 2;
 		int i = 0;
 		
-		gp.obj_i[mapNum][i] = new OT_Block_Pushable(gp);
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
 		gp.obj_i[mapNum][i].worldX = gp.tileSize * 35;
 		gp.obj_i[mapNum][i].worldY = gp.tileSize * 26;
 		i++;
-		gp.obj_i[mapNum][i] = new OT_Block_Pushable(gp);
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
 		gp.obj_i[mapNum][i].worldX = gp.tileSize * 11;
 		gp.obj_i[mapNum][i].worldY = gp.tileSize * 20;
 		i++;
-		gp.obj_i[mapNum][i] = new OT_Block_Pushable(gp);
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
 		gp.obj_i[mapNum][i].worldX = gp.tileSize * 27;
 		gp.obj_i[mapNum][i].worldY = gp.tileSize * 11;
 		i++;
