@@ -18,6 +18,14 @@ public class TileManager {
 	GamePanel gp;
 	public Tile[] tile;
 	
+	public int waterTile = 4;
+	public int oceanTile1 = 19;
+	public int oceanTile2 = 39;
+	
+	private int waterCounter = 0;
+	private int waterCounterMax = 45;
+	private int waterNum = 1;
+	
 	// [MAP NUMBER][ROW][COL]
 	public int mapTileNum[][][];
 	
@@ -167,6 +175,13 @@ public class TileManager {
 		int worldCol = 0;
 		int worldRow = 0;
 		
+		waterCounter++;
+		if (waterCounter >= waterCounterMax) {
+			waterCounter = 0;
+			if (waterNum == 1) waterNum = 2;
+			else waterNum = 1;
+		}
+		
 		while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 									
 			// TILE NUMBERS FROM MAP TXT
@@ -185,6 +200,12 @@ public class TileManager {
 				worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
 				worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 				worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+				
+				if (tileNum == oceanTile1) {
+					if (waterNum == 2) {
+						tileNum = oceanTile2;
+					}						
+				}
 				
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}

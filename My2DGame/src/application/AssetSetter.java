@@ -247,9 +247,11 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 8, 24, new EQP_Sword_Master(gp)); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 20, 16); i++;
+		
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 35, 30); i++;
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 36, 30); i++;
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 37, 30); i++;
+		gp.iTile[mapNum][i] = new IT_Wall(gp, 38, 30); i++;
 		
 		mapNum = 1;
 		i = 0;

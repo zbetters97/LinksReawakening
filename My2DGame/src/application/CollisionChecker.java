@@ -146,7 +146,7 @@ public class CollisionChecker {
 			}
 			
 			if (entity.name.equals(EMY_Octorok.emyName)) {
-				if (tileNum1 != 4 || tileNum2 != 4) {
+				if (tileNum1 != gp.tileM.waterTile || tileNum2 != gp.tileM.waterTile) {
 					entity.collisionOn = true;
 				}
 			}
@@ -159,7 +159,8 @@ public class CollisionChecker {
 				entity.collisionOn = false;
 			}
 			// NO COLLISION FOR BOUNDARY WATER
-			else if (tileNum1 == 19 || tileNum2 == 19) {
+			else if (tileNum1 == gp.tileM.oceanTile1 || tileNum2 == gp.tileM.oceanTile1
+					|| tileNum1 == gp.tileM.oceanTile2 || tileNum2 == gp.tileM.oceanTile2) {
 				entity.collisionOn = false;
 			}
 			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {				

@@ -232,12 +232,12 @@ public class UI {
 			x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2; // center sprite
 			
 //			y += gp.tileSize * 4;			
-			y += gp.tileSize * 5;
+			y += gp.tileSize * 4;
 			
-			g2.drawImage(gp.player.sit, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
+//			g2.drawImage(gp.player.sit, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
 			
 			// MENU OPTIONS
-			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 40F));
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
 			text = "NEW GAME";
 			x = getXforCenteredText(text);
 			y += gp.tileSize * 3;
@@ -246,13 +246,13 @@ public class UI {
 			
 			text = "LOAD GAME";
 			x = getXforCenteredText(text);
-			y += gp.tileSize / 1.2;
+			y += gp.tileSize + 15;
 			g2.drawString(text, x, y);
 			if (commandNum == 1) g2.drawString(">", x - gp.tileSize / 2, y);			
 			
 			text = "QUIT";
 			x = getXforCenteredText(text);
-			y += gp.tileSize / 1.2;
+			y += gp.tileSize + 15;
 			g2.drawString(text, x, y);
 			if (commandNum == 2) g2.drawString(">", x - gp.tileSize / 2, y);
 			

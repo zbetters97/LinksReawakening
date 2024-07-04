@@ -30,7 +30,7 @@ public class ITM_Bow extends Entity {
 				projectile.hasResource(user)) {	
 			
 			if (charge < 120) charge++;
-						
+									
 			gp.player.action = Action.AIMING; 
 		}
 	}
@@ -41,7 +41,8 @@ public class ITM_Bow extends Entity {
 				projectile.hasResource(user)) {			
 			playSE();
 			
-			if (user == gp.player) {			
+			if (user == gp.player) {	
+				
 				gp.player.action = Action.IDLE; 	
 				
 				if (80 > charge && charge >= 40) {
