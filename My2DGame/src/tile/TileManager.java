@@ -67,7 +67,7 @@ public class TileManager {
 
 		try {
 			String line = br.readLine();
-			String maxTile[] = line.split(" ");
+			String maxTile[] = line.split(" ");			
 			
 			gp.maxWorldCol = maxTile.length;
 			gp.maxWorldRow = maxTile.length;
@@ -79,10 +79,13 @@ public class TileManager {
 			e.printStackTrace();
 		}		
 		
+		loadMap("/maps/maptest.txt", 0);
+		
 		loadMap("/maps/worldmap.txt", 0);
 		loadMap("/maps/indoor01.txt", 1);
 		loadMap("/maps/dungeon01.txt", 2);
 		loadMap("/maps/dungeon02.txt", 3);
+//		loadMap("/maps/dungeon_01_01.txt", 4);
 	}
 	
 	public void getTileImage() {		
@@ -142,17 +145,17 @@ public class TileManager {
 			
 			int col = 0;
 			int row = 0;
-						
+			
 			// loop until map boundaries are hit
 			while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
 								
 				String line = br.readLine(); // read entire row
-			
+				
 				while (col < gp.maxWorldCol) {
 					
 					String numbers[] = line.split(" "); // space is separator
 					int num = Integer.parseInt(numbers[col]); // convert txt to int
-									
+					
 					mapTileNum[mapNum][col][row] = num; // store tile # from map in array
 					col++; // advance to next column					
 				}
@@ -170,8 +173,8 @@ public class TileManager {
 		}		
 	}	
 	
-	public void draw(Graphics2D g2) {
-		
+	public void draw(Graphics2D g2) {				
+				
 		int worldCol = 0;
 		int worldRow = 0;
 		
@@ -181,9 +184,9 @@ public class TileManager {
 			if (waterNum == 1) waterNum = 2;
 			else waterNum = 1;
 		}
-		
+				
 		while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-									
+			
 			// TILE NUMBERS FROM MAP TXT
 			int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
 			
@@ -209,7 +212,7 @@ public class TileManager {
 				
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}
-						
+										
 			// TO NEXT COLUMN
 			worldCol++;
 			

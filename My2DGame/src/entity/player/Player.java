@@ -37,8 +37,8 @@ public class Player extends Entity {
 	public Entity capturedTarget;
 		
 	// POSITIONING
-	public final int screenX;
-	public final int screenY;	
+	public int screenX;
+	public int screenY;	
 	public int safeWorldX = 0;
 	public int safeWorldY = 0;
 	
@@ -129,14 +129,9 @@ public class Player extends Entity {
 	public void setDefaultPosition() {	
 		
 		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 20;		
+		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
-		
-//		worldX = gp.tileSize * 9;
-//		worldY = gp.tileSize * 21;
-//		gp.currentMap = 2;
-//		gp.currentArea = gp.dungeon;
 		
 		direction = "down";
 	}
