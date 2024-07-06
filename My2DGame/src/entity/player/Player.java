@@ -94,6 +94,8 @@ public class Player extends Entity {
 		action = Action.IDLE;		
 		onGround = true;
 		
+		canSwim = true;
+		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
@@ -1226,6 +1228,29 @@ public class Player extends Entity {
 		
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
+		
+		if (screenX > worldX) {
+			tempScreenX = worldX;
+		}
+		if (screenY > worldY) {
+			tempScreenY = worldY;
+		}
+		
+		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
+		int rightOffset = gp.screenWidth - screenX;		
+		
+		// FROM PLAYER TO RIGHT-EDGE OF WORLD
+		if (rightOffset > gp.worldWidth - worldX) {
+			tempScreenX = gp.screenWidth - (gp.worldWidth - worldX);
+		}			
+		
+		// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
+		int bottomOffSet = gp.screenHeight - screenY;
+		
+		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
+		if (bottomOffSet > gp.worldHeight - worldY) {
+			tempScreenY = gp.screenHeight - (gp.worldHeight - worldY);
+		}
 		
 		if (alive) {					
 			switch (direction) {

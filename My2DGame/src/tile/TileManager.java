@@ -73,6 +73,9 @@ public class TileManager {
 			gp.maxWorldRow = maxTile.length;
 			mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 			
+			gp.worldWidth = gp.tileSize * gp.maxWorldCol;
+			gp.worldHeight = gp.tileSize * gp.maxWorldRow;
+			
 			br.close();
 		} 
 		catch (IOException e) {
@@ -177,6 +180,7 @@ public class TileManager {
 				
 		int worldCol = 0;
 		int worldRow = 0;
+		boolean offScreen = false;
 		
 		waterCounter++;
 		if (waterCounter >= waterCounterMax) {
@@ -198,6 +202,34 @@ public class TileManager {
 			int screenX = worldX - gp.player.worldX + gp.player.screenX; 
 			int screenY = worldY - gp.player.worldY + gp.player.screenY;
 			
+			// STOP CAMERA MOVEMENT AT WORLD BOUNDARY
+			if (gp.player.screenX > gp.player.worldX) {
+				screenX = worldX;
+				offScreen = true;
+			}
+			if (gp.player.screenY > gp.player.worldY) {
+				screenY = worldY;
+				offScreen = true;
+			}
+			
+			// FROM PLAYER TO RIGHT-EDGE OF SCREEN
+			int rightOffset = gp.screenWidth - gp.player.screenX;		
+			
+			// FROM PLAYER TO RIGHT-EDGE OF WORLD
+			if (rightOffset > gp.worldWidth - gp.player.worldX) {
+				screenX = gp.screenWidth - (gp.worldWidth - worldX);
+				offScreen = true;
+			}			
+			
+			// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
+			int bottomOffSet = gp.screenHeight - gp.player.screenY;
+			
+			// FROM PLAYER TO BOTTOM-EDGE OF WORLD
+			if (bottomOffSet > gp.worldHeight - gp.player.worldY) {
+				screenY = gp.screenHeight - (gp.worldHeight - worldY);
+				offScreen = true;
+			}
+			
 			// DRAW TILES WITHIN PLAYER BOUNDARY
 			if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
 				worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
@@ -210,6 +242,14 @@ public class TileManager {
 					}						
 				}
 				
+				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+			}
+			else if (offScreen) {		
+				if (tileNum == oceanTile1) {
+					if (waterNum == 2) {
+						tileNum = oceanTile2;
+					}						
+				}
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}
 										

@@ -28,6 +28,7 @@ public class Entity {
 	
 	// GENERAL ATTRIBUTES
 	public int worldX, worldY;		
+	private int tempScreenX, tempScreenY;
 	public String name;		
 	public Action action;
 	public boolean collision = true;
@@ -1074,8 +1075,7 @@ public class Entity {
 		
 		BufferedImage image = null;
 		
-		int tempScreenX = getScreenX();
-		int tempScreenY = getScreenY();
+		offScreen();
 								
 		// DRAW TILES WITHIN SCREEN BOUNDARY
 		if (inFrame()) {
@@ -1145,8 +1145,7 @@ public class Entity {
 			
 			// AVOIDS BUG WITH ZORA ATTACKING SPRITE
 			if (name.equals(EMY_Zora.emyName)) {
-				tempScreenX = getScreenX();
-				tempScreenY = getScreenY();
+				offScreen();
 			}
 						
 			// ENEMY IS HIT
@@ -1185,6 +1184,35 @@ public class Entity {
 			
 			// RESET OPACITY
 			changeAlpha(g2, 1f);			
+		}
+	}
+	
+	private void offScreen() {
+		
+		tempScreenX = getScreenX();
+		tempScreenY = getScreenY();
+		
+		if (gp.player.worldX < gp.player.screenX) {
+			tempScreenX = worldX;
+		}
+		if (gp.player.worldY < gp.player.screenY) {
+			tempScreenY = worldY;
+		}
+		
+		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
+		int rightOffset = gp.screenWidth - gp.player.screenX;		
+		
+		// FROM PLAYER TO RIGHT-EDGE OF WORLD
+		if (rightOffset > gp.worldWidth - gp.player.worldX) {
+			tempScreenX = gp.screenWidth - (gp.worldWidth - worldX);
+		}			
+		
+		// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
+		int bottomOffSet = gp.screenHeight - gp.player.screenY;
+		
+		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
+		if (bottomOffSet > gp.worldHeight - gp.player.worldY) {			
+			tempScreenY = gp.screenHeight - (gp.worldHeight - worldY);
 		}
 	}
 }

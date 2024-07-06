@@ -51,6 +51,29 @@ public class InteractiveTile extends Entity {
 		int screenX = worldX - gp.player.worldX + gp.player.screenX;
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 		
+		if (getScreenX() > worldX) {
+			screenX = worldX;
+		}
+		if (getScreenY() > worldY) {
+			screenY = worldY;
+		}
+		
+		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
+		int rightOffset = gp.screenWidth - getScreenX();		
+		
+		// FROM PLAYER TO RIGHT-EDGE OF WORLD
+		if (rightOffset > gp.worldWidth - worldX) {
+			screenX = gp.screenWidth - (gp.worldWidth - worldX);
+		}			
+		
+		// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
+		int bottomOffSet = gp.screenHeight - getScreenY();
+		
+		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
+		if (bottomOffSet > gp.worldHeight - worldY) {
+			screenY = gp.screenHeight - (gp.worldHeight - worldY);
+		}
+		
 		if (direction.equals("up")) image = up1;
 		else if (direction.equals("down")) image = down1;
 					
