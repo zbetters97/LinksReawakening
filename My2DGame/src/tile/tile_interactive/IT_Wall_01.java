@@ -7,14 +7,15 @@ import application.GamePanel;
 import entity.collectable.COL_Bomb;
 import entity.collectable.COL_Rupee_Green;
 
-public class IT_Wall extends InteractiveTile {
+public class IT_Wall_01 extends InteractiveTile {
 
 	public static final String itName = "Destructible Wall";
 	GamePanel gp;
 	
-	public IT_Wall(GamePanel gp, int col, int row) {
+	public IT_Wall_01(GamePanel gp, int col, int row, String direction) {
 		super(gp, col, row);
 		this.gp = gp;
+		this.direction = direction;
 		
 		name = itName;		
 		destructible = true;
@@ -24,7 +25,10 @@ public class IT_Wall extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
-		down1 = setup("/tiles_interactive/destructiblewall");
+		up1 = setup("/tiles_interactive/destructiblewall_01_up");
+		down1 = setup("/tiles_interactive/destructiblewall_01_down");
+		left1 = setup("/tiles_interactive/destructiblewall_01_left");
+		right1 = setup("/tiles_interactive/destructiblewall_01_right");
 	}
 	
 	public void playSE() {

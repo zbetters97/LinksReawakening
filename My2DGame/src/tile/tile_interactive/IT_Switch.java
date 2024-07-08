@@ -33,9 +33,18 @@ public class IT_Switch extends InteractiveTile {
 		
 	public void interact() {
 		playSE();
-		switchedOn = !switchedOn;
-		if (switchedOn) direction = "up";
-		else direction = "down";
+		
+		for (int i = 0; i < gp.iTile[1].length; i++) {
+			
+			// FIND SWITCH IN iTILE LIST
+			if (gp.iTile[gp.currentMap][i] != null && 
+					gp.iTile[gp.currentMap][i].name != null &&
+					gp.iTile[gp.currentMap][i].name.equals(name)) {
+				gp.iTile[gp.currentMap][i].switchedOn = !gp.iTile[gp.currentMap][i].switchedOn;
+				if (gp.iTile[gp.currentMap][i].switchedOn) gp.iTile[gp.currentMap][i].direction = "up";
+				else gp.iTile[gp.currentMap][i].direction = "down";
+			}
+		}
 	}
 		
 	public void playSE() {

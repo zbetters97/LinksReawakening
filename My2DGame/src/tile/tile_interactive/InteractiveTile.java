@@ -50,12 +50,15 @@ public class InteractiveTile extends Entity {
 		
 		int screenX = worldX - gp.player.worldX + gp.player.screenX;
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
+		boolean offCenter = false;
 		
 		if (getScreenX() > worldX) {
 			screenX = worldX;
+			offCenter = true;
 		}
 		if (getScreenY() > worldY) {
 			screenY = worldY;
+			offCenter = true;
 		}
 		
 		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
@@ -64,6 +67,7 @@ public class InteractiveTile extends Entity {
 		// FROM PLAYER TO RIGHT-EDGE OF WORLD
 		if (rightOffset > gp.worldWidth - worldX) {
 			screenX = gp.screenWidth - (gp.worldWidth - worldX);
+			offCenter = true;
 		}			
 		
 		// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
@@ -72,6 +76,7 @@ public class InteractiveTile extends Entity {
 		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
 		if (bottomOffSet > gp.worldHeight - worldY) {
 			screenY = gp.screenHeight - (gp.worldHeight - worldY);
+			offCenter = true;
 		}
 		
 		if (direction.equals("up")) image = up1;
@@ -82,6 +87,9 @@ public class InteractiveTile extends Entity {
 			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {				
 			
+			g2.drawImage(image, screenX, screenY, null);
+		}
+		else if (offCenter) {
 			g2.drawImage(image, screenX, screenY, null);
 		}
 	}

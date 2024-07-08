@@ -135,10 +135,11 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-		gameState = titleState;	
-		currentArea = outside;
-//		gameState = playState;
-//		currentArea = inside;
+//		gameState = titleState;	
+//		currentArea = outside;
+		gameState = playState;
+		currentArea = dungeon;
+		currentMap = 4;
 		
 		setupMusic();
 
@@ -424,6 +425,7 @@ public class GamePanel extends JPanel implements Runnable {
 				else if (currentMap == 1) playMusic(3);
 				else if (currentMap == 2) playMusic(4);
 				else if (currentMap == 3) playMusic(4);
+				else if (currentMap == 4) playMusic(4);
 			}
 		}
 	}	

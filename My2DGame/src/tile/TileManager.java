@@ -18,6 +18,9 @@ public class TileManager {
 	GamePanel gp;
 	public Tile[] tile;
 	
+	public int blockTile1 = 38;
+	public int blockTile2 = 49;
+	
 	public int waterTile = 4;
 	public int oceanTile1 = 19;
 	public int oceanTile2 = 39;
@@ -62,7 +65,7 @@ public class TileManager {
 		getTileImage(); 
 		
 		// IMPORT MAP SIZE
-		is = getClass().getResourceAsStream("/maps/worldmap.txt");	
+		is = getClass().getResourceAsStream("/maps/dungeon_01_01.txt");	
 		br = new BufferedReader(new InputStreamReader(is));
 
 		try {
@@ -81,14 +84,12 @@ public class TileManager {
 		catch (IOException e) {
 			e.printStackTrace();
 		}		
-		
-		loadMap("/maps/maptest.txt", 0);
-		
-		loadMap("/maps/worldmap.txt", 0);
-		loadMap("/maps/indoor01.txt", 1);
-		loadMap("/maps/dungeon01.txt", 2);
-		loadMap("/maps/dungeon02.txt", 3);
-//		loadMap("/maps/dungeon_01_01.txt", 4);
+
+//		loadMap("/maps/worldmap.txt", 0);
+//		loadMap("/maps/indoor01.txt", 1);
+//		loadMap("/maps/dungeon01.txt", 2);
+//		loadMap("/maps/dungeon02.txt", 3);
+		loadMap("/maps/dungeon_01_01.txt", 4);
 	}
 	
 	public void getTileImage() {		
@@ -180,7 +181,7 @@ public class TileManager {
 				
 		int worldCol = 0;
 		int worldRow = 0;
-		boolean offScreen = false;
+		boolean offCenter = false;
 		
 		waterCounter++;
 		if (waterCounter >= waterCounterMax) {
@@ -205,11 +206,11 @@ public class TileManager {
 			// STOP CAMERA MOVEMENT AT WORLD BOUNDARY
 			if (gp.player.screenX > gp.player.worldX) {
 				screenX = worldX;
-				offScreen = true;
+				offCenter = true;
 			}
 			if (gp.player.screenY > gp.player.worldY) {
 				screenY = worldY;
-				offScreen = true;
+				offCenter = true;
 			}
 			
 			// FROM PLAYER TO RIGHT-EDGE OF SCREEN
@@ -218,7 +219,7 @@ public class TileManager {
 			// FROM PLAYER TO RIGHT-EDGE OF WORLD
 			if (rightOffset > gp.worldWidth - gp.player.worldX) {
 				screenX = gp.screenWidth - (gp.worldWidth - worldX);
-				offScreen = true;
+				offCenter = true;
 			}			
 			
 			// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
@@ -227,7 +228,7 @@ public class TileManager {
 			// FROM PLAYER TO BOTTOM-EDGE OF WORLD
 			if (bottomOffSet > gp.worldHeight - gp.player.worldY) {
 				screenY = gp.screenHeight - (gp.worldHeight - worldY);
-				offScreen = true;
+				offCenter = true;
 			}
 			
 			// DRAW TILES WITHIN PLAYER BOUNDARY
@@ -244,7 +245,7 @@ public class TileManager {
 				
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}
-			else if (offScreen) {		
+			else if (offCenter) {		
 				if (tileNum == oceanTile1) {
 					if (waterNum == 2) {
 						tileNum = oceanTile2;

@@ -1059,12 +1059,18 @@ public class Entity {
 		
 		boolean inFrame = false;
 		
-		// WITHIN SCREEN BOUNDARY
-		if (worldX + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
-				worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-				worldY + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
-				worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+		// PLAYER AWAY FROM CENTER OF CAMERA
+		if (offCenter()) {
 			inFrame = true;
+		}
+		else {
+			// WITHIN SCREEN BOUNDARY
+			if (worldX + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
+					worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+					worldY + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
+					worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+				inFrame = true;
+			}	
 		}
 		
 		return inFrame;
@@ -1074,8 +1080,6 @@ public class Entity {
 	public void draw(Graphics2D g2) {
 		
 		BufferedImage image = null;
-		
-		offScreen();
 								
 		// DRAW TILES WITHIN SCREEN BOUNDARY
 		if (inFrame()) {
@@ -1145,7 +1149,7 @@ public class Entity {
 			
 			// AVOIDS BUG WITH ZORA ATTACKING SPRITE
 			if (name.equals(EMY_Zora.emyName)) {
-				offScreen();
+				offCenter();
 			}
 						
 			// ENEMY IS HIT
@@ -1187,16 +1191,20 @@ public class Entity {
 		}
 	}
 	
-	private void offScreen() {
+	private boolean offCenter() {
+		
+		boolean offCenter = false;
 		
 		tempScreenX = getScreenX();
 		tempScreenY = getScreenY();
 		
 		if (gp.player.worldX < gp.player.screenX) {
 			tempScreenX = worldX;
+			offCenter = true;
 		}
 		if (gp.player.worldY < gp.player.screenY) {
 			tempScreenY = worldY;
+			offCenter = true;
 		}
 		
 		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
@@ -1205,6 +1213,7 @@ public class Entity {
 		// FROM PLAYER TO RIGHT-EDGE OF WORLD
 		if (rightOffset > gp.worldWidth - gp.player.worldX) {
 			tempScreenX = gp.screenWidth - (gp.worldWidth - worldX);
+			offCenter = true;
 		}			
 		
 		// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
@@ -1213,6 +1222,9 @@ public class Entity {
 		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
 		if (bottomOffSet > gp.worldHeight - gp.player.worldY) {			
 			tempScreenY = gp.screenHeight - (gp.worldHeight - worldY);
+			offCenter = true;
 		}
+		
+		return offCenter;
 	}
 }

@@ -698,16 +698,12 @@ public class CollisionChecker {
 		
 		boolean contactPlayer = false;
 		
-		// get entity's solid area position
 		entity.hitbox.x = entity.worldX + entity.hitbox.x;
 		entity.hitbox.y = entity.worldY + entity.hitbox.y;
 		
-		// get object's solid area position
 		gp.player.hitbox.x = gp.player.worldX + gp.player.hitbox.x;
 		gp.player.hitbox.y = gp.player.worldY + gp.player.hitbox.y;
 		
-		// find where entity will be after moving in a direction
-		// ask if object and entity intersect 
 		switch (entity.direction) {
 			case "up":
 				entity.hitbox.y -= entity.speed;
@@ -725,7 +721,7 @@ public class CollisionChecker {
 				return false;
 		}
 		
-		if (entity.hitbox.intersects(gp.player.hitbox) && entity.collision) {						
+		if (entity.hitbox.intersects(gp.player.hitbox)) {						
 			entity.collisionOn = true;
 			contactPlayer = true;
 		}

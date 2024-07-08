@@ -85,7 +85,7 @@ public class OI_Block_Pushable extends Entity {
 		
 		int tile = gp.tileM.mapTileNum[gp.currentMap][x][y];
 		
-		if (tile == 38) return true;
+		if (tile == gp.tileM.blockTile1 || tile == gp.tileM.blockTile2) return true;
 		else return false;
 	}
 	
@@ -115,6 +115,16 @@ public class OI_Block_Pushable extends Entity {
 		}
 
 		detectPlate();
+		detectPlacement();
+	}
+	
+	private void detectPlacement() {
+		if (gp.currentMap == 4) {
+			if (worldX == 1392 && worldY == 2544) {
+				playSE();
+				gp.removeTempEntity();
+			}
+		}
 	}
 	
 	private void detectPlate() {
@@ -129,13 +139,13 @@ public class OI_Block_Pushable extends Entity {
 			}
 		}	
 		
-		// CREATE BOULDER LIST
-		ArrayList<Entity> boulderList = new ArrayList<>();		
+		// CREATE BLOCK LIST
+		ArrayList<Entity> blockList = new ArrayList<>();		
 		for (int i = 0; i < gp.obj_i[1].length; i++) {
 			if (gp.obj_i[gp.currentMap][i] != null && 
 					gp.obj_i[gp.currentMap][i].name != null &&
 					gp.obj_i[gp.currentMap][i].name.equals(OI_Block_Pushable.obj_iName)) {
-				boulderList.add(gp.obj_i[gp.currentMap][i]);
+				blockList.add(gp.obj_i[gp.currentMap][i]);
 			}
 		}
 		
@@ -146,7 +156,7 @@ public class OI_Block_Pushable extends Entity {
 			int yDistance = Math.abs(worldY - plateList.get(i).worldY);
 			int distance = Math.max(xDistance, yDistance);
 						
-			// ROCK IS ON PLATE (within 8 px)
+			// ROCK IS ON PLATE (within 15 px)
 			if (distance < 15) {									
 				if (linkedEntity == null) {
 					plateList.get(i).playSE();
@@ -161,14 +171,33 @@ public class OI_Block_Pushable extends Entity {
 		
 		// TRACK HOW MANY PLATES HAVE BOULDERS
 		int count = 0;
-		for (int i = 0; i < boulderList.size(); i++) {			
-			if (boulderList.get(i).linkedEntity != null) {
+		for (int i = 0; i < blockList.size(); i++) {			
+			if (blockList.get(i).linkedEntity != null) {
 				count++;
 			}
 		}
 		
+		if (gp.currentMap == 4) {
+			if (count == 2) {
+				for (int i = 0; i < gp.obj[1].length; i++) {
+					
+					// REMOVE IRON DOOR
+					if (gp.obj[gp.currentMap][i] != null && 
+							gp.obj[gp.currentMap][i].name != null &&
+							gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName)) {
+						
+						if (gp.obj[gp.currentMap][i].worldX == 1200 &&
+								gp.obj[gp.currentMap][i].worldY == 3408) {
+							gp.obj[gp.currentMap][i].playOpenSE();
+							gp.obj[gp.currentMap][i] = null;	
+						}						
+					}				
+				}
+			}	
+		}
+		
 		// IF ALL PLATES ARE PRESSED
-		if (count == boulderList.size()) {
+		else if (count == blockList.size()) {
 			for (int i = 0; i < gp.obj[1].length; i++) {
 				
 				// REMOVE IRON DOOR
@@ -177,7 +206,8 @@ public class OI_Block_Pushable extends Entity {
 						gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName)) {
 					
 					gp.obj[gp.currentMap][i].playOpenSE();
-					gp.obj[gp.currentMap][i] = null;
+					gp.obj[gp.currentMap][i] = null;							
+					
 				}				
 			}
 		}

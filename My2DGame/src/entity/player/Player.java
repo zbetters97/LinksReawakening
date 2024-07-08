@@ -94,9 +94,7 @@ public class Player extends Entity {
 		action = Action.IDLE;		
 		onGround = true;
 		
-		canSwim = true;
-		
-		speed = 3; defaultSpeed = speed;
+		speed = 6; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
@@ -106,8 +104,8 @@ public class Player extends Entity {
 		maxArrows = 10; arrows = maxArrows;
 		maxBombs = 10; bombs = maxBombs;
 		
-		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Master(gp);
+//		currentWeapon = null;
+		currentWeapon = new EQP_Sword_Master(gp);
 		currentShield = new EQP_Shield(gp);
 		
 		projectile = new PRJ_Sword(gp);
@@ -129,16 +127,21 @@ public class Player extends Entity {
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
-		
+/*	
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
+*/	
+		worldX = gp.tileSize * 40;
+		worldY = gp.tileSize * 92;		
+		gp.currentMap = 4;
+		gp.currentArea = gp.dungeon;
 		
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-/*
+
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -150,7 +153,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-*/
+
 	}
 	public void restoreStatus() {
 		life = maxLife;
@@ -485,13 +488,13 @@ public class Player extends Entity {
 		enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r);
 		contactEnemy(enemyIndex, gp.enemy_r);
 		
-		// CHECK OBJECT COLLISION
-		int objIndex = gp.cChecker.checkObject(this, true);
-		pickUpObject(objIndex);	
-		
 		// CHECK INTERACTIVE OBJECTS COLLISION
 		int objTIndex = gp.cChecker.checkObject_I(this, true);
 		interactObject(objTIndex);	
+		
+		// CHECK OBJECT COLLISION
+		int objIndex = gp.cChecker.checkObject(this, true);
+		pickUpObject(objIndex);	
 		
 		// CHECK PROJECTILE COLLISION
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);

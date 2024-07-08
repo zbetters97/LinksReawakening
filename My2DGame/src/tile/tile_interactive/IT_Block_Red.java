@@ -37,17 +37,17 @@ public class IT_Block_Red extends InteractiveTile {
 			if (gp.iTile[gp.currentMap][i] != null && 
 					gp.iTile[gp.currentMap][i].name != null &&
 					gp.iTile[gp.currentMap][i].name.equals(IT_Switch.itName)) {
-				
-				// TURN OFF IF SWITCH IS ON
-				if (gp.iTile[gp.currentMap][i].switchedOn) {
+								
+				// WAIT UNTIL PLAYER MOVES OFF BLOCK
+				if (gp.iTile[gp.currentMap][i].switchedOn && !gp.cChecker.checkPlayer(this)) {
 					collision = true;
 					switchedOn = false;
 				}
-				// WAIT UNTIL PLAYER MOVES OFF BLOCK
-				else if (!gp.cChecker.checkPlayer(this))  {
+				// TURN OFF IF SWITCH IS OFF
+				else  {
 					collision = false;			
 					switchedOn = true;					
-				}
+				}				
 			}
 		}	
 	}

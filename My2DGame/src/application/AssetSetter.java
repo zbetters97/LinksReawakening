@@ -99,6 +99,74 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 8;	
 		i++;	
+		
+		mapNum = 4;
+		i = 0;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Locked(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 40;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 85;	
+		i++;		
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 11;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 87;	
+		i++;	
+		
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 17;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 62;	
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 71;
+		gp.obj[mapNum][i].direction = "right";
+		i++;					
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Bomb(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 20;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 71;	
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 26;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 54;	
+		gp.obj[mapNum][i].direction = "right";
+		gp.obj[mapNum][i].temp = true;
+		i++;		
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 21;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 72;	
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Block_Locked(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 51;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 67;
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Block_Locked(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 42;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 77;
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Locked(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 59;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 67;	
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 16;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 79;	
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key_Boss(gp));
+		gp.obj[mapNum][i].worldX = gp.tileSize * 58;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 59;	
+		i++;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Boss(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 70;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 67;	
+		i++;	
 	}	
 	protected void setNPC() {
 		
@@ -236,6 +304,29 @@ public class AssetSetter {
 		gp.obj_i[mapNum][i].worldX = gp.tileSize * 27;
 		gp.obj_i[mapNum][i].worldY = gp.tileSize * 11;
 		i++;
+		
+		mapNum = 4;
+		i = 0;
+		
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 37;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 69;
+		i++;
+		
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 41;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 61;
+		i++;	
+		
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 28;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 54;
+		i++;
+		
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 52;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 78;
+		i++;	
 	}
 	protected void setInteractiveTiles() {
 		
@@ -282,5 +373,35 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 20, 22); i++;
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 9, 18); i++;
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 39, 30); i++;
+		
+		mapNum = 4;
+		i = 0;
+		
+		gp.iTile[mapNum][i] = new IT_Switch(gp, 25, 88); i++;	
+		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 34, 89); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 20, 89); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 38, 70); i++;
+		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 35, 62); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 58, "up"); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 59, "down"); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 38, 77); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Switch(gp, 40, 78); i++;	
+		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 44, 80); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 80); i++;
+				
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 29, 53); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 64, 71); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 23, 80, "left"); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 24, 80, "right"); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 19, 79); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 19, 80); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 19, 81); i++;
 	}
 }
