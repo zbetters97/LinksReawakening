@@ -25,10 +25,12 @@ public class TileManager {
 	public int oceanTile1 = 19;
 	public int oceanTile2 = 39;
 	
+	public int spikeTile = 77;
+	
 	private int waterCounter = 0;
 	private int waterCounterMax = 45;
 	private int waterNum = 1;
-	
+		
 	// [MAP NUMBER][ROW][COL]
 	public int mapTileNum[][][];
 	
@@ -65,15 +67,15 @@ public class TileManager {
 		getTileImage(); 
 		
 		// IMPORT MAP SIZE
-		is = getClass().getResourceAsStream("/maps/dungeon_01_01.txt");	
+		is = getClass().getResourceAsStream("/maps/worldmap.txt");	
 		br = new BufferedReader(new InputStreamReader(is));
 
 		try {
 			String line = br.readLine();
 			String maxTile[] = line.split(" ");			
 			
-			gp.maxWorldCol = maxTile.length;
-			gp.maxWorldRow = maxTile.length;
+			gp.maxWorldCol = maxTile.length * 2;
+			gp.maxWorldRow = maxTile.length * 2;
 			mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 			
 			gp.worldWidth = gp.tileSize * gp.maxWorldCol;
@@ -85,11 +87,11 @@ public class TileManager {
 			e.printStackTrace();
 		}		
 
-//		loadMap("/maps/worldmap.txt", 0);
-//		loadMap("/maps/indoor01.txt", 1);
+		loadMap("/maps/worldmap.txt", 50, 50, 0);
+		loadMap("/maps/indoor01.txt", 50, 50, 1);
 //		loadMap("/maps/dungeon01.txt", 2);
-//		loadMap("/maps/dungeon02.txt", 3);
-		loadMap("/maps/dungeon_01_01.txt", 4);
+		loadMap("/maps/dungeon_01_01.txt", 2);
+		loadMap("/maps/dungeon02.txt", 50, 50, 3);
 	}
 	
 	public void getTileImage() {		
@@ -165,6 +167,42 @@ public class TileManager {
 				}
 				
 				if (col == gp.maxWorldCol) {
+					col = 0; // do not advance column
+					row++; // advance to next row
+				}
+			}
+			
+			br.close(); // flush from memory
+		} 
+		catch(Exception e) {
+			e.printStackTrace();
+		}		
+	}	
+	
+	public void loadMap(String filePath, int width, int height, int mapNum) {
+		
+		try {			
+			InputStream is = getClass().getResourceAsStream(filePath); // import map txt file
+			BufferedReader br = new BufferedReader(new InputStreamReader(is)); // read map
+			
+			int col = 0;
+			int row = 0;
+			
+			// loop until map boundaries are hit
+			while (col < width && row < height) {
+								
+				String line = br.readLine(); // read entire row
+				
+				while (col < width) {
+					
+					String numbers[] = line.split(" "); // space is separator
+					int num = Integer.parseInt(numbers[col]); // convert txt to int
+					
+					mapTileNum[mapNum][col][row] = num; // store tile # from map in array
+					col++; // advance to next column					
+				}
+				
+				if (col == width) {
 					col = 0; // do not advance column
 					row++; // advance to next row
 				}

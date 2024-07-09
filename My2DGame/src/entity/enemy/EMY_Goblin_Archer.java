@@ -38,6 +38,33 @@ public class EMY_Goblin_Archer extends Entity {
 		
 		getImage();
 	}
+	public EMY_Goblin_Archer(GamePanel gp, int worldX, int worldY) {
+		super(gp);				
+		this.gp = gp;
+		this.worldX = worldX * 48;
+		this.worldY = worldY * 48;
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
+		bounds = 7;
+		
+		type = type_enemy;
+		name = emyName;
+		
+		speed = 1; defaultSpeed = speed; 
+		animationSpeed = 10;
+		attack = 1;
+		knockbackPower = 0;
+		maxLife = 6; life = maxLife;
+						
+		hitbox = new Rectangle(8, 16, 32, 32); 
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		arrows = -1;
+		currentItem = new ITM_Bow(gp);
+		
+		getImage();
+	}
 	
 	public void getImage() {
 		up1 = setup("/enemy/goblin_up_1");

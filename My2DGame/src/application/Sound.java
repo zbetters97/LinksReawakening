@@ -34,9 +34,10 @@ public class Sound {
 		music[2] = getClass().getResource("/sound/MUSIC_WORLD_DARK.wav");		
 		music[3] = getClass().getResource("/sound/MUSIC_SHOP.wav");
 		music[4] = getClass().getResource("/sound/MUSIC_DUNGEON_LIGHT.wav");
-		music[5] = getClass().getResource("/sound/MUSIC_BOSS.wav");
-		music[6] = getClass().getResource("/sound/MUSIC_BOSS_DEFEAT.wav");
-		music[7] = getClass().getResource("/sound/MUSIC_CREDITS.wav");
+		music[5] = getClass().getResource("/sound/MUSIC_DUNGEON_DARK.wav");
+		music[6] = getClass().getResource("/sound/MUSIC_BOSS.wav");
+		music[7] = getClass().getResource("/sound/MUSIC_BOSS_DEFEAT.wav");
+		music[8] = getClass().getResource("/sound/MUSIC_CREDITS.wav");
 				
 		// 1
 		menu[0] = getClass().getResource("/sound/MENU_CURSOR.wav");
@@ -100,6 +101,7 @@ public class Sound {
 		misc[4] = getClass().getResource("/sound/MISC_STAIRS_UP.wav");		
 		misc[5] = getClass().getResource("/sound/MISC_STAIRS_DOWN.wav");
 		misc[6] = getClass().getResource("/sound/MISC_TREE_CUT.wav");
+		misc[7] = getClass().getResource("/sound/MISC_SOLVE.wav");
 		
 		// 7
 		voice[0] = getClass().getResource("/sound/VOICE_SLASH1.wav");

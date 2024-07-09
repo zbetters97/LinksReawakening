@@ -86,15 +86,14 @@ public class PathFinder {
 			
 			// CHECK TILES
 			int tileNum = gp.tileM.mapTileNum[gp.currentMap][col][row];
-			if (gp.tileM.tile[tileNum].collision || gp.tileM.tile[tileNum].water || gp.tileM.tile[tileNum].pit) 
+			if (gp.tileM.tile[tileNum].collision || gp.tileM.tile[tileNum].water || gp.tileM.tile[tileNum].pit ||
+					tileNum == gp.tileM.spikeTile) 
 				node[col][row].solid = true;
 			
 			// CHECK iTILES
 			for (int i = 0; i < gp.iTile[1].length; i++) {
 				
-				// SOLID IF DESTRUCTIBLE BUT NOT DIGGABLE
-				if (gp.iTile[gp.currentMap][i] != null && gp.iTile[gp.currentMap][i].destructible &&
-						!gp.iTile[gp.currentMap][i].diggable) {
+				if (gp.iTile[gp.currentMap][i] != null && gp.iTile[gp.currentMap][i].collision) {
 					int iCol = gp.iTile[gp.currentMap][i].worldX / gp.tileSize;
 					int iRow = gp.iTile[gp.currentMap][i].worldY / gp.tileSize;
 					node[iCol][iRow].solid = true;
@@ -107,6 +106,15 @@ public class PathFinder {
 				if (gp.obj[gp.currentMap][i] != null && gp.obj[gp.currentMap][i].collision) {
 					int iCol = gp.obj[gp.currentMap][i].worldX / gp.tileSize;
 					int iRow = gp.obj[gp.currentMap][i].worldY / gp.tileSize;
+					node[iCol][iRow].solid = true;
+				}
+			}
+			// CHECK INTERACTIVE OBJECTS
+			for (int i = 0; i < gp.obj_i[1].length; i++) {
+				
+				if (gp.obj_i[gp.currentMap][i] != null && gp.obj_i[gp.currentMap][i].collision) {
+					int iCol = gp.obj_i[gp.currentMap][i].worldX / gp.tileSize;
+					int iRow = gp.obj_i[gp.currentMap][i].worldY / gp.tileSize;
 					node[iCol][iRow].solid = true;
 				}
 			}

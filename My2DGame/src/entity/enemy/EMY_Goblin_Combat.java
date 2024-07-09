@@ -41,6 +41,38 @@ public class EMY_Goblin_Combat extends Entity {
 		getImage();
 		getAttackImage();
 	}
+	public EMY_Goblin_Combat(GamePanel gp, int worldX, int worldY) {
+		super(gp);				
+		this.gp = gp;
+		this.worldX = worldX * 48;
+		this.worldY = worldY * 48;
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
+		bounds = 6;
+		
+		type = type_enemy;
+		name = emyName;
+		capturable = true;
+		
+		speed = 1; defaultSpeed = speed; 
+		animationSpeed = 10;
+		attack = 2; 
+		knockbackPower = 1;
+		maxLife = 8; life = maxLife;
+		
+		swingSpeed1 = 30;
+		swingSpeed2 = 60;		
+		
+		hitbox = new Rectangle(8, 16, 32, 32); 
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		attackbox.width = 36;
+		attackbox.height = 36;
+		
+		getImage();
+		getAttackImage();
+	}
 	
 	public void getImage() {
 		up1 = setup("/enemy/goblin_up_1");

@@ -91,21 +91,41 @@ public class EventHandler {
 			else if (hit(1, 14, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
 			
 			// TELEPORT SPOTS
-			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside, 1); // SHOP ENTRANCE
-			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside, 2); // SHOP EXIT
-			else if (hit(0, 12, 12, true)) teleport(2, 9, 39, gp.dungeon, 1); // DUNGEON ENTRANCE
-			else if (hit(2, 9, 39, true)) teleport(0, 12, 12, gp.outside, 2); // DUNGEON EXIT
-			else if (hit(2, 9, 8, true)) teleport(3, 18, 40, gp.dungeon, 3); // DUNGEON F2
-			else if (hit(3, 18, 40, true)) teleport(2, 9, 8, gp.dungeon, 2); // DUNEGOEN F1
+			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside, 1, "up"); // SHOP ENTRANCE
+			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside, 2, "down"); // SHOP EXIT
+			else if (hit(0, 12, 12, true)) teleport(2, 40, 93, gp.dungeon, 1, "up"); // DUNGEON ENTRANCE
+			else if (hit(2, 40, 93, true)) teleport(0, 12, 12, gp.outside, 2, "down"); // DUNGEON EXIT
+			else if (hit(2, 70, 49, true)) teleport(3, 18, 40, gp.dungeon, 3, "down"); // DUNGEON F2
+			else if (hit(3, 18, 40, true)) teleport(2, 70, 49, gp.dungeon, 2, "down"); // DUNEGOEN F1
 						
 			// ENEMY SPAWN
 			if (!Progress.enemy_room_1_1) {
-				if (hit(2, 29, 39, true)) {
+				if (hit(2, 33, 80, true)) {
 					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
-							new int[]{27,38}, new int[]{39,39}, new String[]{"right","left"},
-							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Buzzblob(gp)), 
-							new int[]{34,35}, new int[]{40,39}
+							new int[]{35,29}, new int[]{80,76}, new String[]{"left","down"},
+							Arrays.asList(new EMY_Goblin_Combat(gp), new EMY_Slime_Green(gp)),
+							new int[]{29,29}, new int[]{81,78}
+					);
+				}
+			}
+			if (!Progress.enemy_room_1_2) {
+				if (hit(2, 23, 64, true)) {
+					Progress.enemy_room_1_2 = true;
+					spawnEnemies(
+							new int[]{25}, new int[]{64}, new String[]{"left"},
+							Arrays.asList(new EMY_Slime_Red(gp), new EMY_Slime_Red(gp)),
+							new int[]{16,18}, new int[]{64,64}
+					);
+				}
+			}
+			if (!Progress.enemy_room_1_3) {
+				if (hit(2, 59, 65, true)) {
+					Progress.enemy_room_1_3 = true;
+					spawnEnemies(
+							new int[]{59}, new int[]{67}, new String[]{"up"},
+							Arrays.asList(new EMY_Wizzrobe(gp), new EMY_Buzzblob(gp), new EMY_Buzzblob(gp)),
+							new int[]{57,56,60}, new int[]{60,62,62}
 					);
 				}
 			}
@@ -236,7 +256,7 @@ public class EventHandler {
 		}
 	}
 	
-	private void teleport(int map, int col, int row, int area, int level) {		
+	private void teleport(int map, int col, int row, int area, int level, String direction) {		
 		
 		if (level == 1 || level == 3) playStairsUpSE();
 		else if (level == 2) playStairsDownSE();
@@ -248,6 +268,7 @@ public class EventHandler {
 		canTouchEvent = false;
 		gp.removeProjectiles();
 		
+		gp.player.direction = direction;
 		gp.nextArea = area;		
 		gp.gameState = gp.transitionState;
 	}	
@@ -261,8 +282,9 @@ public class EventHandler {
 			for (int c = 0; c < gp.obj[1].length; c++) {
 				
 				// CREATE NEW DOOR
-				if (gp.obj[gp.currentMap][c] == null) {					
+				if (gp.obj[gp.currentMap][c] == null) {	
 					gp.obj[gp.currentMap][c] = new OBJ_Door_Closed(gp);
+					gp.obj[gp.currentMap][c].closing = true;
 					gp.obj[gp.currentMap][c].worldX = dX[i] * gp.tileSize;
 					gp.obj[gp.currentMap][c].worldY = dY[i] * gp.tileSize;
 					gp.obj[gp.currentMap][c].direction = dir[i];

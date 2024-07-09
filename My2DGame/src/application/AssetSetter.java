@@ -62,46 +62,6 @@ public class AssetSetter {
 		
 		mapNum = 2;
 		i = 0;
-				
-		gp.obj[mapNum][i] = new OBJ_Door_Locked(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 34;	
-		i++;
-		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 41;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 39;
-		i++;	
-		
-		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 18;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 23;	
-		i++;	
-		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key_Boss(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 27;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
-		i++;	
-		
-		gp.obj[mapNum][i] = new OBJ_Door_Boss(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 9;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 9;	
-		i++;	
-		
-		mapNum = 3;
-		i = 0;
-		
-		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
-		i++;			
-		gp.obj[mapNum][i] = new OBJ_BlueHeart(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 8;	
-		i++;	
-		
-		mapNum = 4;
-		i = 0;
 		
 		gp.obj[mapNum][i] = new OBJ_Door_Locked(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 40;
@@ -131,12 +91,11 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 26;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 54;	
 		gp.obj[mapNum][i].direction = "right";
-		gp.obj[mapNum][i].temp = true;
 		i++;		
 		
 		gp.obj[mapNum][i] = new OBJ_Block_Locked(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 51;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 67;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 68;
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Door_Locked(gp);
@@ -157,6 +116,18 @@ public class AssetSetter {
 		gp.obj[mapNum][i] = new OBJ_Door_Boss(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 70;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 67;	
+		i++;	
+		
+		mapNum = 3;
+		i = 0;
+		
+		gp.obj[mapNum][i] = new OBJ_Door_Closed(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 15;	
+		i++;			
+		gp.obj[mapNum][i] = new OBJ_BlueHeart(gp);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 25;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 8;	
 		i++;	
 	}	
 	protected void setNPC() {
@@ -237,36 +208,34 @@ public class AssetSetter {
 		i++;
 		
 		mapNum = 2;
-		i = 0;
-	
-		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 18;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 35;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Bat(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 17;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 17;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 28;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 19;
-		i++;					
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 18;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 10;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 20;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 11;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 19;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 9;
-		i++;
+		i = 0;		
+		
+		gp.enemy[mapNum][i] = new EMY_Bat(gp, 25, 88); i++;
+		gp.enemy[mapNum][i] = new EMY_Bat(gp, 43, 79); i++;
+		gp.enemy[mapNum][i] = new EMY_Bat(gp, 20, 73); i++;
+		
+		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 25, 90); i++;
+		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 37, 71); i++;
+		
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 18, 71); i++;
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 37, 60); i++;		
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 40, 57); i++;
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 33, 54); i++;		
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 28, 32); i++;
+		
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 50, 61); i++;
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 29, 66); i++;
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 43, 61); i++;
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 38, 52); i++;
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 62, 70); i++;
+		
+		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp, 22, 55); i++;
+				
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 11, 90); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 39, 67); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 50, 64); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 48, 73); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 19, 55); i++;
 		
 		mapNum = 3;
 		i = 0;
@@ -276,28 +245,12 @@ public class AssetSetter {
 			gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
 			gp.enemy[mapNum][i].worldY = gp.tileSize * 16;
 		}
-		i++;
+		i++;		
 	}
 	protected void setInteractiveObjects() {
 		
 		int mapNum = 2;
 		int i = 0;
-		
-		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
-		gp.obj_i[mapNum][i].worldX = gp.tileSize * 35;
-		gp.obj_i[mapNum][i].worldY = gp.tileSize * 26;
-		i++;
-		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
-		gp.obj_i[mapNum][i].worldX = gp.tileSize * 11;
-		gp.obj_i[mapNum][i].worldY = gp.tileSize * 20;
-		i++;
-		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
-		gp.obj_i[mapNum][i].worldX = gp.tileSize * 27;
-		gp.obj_i[mapNum][i].worldY = gp.tileSize * 11;
-		i++;
-		
-		mapNum = 4;
-		i = 0;
 		
 		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
 		gp.obj_i[mapNum][i].worldX = gp.tileSize * 37;
@@ -346,31 +299,12 @@ public class AssetSetter {
 		mapNum = 2;
 		i = 0;
 		
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 26, 38);
-		gp.iTile[mapNum][i].setLoot(new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 32, 25);
-		gp.iTile[mapNum][i].setLoot(new COL_Heart(gp)); i++;
-		
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 10, 22); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 30, 18); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 30, 19); i++;
-		
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 26, 34); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 38, 28); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 39, 28); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 40, 28); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 38, 18); i++;
-		
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 20, 22); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 9, 18); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 39, 30); i++;
-		
-		mapNum = 4;
-		i = 0;
-		
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 25, 88); i++;	
+		gp.iTile[mapNum][i] = new IT_Switch(gp, 27, 89); i++;	
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 34, 89); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 20, 89); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 75, "up"); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 76, "down"); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 38, 70); i++;
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 35, 62); i++;
@@ -381,14 +315,15 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 45, 89, "left"); i++;
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 46, 89, "right"); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 38, 77); i++;	
-		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 44, 80); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 80); i++;
+		gp.iTile[mapNum][i] = new IT_Switch(gp, 21, 80); i++;	
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 23, 80); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 44, 80); i++;		
 				
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 29, 53); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 64, 71); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 42, 77); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 80); i++;
 	}
 }

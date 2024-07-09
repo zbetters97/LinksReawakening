@@ -433,7 +433,6 @@ public class KeyHandler implements KeyListener {
 	// ITEM GET	
 	private void itemGetState(int code) {
 		if (code == KeyEvent.VK_SPACE) {
-			gp.ui.playDialogueFinishSE();	
 						
 			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
 				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);				

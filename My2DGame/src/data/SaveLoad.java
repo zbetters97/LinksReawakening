@@ -34,6 +34,9 @@ public class SaveLoad {
 			
 			// PROGRESS DATA
 			ds.enemy_room_1_1 = Progress.enemy_room_1_1;
+			ds.enemy_room_1_2 = Progress.enemy_room_1_2;
+			ds.enemy_room_1_3 = Progress.enemy_room_1_3;
+			ds.puzzle_1_1 = Progress.puzzle_1_1;
 			ds.bossDefeated_1 = Progress.bossDefeated_1;
 			
 			// PLAYER DATA
@@ -175,6 +178,9 @@ public class SaveLoad {
 			
 			// PROGRESS DATA
 			Progress.enemy_room_1_1 = ds.enemy_room_1_1;
+			Progress.enemy_room_1_2 = ds.enemy_room_1_2;
+			Progress.enemy_room_1_3 = ds.enemy_room_1_3;
+			Progress.puzzle_1_1 = ds.puzzle_1_1;
 			Progress.bossDefeated_1 = ds.bossDefeated_1;
 			
 			// PLAYER DATA

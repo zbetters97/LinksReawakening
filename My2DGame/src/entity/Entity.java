@@ -27,6 +27,8 @@ public class Entity {
 	protected GamePanel gp;
 	
 	// GENERAL ATTRIBUTES
+	public int worldXStart;
+	public int worldYStart;
 	public int worldX, worldY;		
 	private int tempScreenX, tempScreenY;
 	public String name;		
@@ -37,6 +39,9 @@ public class Entity {
 	public boolean sleep = false;
 	public boolean temp = false;
 	public boolean drawing = true;
+	public boolean opening = false;
+	public boolean closing = false;
+	public int bounds = 999;
 	
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
@@ -64,7 +69,8 @@ public class Entity {
 	public boolean attacking = false;
 	public boolean moving = false;
 	public boolean onPath = false;
-	public boolean pathCompleted = false;	
+	public boolean pathCompleted = false;
+	public boolean teleporting = false;
 	public boolean capturable = false;
 	public boolean captured = false;
 	public boolean canSwim = false;
@@ -83,7 +89,6 @@ public class Entity {
 	public String lockonDirection;
 	
 	// KNOCKBACK
-	public Entity attacker;
 	public boolean knockback = false;
 	public int knockbackCounter = 0;
 	public String knockbackDirection = "";
@@ -218,9 +223,20 @@ public class Entity {
 		// CHILD CLASS
 		setAction();
 		
+		move();
+		
+		// ANIMATE ENEMY ALWAYS
+		if (type == type_enemy || type == type_boss) {			
+			cycleSprites();
+		}
+		
+		manageValues();
+	}
+	
+	public void move() {
+		
 		checkCollision();
-		if (!collisionOn) { 
-						
+		if (!collisionOn && withinBounds()) { 						
 			switch (direction) {
 				case "up": worldY -= speed; break;
 				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
@@ -233,18 +249,12 @@ public class Entity {
 				case "left": worldX -= speed; break;
 				case "right": worldX += speed; break;
 			}
-			
-			// ANIMATE NPC IF MOVING
-			if (type == type_npc) {
-				cycleSprites();
-			}
 		}		
-		// ANIMATE ENEMY ALWAYS
-		if (type == type_enemy || type == type_boss) {			
+		
+		// ANIMATE NPC IF MOVING
+		if (type == type_npc) {
 			cycleSprites();
 		}
-		
-		manageValues();
 	}
 	
 	public void cycleSprites() {
@@ -344,6 +354,34 @@ public class Entity {
 		}	
 	}
 	
+	public boolean withinBounds() {
+		
+		boolean withinBounds = true;
+		
+		int tempWorldX = worldX;
+		int tempWorldY = worldY;		
+		
+		switch (direction) {
+			case "up": tempWorldY -= speed; break;
+			case "upleft": tempWorldY -= speed - 1; tempWorldX -= speed - 1; break;
+			case "upright": tempWorldY -= speed - 1; tempWorldX += speed - 1; break;
+			
+			case "down": tempWorldY += speed; break;
+			case "downleft": tempWorldY += speed - 1; tempWorldX -= speed - 1; break;
+			case "downright": tempWorldY += speed; tempWorldX += speed - 1; break;
+			
+			case "left": tempWorldX -= speed; break;
+			case "right": tempWorldX += speed; break;
+		}
+		
+		int tileDistance = (Math.abs(worldXStart - tempWorldX) + Math.abs(worldYStart - tempWorldY)) / gp.tileSize;
+
+		if (tileDistance > bounds)
+			withinBounds = false;
+		
+		return withinBounds;
+	}
+	
 	// PATH FINDING
 	public void approachPlayer(int rate) {
 		
@@ -392,7 +430,7 @@ public class Entity {
 		}
 	}
 	public void isOffPath(Entity target, int distance) {
-		if (getTileDistance(target) > distance) {
+		if (getTileDistance(target) > distance || !withinBounds()) {
 			onPath = false;			
 		}
 	}	
@@ -664,8 +702,8 @@ public class Entity {
 	}		
 	public void damagePlayer(int attack) {
 		
-		if (!gp.player.invincible && gp.player.alive) {
-									
+		if (!gp.player.invincible && gp.player.alive && !teleporting) {
+						
 			int damage = attack;
 			String guardDirection = getOppositeDirection(direction);
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
@@ -778,8 +816,12 @@ public class Entity {
 		}		
 	}	
 	public void setKnockback(Entity target, Entity attacker, int knockbackPower) {			
-		this.attacker = attacker;
 		target.knockbackDirection = attacker.direction;
+		target.speed += knockbackPower;
+		target.knockback = true;
+	}
+	public void setKnockback(Entity target, String direction, int knockbackPower) {
+		target.knockbackDirection = direction;
 		target.speed += knockbackPower;
 		target.knockback = true;
 	}

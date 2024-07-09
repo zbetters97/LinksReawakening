@@ -39,7 +39,7 @@ public class Map extends TileManager {
 				
 				int tileNum = mapTileNum[i][col][row];
 				int x = gp.tileSize * col;
-				int y = gp.tileSize * row;				
+				int y = gp.tileSize * row;		
 				g2.drawImage(tile[tileNum].image, x, y, null);
 				
 				col++;

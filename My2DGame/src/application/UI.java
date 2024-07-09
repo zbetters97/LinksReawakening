@@ -1305,10 +1305,6 @@ public class UI {
 			y += 40;
 		} 
 		
-		x = (gp.screenWidth / 2) - 24;
-		y = gp.tileSize * 10;
-  		g2.drawImage(dialogue_finish, x, y + 30, null);
-		
 		// DISPLAY ITEM ABOVE PLAYER
 		if (newItem != null) {			
 			gp.player.drawing = false;

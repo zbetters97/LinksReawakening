@@ -134,8 +134,8 @@ public class Player extends Entity {
 		gp.currentArea = gp.outside;
 */	
 		worldX = gp.tileSize * 40;
-		worldY = gp.tileSize * 92;		
-		gp.currentMap = 4;
+		worldY = gp.tileSize * 91;		
+		gp.currentMap = 2;
 		gp.currentArea = gp.dungeon;
 		
 		direction = "down";
@@ -728,7 +728,7 @@ public class Player extends Entity {
 				enemyList[gp.currentMap][i].collision &&
 				!enemyList[gp.currentMap][i].dying && 		
 				!enemyList[gp.currentMap][i].captured) {
-						
+			
 			Entity enemy = enemyList[gp.currentMap][i];
 			
 			if (enemy.knockbackPower > 0) {

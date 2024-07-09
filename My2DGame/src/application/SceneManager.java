@@ -19,18 +19,20 @@ public class SceneManager {
 	private GamePanel gp;
 	private Graphics2D g2;
 	public int scene;
-	public int phase;
+	public int phase;	
 	private int counter = 0;
+	private String lookDirection = "";
 	private float alpha = 0f;
 	private int y;
-	private String credits;
+	private String credits;	
 	
 	public final int NA = 0;
 	public final int npc = 1;
 	public final int enemy_spawn = 2;
-	public final int boss_1 = 3;
-	public final int boss_1_defeat = 4;
-	public final int ending = 5;
+	public final int dungeon_1_1 = 3;
+	public final int boss_1 = 4;
+	public final int boss_1_defeat = 5;
+	public final int ending = 6;
 	
 	private Entity npc1, npc2;
 	
@@ -59,6 +61,7 @@ public class SceneManager {
 		switch(scene) {
 			case npc: scene_npc_1(); break;	
 			case enemy_spawn: scene_enemy_spawn(); break;		
+			case dungeon_1_1: dungeon_1_1(); break;
 			case boss_1: scene_boss_1(); break;
 			case boss_1_defeat: scene_boss_defeat(1); break;
 			case ending: scene_ending(); break;
@@ -142,21 +145,111 @@ public class SceneManager {
 		}
 	}
 	private void scene_enemy_spawn() {
+				
 		if (phase == 0) {
+			
+			lookDirection = gp.player.direction;
+			
+			switch (gp.player.direction) {
+				case "up":
+				case "upleft":
+				case "upright":
+					gp.player.direction = "down";
+					break;
+				case "down":
+				case "downleft":
+				case "downright":
+					gp.player.direction = "up";
+					break;
+				case "left":
+					gp.player.direction = "right";
+					break;
+				case "right":
+					gp.player.direction = "left";
+					break;
+			}
+			
 			resetPlayerCounters();
 			playDoorCloseSE();
 			phase++;
 		}
-		if (phase == 1) {
+		else if (phase == 1) {
 			if (counterReached(60)) {
 				phase++;
 			}
 		}
 		else if (phase == 2) {
+			
+			gp.player.direction = lookDirection;
+			
 			scene = NA;
 			phase = 0;
 			
 			gp.gameState = gp.playState;
+		}
+	}	
+	private void dungeon_1_1() {
+		
+		if (phase == 0) {			
+			if (counterReached(30)) {
+				phase++;
+			}
+		}
+		else if (phase == 1) {
+						
+			// PLACE DUMMY IN NPC SLOT
+			for (int i = 0; i < gp.npc[1].length; i++) {
+				if (gp.npc[gp.currentMap][i] == null) {
+					gp.npc[gp.currentMap][i] = new PlayerDummy(gp);
+					gp.npc[gp.currentMap][i].worldX = gp.player.worldX;
+					gp.npc[gp.currentMap][i].worldY = gp.player.worldY;
+					gp.npc[gp.currentMap][i].direction = gp.player.direction;
+					
+					break;
+				}
+			}
+						
+			gp.player.drawing = false;			
+			phase++;
+		}
+		else if (phase == 2) {
+			
+			gp.player.worldX = 25 * gp.tileSize;
+			gp.player.worldY = 71 * gp.tileSize;
+			
+			if (counterReached(30)) {
+				phase++;
+			}
+		}
+		else if (phase == 3) {
+			
+			gp.openDoor(25, 71, OBJ_Door_Closed.objName);
+								
+			if (counterReached(90)) {
+				playSolveSE();
+				phase++;
+			}
+		}
+		else if (phase == 4) {	
+			
+			// RETURN CAMERA TO PLAYER
+			for (int i = 0; i < gp.npc[1].length; i++) {
+				if (gp.npc[gp.currentMap][i] != null && 
+						gp.npc[gp.currentMap][i].name.equals(PlayerDummy.npcName)) {
+					gp.player.worldX = gp.npc[gp.currentMap][i].worldX;
+					gp.player.worldY = gp.npc[gp.currentMap][i].worldY;
+					gp.npc[gp.currentMap][i] = null;
+					
+					break;
+				}
+			}
+
+			gp.player.drawing = true;
+			
+			scene = NA;
+			phase = 0;
+			
+			gp.gameState = gp.playState;			
 		}
 	}	
 	private void scene_boss_1() {
@@ -250,7 +343,7 @@ public class SceneManager {
 		if (phase == 0) {
 			resetPlayerCounters();
 			gp.stopMusic();
-			gp.playMusic(6);
+			playVictoryMusic();
 
 			gp.bossBattleOn = false;
 			
@@ -434,10 +527,16 @@ public class SceneManager {
 	private void playDoorCloseSE() {
 		gp.playSE(4, 5);
 	}
+	private void playSolveSE() {
+		gp.playSE(6, 7);
+	}
 	private void playBossMusic() {
-		gp.playMusic(5);
+		gp.playMusic(6);
+	}
+	private void playVictoryMusic() {
+		gp.playMusic(7);
 	}
 	private void playEndingMusic() {
-		gp.playMusic(7);
+		gp.playMusic(8);
 	}
 }

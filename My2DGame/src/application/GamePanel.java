@@ -17,6 +17,7 @@ import ai.PathFinder;
 import data.SaveLoad;
 import entity.Entity;
 import entity.Entity.Action;
+import entity.object.OBJ_Door_Closed;
 import entity.player.Player;
 import environment.EnvironmentManager;
 import event.EventHandler;
@@ -99,8 +100,8 @@ public class GamePanel extends JPanel implements Runnable {
 	// PLAYER / ENTITY / ENEMY / OBJECT
 	public Player player = new Player(this, keyH);	
 	public Entity npc[][] = new Entity[maxMap][10]; 
-	public Entity enemy[][] = new Entity[maxMap][20]; 
-	public Entity enemy_r[][] = new Entity[maxMap][20]; // HOLDS ENEMY ROOMS
+	public Entity enemy[][] = new Entity[maxMap][50]; 
+	public Entity enemy_r[][] = new Entity[maxMap][50]; // HOLDS ENEMY ROOMS
 	public Entity obj[][] = new Entity[maxMap][20];
 	public Entity obj_i[][] = new Entity[maxMap][20]; 
 	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
@@ -139,7 +140,7 @@ public class GamePanel extends JPanel implements Runnable {
 //		currentArea = outside;
 		gameState = playState;
 		currentArea = dungeon;
-		currentMap = 4;
+		currentMap = 2;
 		
 		setupMusic();
 
@@ -318,6 +319,15 @@ public class GamePanel extends JPanel implements Runnable {
 				if (npc[currentMap][i] != null)
 					npc[currentMap][i].update();
 			}
+			
+			// UPDATE OBJECTS
+			for (int i = 0; i < obj[1].length; i++) {
+				if (obj[currentMap][i] != null) {
+					obj[currentMap][i].update();
+					if (!obj[currentMap][i].alive)
+						obj[currentMap][i] = null;
+				}
+			}
 		}
 		
 		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
@@ -330,10 +340,6 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void changeArea() {
 		
-		if (nextArea == outside) player.direction = "down";
-		if (nextArea == inside) player.direction = "up";
-		if (nextArea == dungeon) player.direction = "down";
-		
 		if (nextArea != currentArea) {
 			stopMusic();			
 			setupMusic();
@@ -344,6 +350,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void removeTempEntity() {
+		
 
 		for (int mapNum = 0; mapNum < maxMap; mapNum++) {
 			
@@ -364,7 +371,14 @@ public class GamePanel extends JPanel implements Runnable {
 			}	
 			for (int i = 0; i < obj[1].length; i++) {
 				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
-					obj[mapNum][i] = null;
+					
+					if (obj[mapNum][i].name.equals(OBJ_Door_Closed.objName)) {
+						obj[mapNum][i].playSE();
+						obj[mapNum][i].opening = true;
+					}
+					else {
+						obj[mapNum][i] = null;	
+					}
 				}
 			}	
 			for (int i = 0; i < obj_i[1].length; i++) {
@@ -382,6 +396,25 @@ public class GamePanel extends JPanel implements Runnable {
 				projectile[currentMap][i].alive = false; 
 				projectile[currentMap][i] = null;
 			}
+		}
+	}
+	
+	public void openDoor(int worldX, int worldY, String objName) {
+		
+		worldX *= 48;
+		worldY *= 48;
+		
+		for (int i = 0; i < obj[1].length; i++) {					
+			if (obj[currentMap][i] != null && 
+					obj[currentMap][i].name != null &&
+					obj[currentMap][i].name.equals(objName)) {
+								
+				if (obj[currentMap][i].worldX == worldX &&
+						obj[currentMap][i].worldY == worldY) {
+					obj[currentMap][i].playSE();
+					obj[currentMap][i].opening = true;
+				}						
+			}		
 		}
 	}
 	
@@ -418,14 +451,13 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setupMusic() {
 		
-		if (nextArea != currentArea) {		
+		if (nextArea != currentArea) {	
 			if (gameState == titleState) playMusic(0);			
 			else {			
 				if (currentMap == 0) playMusic(2);
 				else if (currentMap == 1) playMusic(3);
-				else if (currentMap == 2) playMusic(4);
-				else if (currentMap == 3) playMusic(4);
-				else if (currentMap == 4) playMusic(4);
+				else if (currentMap == 2) playMusic(5);
+				else if (currentMap == 3) playMusic(5);
 			}
 		}
 	}	

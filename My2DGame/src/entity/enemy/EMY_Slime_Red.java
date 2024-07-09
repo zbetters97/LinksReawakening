@@ -32,6 +32,30 @@ public class EMY_Slime_Red extends Entity {
 		
 		getImage();
 	}
+	public EMY_Slime_Red(GamePanel gp, int worldX, int worldY) {
+		super(gp);			
+		this.gp = gp;
+		this.worldX = worldX * 48;
+		this.worldY = worldY * 48;
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
+		bounds = 7;
+		
+		type = type_enemy;
+		name = emyName;
+		
+		speed = 0; defaultSpeed = speed;
+		animationSpeed = 12;
+		attack = 2; 
+		knockbackPower = 1;
+		maxLife = 8; life = maxLife;
+		
+		hitbox = new Rectangle(2, 18, 44, 30);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		getImage();
+	}
 	
 	public void getImage() {
 		up1 = setup("/enemy/slime_red_down_1");

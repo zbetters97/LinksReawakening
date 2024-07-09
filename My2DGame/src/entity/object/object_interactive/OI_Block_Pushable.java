@@ -43,9 +43,34 @@ public class OI_Block_Pushable extends Entity {
 		right1 = up1;
 		right2 = up1;
 	}
-				
+	
+	public void move(String dir) {	
+		
+		if (!moving) {
+			
+			// INCREASE SPEED TO DETECT COLLISION
+			direction = dir;
+			speed = 3;			
+			
+			collisionOn = false;
+			gp.cChecker.checkPlayer(this);
+			gp.cChecker.checkTile(this);		
+			gp.cChecker.checkEntity(this, gp.iTile);
+			gp.cChecker.checkEntity(this, gp.obj);			
+			gp.cChecker.checkEntity(this, gp.npc);
+			gp.cChecker.checkEntity(this, gp.enemy);
+			gp.cChecker.checkEntity(this, gp.enemy_r);				
+							
+			if (isCorrectTile() && !collisionOn) {
+				playSE();
+				moving = true;
+				speed = 1;
+			}
+		}
+	}
+	
 	public void update() { 
-						
+		
 		if (moving) {
 			pushCounter++;
 			if (pushCounter <= 48) {	
@@ -58,19 +83,23 @@ public class OI_Block_Pushable extends Entity {
 		}
 	}
 	
-	public void move(String dir) {	
+	private void push() {
 		
-		if (!moving) {									
-			direction = dir;
-				
-			if (isCorrectTile()) {
-				playSE();
-				moving = true;
-			}
-		}
+		// MOVE IN DIRECTION PUSHED
+		switch (direction) {
+			case "up": worldY -= speed; break;				
+			case "down": worldY += speed; break;				
+			case "left": worldX -= speed; break;
+			case "right": worldX += speed; break;
+		}		
+
+		detectPlate();
+		detectPlacement();
 	}
 	
 	private boolean isCorrectTile() {
+		
+		boolean correctTile = false;
 	
 		int x = worldX / gp.tileSize;
 		int y = worldY / gp.tileSize;
@@ -83,46 +112,18 @@ public class OI_Block_Pushable extends Entity {
 			default: return false;
 		}			
 		
-		int tile = gp.tileM.mapTileNum[gp.currentMap][x][y];
+		int tile = gp.tileM.mapTileNum[gp.currentMap][x][y];		
+		if (tile == gp.tileM.blockTile1 || tile == gp.tileM.blockTile2)
+			correctTile = true;
 		
-		if (tile == gp.tileM.blockTile1 || tile == gp.tileM.blockTile2) return true;
-		else return false;
-	}
-	
-	private void push() {
-						
-		collisionOn = false;
-		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
-		gp.cChecker.checkEntity(this, gp.obj);
-		gp.cChecker.checkEntity(this, gp.npc);
-		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkEntity(this, gp.enemy_r);		
-		gp.cChecker.checkPlayer(this);
-		
-		// PUSH BOULDER 
-		if (!collisionOn) {
-			switch (direction) {
-				case "up": worldY -= speed; break;				
-				case "down": worldY += speed; break;				
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
-			}
-		}
-		else {
-			moving = false;
-			pushCounter = 0;
-		}
-
-		detectPlate();
-		detectPlacement();
+		return correctTile;
 	}
 	
 	private void detectPlacement() {
-		if (gp.currentMap == 4) {
-			if (worldX == 1392 && worldY == 2544) {
-				playSE();
-				gp.removeTempEntity();
+		
+		if (gp.currentMap == 2) {					
+			if (worldX == 1392 && worldY == 2544) {				
+				gp.openDoor(26, 54, OBJ_Door_Closed.objName);
 			}
 		}
 	}
@@ -177,39 +178,12 @@ public class OI_Block_Pushable extends Entity {
 			}
 		}
 		
-		if (gp.currentMap == 4) {
-			if (count == 2) {
-				for (int i = 0; i < gp.obj[1].length; i++) {
-					
-					// REMOVE IRON DOOR
-					if (gp.obj[gp.currentMap][i] != null && 
-							gp.obj[gp.currentMap][i].name != null &&
-							gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName)) {
-						
-						if (gp.obj[gp.currentMap][i].worldX == 1200 &&
-								gp.obj[gp.currentMap][i].worldY == 3408) {
-							gp.obj[gp.currentMap][i].playOpenSE();
-							gp.obj[gp.currentMap][i] = null;	
-						}						
-					}				
-				}
+		if (gp.currentMap == 2) {
+			if (count == 2 && !data.Progress.puzzle_1_1) {			
+				data.Progress.puzzle_1_1 = true;
+				gp.csManager.scene = gp.csManager.dungeon_1_1;					
+				gp.gameState = gp.cutsceneState;		
 			}	
-		}
-		
-		// IF ALL PLATES ARE PRESSED
-		else if (count == blockList.size()) {
-			for (int i = 0; i < gp.obj[1].length; i++) {
-				
-				// REMOVE IRON DOOR
-				if (gp.obj[gp.currentMap][i] != null && 
-						gp.obj[gp.currentMap][i].name != null &&
-						gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName)) {
-					
-					gp.obj[gp.currentMap][i].playOpenSE();
-					gp.obj[gp.currentMap][i] = null;							
-					
-				}				
-			}
 		}
 	}
 		

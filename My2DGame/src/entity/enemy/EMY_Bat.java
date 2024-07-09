@@ -34,6 +34,32 @@ public class EMY_Bat extends Entity {
 		getImage();
 	}
 	
+	public EMY_Bat(GamePanel gp, int worldX, int worldY) {
+		super(gp);				
+		this.gp = gp;
+		this.worldX = worldX * 48;
+		this.worldY = worldY * 48;
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
+		bounds = 5;
+		
+		type = type_enemy;
+		name = emyName;
+		onGround = false;
+		
+		speed = 2; defaultSpeed = speed;
+		animationSpeed = 5;
+		attack = 1;
+		knockbackPower = 1;
+		maxLife = 4; life = maxLife;
+		
+		hitbox = new Rectangle(2, 18, 44, 30);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		getImage();
+	}
+	
 	public void getImage() {
 		up1 = setup("/enemy/bat_down_1");
 		up2 = setup("/enemy/bat_down_2");

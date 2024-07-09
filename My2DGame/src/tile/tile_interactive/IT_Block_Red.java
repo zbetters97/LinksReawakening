@@ -1,5 +1,7 @@
 package tile.tile_interactive;
 
+import java.awt.Rectangle;
+
 import application.GamePanel;
 
 public class IT_Block_Red extends InteractiveTile {
@@ -12,13 +14,16 @@ public class IT_Block_Red extends InteractiveTile {
 		this.gp = gp;
 		
 		name = itName;
-		life = 3;
 		switchedOn = false;
 		
 		direction = "up";
 		
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
+		
+		hitbox = new Rectangle(0, 0, 48, 48); 	
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		up1 = setup("/tiles_interactive/block_red_off");
 		down1 = setup("/tiles_interactive/block_red_on");		

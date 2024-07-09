@@ -129,7 +129,7 @@ public class CollisionChecker {
 			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 												
 				// ENEMY CAN FALL IN PIT IF HIT
-				if (!entity.knockback) {
+				if (!entity.knockback && entity.onGround) {
 					entity.collisionOn = true;	
 				}
 			}
@@ -141,10 +141,13 @@ public class CollisionChecker {
 					entity.collisionOn = true;
 				}
 			}
-			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+			// SPIKES
+			else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {				
 				entity.collisionOn = true;
 			}
-			
+			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+				entity.collisionOn = true;
+			}			
 			if (entity.name.equals(EMY_Octorok.emyName)) {
 				if (tileNum1 != gp.tileM.waterTile || tileNum2 != gp.tileM.waterTile) {
 					entity.collisionOn = true;
@@ -166,6 +169,33 @@ public class CollisionChecker {
 			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {				
 				entity.collisionOn = true;
 			}				
+		}
+		// PLAYER
+		else if (entity == gp.player){
+			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+				entity.collisionOn = true;
+			}
+			// SPIKES
+			else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {	
+												
+				if (!gp.player.invincible) {
+					
+					String kbDirection = "down";
+					
+					switch (entity.direction) {
+						case "up": kbDirection = "down"; break;	
+						case "down": kbDirection = "up"; break;	
+						case "left": kbDirection = "right"; break;	
+						case "right": kbDirection = "left"; break;	
+					}
+					
+					gp.player.setKnockback(gp.player, kbDirection, 1);
+					
+					gp.player.life--;
+					gp.player.transparent = true;
+					gp.player.invincible = true;	
+				}				
+			}
 		}
 		// OTHER
 		else {
@@ -469,16 +499,12 @@ public class CollisionChecker {
 			
 			if (target[gp.currentMap][i] != null) {			
 				
-				// get entity's solid area position
 				entity.hitbox.x = entity.worldX + entity.hitbox.x;
 				entity.hitbox.y = entity.worldY + entity.hitbox.y;
 				
-				// get object's solid area position
 				target[gp.currentMap][i].hitbox.x = target[gp.currentMap][i].worldX + target[gp.currentMap][i].hitbox.x;
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitbox.y;
-				
-				// find where entity will be after moving in a direction
-				// ask if target and entity intersect 
+			
 				switch (direction) {
 					case "up":					
 						entity.hitbox.y -= entity.speed;
