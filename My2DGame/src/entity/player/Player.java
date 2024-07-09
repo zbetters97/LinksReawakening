@@ -94,7 +94,7 @@ public class Player extends Entity {
 		action = Action.IDLE;		
 		onGround = true;
 		
-		speed = 6; defaultSpeed = speed;
+		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
@@ -141,7 +141,7 @@ public class Player extends Entity {
 		direction = "down";
 	}
 	public void setDefaultItems() {		
-
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -153,7 +153,8 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-
+*/
+		inventory_item.add(new ITM_Boots(gp));	
 	}
 	public void restoreStatus() {
 		life = maxLife;

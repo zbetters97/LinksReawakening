@@ -133,19 +133,10 @@ public class AssetSetter {
 		gp.obj[mapNum][i].direction = "right";
 		gp.obj[mapNum][i].temp = true;
 		i++;		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 21;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 72;	
-		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Block_Locked(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 51;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 67;
-		i++;
-		
-		gp.obj[mapNum][i] = new OBJ_Block_Locked(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 42;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 77;
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Door_Locked(gp);
@@ -154,8 +145,8 @@ public class AssetSetter {
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 16;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 79;	
+		gp.obj[mapNum][i].worldX = gp.tileSize * 21;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 53;	
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key_Boss(gp));
@@ -387,9 +378,10 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 58, "up"); i++;
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 59, "down"); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 38, 77); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 45, 89, "left"); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 46, 89, "right"); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 40, 78); i++;	
+		gp.iTile[mapNum][i] = new IT_Switch(gp, 38, 77); i++;	
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 44, 80); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 80); i++;
 				
@@ -397,11 +389,6 @@ public class AssetSetter {
 		
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 64, 71); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 23, 80, "left"); i++;
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 24, 80, "right"); i++;
-		
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 19, 79); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 19, 80); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 19, 81); i++;
+		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 42, 77); i++;
 	}
 }

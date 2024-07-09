@@ -81,7 +81,9 @@ public class InteractiveTile extends Entity {
 		
 		if (direction.equals("up")) image = up1;
 		else if (direction.equals("down")) image = down1;
-					
+		else if (direction.equals("left")) image = left1;
+		else if (direction.equals("right")) image = right1;
+		
 		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
 			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
 			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
