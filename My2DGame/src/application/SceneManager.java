@@ -26,10 +26,13 @@ public class SceneManager {
 	private int y;
 	private String credits;	
 	
+	public int worldX = 0;
+	public int worldY = 0;
+	
 	public final int NA = 0;
 	public final int npc = 1;
 	public final int enemy_spawn = 2;
-	public final int dungeon_1_1 = 3;
+	public final int puzzle_solve = 3;
 	public final int boss_1 = 4;
 	public final int boss_1_defeat = 5;
 	public final int ending = 6;
@@ -61,9 +64,9 @@ public class SceneManager {
 		switch(scene) {
 			case npc: scene_npc_1(); break;	
 			case enemy_spawn: scene_enemy_spawn(); break;		
-			case dungeon_1_1: dungeon_1_1(); break;
+			case puzzle_solve: puzzle_solve(); break;
 			case boss_1: scene_boss_1(); break;
-			case boss_1_defeat: scene_boss_defeat(1); break;
+			case boss_1_defeat: scene_boss_1_defeat(1); break;
 			case ending: scene_ending(); break;
 		}
 	}
@@ -188,7 +191,7 @@ public class SceneManager {
 			gp.gameState = gp.playState;
 		}
 	}	
-	private void dungeon_1_1() {
+	private void puzzle_solve() {
 		
 		if (phase == 0) {			
 			if (counterReached(30)) {
@@ -214,8 +217,8 @@ public class SceneManager {
 		}
 		else if (phase == 2) {
 			
-			gp.player.worldX = 25 * gp.tileSize;
-			gp.player.worldY = 71 * gp.tileSize;
+			gp.player.worldX = worldX * gp.tileSize;
+			gp.player.worldY = worldY * gp.tileSize;
 			
 			if (counterReached(30)) {
 				phase++;
@@ -223,7 +226,7 @@ public class SceneManager {
 		}
 		else if (phase == 3) {
 			
-			gp.openDoor(25, 71, OBJ_Door_Closed.objName);
+			gp.openDoor(worldX, worldY, OBJ_Door_Closed.objName);
 								
 			if (counterReached(90)) {
 				playSolveSE();
@@ -248,6 +251,8 @@ public class SceneManager {
 			
 			scene = NA;
 			phase = 0;
+			worldX = 0;
+			worldY = 0;
 			
 			gp.gameState = gp.playState;			
 		}
@@ -339,7 +344,7 @@ public class SceneManager {
 			gp.gameState = gp.playState;			
 		}
 	}	
-	private void scene_boss_defeat(int num) {
+	private void scene_boss_1_defeat(int num) {
 		if (phase == 0) {
 			resetPlayerCounters();
 			gp.stopMusic();
@@ -347,7 +352,7 @@ public class SceneManager {
 
 			gp.bossBattleOn = false;
 			
-			if (num == 1) Progress.bossDefeated_1 = true;
+			if (num == 1) Progress.bossDefeated_1_2 = true;
 			
 			phase++;
 		}

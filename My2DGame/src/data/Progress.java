@@ -11,5 +11,6 @@ public class Progress {
 	public static boolean puzzle_1_1;
 
 	// BOSSES (_B)
-	public static boolean bossDefeated_1;
+	public static boolean bossDefeated_1_1;
+	public static boolean bossDefeated_1_2;
 }

@@ -48,7 +48,7 @@ public class IT_Block_Blue extends InteractiveTile {
 					collision = false;
 					switchedOn = false;
 				}
-				// WAIT UNTIL PLAYER MOVES OFF BLOCK
+				// TURN ON IF NO COLLISION
 				else if (!gp.cChecker.checkPlayer(this))  {
 					collision = true;			
 					switchedOn = true;					

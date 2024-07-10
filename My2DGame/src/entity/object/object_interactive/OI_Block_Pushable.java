@@ -50,7 +50,7 @@ public class OI_Block_Pushable extends Entity {
 			
 			// INCREASE SPEED TO DETECT COLLISION
 			direction = dir;
-			speed = 3;			
+			speed = 48;			
 			
 			collisionOn = false;
 			gp.cChecker.checkPlayer(this);
@@ -181,7 +181,9 @@ public class OI_Block_Pushable extends Entity {
 		if (gp.currentMap == 2) {
 			if (count == 2 && !data.Progress.puzzle_1_1) {			
 				data.Progress.puzzle_1_1 = true;
-				gp.csManager.scene = gp.csManager.dungeon_1_1;					
+				gp.csManager.worldX = 45;
+				gp.csManager.worldY = 89; 
+				gp.csManager.scene = gp.csManager.puzzle_solve;					
 				gp.gameState = gp.cutsceneState;		
 			}	
 		}

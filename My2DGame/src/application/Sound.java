@@ -108,8 +108,7 @@ public class Sound {
 		voice[1] = getClass().getResource("/sound/VOICE_SLASH2.wav");
 		voice[2] = getClass().getResource("/sound/VOICE_ITEM.wav");
 		voice[3] = getClass().getResource("/sound/VOICE_HURT.wav");
-		voice[4] = getClass().getResource("/sound/VOICE_FALL.wav");
-		voice[5] = getClass().getResource("/sound/VOICE_PUSH.wav");
+		voice[4] = getClass().getResource("/sound/VOICE_PUSH.wav");
 		
 		sounds[0] = music; 
 		sounds[1] = menu; 

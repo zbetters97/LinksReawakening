@@ -25,8 +25,8 @@ public class EMY_Buzzblob extends Entity {
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 10;
 		attack = 2; 
-		knockbackPower = 1;
-		maxLife = 8; life = maxLife;
+		knockbackPower = 0;
+		maxLife = 6; life = maxLife;
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
@@ -50,8 +50,8 @@ public class EMY_Buzzblob extends Entity {
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 10;
 		attack = 2; 
-		knockbackPower = 1;
-		maxLife = 8; life = maxLife;
+		knockbackPower = 0;
+		maxLife = 6; life = maxLife;
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;

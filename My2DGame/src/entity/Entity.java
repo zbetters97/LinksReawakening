@@ -47,8 +47,8 @@ public class Entity {
 	public int spriteNum = 1;
 	public BufferedImage image1, image2, image3,
 							up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3,
-							attackUp1, attackUp2, attackDown1, attackDown2, 
-							attackLeft1, attackLeft2, attackRight1, attackRight2,
+							attackUp1, attackUp2, attackUp3, attackDown1, attackDown2, attackDown3,
+							attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3,
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,
 							buzzUp1, buzzUp2, lockedImage, die1, die2, die3, die4;
@@ -75,6 +75,7 @@ public class Entity {
 	public boolean captured = false;
 	public boolean canSwim = false;
 	public boolean buzzing = false;
+	public boolean guarded = false;
 		
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
@@ -358,10 +359,14 @@ public class Entity {
 		
 		boolean withinBounds = true;
 		
+		String tempDirection;
 		int tempWorldX = worldX;
 		int tempWorldY = worldY;		
 		
-		switch (direction) {
+		if (lockon) tempDirection = lockonDirection;
+		else tempDirection = direction;
+		
+		switch (tempDirection) {
 			case "up": tempWorldY -= speed; break;
 			case "upleft": tempWorldY -= speed - 1; tempWorldX -= speed - 1; break;
 			case "upright": tempWorldY -= speed - 1; tempWorldX += speed - 1; break;
@@ -392,6 +397,7 @@ public class Entity {
 				if (gp.player.getCenterX() < getCenterX()) {
 					direction = "left";
 				}
+				
 				else {
 					direction = "right";
 				}
@@ -844,6 +850,19 @@ public class Entity {
 			projectile.playSE();
 		}
 	}
+	public void useProjectile(int rate, int scale) {
+		
+		int i = new Random().nextInt(rate);
+		if (i == 0 && !projectile.alive && shotAvailableCounter == 30) {
+
+			projectile.set(worldX + scale, worldY, direction, true, this);
+			addProjectile(projectile);
+			
+			shotAvailableCounter = 0;
+			
+			projectile.playSE();
+		}
+	}
 	
 	// ITEM RETRIEVAL
 	public boolean canObtainItem(Entity item) {
@@ -1142,6 +1161,7 @@ public class Entity {
 							tempScreenY -= up1.getHeight();
 							if (attackNum == 1) image = attackUp1;
 							else if (attackNum == 2) image = attackUp2;
+							else if (attackNum == 3) image = attackUp3;	
 						}		
 						else {							
 							if (spriteNum == 1) image = up1;
@@ -1155,6 +1175,7 @@ public class Entity {
 						if (attacking) {		
 							if (attackNum == 1) image = attackDown1;
 							else if (attackNum == 2) image = attackDown2;	
+							else if (attackNum == 3) image = attackDown3;	
 						}	
 						else {
 							if (spriteNum == 1) image = down1;
@@ -1167,7 +1188,8 @@ public class Entity {
 						if (attacking) {
 							tempScreenX -= left1.getWidth();
 							if (attackNum == 1)	image = attackLeft1;							
-							else if (attackNum == 2) image = attackLeft2;	
+							else if (attackNum == 2) image = attackLeft2;
+							else if (attackNum == 3) image = attackLeft3;	
 						}		
 						else {
 							if (spriteNum == 1) image = left1;
@@ -1179,6 +1201,7 @@ public class Entity {
 						if (attacking) {
 							if (attackNum == 1) image = attackRight1;
 							else if (attackNum == 2) image = attackRight2;
+							else if (attackNum == 3) image = attackRight3;	
 						}	
 						else {
 							if (spriteNum == 1) image = right1;

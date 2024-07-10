@@ -23,7 +23,7 @@ public class EMY_Goblin_Archer extends Entity {
 		type = type_enemy;
 		name = emyName;
 		
-		speed = 1; defaultSpeed = speed; 
+		speed = 0; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 1;
 		knockbackPower = 0;
@@ -50,7 +50,7 @@ public class EMY_Goblin_Archer extends Entity {
 		type = type_enemy;
 		name = emyName;
 		
-		speed = 1; defaultSpeed = speed; 
+		speed = 0; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 1;
 		knockbackPower = 0;
@@ -83,7 +83,7 @@ public class EMY_Goblin_Archer extends Entity {
 			isOffPath(gp.player, 10);
 			if (onPath) {
 				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-				useItem(90);
+				useItem(60);
 			}
 		}
 		else {				

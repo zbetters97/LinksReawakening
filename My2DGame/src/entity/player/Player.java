@@ -98,14 +98,14 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		maxLife = 12; life = maxLife;
+		maxLife = 14; life = maxLife;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
 		maxBombs = 10; bombs = maxBombs;
 		
 //		currentWeapon = null;
-		currentWeapon = new EQP_Sword_Master(gp);
+		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		
 		projectile = new PRJ_Sword(gp);
@@ -134,11 +134,11 @@ public class Player extends Entity {
 		gp.currentArea = gp.outside;
 */	
 		worldX = gp.tileSize * 40;
-		worldY = gp.tileSize * 91;		
+		worldY = gp.tileSize * 92;		
 		gp.currentMap = 2;
 		gp.currentArea = gp.dungeon;
 		
-		direction = "down";
+		direction = "up";
 	}
 	public void setDefaultItems() {		
 /*
@@ -567,45 +567,40 @@ public class Player extends Entity {
 			else if (item.name.equals(EQP_Flippers.eqpName)) {
 				canSwim = true;
 			}
+			
+			gp.ui.newItem = item;
+			gp.ui.currentDialogue = "You got the " + item.name + "!";
 		}
 		else if (item.type == type_collectable) {
 			item.use(this);
 			return;
 		}
-		else if (item.type == type_consumable) {
-			item.use(this);
-			return;
-		}	
 		else if (item.type == type_key) {
 			playGetItemSE();
 			gp.player.keys++;
+			
 			gp.ui.newItem = item;
-			gp.ui.currentDialogue = "You got a " + item.name + "!";		
-			gp.ui.subState = 0;
-			gp.gameState = gp.itemGetState;
-			return;
+			gp.ui.currentDialogue = "You found a " + item.name + "!";		
 		}
 		else if (item.type == type_boss_key) {
 			playGetItemSE();
 			gp.player.boss_key++;
+			
 			gp.ui.newItem = item;
-			gp.ui.currentDialogue = "You got the " + item.name + "!";		
-			gp.ui.subState = 0;
-			gp.gameState = gp.itemGetState;
-			return;
-		}
+			gp.ui.currentDialogue = "You found the " + item.name + "!";	
+		}	
 		
-		playGetItemSE();
-		
-		if (item.type == type_item) {
-			gp.player.inventory_item.add(item);		
+		else if (item.type == type_item) {
+			gp.player.inventory_item.add(item);	
+			
+			gp.ui.newItem = item;
+			gp.ui.currentDialogue = "You got the " + item.name + "!";
 		}
-		else if (item.type != type_equipment) {
+		else {
 			inventory.add(item);
 		}
 		
-		gp.ui.newItem = item;
-		gp.ui.currentDialogue = "You got the " + item.name + "!";		
+		playGetItemSE();		
 		gp.ui.subState = 0;
 		gp.gameState = gp.itemGetState;
 	}
@@ -794,7 +789,6 @@ public class Player extends Entity {
 		
 		if (currentItem != null) {							
 			switch (currentItem.name) {
-				case ITM_Axe.itmName:
 				case ITM_Boots.itmName:
 				case ITM_Cape.itmName:
 				case ITM_Feather.itmName:
@@ -821,7 +815,7 @@ public class Player extends Entity {
 					// STOP MOVEMENT
 					keyH.itemPressed = false;
 					keyH.upPressed = false; keyH.downPressed  = false;
-					keyH.leftPressed  = false; keyH.rightPressed  = false;			
+					keyH.leftPressed  = false; keyH.rightPressed  = false;	
 					currentItem.use();		
 					break;	
 			}	
@@ -1067,7 +1061,7 @@ public class Player extends Entity {
 		}
 		
 		// ATTACK HITS ENEMY
-		if (i != -1) {
+		if (i != -1 && !enemies[gp.currentMap][i].guarded) {
 			
 			// BUZZING ENEMY
 			if (enemies[gp.currentMap][i].buzzing && attacker == gp.player) {
@@ -1079,7 +1073,7 @@ public class Player extends Entity {
 			else if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured) {
 				enemies[gp.currentMap][i].playHurtSE();
 				
-				if (knockbackPower > 0) {
+				if (knockbackPower > 0 && enemies[gp.currentMap][i].type != type_boss) {
 					setKnockback(enemies[gp.currentMap][i], attacker, knockbackPower);
 				}
 				
@@ -1203,6 +1197,9 @@ public class Player extends Entity {
 	// SOUND EFFECTS	
 	public void playGuardSE() {
 		gp.playSE(2, 1);
+	}
+	public void playFallSE() {
+		gp.playSE(2, 4);
 	}
 	public void playLockOnSE() {
 		gp.playSE(2, 1);

@@ -29,8 +29,8 @@ public class IT_Block_Red extends InteractiveTile {
 		down1 = setup("/tiles_interactive/block_red_on");		
 	}
 	public void update() { 		
-		if (switchedOn) direction = "up";
-		else direction = "down";
+		if (switchedOn) direction = "down";
+		else direction = "up";
 		detectSwitch();
 	}
 	
@@ -42,17 +42,17 @@ public class IT_Block_Red extends InteractiveTile {
 			if (gp.iTile[gp.currentMap][i] != null && 
 					gp.iTile[gp.currentMap][i].name != null &&
 					gp.iTile[gp.currentMap][i].name.equals(IT_Switch.itName)) {
-								
-				// WAIT UNTIL PLAYER MOVES OFF BLOCK
-				if (gp.iTile[gp.currentMap][i].switchedOn && !gp.cChecker.checkPlayer(this)) {
-					collision = true;
+							
+				// TURN ON IF SWITCH IS ON
+				if (!gp.iTile[gp.currentMap][i].switchedOn) {
+					collision = false;
 					switchedOn = false;
 				}
-				// TURN OFF IF SWITCH IS OFF
-				else  {
-					collision = false;			
-					switchedOn = true;					
-				}				
+				// TURN OFF IF NO COLLISION
+				else if (!gp.cChecker.checkPlayer(this)) {
+					collision = true;
+					switchedOn = true;
+				}							
 			}
 		}	
 	}

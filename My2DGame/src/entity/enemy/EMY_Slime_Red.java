@@ -23,7 +23,7 @@ public class EMY_Slime_Red extends Entity {
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 12;
 		attack = 2; 
-		knockbackPower = 1;
+		knockbackPower = 0;
 		maxLife = 8; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
@@ -47,7 +47,7 @@ public class EMY_Slime_Red extends Entity {
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 12;
 		attack = 2; 
-		knockbackPower = 1;
+		knockbackPower = 0;
 		maxLife = 8; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);

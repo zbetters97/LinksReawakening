@@ -23,10 +23,10 @@ public class EMY_Zora extends Entity {
 		direction = "down";
 		
 		speed = 0; defaultSpeed = speed;
-		animationSpeed = 12;
+		animationSpeed = 12;				
+		maxLife = 6; life = maxLife;
 		attack = 0; 
 		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
 		
 		hitbox = new Rectangle(0, 0, 48, 48);
 		hitboxDefaultX = hitbox.x;

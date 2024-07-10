@@ -82,6 +82,8 @@ public class UI {
 	public int deathSprite = 0;
 	public int deathCounter = 0;
 	
+	public String transitionDirection;
+	
 	public UI(GamePanel gp) {
 		
 		this.gp = gp;
@@ -528,7 +530,7 @@ public class UI {
 		
 			Entity enemy = enemies[gp.currentMap][i];
 			
-			if (enemy != null && enemy.inFrame()) {
+			if (enemy != null && enemy.inFrame() && !enemy.sleep) {
 				
 				// BOSS HEALTH BAR
 				if (enemy.type == enemy.type_boss) {
@@ -540,7 +542,7 @@ public class UI {
 					double hpBarValue = oneScale * enemy.life; 
 					
 					int x = (gp.screenWidth / 2) - (gp.tileSize * 4);
-					int y = gp.tileSize * 2;
+					int y = (int) (gp.tileSize * 1.5);
 					
 					// DARK GRAY OUTLINE
 					g2.setColor(new Color(35,35,35)); 
@@ -1561,6 +1563,7 @@ public class UI {
 			counter = 0;			
 			gp.gameState = gp.playState;
 			
+			gp.player.direction = transitionDirection;
 			gp.currentMap = gp.eHandler.tempMap;
 			gp.player.worldX = gp.tileSize * gp.eHandler.tempCol;
 			gp.player.worldY = gp.tileSize * gp.eHandler.tempRow;

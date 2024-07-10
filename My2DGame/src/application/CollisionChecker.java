@@ -123,7 +123,7 @@ public class CollisionChecker {
 		}		
 
 		// NPC AND EMNEMIES
-		if (entity.type == entity.type_npc || entity.type == entity.type_enemy || entity.type == entity.type_boss) {
+		if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {
 			
 			// PIT
 			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
@@ -154,6 +154,27 @@ public class CollisionChecker {
 				}
 			}
 		}
+		// BOSSES
+		if (entity.type == entity.type_boss) {
+			
+			// PIT
+			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
+												
+				if (entity.onGround) {
+					entity.collisionOn = true;	
+				}
+			}
+			// WATER
+			else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
+				
+				if (!entity.canSwim) {
+					entity.collisionOn = true;
+				}
+			}
+			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+				entity.collisionOn = true;
+			}		
+		}
 		// PROJECTILES
 		else if (entity.type == entity.type_projectile) {
 			
@@ -180,6 +201,11 @@ public class CollisionChecker {
 												
 				if (!gp.player.invincible) {
 					
+					gp.player.playHurtSE();					
+					gp.player.life--;
+					gp.player.transparent = true;
+					gp.player.invincible = true;	
+					
 					String kbDirection = "down";
 					
 					switch (entity.direction) {
@@ -188,13 +214,9 @@ public class CollisionChecker {
 						case "left": kbDirection = "right"; break;	
 						case "right": kbDirection = "left"; break;	
 					}
-					
+							
 					gp.player.setKnockback(gp.player, kbDirection, 1);
-					
-					gp.player.life--;
-					gp.player.transparent = true;
-					gp.player.invincible = true;	
-				}				
+				}
 			}
 		}
 		// OTHER
@@ -365,7 +387,7 @@ public class CollisionChecker {
 					gp.gameState == gp.playState) {
 				
 				if (player) {
-					gp.playSE(2, 4);			
+					gp.player.playFallSE();		
 					gp.player.invincible = true;
 					gp.gameState = gp.fallingState;
 				}

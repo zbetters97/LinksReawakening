@@ -37,7 +37,8 @@ public class SaveLoad {
 			ds.enemy_room_1_2 = Progress.enemy_room_1_2;
 			ds.enemy_room_1_3 = Progress.enemy_room_1_3;
 			ds.puzzle_1_1 = Progress.puzzle_1_1;
-			ds.bossDefeated_1 = Progress.bossDefeated_1;
+			ds.bossDefeated_1_1 = Progress.bossDefeated_1_1;
+			ds.bossDefeated_1_2 = Progress.bossDefeated_1_2;
 			
 			// PLAYER DATA
 			ds.cMap = gp.currentMap;
@@ -181,7 +182,8 @@ public class SaveLoad {
 			Progress.enemy_room_1_2 = ds.enemy_room_1_2;
 			Progress.enemy_room_1_3 = ds.enemy_room_1_3;
 			Progress.puzzle_1_1 = ds.puzzle_1_1;
-			Progress.bossDefeated_1 = ds.bossDefeated_1;
+			Progress.bossDefeated_1_1 = ds.bossDefeated_1_1;
+			Progress.bossDefeated_1_2 = ds.bossDefeated_1_2;
 			
 			// PLAYER DATA
 			gp.currentMap = ds.cMap;

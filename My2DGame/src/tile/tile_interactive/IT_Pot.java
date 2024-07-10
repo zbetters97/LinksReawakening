@@ -35,6 +35,28 @@ public class IT_Pot extends InteractiveTile {
 		
 		down1 = setup("/tiles_interactive/pot");		
 	}
+	public IT_Pot(GamePanel gp, int col, int row, Entity loot) {
+		super(gp, col, row);
+		this.gp = gp;
+		this.worldX = gp.tileSize * col;
+		this.worldY = gp.tileSize * row;
+		
+		this.lootOne = loot;
+		this.lootTwo = loot;
+		
+		name = itName;
+		life = 1;
+		destructible = true;
+		bombable = true;
+		
+		direction = "down";
+		
+		hitbox = new Rectangle(0, 0, 48, 48);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		down1 = setup("/tiles_interactive/pot");		
+	}
 	
 	public void setLoot(Entity lootOne, Entity lootTwo) {
 		this.lootOne = lootOne;

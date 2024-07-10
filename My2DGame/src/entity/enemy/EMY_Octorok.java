@@ -23,7 +23,7 @@ public class EMY_Octorok extends Entity {
 		
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;
-		attack = 1; 
+		attack = 1;
 		knockbackPower = 0;
 		maxLife = 6; life = maxLife;
 		

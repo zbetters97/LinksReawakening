@@ -12,7 +12,7 @@ public class DataStorage implements Serializable {
 	int dayState, dayCounter, bloodMoonCounter;
 	
 	// PROGRESS
-	boolean enemy_room_1_1, enemy_room_1_2, enemy_room_1_3, puzzle_1_1, bossDefeated_1;
+	boolean enemy_room_1_1, enemy_room_1_2, enemy_room_1_3, puzzle_1_1, bossDefeated_1_1, bossDefeated_1_2;
 	
 	// PLAYER DATA
 	int cMap, cArea, pWorldX, pWorldY;

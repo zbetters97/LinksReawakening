@@ -96,18 +96,12 @@ public class EMY_Wizzrobe extends Entity {
 			}
 			
 			// MOVE IN RANDOM DIRECTION
-			getDirection(60);			
+			getDirection(30);			
 			checkCollision();				
 			if (!collisionOn) { 							
 				switch (direction) {
-					case "up": worldY -= speed; break;
-					case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
-					case "upright": worldY -= speed - 1; worldX += speed - 1; break;
-					
-					case "down": worldY += speed; break;
-					case "downleft": worldY += speed - 1; worldX -= speed - 1; break;
-					case "downright": worldY += speed; worldX += speed - 1; break;
-					
+					case "up": worldY -= speed; break;					
+					case "down": worldY += speed; break;					
 					case "left": worldX -= speed; break;
 					case "right": worldX += speed; break;
 				}
@@ -137,14 +131,14 @@ public class EMY_Wizzrobe extends Entity {
 			
 			// FIND PLAYER AND SHOOT PROJECTILE
 			if (onPath) {
-				isOffPath(gp.player, 10);
+				isOffPath(gp.player, 12);
 				approachPlayer(10);
 				if (teleportCounter == 45) {
 					useProjectile(1);
 				}
 			}
 			else {
-				isOnPath(gp.player, 6);	
+				isOnPath(gp.player, 10);	
 			}
 
 			// DISAPEAR AFTER 3 SECONDS

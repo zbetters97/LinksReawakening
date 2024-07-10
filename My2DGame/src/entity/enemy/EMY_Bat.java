@@ -24,7 +24,7 @@ public class EMY_Bat extends Entity {
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
 		attack = 1;
-		knockbackPower = 1;
+		knockbackPower = 0;
 		maxLife = 4; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
@@ -50,7 +50,7 @@ public class EMY_Bat extends Entity {
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
 		attack = 1;
-		knockbackPower = 1;
+		knockbackPower = 0;
 		maxLife = 4; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);

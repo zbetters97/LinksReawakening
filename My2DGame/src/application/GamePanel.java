@@ -104,7 +104,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Entity enemy_r[][] = new Entity[maxMap][50]; // HOLDS ENEMY ROOMS
 	public Entity obj[][] = new Entity[maxMap][20];
 	public Entity obj_i[][] = new Entity[maxMap][20]; 
-	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
+	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][100];
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	public Entity projectile[][] = new Entity[maxMap][20];
 	public ArrayList<Entity> particleList = new ArrayList<>();
@@ -339,7 +339,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	public void changeArea() {
-		
+	
 		if (nextArea != currentArea) {
 			stopMusic();			
 			setupMusic();
@@ -410,7 +410,8 @@ public class GamePanel extends JPanel implements Runnable {
 					obj[currentMap][i].name.equals(objName)) {
 								
 				if (obj[currentMap][i].worldX == worldX &&
-						obj[currentMap][i].worldY == worldY) {
+						obj[currentMap][i].worldY == worldY &&
+						!obj[currentMap][i].opening) {
 					obj[currentMap][i].playSE();
 					obj[currentMap][i].opening = true;
 				}						
