@@ -345,7 +345,7 @@ public class SceneManager {
 		}
 	}	
 	private void scene_boss_1_defeat(int num) {
-		if (phase == 0) {
+		if (phase == 0) {			
 			resetPlayerCounters();
 			gp.stopMusic();
 			playVictoryMusic();
@@ -364,6 +364,7 @@ public class SceneManager {
 		}
 		else if (phase == 2) {
 			gp.stopMusic();
+			gp.openDoor(25, 15, OBJ_Door_Closed.objName);		
 			
 			scene = NA;
 			phase = 0;

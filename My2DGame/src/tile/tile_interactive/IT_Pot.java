@@ -1,5 +1,6 @@
 package tile.tile_interactive;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.Random;
 
@@ -75,14 +76,30 @@ public class IT_Pot extends InteractiveTile {
 	
 	public boolean correctItem(Entity entity) {		
 		
-		boolean isCorrectItem = true;
+		boolean isCorrectItem = false;
 		
-		if (entity.name.equals(PRJ_Hookshot.prjName) || 
-				entity.name.equals(PRJ_Arrow.prjName) ||
-				entity.name.equals(ITM_Shovel.itmName))
-			isCorrectItem = false;
+		if (!entity.name.equals(PRJ_Hookshot.prjName) || 
+				!entity.name.equals(PRJ_Arrow.prjName) ||
+				!entity.name.equals(ITM_Shovel.itmName))
+			isCorrectItem = true;
 		
 		return isCorrectItem;
+	}
+	public Color getParticleColor() {
+		Color color = new Color(150,83,23); // BROWN
+		return color;
+	}	
+	public int getParticleSize() {		
+		int size = 9; // 9px
+		return size;
+	}	
+	public int getParticleSpeed() {
+		int speed = 1;
+		return speed;		
+	}	
+	public int getParticleMaxLife() {
+		int maxLife = 16; // 16 frames
+		return maxLife;
 	}
 	
 	// DROPPED ITEM

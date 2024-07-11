@@ -30,7 +30,9 @@ public class Entity {
 	public int worldXStart;
 	public int worldYStart;
 	public int worldX, worldY;		
-	private int tempScreenX, tempScreenY;
+	protected int tempScreenX;
+
+	protected int tempScreenY;
 	public String name;		
 	public Action action;
 	public boolean collision = true;
@@ -743,11 +745,11 @@ public class Entity {
 		String oppositeDirection = "";
 		
 		switch(direction) {
-			case "up":
-			case "upleft":
+			case "up": 
+			case "upleft": 
 			case "upright": oppositeDirection = "down"; break;
-			case "down":
-			case "downleft":
+			case "down": 
+			case "downleft": 
 			case "downright": oppositeDirection = "up"; break;
 			case "left": oppositeDirection = "right"; break;
 			case "right": oppositeDirection = "left"; break;

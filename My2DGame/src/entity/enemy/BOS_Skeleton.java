@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.object.OBJ_Door_Closed;
 
 public class BOS_Skeleton extends Entity {
 
@@ -23,7 +22,7 @@ public class BOS_Skeleton extends Entity {
 		animationSpeed = 10;
 		attack = 4;
 		knockbackPower = 5;
-		maxLife = 16; life = maxLife;
+		maxLife = 4; life = maxLife;
 		currentBossPhase = bossPhase_1;
 		
 		swingSpeed1 = 45;
@@ -104,14 +103,14 @@ public class BOS_Skeleton extends Entity {
 			
 			// DON'T CHASE PLAYER WHEN ATTACKING
 			if (getTileDistance(gp.player) < 10 && !attacking) {			
-				approachPlayer(75);
+				approachPlayer(60);
 			}
 			else if (!attacking) {			
-				getDirection(75);
+				getDirection(60);
 			}						
 			
 			if (!attacking) {
-				if (isAttacking(75, gp.tileSize * 7, gp.tileSize * 5))
+				if (isAttacking(60, gp.tileSize * 7, gp.tileSize * 5))
 					attacking = true;
 				speed = defaultSpeed;
 			}
@@ -131,14 +130,14 @@ public class BOS_Skeleton extends Entity {
 			
 			// DON'T CHASE PLAYER WHEN ATTACKING
 			if (getTileDistance(gp.player) < 10 && !attacking) {			
-				approachPlayer(60);
+				approachPlayer(45);
 			}
 			else if (!attacking) {			
-				getDirection(60);
+				getDirection(45);
 			}			
 			
 			if (!attacking) {
-				if (isAttacking(60, gp.tileSize * 7, gp.tileSize * 5)) 
+				if (isAttacking(45, gp.tileSize * 7, gp.tileSize * 5)) 
 					attacking = true;
 				speed = defaultSpeed;
 			}
@@ -163,18 +162,7 @@ public class BOS_Skeleton extends Entity {
 	}
 	
 	// DROPPED ITEM
-	public void checkDrop() {	
-				
-		// REMOVE IRON DOOR
-		for (int i = 0; i < gp.obj[1].length; i++) {
-			if (gp.obj[gp.currentMap][i] != null &&
-					gp.obj[gp.currentMap][i].name.equals(OBJ_Door_Closed.objName) ) {						
-				gp.obj[gp.currentMap][i].playOpenSE();
-				gp.obj[gp.currentMap][i] = null;				
-				break;
-			}
-		}
-		
+	public void checkDrop() {			
 		gp.csManager.scene = gp.csManager.boss_1_defeat;
 		gp.gameState = gp.cutsceneState;		
 	}

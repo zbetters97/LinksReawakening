@@ -148,6 +148,7 @@ public class CollisionChecker {
 			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
 			}			
+			// OCTOROK
 			if (entity.name.equals(EMY_Octorok.emyName)) {
 				if (tileNum1 != gp.tileM.waterTile || tileNum2 != gp.tileM.waterTile) {
 					entity.collisionOn = true;
@@ -155,7 +156,7 @@ public class CollisionChecker {
 			}
 		}
 		// BOSSES
-		if (entity.type == entity.type_boss) {
+		else if (entity.type == entity.type_boss) {
 			
 			// PIT
 			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
@@ -226,6 +227,178 @@ public class CollisionChecker {
 			}
 		}
 	}
+	
+	public void detectBounce(Entity entity) {
+		
+		// COLLISION BOX (left side, right side, top, bottom)
+		int entityLeftWorldX = entity.worldX + entity.hitbox.x;
+		int entityRightWorldX = entity.worldX + entity.hitbox.x + entity.hitbox.width;
+		int entityTopWorldY = entity.worldY + entity.hitbox.y;
+		int entityBottomWorldY = entity.worldY + entity.hitbox.y + entity.hitbox.height;
+		
+		int entityLeftCol = entityLeftWorldX / gp.tileSize;
+		int entityRightCol = entityRightWorldX / gp.tileSize;
+		int entityTopRow = entityTopWorldY / gp.tileSize;
+		int entityBottomRow = entityBottomWorldY / gp.tileSize;
+		
+		// PREVENT COLLISION DETECTION OUT OF BOUNDS
+		if (entityTopRow <= 0) return;		
+		if (entityBottomRow >= gp.maxWorldRow - 1) return;		
+		if (entityLeftCol <= 0) return;		
+		if (entityRightCol >= gp.maxWorldCol - 1) return;
+		
+		// detect the two tiles entity is interacting with
+		int tileNum1 = 0, tileNum2 = 0;
+		
+		String direction = entity.direction;
+						
+		switch (direction) {
+			case "upleft":
+				
+				entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
+				
+				entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];	
+				
+				if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum1].water) entity.direction = "downleft";
+				else if (gp.tileM.tile[tileNum2].collision || gp.tileM.tile[tileNum2].water) entity.direction = "upright";
+				
+				break;
+			case "upright":
+				
+				entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
+				
+				entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];	
+				
+				if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum1].water) entity.direction = "downright";
+				else if (gp.tileM.tile[tileNum2].collision || gp.tileM.tile[tileNum2].water) entity.direction = "upleft";
+				
+				break;
+			case "downleft":
+				
+				entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+				
+				entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+				
+				if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum1].water) entity.direction = "upleft";
+				else if (gp.tileM.tile[tileNum2].collision || gp.tileM.tile[tileNum2].water) entity.direction = "downright";
+				
+				break;
+			case "downright":
+				
+				entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
+				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+				
+				entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
+				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+				
+				if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum1].water) entity.direction = "upright";
+				else if (gp.tileM.tile[tileNum2].collision || gp.tileM.tile[tileNum2].water) entity.direction = "downleft";
+				
+				break;
+		}		
+	}	
+	public void detectBounce(Entity entity, Entity[][] target) {
+		
+		String direction = entity.direction;
+				
+		for (int i  = 0; i < target[1].length; i++) {
+			
+			if (target[gp.currentMap][i] != null) {			
+				
+				entity.hitbox.x = entity.worldX + entity.hitbox.x;
+				entity.hitbox.y = entity.worldY + entity.hitbox.y;
+				
+				target[gp.currentMap][i].hitbox.x = target[gp.currentMap][i].worldX + target[gp.currentMap][i].hitbox.x;
+				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitbox.y;
+			
+				switch (direction) {			
+					case "upleft":
+						entity.hitbox.y -= entity.speed;
+						getBounce(entity, target[gp.currentMap][i], "up");
+						
+						entity.hitbox.x -= entity.speed;
+						getBounce(entity, target[gp.currentMap][i], "left");						
+						
+						break;
+					case "upright":
+						entity.hitbox.y -= entity.speed;
+						getBounce(entity, target[gp.currentMap][i], "up");
+						
+						entity.hitbox.x += entity.speed;					
+						getBounce(entity, target[gp.currentMap][i], "right");
+						
+						break;
+					case "downleft":					
+						entity.hitbox.y += entity.speed;
+						getBounce(entity, target[gp.currentMap][i], "down");
+						
+						entity.hitbox.x -= entity.speed;	
+						getBounce(entity, target[gp.currentMap][i], "left");
+						
+						break;
+					case "downright":					
+						entity.hitbox.y += entity.speed;
+						getBounce(entity, target[gp.currentMap][i], "down");
+						
+						entity.hitbox.x += entity.speed;
+						getBounce(entity, target[gp.currentMap][i], "right");
+						
+						break;
+				}
+				
+				// reset entity solid area
+				entity.hitbox.x = entity.hitboxDefaultX;
+				entity.hitbox.y = entity.hitboxDefaultY;
+				
+				// reset object solid area
+				target[gp.currentMap][i].hitbox.x = target[gp.currentMap][i].hitboxDefaultX;
+				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].hitboxDefaultY;
+			}
+		}		
+	}
+	private void getBounce(Entity entity, Entity target, String direction) {
+		
+		if (entity.hitbox.intersects(target.hitbox)) {	
+			
+			if (target.collision) {
+				
+				switch(direction) {
+					case "up": 
+						switch(entity.direction) {
+							case "upleft": entity.direction = "downleft";
+							case "upright": entity.direction = "downright";
+						}
+						break;
+					case "down":
+						switch(entity.direction) {
+							case "downleft": entity.direction = "upleft";
+							case "downright": entity.direction = "upright";
+						}
+						break;
+					case "left": 
+						switch(entity.direction) {
+							case "upleft": entity.direction = "upright";
+							case "downleft": entity.direction = "downright";
+						}
+						break;
+					case "right":
+						switch(entity.direction) {
+							case "upright": entity.direction = "upleft";
+							case "downright": entity.direction = "downleft";
+						}
+						break;
+				}
+			}	
+		}
+	}
+	
+	
 	
 	// DAMAGE PIT COLLISION
 	public void checkPit(Entity entity, boolean player) {

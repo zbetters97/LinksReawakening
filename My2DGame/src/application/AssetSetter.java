@@ -106,19 +106,21 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 40, 57); i++;
 		
 		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 48, 73); i++;	
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 37, 60); i++;			
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 43, 61); i++;
+		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 37, 60); i++;
 		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 33, 54); i++;		
 		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 28, 32); i++;
 		
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 19, 55); i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 29, 68); i++;
 		
-		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 50, 63); i++;		
+		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 41, 59); i++;		
 		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 38, 52); i++;
 		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 62, 70); i++;
 		
-		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp, 22, 55); i++;		
+		gp.enemy[mapNum][i] = new EMY_Buzzblob(gp, 22, 55); i++;	
+		
+		gp.enemy[mapNum][i] = new EMY_Blade(gp, 74, 73); i++;	
+		gp.enemy[mapNum][i] = new EMY_Blade(gp, 73, 65); i++;		
 		
 		if (!Progress.bossDefeated_1_1) {
 			gp.enemy[mapNum][i] = new BOS_Gohma(gp, 64, 83);	
@@ -216,7 +218,7 @@ public class AssetSetter {
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Bomb(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 55;
+		gp.obj[mapNum][i].worldX = gp.tileSize * 50;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 83;	
 		i++;
 		
@@ -232,7 +234,7 @@ public class AssetSetter {
 		
 		gp.obj[mapNum][i] = new OBJ_Door_Boss(gp);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 70;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 67;	
+		gp.obj[mapNum][i].worldY = gp.tileSize * 64;	
 		i++;	
 		
 		mapNum = 3;
@@ -309,16 +311,22 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 57, 90, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 33, 70, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 34, 70, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 16, 66, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 18, 57, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 24, 57, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 16, 66, new COL_Heart(gp)); i++;		
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 61, 90, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 62, 90, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 68, 90, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 69, 90, new COL_Heart(gp)); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 18, 57, new COL_Bomb(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 24, 57, new COL_Bomb(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 55, 80, new COL_Bomb(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 55, 68, new COL_Bomb(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 63, 68, new COL_Bomb(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 70, 70, new COL_Bomb(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 70, 72, new COL_Bomb(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 69, 71, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 71, 71, new COL_Heart(gp)); i++;
+		
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 70, 59, new COL_Bomb(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 70, 61, new COL_Bomb(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 69, 60, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 71, 60, new COL_Heart(gp)); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Switch(gp, 27, 89); i++;	
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 34, 89); i++;
