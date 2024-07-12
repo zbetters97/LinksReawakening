@@ -398,8 +398,6 @@ public class CollisionChecker {
 		}
 	}
 	
-	
-	
 	// DAMAGE PIT COLLISION
 	public void checkPit(Entity entity, boolean player) {
 		
@@ -553,9 +551,9 @@ public class CollisionChecker {
 			default: 
 				return;
 		}		
-
 		// PIT
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
+			
 			if (entity.action != Action.JUMPING && entity.action != Action.SOARING &&
 					gp.gameState == gp.playState) {
 				
@@ -565,9 +563,8 @@ public class CollisionChecker {
 					gp.gameState = gp.fallingState;
 				}
 				else {
-					if (entity.name.equals(PRJ_Bomb.prjName)) {
-						entity.animationSpeed = 30;
-						entity.active = false;	
+					if (entity.name.equals(PRJ_Bomb.prjName) && entity.thrown) {
+						entity.resetValues();
 					}
 					if (entity.onGround) {
 						entity.alive = false;
@@ -739,8 +736,10 @@ public class CollisionChecker {
 					if (target[gp.currentMap][i] != entity) {		
 						index = i;	
 											
-						if (target[gp.currentMap][i].collision) 
-							entity.collisionOn = true;							
+						if (target[gp.currentMap][i].collision) {
+							entity.collisionOn = true;	
+						}
+												
 					}
 				}
 				

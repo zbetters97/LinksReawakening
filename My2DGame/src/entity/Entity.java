@@ -21,7 +21,7 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, GUARDING, RUNNING, AIMING, CHOPPING, DIGGING, JUMPING, SOARING, SWINGING, SWIMMING;
+		IDLE, CARRYING, GUARDING, GRABBING, RUNNING, AIMING, DIGGING, JUMPING, SOARING, SWINGING, SWIMMING, THROWING;
 	}
 	
 	protected GamePanel gp;
@@ -53,6 +53,9 @@ public class Entity {
 							attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3,
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,
+							grabUp1, grabDown1, grabLeft1, grabRight1,
+							carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,
+							throwUp1, throwDown1, throwLeft1, throwRight1,
 							buzzUp1, buzzUp2, lockedImage, die1, die2, die3, die4;
 		
 	// CHARACTER ATTRIBUTES
@@ -78,6 +81,8 @@ public class Entity {
 	public boolean canSwim = false;
 	public boolean buzzing = false;
 	public boolean guarded = false;
+	public Entity grabbedObject;
+	
 		
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
@@ -111,6 +116,8 @@ public class Entity {
 	public boolean alive = true;
 	public boolean dying = false;
 	public int dyingCounter = 0;	
+	
+	protected int throwCounter = 0;
 
 	// DEFAULT HITBOX
 	public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
@@ -142,11 +149,14 @@ public class Entity {
 	public boolean bombable = false;
 	public boolean diggable = false;
 	public boolean grabbable = false;
-	public boolean hookGrab = false;
+	public boolean grabbed = false;
+	public boolean hookGrabbable = false;
+	public boolean hookGrabbed = false;
 	public boolean opened = false;
 	public boolean pressable = false;
 	public boolean active = false;	
 	public boolean switchedOn = false;
+	public boolean thrown = false;
 	
 	// ITEM ATTRIBUTES
 	public int value, attackValue;
@@ -631,9 +641,9 @@ public class Entity {
 		}		
 		// ATTACK IMAGE 2
 		if (swingSpeed2 >= attackCounter && attackCounter > swingSpeed1) {
+			
 			attackNum = 2;
 			
-			// CHECK IF WEAPON HITS TARGET	
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
 			int hitBoxWidth = hitbox.width;
@@ -663,6 +673,19 @@ public class Entity {
 			// PLAYER ATTACKING
 			else {
 				
+				// WEAPON COLLISION DETECTION
+				gp.cChecker.checkTile(this);	
+				gp.cChecker.checkObject(this, false);	
+				if (collisionOn) {
+					gp.player.playBlockSE();
+					attackNum = 1;
+					attackCounter = 0;
+					attacking = false;
+					attackCanceled = false;
+					gp.keyH.actionPressed = false;
+					setKnockback(gp.player, getOppositeDirection(gp.player.direction), 0.5);
+				}		
+				
 				// CHECK IF ATTACK LANDS ON ENEMY
 				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
@@ -672,25 +695,14 @@ public class Entity {
 				else
 					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
 				
-				if (type != type_enemy) {
-					
-					// CHECK INTERACTIVE TILE
-					int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-					gp.player.damageInteractiveTile(iTileIndex, this);
-				}
+				// CHECK INTERACTIVE TILE
+				int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
+				gp.player.damageInteractiveTile(iTileIndex, this);				
 				
 				// CHECK IF ATTACK LANDS ON PROJECTILE
 				int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 				gp.player.damageProjectile(projectileIndex);	
-				
-				// SWINGING AXE
-				if (gp.player.action == Action.CHOPPING) {				
-					currentItem.playSE();	
-				}
 			}
-			
-			if (action == Action.CHOPPING)
-				action = Action.IDLE;
 						
 			// RESTORE PLAYER HITBOX
 			worldX = currentWorldX;
@@ -715,7 +727,7 @@ public class Entity {
 			int damage = attack;
 			String guardDirection = getOppositeDirection(direction);
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
-				gp.playSE(4, 8);	
+				gp.player.playBlockSE();
 								
 				if (name.equals(PRJ_Seed.prjName)) {
 					direction = gp.player.direction;
@@ -823,12 +835,12 @@ public class Entity {
 			speed = defaultSpeed;						
 		}		
 	}	
-	public void setKnockback(Entity target, Entity attacker, int knockbackPower) {			
+	public void setKnockback(Entity target, Entity attacker, double knockbackPower) {			
 		target.knockbackDirection = attacker.direction;
 		target.speed += knockbackPower;
 		target.knockback = true;
 	}
-	public void setKnockback(Entity target, String direction, int knockbackPower) {
+	public void setKnockback(Entity target, String direction, double knockbackPower) {
 		target.knockbackDirection = direction;
 		target.speed += knockbackPower;
 		target.knockback = true;
@@ -1015,6 +1027,12 @@ public class Entity {
 	public void playShockSE() {
 		gp.playSE(3, 6);
 	}
+	public void playLiftSE() {
+		gp.playSE(4, 10);
+	}
+	public void playThrowSE() {
+		gp.playSE(4, 11);
+	}
 	
 	// GET X,Y
 	public int getLeftX() { return worldX + hitbox.x; }
@@ -1147,7 +1165,7 @@ public class Entity {
 		// DRAW TILES WITHIN SCREEN BOUNDARY
 		if (inFrame()) {
 			
-			if (hookGrab) {
+			if (hookGrabbed) {
 				image = this.image1;			
 			}
 			else if (buzzing) {

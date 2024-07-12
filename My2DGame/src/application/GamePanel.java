@@ -275,8 +275,12 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// UPDATE INTERACTIVE TILES
 			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null) 
+				if (iTile[currentMap][i] != null) {
 					iTile[currentMap][i].update();
+					if (!iTile[currentMap][i].alive) {
+						iTile[currentMap][i] = null;
+					}
+				}
 			}
 			
 			// UPDATE PROJECTILES			

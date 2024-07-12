@@ -21,7 +21,7 @@ public class OBJ_Block extends Entity {
 		direction = "down";
 		speed = 0; defaultSpeed = speed;
 		
-		grabbable = true;
+		hookGrabbable = true;
 		collision = true;		
 		
 		hitbox = new Rectangle(0, 0, 48, 48); 		

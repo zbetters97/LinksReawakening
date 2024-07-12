@@ -19,7 +19,7 @@ public class PRJ_Bomb extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
-
+		grabbable = true;
 		capturable = true;
 		collision = false;
 		
@@ -30,7 +30,7 @@ public class PRJ_Bomb extends Projectile {
 		maxLife = 240; life = maxLife;
 		alive = false;
 		
-		hitbox = new Rectangle(12, 16, 24, 24); 		
+		hitbox = new Rectangle(6, 9, 36, 36); 		
 		hitboxDefaultX = hitbox.x;
 	    hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
@@ -49,6 +49,56 @@ public class PRJ_Bomb extends Projectile {
 		right1 = up1;
 		right2 = up2;
 	}
+	
+	public void update() {
+		super.update();
+		
+		if (grabbed) {
+			worldX = gp.player.worldX;
+			worldY = gp.player.worldY - gp.tileSize + 5;
+			collision = false;
+		}
+		if (thrown) {
+			throwCounter++;
+			collision = true;
+			
+			// BOMB ROLLED INTO PIT
+			gp.cChecker.checkPit(this, false);
+			if (collisionOn) {
+				resetValues();		
+				return;
+			}
+			
+			gp.cChecker.checkEntity(this, gp.enemy);
+			gp.cChecker.checkEntity(this, gp.enemy_r); 			
+			gp.cChecker.checkTile(this);	
+			gp.cChecker.checkEntity(this, gp.npc);
+			gp.cChecker.checkEntity(this, gp.obj);
+			gp.cChecker.checkEntity(this, gp.obj_i);
+			gp.cChecker.checkEntity(this, gp.iTile);
+			gp.cChecker.checkObject(this, false);
+			gp.cChecker.checkObject_I(this, false);
+			
+			if (!collisionOn) {
+				switch(direction) {
+					case "up": worldY -= 5; break;
+					case "down": worldY += 5; break;
+					case "left": worldX -= 5; break;
+					case "right": worldX += 5; break;
+				}			
+				if (30 < throwCounter) {					
+					thrown = false;
+					throwCounter = 0;
+					collision = false;								
+				}
+			}
+			else {
+				thrown = false;
+				throwCounter = 0;
+				collision = false;
+			}
+		}
+	}
 
 	public boolean hasResource(Entity user) {
 		
@@ -61,42 +111,6 @@ public class PRJ_Bomb extends Projectile {
 	}	
 	public void subtractResource(Entity user) {
 		user.bombs -= useCost;
-	}
-	
-	// ONLY PLAYER CAN PUSH BOMB
-	public void interact() {
-		
-		// CHANGE BOMB ATTRIBUTES FOR COLLISION DETECTION
-		collisionOn = false;
-		direction = gp.player.direction;
-		speed = 15;				
-		
-		// IF PLAYER IS NOT TOUCHING BOMB				
-		boolean contactPlayer = gp.cChecker.checkPlayer(this);				
-		if (!contactPlayer) {					
-			
-			gp.cChecker.checkTile(this);				
-			gp.cChecker.checkPit(this, false);
-			gp.cChecker.checkEntity(this, gp.iTile);				
-			gp.cChecker.checkEntity(this, gp.npc);
-			gp.cChecker.checkEntity(this, gp.enemy);
-			gp.cChecker.checkEntity(this, gp.enemy_r);
-			
-			// PUSH BOMB IF NO COLLISION
-			if (!collisionOn) {
-				playMoveObjectSE();
-				switch (gp.player.direction) {
-					case "up": 
-					case "upleft":
-					case "upright": worldY -= gp.tileSize / 3; break;
-					case "down": 
-					case "downleft":
-					case "downright": worldY += gp.tileSize / 3; break;
-					case "left": worldX -= gp.tileSize / 3; break;
-					case "right": worldX += gp.tileSize / 3; break;
-				}
-			}
-		}
 	}
 	
 	public void explode() {
@@ -145,6 +159,11 @@ public class PRJ_Bomb extends Projectile {
 		if (contactPlayer && !gp.player.invincible) 
 			damagePlayer(attack);				
 		
+		if (gp.player.grabbedObject == this && gp.player.action != Action.IDLE) {
+			gp.player.action = Action.IDLE;
+			gp.player.grabbedObject = null;
+		}
+		
 		resetValues();
 	}
 	
@@ -154,6 +173,9 @@ public class PRJ_Bomb extends Projectile {
 		animationSpeed = 30;
 		active = false;
 		alive = false;	
+		grabbed = false;
+		thrown = false;
+		throwCounter = 0;
 	}
 
 	public Color getParticleColor() {

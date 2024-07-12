@@ -21,7 +21,7 @@ public class OBJ_Chest extends Entity {
 		image2 = setup("/objects/OBJ_CHEST_OPENED");
 		down1 = image1;
 		
-		grabbable = true;
+		hookGrabbable = true;
 		collision = true;
 		
 		hitbox = new Rectangle(4, 16, 40, 32);
@@ -38,7 +38,7 @@ public class OBJ_Chest extends Entity {
 		image2 = setup("/objects/OBJ_CHEST_OPENED");
 		down1 = image1;
 		
-		grabbable = true;
+		hookGrabbable = true;
 		collision = true;
 		
 		hitbox = new Rectangle(4, 16, 40, 32);

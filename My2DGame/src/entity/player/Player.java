@@ -43,9 +43,9 @@ public class Player extends Entity {
 	public int safeWorldY = 0;
 	
 	// COUNTERS
-	public int digNum, jumpNum, soarNum, rodNum, damageNum;
+	public int digNum, jumpNum, soarNum, rodNum, damageNum, throwNum;
 	public int digCounter = 0, jumpCounter = 0, soarCounter = 0, 
-				rodCounter = 0, damageCounter = 0;
+				rodCounter = 0, damageCounter = 0, throwCounter;
 	
 	// IMAGES
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
@@ -75,12 +75,12 @@ public class Player extends Entity {
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 						
 		// HITBOX (x, y, width, height)
-		hitbox = new Rectangle(8, 16, 32, 32); 		
+		hitbox = new Rectangle(8, 16, 32, 28); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		attackbox.width = 36;
-		attackbox.height = 36;
+		attackbox.width = 32;
+		attackbox.height = 32;
 	}
 
 /** END PLAYER CONSTRUCTOR **/
@@ -125,6 +125,10 @@ public class Player extends Entity {
 		getRodImage();
 		getSwimImage();	
 		getMiscImage();
+		
+		getGrabImage();
+		getCarryImage();		
+		getThrowImage();
 	}	
 	public void setDefaultPosition() {	
 /*	
@@ -247,6 +251,28 @@ public class Player extends Entity {
 		digRight1 = setup("/player/boy_dig_right_1"); 
 		digRight2 = setup("/player/boy_dig_right_2");		
 	}
+	public void getGrabImage() {
+		grabUp1 = setup("/player/boy_grab_up_1"); 		
+		grabDown1 = setup("/player/boy_grab_down_1"); 	
+		grabLeft1 = setup("/player/boy_grab_left_1"); 	
+		grabRight1 = setup("/player/boy_grab_right_1"); 	
+	}
+	public void getCarryImage() {
+		carryUp1 = setup("/player/boy_carry_up_1"); 
+		carryUp2 = setup("/player/boy_carry_up_2");			
+		carryDown1 = setup("/player/boy_carry_down_1"); 
+		carryDown2 = setup("/player/boy_carry_down_2");		
+		carryLeft1 = setup("/player/boy_carry_left_1"); 
+		carryLeft2 = setup("/player/boy_carry_left_2");		
+		carryRight1 = setup("/player/boy_carry_right_1"); 
+		carryRight2 = setup("/player/boy_carry_right_2");		
+	}
+	public void getThrowImage() {
+		throwUp1 = setup("/player/boy_throw_up_1"); 		
+		throwDown1 = setup("/player/boy_throw_down_1"); 	
+		throwLeft1 = setup("/player/boy_throw_left_1"); 	
+		throwRight1 = setup("/player/boy_throw_right_1"); 	
+	}
 	public void getJumpImage() {
 		jumpUp1 = setup("/player/boy_jump_up_1");
 		jumpUp2 = setup("/player/boy_jump_up_2");
@@ -300,21 +326,21 @@ public class Player extends Entity {
 		die3 = setup("/player/boy_die_3"); 
 		die4 = setup("/player/boy_die_4");		
 	}
-
 /** END DEFAULT HANDLERS **/
 	
 	
 /** UPDATER **/
 
 	public void update() {	
-				
+						
 		// CHECK COLLISION (NOT ON DEBUG)
 		if (!keyH.debug) checkCollision();
 		
-		if (action == Action.IDLE) onGround = true;	
+		if (action == Action.IDLE) { onGround = true; }
 		
 		if (action == Action.DIGGING) { digging(); return; }
 		else if (action == Action.SWINGING) { swinging(); return; }
+		else if (action == Action.THROWING) { throwing(); return; }
 		
 		else if (action == Action.AIMING) {
 			if (gp.keyH.itemPressed) {
@@ -325,16 +351,32 @@ public class Player extends Entity {
 			}
 		}
 		
-		// MOVEMENT WHILE JUMPING
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.SOARING) { jumping(); }	
+		else if (action == Action.GRABBING) { grabbing(); }
+		else if (action == Action.CARRYING) {
+			if (keyH.grabPressed) {
+				playThrowSE();
+				action = Action.THROWING;
+				grabbedObject.direction = direction;
+				grabbedObject.thrown = true;
+				grabbedObject.grabbed = false;
+				
+				switch (direction) {				
+					case "left": 
+					case "right": grabbedObject.worldY += 40; break;
+				}
+				return;
+			}
+		}
 		
 		// DISABLED ACTIONS WHILE SWIMMING
-		if (action != Action.SWIMMING && action != Action.AIMING) {			
+		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.CARRYING) {			
 			if (keyH.actionPressed) { action(); }
-			if (keyH.guardPressed) { action = Action.GUARDING; }					
+			if (keyH.guardPressed) { action = Action.GUARDING; }	
+			if (keyH.grabPressed) { action = Action.GRABBING; }
 			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
-			if (keyH.itemPressed) { useItem(); }	
+			if (keyH.itemPressed) { useItem(); }
 			if (attacking) { attacking(); return; }
 			if (knockback) { knockbackPlayer(); return;	}			
 			if (lockon) { lockTarget(); }
@@ -351,8 +393,8 @@ public class Player extends Entity {
 				&& action != Action.AIMING) { cycleItems(); }	
 		
 		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
-				action != Action.AIMING) { walking(); }			
-		
+				action != Action.AIMING && action != Action.GRABBING) { walking(); }			
+				
 		manageValues();		
 		checkDeath();
 	}
@@ -882,7 +924,72 @@ public class Player extends Entity {
 		}
 	}	
 
-	// ANIMATIONS
+	// ANIMATIONS	
+	public void grabbing() {
+		
+		int i = gp.cChecker.checkEntity(this, gp.iTile);
+		if (i != -1 && gp.iTile[gp.currentMap][i].grabbable) {
+			grabEntity(gp.iTile[gp.currentMap][i]);
+		}
+		
+		else {
+			i = gp.cChecker.checkEntity(this, gp.projectile);
+			if (i != -1 && gp.projectile[gp.currentMap][i].grabbable) {
+				grabEntity(gp.projectile[gp.currentMap][i]);				
+			}
+		}
+	}
+	public void grabEntity(Entity entity) {
+		
+		String pullDirection = getOppositeDirection(direction);
+		switch (pullDirection) {
+			case "up":
+				if (keyH.upPressed) {
+					playLiftSE();
+					action = Action.CARRYING;
+					grabbedObject = entity;
+					entity.grabbed = true;
+					keyH.grabPressed = false;
+				}
+				break;
+			case "down":
+				if (keyH.downPressed) {
+					playLiftSE();
+					action = Action.CARRYING;
+					grabbedObject = entity;
+					entity.grabbed = true;
+					keyH.grabPressed = false;
+				}
+				break;
+			case "left":
+				if (keyH.leftPressed) {
+					playLiftSE();
+					action = Action.CARRYING;
+					grabbedObject = entity;
+					entity.grabbed = true;
+					keyH.grabPressed = false;
+				}
+				break;
+			case "right":
+				if (keyH.rightPressed) {
+					playLiftSE();
+					action = Action.CARRYING;
+					grabbedObject = entity;
+					entity.grabbed = true;
+					keyH.grabPressed = false;
+				}
+				break;
+		}
+	}
+	public void throwing() {
+		
+		throwCounter++;		
+		if (throwCounter > 15) {
+			action = Action.IDLE;
+			throwCounter = 0;
+		}
+	}
+	
 	public void digging() {
 		
 		digCounter++;
@@ -1022,6 +1129,7 @@ public class Player extends Entity {
 			attackCanceled = false;
 		}
 	}			
+	
 	public void takingDamage() {
 		
 		damageCounter++;
@@ -1198,17 +1306,20 @@ public class Player extends Entity {
 	public void playGuardSE() {
 		gp.playSE(2, 1);
 	}
-	public void playFallSE() {
-		gp.playSE(2, 4);
+	public void playBlockSE() {
+		gp.playSE(4, 8);
 	}
 	public void playLockOnSE() {
 		gp.playSE(2, 1);
 	}	
-	public void playDrownSE() {
-		gp.playSE(2, 3);
-	}
 	public void playSwimSE() {
 		gp.playSE(2, 2);
+	}
+	public void playDrownSE() {
+		gp.playSE(2, 3);
+	}	
+	public void playFallSE() {
+		gp.playSE(2, 4);
 	}
 	public void playHurtSE() {
 		gp.playSE(2, 5);
@@ -1268,9 +1379,15 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
+						case CARRYING:
+							if (spriteNum == 1) image1 = carryUp1;
+							else if (spriteNum == 2) image1 = carryUp2;
+							break;
 						case GUARDING:
 							image1 = guardUp1;
 							break;
+						case GRABBING:
+							image1 = grabUp1;
 						case DIGGING:
 							if (digNum == 1) image1 = digUp1;
 							else if (digNum == 2) image1 = digUp2;
@@ -1298,6 +1415,9 @@ public class Player extends Entity {
 							if (spriteNum == 1) image1 = swimUp1;
 							else if (spriteNum == 2) image1 = swimUp2;
 							break;
+						case THROWING:
+							image1 = throwUp1;
+							break;
 						default:
 							if (spriteNum == 1) image1 = up1;
 							else if (spriteNum == 2) image1 = up2;	
@@ -1314,9 +1434,15 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
+						case CARRYING:
+							if (spriteNum == 1) image1 = carryDown1;
+							else if (spriteNum == 2) image1 = carryDown2;
+							break;
 						case GUARDING:
 							image1 = guardDown1;
 							break;
+						case GRABBING:
+							image1 = grabDown1;
 						case DIGGING:
 							if (digNum == 1) image1 = digDown1;
 							else if (digNum == 2) image1 = digDown2;
@@ -1340,6 +1466,9 @@ public class Player extends Entity {
 							if (spriteNum == 1) image1 = swimDown1;
 							else if (spriteNum == 2) image1 = swimDown2;
 							break;
+						case THROWING:
+							image1 = throwDown1;
+							break;
 						default:
 							if (spriteNum == 1) image1 = down1;
 							else if (spriteNum == 2) image1 = down2;	
@@ -1358,9 +1487,15 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
+						case CARRYING:
+							if (spriteNum == 1) image1 = carryLeft1;
+							else if (spriteNum == 2) image1 = carryLeft2;
+							break;
 						case GUARDING:
 							image1 = guardLeft1;
 							break;
+						case GRABBING:
+							image1 = grabLeft1;
 						case DIGGING:
 							if (digNum == 1) image1 = digLeft1;
 							else if (digNum == 2) image1 = digLeft2;
@@ -1388,6 +1523,9 @@ public class Player extends Entity {
 							if (spriteNum == 1) image1 = swimLeft1;
 							else if (spriteNum == 2) image1 = swimLeft2;
 							break;
+						case THROWING:
+							image1 = throwLeft1;
+							break;
 						default:
 							if (spriteNum == 1) image1 = left1;
 							else if (spriteNum == 2) image1 = left2;	
@@ -1405,9 +1543,15 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
+						case CARRYING:
+							if (spriteNum == 1) image1 = carryRight1;
+							else if (spriteNum == 2) image1 = carryRight2;
+							break;
 						case GUARDING:						
 							image1 = guardRight1;						
 							break;
+						case GRABBING:
+							image1 = grabRight1;
 						case DIGGING:
 							if (digNum == 1) image1 = digRight1;
 							else if (digNum == 2) image1 = digRight2;
@@ -1433,6 +1577,9 @@ public class Player extends Entity {
 						case SWIMMING:
 							if (spriteNum == 1) image1 = swimRight1;
 							else if (spriteNum == 2) image1 = swimRight2;
+							break;
+						case THROWING:
+							image1 = throwRight1;
 							break;
 						default:
 							if (spriteNum == 1) image1 = right1;
@@ -1462,15 +1609,9 @@ public class Player extends Entity {
 		}	
 		else if (gp.gameState == gp.drowningState) {
 			image1 = drown;			
-		}
+		}		
 		
-		g2.drawImage(image1, tempScreenX, tempScreenY, null);			
-
-		// DRAW HITBOX
-		if (keyH.debug) {			
-			g2.setColor(Color.RED);
-			g2.drawRect(screenX + hitbox.x, screenY + hitbox.y, hitbox.width, hitbox.height);
-		}
+		g2.drawImage(image1, tempScreenX, tempScreenY, null);
 		
 		// RESET OPACITY
 		changeAlpha(g2, 1f);

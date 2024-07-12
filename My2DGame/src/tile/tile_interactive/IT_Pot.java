@@ -24,6 +24,7 @@ public class IT_Pot extends InteractiveTile {
 		life = 1;
 		destructible = true;
 		bombable = true;
+		grabbable = true;
 		
 		direction = "down";
 		
@@ -49,6 +50,7 @@ public class IT_Pot extends InteractiveTile {
 		life = 1;
 		destructible = true;
 		bombable = true;
+		grabbable = true;
 		
 		direction = "down";
 		
@@ -56,7 +58,10 @@ public class IT_Pot extends InteractiveTile {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		down1 = setup("/tiles_interactive/pot");		
+		down1 = setup("/tiles_interactive/pot");	
+		up1 = down1;
+		left1 = down1;
+		right1 = down1;
 	}
 	
 	public void setLoot(Entity lootOne, Entity lootTwo) {

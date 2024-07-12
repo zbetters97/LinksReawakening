@@ -127,12 +127,12 @@ public class Projectile extends Entity {
 				switch (direction) {
 					case "up": 
 					case "upleft": 
-					case "upright": worldY -= gp.tileSize / 1.5; break;			
+					case "upright": worldY -= gp.tileSize / 2; break;			
 					case "down":
 					case "downleft": 
-					case "downright": worldY += gp.tileSize / 1.5; break;			
-					case "left": worldX -= gp.tileSize / 1.5; break;
-					case "right": worldX += gp.tileSize / 1.5; break;
+					case "downright": worldY += gp.tileSize / 2; break;			
+					case "left": worldX -= gp.tileSize / 2; break;
+					case "right": worldX += gp.tileSize / 2; break;
 				}
 			}
 			else {
@@ -301,9 +301,9 @@ public class Projectile extends Entity {
 			life = 0;
 				
 		// PULL PLAYER TOWARDS GRABBALE ENTITY
-		if ((objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].grabbable) ||
-				(objectiIndex != -1 && gp.obj_i[gp.currentMap][objectiIndex].grabbable) ||
-				(iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].grabbable)) {
+		if ((objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].hookGrabbable) ||
+				(objectiIndex != -1 && gp.obj_i[gp.currentMap][objectiIndex].hookGrabbable) ||
+				(iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].hookGrabbable)) {
 
 			gp.player.onGround = false;
 			
@@ -415,7 +415,7 @@ public class Projectile extends Entity {
 			if (objectIndex != -1 && 
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {
-				hookGrab = true;					
+				hookGrabbed = true;					
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
 				
@@ -423,7 +423,7 @@ public class Projectile extends Entity {
 				int playerObjIndex = gp.cChecker.checkObject(gp.player, true);
 				if (playerObjIndex != -1) {
 					alive = false;			
-					hookGrab = false;
+					hookGrabbed = false;
 					gp.gameState = gp.playState;	
 					return;
 				}
@@ -441,7 +441,7 @@ public class Projectile extends Entity {
 							worldY += 5;				
 					else {
 						alive = false;
-						hookGrab = false;
+						hookGrabbed = false;
 						gp.gameState = gp.playState;
 					}					
 					break;			
@@ -456,7 +456,7 @@ public class Projectile extends Entity {
 						worldY -= 5;						
 					else {
 						alive = false;
-						hookGrab = false;
+						hookGrabbed = false;
 						gp.gameState = gp.playState;
 					}						
 					break;	
@@ -469,7 +469,7 @@ public class Projectile extends Entity {
 						worldX += 5;			
 					else {						
 						alive = false;	
-						hookGrab = false;
+						hookGrabbed = false;
 						gp.gameState = gp.playState;
 					}						
 					break;	
@@ -482,7 +482,7 @@ public class Projectile extends Entity {
 						worldX -= 5;				
 					else {
 						alive = false;
-						hookGrab = false;
+						hookGrabbed = false;
 						gp.gameState = gp.playState;
 					}						
 					break;				

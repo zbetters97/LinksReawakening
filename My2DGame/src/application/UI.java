@@ -615,6 +615,11 @@ public class UI {
 		y += lineHeight;
 		g2.drawString("Time Counter: " + gp.eManager.lighting.dayCounter, x, y);
 		
+		g2.setColor(Color.RED);
+		g2.drawRect(gp.player.screenX + gp.player.hitbox.x, gp.player.screenY + gp.player.hitbox.y, 
+				gp.player.hitbox.width, gp.player.hitbox.height);
+		
+		g2.setColor(Color.WHITE);
 		g2.setFont(PK_DS);
 	}	
 	

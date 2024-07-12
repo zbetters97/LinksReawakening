@@ -20,8 +20,8 @@ public class EQP_Sword_Master extends Entity {
 		swingSpeed1 = 3;
 		swingSpeed2 = 12;
 		
-		attackbox.width = 36;
-		attackbox.height = 36;
+		attackbox.width = 40;
+		attackbox.height = 32;
 		
 		down1 = setup("/items/EQP_SWORD_MASTER");
 		image1 = down1;

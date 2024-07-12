@@ -12,7 +12,7 @@ public class KeyHandler implements KeyListener {
 	private GamePanel gp;
 	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, selectPressed, guardPressed, lockPressed, itemPressed, tabPressed;
+	public boolean actionPressed, selectPressed, guardPressed, grabPressed, lockPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
@@ -246,6 +246,7 @@ public class KeyHandler implements KeyListener {
 		 * ARROWS: MOVEMENT
 		 * SPACE: ACTION
 		 * Z: GUARD
+		 * G: GRAB
 		 * F: Z-TARGET
 		 * Q: ITEM
 		 * T: TAB ITEM
@@ -264,7 +265,8 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
 		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
-		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }		
+		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }	
+		if (code == KeyEvent.VK_G && lock) { grabPressed = true; lock = false; }
 		if (code == KeyEvent.VK_Z && lock) { 
 			guardPressed = true; 
 			lock = false; 
@@ -589,6 +591,12 @@ public class KeyHandler implements KeyListener {
 			guardPressed = false; 
 			lock = true;
 			if (gp.player.action == Action.GUARDING)
+				gp.player.action = Action.IDLE;
+		}
+		if (code == KeyEvent.VK_G) { 
+			grabPressed = false; 
+			lock = true;
+			if (gp.player.action == Action.GRABBING)
 				gp.player.action = Action.IDLE;
 		}
 		if (code == KeyEvent.VK_F) { lockPressed = false; lock = true; }
