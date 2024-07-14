@@ -43,13 +43,18 @@ public class Player extends Entity {
 	public int safeWorldY = 0;
 	
 	// COUNTERS
-	public int digNum, jumpNum, soarNum, rodNum, damageNum, throwNum;
-	public int digCounter = 0, jumpCounter = 0, soarCounter = 0, 
-				rodCounter = 0, damageCounter = 0, throwCounter;
+	public int digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1, 
+			damageNum = 1, pullNum = 1, throwNum = 1;
+	public int digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, 
+			damageCounter = 0, pullCounter = 0, throwCounter = 0;
 	
 	// IMAGES
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
 							digLeft1, digLeft2, digRight1, digRight2,
+							grabUp1, grabUp2, grabUp3, grabDown1, grabDown2, grabDown3, 
+							grabLeft1, grabLeft2, grabLeft3, grabRight1, grabRight2, grabRight3,
+							carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,
+							throwUp1, throwDown1, throwLeft1, throwRight1,
 							jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
 							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3,
 							soarUp1, soarDown1, soarLeft1, soarRight1,
@@ -93,6 +98,8 @@ public class Player extends Entity {
 			
 		action = Action.IDLE;		
 		onGround = true;
+		grabbedObject = null;
+		canSwim = true;
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
@@ -136,7 +143,7 @@ public class Player extends Entity {
 		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
-*/	
+*/
 		worldX = gp.tileSize * 40;
 		worldY = gp.tileSize * 92;		
 		gp.currentMap = 2;
@@ -145,7 +152,7 @@ public class Player extends Entity {
 		direction = "up";
 	}
 	public void setDefaultItems() {		
-/*
+
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -157,27 +164,49 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-*/
+
 		inventory_item.add(new ITM_Boots(gp));	
 	}
 	public void restoreStatus() {
 		life = maxLife;
 		speed = defaultSpeed;
-		action = Action.IDLE;
 		knockback = false;
 		invincible = false;
 		transparent = false;
 		onGround = true;
+		grabbedObject = null;
 		
-		digNum = 0;
-		digCounter = 0;	
-		jumpNum = 0;
-		jumpCounter = 0;			
-		rodNum = 0;
-		rodCounter = 0;
-		damageNum = 0;
-		damageCounter = 0;
+		resetValues();
 	}	
+	public void resetValues() {
+
+		action = Action.IDLE;
+		
+		digNum = 1;
+		digCounter = 0;	
+		jumpNum = 1;
+		jumpCounter = 0;			
+		rodNum = 1;
+		rodCounter = 0;
+		damageNum = 1;
+		damageCounter = 0;		
+		soarNum = 1;
+		soarCounter = 0; 
+		pullNum = 1;
+		pullCounter = 0;
+		throwNum = 1;
+		throwCounter = 0;
+		
+		if (grabbedObject != null) {
+			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+				grabbedObject.resetValues();
+			}
+			else {
+				grabbedObject.alive = false;	
+			}									
+			grabbedObject = null;
+		}
+	}
 
 	// DIALOGUE
 	public void setDialogue() {
@@ -253,9 +282,17 @@ public class Player extends Entity {
 	}
 	public void getGrabImage() {
 		grabUp1 = setup("/player/boy_grab_up_1"); 		
-		grabDown1 = setup("/player/boy_grab_down_1"); 	
+		grabUp2 = setup("/player/boy_grab_up_2"); 		
+		grabUp3 = setup("/player/boy_grab_up_3"); 		
+		grabDown1 = setup("/player/boy_grab_down_1");
+		grabDown2 = setup("/player/boy_grab_down_2");
+		grabDown3 = setup("/player/boy_grab_down_3");
 		grabLeft1 = setup("/player/boy_grab_left_1"); 	
-		grabRight1 = setup("/player/boy_grab_right_1"); 	
+		grabLeft2 = setup("/player/boy_grab_left_2"); 	
+		grabLeft3 = setup("/player/boy_grab_left_3"); 	
+		grabRight1 = setup("/player/boy_grab_right_1"); 
+		grabRight2 = setup("/player/boy_grab_right_2"); 
+		grabRight3 = setup("/player/boy_grab_right_3"); 
 	}
 	public void getCarryImage() {
 		carryUp1 = setup("/player/boy_carry_up_1"); 
@@ -332,16 +369,25 @@ public class Player extends Entity {
 /** UPDATER **/
 
 	public void update() {	
-						
+		
 		// CHECK COLLISION (NOT ON DEBUG)
 		if (!keyH.debug) checkCollision();
-		
+				
 		if (action == Action.IDLE) { onGround = true; }
+		if (knockback) { knockbackPlayer(); return;	}
+		
+		if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
+		if (lockon) { lockTarget(); }
+		else {
+			if (lockedTarget != null) {
+				lockedTarget.locked = false;
+				lockedTarget = null;
+			}
+		}	
 		
 		if (action == Action.DIGGING) { digging(); return; }
 		else if (action == Action.SWINGING) { swinging(); return; }
-		else if (action == Action.THROWING) { throwing(); return; }
-		
+		else if (action == Action.THROWING) { throwing(); return; }		
 		else if (action == Action.AIMING) {
 			if (gp.keyH.itemPressed) {
 				currentItem.setCharge(this);
@@ -350,10 +396,9 @@ public class Player extends Entity {
 				currentItem.use(this);
 			}
 		}
-		
+		else if (action == Action.GRABBING) { grabbing(); }		
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.SOARING) { jumping(); }	
-		else if (action == Action.GRABBING) { grabbing(); }
 		else if (action == Action.CARRYING) {
 			if (keyH.grabPressed) {
 				playThrowSE();
@@ -361,31 +406,26 @@ public class Player extends Entity {
 				grabbedObject.direction = direction;
 				grabbedObject.thrown = true;
 				grabbedObject.grabbed = false;
-				
-				switch (direction) {				
-					case "left": 
-					case "right": grabbedObject.worldY += 40; break;
-				}
 				return;
+			}
+			if (keyH.itemPressed) {
+				if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+					
+					grabbedObject.worldX = gp.player.worldX;
+					grabbedObject.worldY = gp.player.worldY;
+					grabbedObject.grabbed = false;					
+					action = Action.THROWING;
+				}
 			}
 		}
 		
-		// DISABLED ACTIONS WHILE SWIMMING
+		// DISABLED ACTIONS WHILE SWIMMING, AIMING, OR CARRYING
 		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.CARRYING) {			
 			if (keyH.actionPressed) { action(); }
 			if (keyH.guardPressed) { action = Action.GUARDING; }	
-			if (keyH.grabPressed) { action = Action.GRABBING; }
-			if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
+			if (keyH.grabPressed) { grabbing(); }			
 			if (keyH.itemPressed) { useItem(); }
-			if (attacking) { attacking(); return; }
-			if (knockback) { knockbackPlayer(); return;	}			
-			if (lockon) { lockTarget(); }
-			else {
-				if (lockedTarget != null) {
-					lockedTarget.locked = false;
-					lockedTarget = null;
-				}
-			}				
+			if (attacking) { attacking(); return; }						
 		}		
 		
 		// TAB DISABLED WHILE JUMPING/SOARING
@@ -393,7 +433,7 @@ public class Player extends Entity {
 				&& action != Action.AIMING) { cycleItems(); }	
 		
 		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
-				action != Action.AIMING && action != Action.GRABBING) { walking(); }			
+				action != Action.AIMING && action != Action.GRABBING) { walking(); }
 				
 		manageValues();		
 		checkDeath();
@@ -512,7 +552,7 @@ public class Player extends Entity {
 		
 		// CHECK TILE COLLISION
 		gp.cChecker.checkTile(this);
-
+		
 		// CHECK INTERACTIVE TILE COLLISION
 		gp.cChecker.checkEntity(this, gp.iTile);
 		
@@ -928,57 +968,90 @@ public class Player extends Entity {
 	public void grabbing() {
 		
 		int i = gp.cChecker.checkEntity(this, gp.iTile);
-		if (i != -1 && gp.iTile[gp.currentMap][i].grabbable) {
-			grabEntity(gp.iTile[gp.currentMap][i]);
-		}
-		
+		if (i != -1) {
+			if (gp.iTile[gp.currentMap][i].grabbable) {
+				grabEntity(gp.iTile[gp.currentMap][i]);
+ 				return;
+			}
+		}		
 		else {
 			i = gp.cChecker.checkEntity(this, gp.projectile);
 			if (i != -1 && gp.projectile[gp.currentMap][i].grabbable) {
-				grabEntity(gp.projectile[gp.currentMap][i]);				
+				grabEntity(gp.projectile[gp.currentMap][i]);	
+				return;
 			}
 		}
+		
+		action = Action.IDLE;
 	}
 	public void grabEntity(Entity entity) {
+		
+		action = Action.GRABBING;
+		
+		// PLAYER AUTOMATICALLY GRABS BOMB
+		if (entity.name.equals(PRJ_Bomb.prjName)) {
+			pull(entity);
+			return;
+		}
 		
 		String pullDirection = getOppositeDirection(direction);
 		switch (pullDirection) {
 			case "up":
 				if (keyH.upPressed) {
-					playLiftSE();
-					action = Action.CARRYING;
-					grabbedObject = entity;
-					entity.grabbed = true;
-					keyH.grabPressed = false;
+					pull(entity);
+				}
+				else {
+					pullNum = 1;
+					pullCounter = 0;
+					action = Action.IDLE;
 				}
 				break;
 			case "down":
-				if (keyH.downPressed) {
-					playLiftSE();
-					action = Action.CARRYING;
-					grabbedObject = entity;
-					entity.grabbed = true;
-					keyH.grabPressed = false;
+				if (keyH.downPressed) {					
+					pull(entity);
+				}
+				else {
+					pullNum = 1;
+					pullCounter = 0;
+					action = Action.IDLE;
 				}
 				break;
 			case "left":
 				if (keyH.leftPressed) {
-					playLiftSE();
-					action = Action.CARRYING;
-					grabbedObject = entity;
-					entity.grabbed = true;
-					keyH.grabPressed = false;
+					pull(entity);
+				}
+				else {
+					pullNum = 1;
+					pullCounter = 0;
+					action = Action.IDLE;
 				}
 				break;
 			case "right":
 				if (keyH.rightPressed) {
-					playLiftSE();
-					action = Action.CARRYING;
-					grabbedObject = entity;
-					entity.grabbed = true;
-					keyH.grabPressed = false;
+					pull(entity);
+				}
+				else {
+					pullNum = 1;
+					pullCounter = 0;
+					action = Action.IDLE;
 				}
 				break;
+		}
+	}
+	public void pull(Entity entity) {
+		pullCounter++;
+		
+		if (6 >= pullCounter) pullNum = 1; 
+		else if (18 > pullCounter && 12 >= pullCounter) pullNum = 2;		
+		else if (27 > pullCounter && pullCounter > 12) pullNum = 3;	
+		else if (pullCounter >= 28) {	
+			playLiftSE();
+			pullNum = 1;
+			pullCounter = 0;
+			action = Action.CARRYING;
+			grabbedObject = entity;
+			entity.grabbed = true;
+			keyH.grabPressed = false;	
 		}
 	}
 	public void throwing() {
@@ -989,7 +1062,6 @@ public class Player extends Entity {
 			throwCounter = 0;
 		}
 	}
-	
 	public void digging() {
 		
 		digCounter++;
@@ -1004,8 +1076,8 @@ public class Player extends Entity {
 
 			digNum = 1;
 			digCounter = 0;
-			action = Action.IDLE;
 			attackCanceled = false;
+			action = Action.IDLE;			
 		}
 	}
 	public void jumping() {
@@ -1029,8 +1101,8 @@ public class Player extends Entity {
 			else {			
 				jumpNum = 1;
 				jumpCounter = 0;
-				action = Action.IDLE;
 				attackCanceled = false;
+				action = Action.IDLE;				
 			}
 		}
 	}
@@ -1073,9 +1145,9 @@ public class Player extends Entity {
 		}
 		else if (jumpCounter >= 70) {
 			jumpNum = 1;
-			jumpCounter = 0;
-			action = Action.IDLE;
+			jumpCounter = 0;			
 			attackCanceled = false;
+			action = Action.IDLE;
 			gp.gameState = gp.playState;
 		}
 	}
@@ -1125,8 +1197,8 @@ public class Player extends Entity {
 		if (rodCounter > currentItem.swingSpeed2) {
 			rodNum = 1;
 			rodCounter = 0;
-			action = Action.IDLE;
 			attackCanceled = false;
+			action = Action.IDLE;
 		}
 	}			
 	
@@ -1141,11 +1213,15 @@ public class Player extends Entity {
 		else if (damageCounter >= 60) {
 			life--;
 			damageNum = 1;
-			damageCounter = 0;
-			action = Action.IDLE;
+			damageCounter = 0;			
 			attackCanceled = false;
 			transparent = true;
-						
+			
+			if (action == Action.CARRYING) {
+				grabbedObject.alive = false;				
+			}
+			action = Action.IDLE;
+			
 			// MOVE PLAYER TO SAFE SPOT
 			worldX = safeWorldX;
 			worldY = safeWorldY;
@@ -1387,7 +1463,10 @@ public class Player extends Entity {
 							image1 = guardUp1;
 							break;
 						case GRABBING:
-							image1 = grabUp1;
+							if (pullNum == 1) image1 = grabUp1;
+							else if (pullNum == 2) image1 = grabUp2;
+							else if (pullNum == 3) image1 = grabUp3;
+							break;
 						case DIGGING:
 							if (digNum == 1) image1 = digUp1;
 							else if (digNum == 2) image1 = digUp2;
@@ -1442,7 +1521,10 @@ public class Player extends Entity {
 							image1 = guardDown1;
 							break;
 						case GRABBING:
-							image1 = grabDown1;
+							if (pullNum == 1) image1 = grabDown1;
+							else if (pullNum == 2) image1 = grabDown2;
+							else if (pullNum == 3) image1 = grabDown3;
+							break;
 						case DIGGING:
 							if (digNum == 1) image1 = digDown1;
 							else if (digNum == 2) image1 = digDown2;
@@ -1495,7 +1577,10 @@ public class Player extends Entity {
 							image1 = guardLeft1;
 							break;
 						case GRABBING:
-							image1 = grabLeft1;
+							if (pullNum == 1) image1 = grabLeft1;
+							else if (pullNum == 2) image1 = grabLeft2;
+							else if (pullNum == 3) image1 = grabLeft3;
+							break;
 						case DIGGING:
 							if (digNum == 1) image1 = digLeft1;
 							else if (digNum == 2) image1 = digLeft2;
@@ -1551,7 +1636,10 @@ public class Player extends Entity {
 							image1 = guardRight1;						
 							break;
 						case GRABBING:
-							image1 = grabRight1;
+							if (pullNum == 1) image1 = grabRight1;
+							else if (pullNum == 2) image1 = grabRight2;
+							else if (pullNum == 3) image1 = grabRight3;
+							break;
 						case DIGGING:
 							if (digNum == 1) image1 = digRight1;
 							else if (digNum == 2) image1 = digRight2;

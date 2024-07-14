@@ -22,12 +22,18 @@ public class ITM_Bomb extends Entity {
 	}	
 	
 	public boolean use(Entity user) {
+		
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {
 			
 			playSE();
 			
-			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);
+			
+			if (user == gp.player) {
+				gp.player.grabEntity(projectile);
+			}
+			
 			addProjectile(projectile);	
 			
 			projectile.subtractResource(user);

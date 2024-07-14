@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import ai.PathFinder;
 import data.SaveLoad;
 import entity.Entity;
-import entity.Entity.Action;
 import entity.object.OBJ_Door_Closed;
 import entity.player.Player;
 import environment.EnvironmentManager;
@@ -306,8 +305,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 		else if (gameState == cutsceneState) {
-			
-			player.action = Action.IDLE;
+			player.resetValues();
 			
 			player.digNum = 0;
 			player.digCounter = 0;	
@@ -332,6 +330,15 @@ public class GamePanel extends JPanel implements Runnable {
 						obj[currentMap][i] = null;
 				}
 			}
+			// UPDATE INTERACTIVE TILES
+			for (int i = 0; i < iTile[1].length; i++) {
+				if (iTile[currentMap][i] != null) {
+					iTile[currentMap][i].update();
+					if (!iTile[currentMap][i].alive) {
+						iTile[currentMap][i] = null;
+					}
+				}
+			}
 		}
 		
 		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
@@ -349,8 +356,9 @@ public class GamePanel extends JPanel implements Runnable {
 			setupMusic();
 		}		
 		
+		player.resetValues();
 		currentArea = nextArea;
-		aSetter.setInteractiveObjects();		
+		aSetter.setInteractiveObjects();				
 	}
 	
 	public void removeTempEntity() {
@@ -494,8 +502,11 @@ public class GamePanel extends JPanel implements Runnable {
 			// DRAW TILES
 			tileM.draw(g2);	
 			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null) 
-					iTile[currentMap][i].draw(g2);
+				if (iTile[currentMap][i] != null) {
+					if (!iTile[currentMap][i].grabbed) {
+						iTile[currentMap][i].draw(g2);	
+					}
+				}					
 			}
 						
 			// POPULATE ENTITY LIST
@@ -522,6 +533,14 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			// DRAW ENTITIES
 			for (Entity e : entityList) { e.draw(g2); }
+			
+			for (int i = 0; i < iTile[1].length; i++) {
+				if (iTile[currentMap][i] != null) {
+					if (iTile[currentMap][i].grabbed) {
+						iTile[currentMap][i].draw(g2);	
+					}
+				}					
+			}
 			
 			// EMPTY ENTITY LIST
 			entityList.clear();

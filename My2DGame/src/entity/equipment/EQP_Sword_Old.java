@@ -21,7 +21,7 @@ public class EQP_Sword_Old extends Entity {
 		swingSpeed2 = 12;
 		
 		attackbox.width = 40;
-		attackbox.height = 32;
+		attackbox.height = 50;
 		
 		down1 = setup("/items/EQP_SWORD_OLD");
 		image1 = down1;

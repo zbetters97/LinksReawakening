@@ -479,6 +479,10 @@ public class SceneManager {
 	
 	private void resetPlayerCounters() {
 		
+		if (gp.player.action == Action.CARRYING) {
+			gp.player.grabbedObject.alive = false;				
+		}
+		
 		gp.player.action = Action.IDLE;
 		gp.player.onGround = true;
 		

@@ -801,6 +801,7 @@ public class UI {
 		g2.drawString("MAP", textX, textY); textY += 35;
 		g2.drawString("GUARD", textX, textY); textY += 35;
 		g2.drawString("LOCK-ON", textX, textY); textY += 35;
+		g2.drawString("GRAB/THROW", textX, textY); textY += 35;
 		g2.drawString("USE ITEM", textX, textY); textY += 35;
 		g2.drawString("CYCLE ITEMS", textX, textY); textY += 35;	
 		
@@ -812,6 +813,7 @@ public class UI {
 		g2.drawString("M", textX, textY); textY += 35;
 		g2.drawString("Z", textX, textY); textY += 35;
 		g2.drawString("F", textX, textY); textY += 35;
+		g2.drawString("G", textX, textY); textY += 35;
 		g2.drawString("Q", textX, textY); textY += 35;
 		g2.drawString("T", textX, textY); textY += 35;		
 		

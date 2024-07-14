@@ -222,6 +222,7 @@ public class CollisionChecker {
 		}
 		// OTHER
 		else {
+			
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
 			}
@@ -559,7 +560,8 @@ public class CollisionChecker {
 				
 				if (player) {
 					gp.player.playFallSE();		
-					gp.player.invincible = true;
+					gp.player.resetValues();
+					gp.player.invincible = true;										
 					gp.gameState = gp.fallingState;
 				}
 				else {
@@ -581,9 +583,24 @@ public class CollisionChecker {
 				if (!gp.player.canSwim && gp.gameState == gp.playState) {
 					gp.player.playDrownSE();
 					gp.player.playHurtSE();	
+					gp.player.resetValues();
 					gp.player.invincible = true;
 					gp.gameState = gp.drowningState;
-				}			
+				}		
+				else {
+					
+					gp.player.speed = 2;
+					
+					if (gp.player.grabbedObject != null) {
+						if (gp.player.grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+							gp.player.grabbedObject.resetValues();
+						}
+						else {
+							gp.player.grabbedObject.alive = false;	
+						}									
+						gp.player.grabbedObject = null;
+					}
+				}
 			}
 			else {
 				if (entity.name.equals(PRJ_Bomb.prjName)) {

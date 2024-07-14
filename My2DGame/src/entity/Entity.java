@@ -53,9 +53,6 @@ public class Entity {
 							attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3,
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,
-							grabUp1, grabDown1, grabLeft1, grabRight1,
-							carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,
-							throwUp1, throwDown1, throwLeft1, throwRight1,
 							buzzUp1, buzzUp2, lockedImage, die1, die2, die3, die4;
 		
 	// CHARACTER ATTRIBUTES
@@ -157,6 +154,14 @@ public class Entity {
 	public boolean active = false;	
 	public boolean switchedOn = false;
 	public boolean thrown = false;
+	
+	// THROWING VARIABLES
+	public double tTime = 0;
+	public double xT = 0;
+	public double yT = 0;
+	public double tSpeed = 0.25;
+	public double tG = 0.00065;
+	public double tAnimationSpeed = 25;
 	
 	// ITEM ATTRIBUTES
 	public int value, attackValue;
@@ -651,12 +656,12 @@ public class Entity {
 			
 			// ADJUST PLAYER'S X/Y 
 			switch (direction) {
-				case "up": worldY -= attackbox.height; break; 
-				case "upleft": worldY -= attackbox.height; worldX -= attackbox.width; break; 
-				case "upright": worldY -= attackbox.height; worldX += attackbox.width; break; 
-				case "down": worldY += attackbox.height; break;
-				case "downleft": worldY += attackbox.height; worldX -= attackbox.width; break;
-				case "downright": worldY += attackbox.height; worldX += attackbox.width; break;					
+				case "up":
+				case "upleft": 
+				case "upright":  worldY -= attackbox.height; break; 
+				case "down": 
+				case "downleft": 
+				case "downright": worldY += (attackbox.height / 2); break;					
 				case "left": worldX -= attackbox.width; break;
 				case "right": worldX += attackbox.width; break;
 			}
@@ -672,19 +677,6 @@ public class Entity {
 			}
 			// PLAYER ATTACKING
 			else {
-				
-				// WEAPON COLLISION DETECTION
-				gp.cChecker.checkTile(this);	
-				gp.cChecker.checkObject(this, false);	
-				if (collisionOn) {
-					gp.player.playBlockSE();
-					attackNum = 1;
-					attackCounter = 0;
-					attacking = false;
-					attackCanceled = false;
-					gp.keyH.actionPressed = false;
-					setKnockback(gp.player, getOppositeDirection(gp.player.direction), 0.5);
-				}		
 				
 				// CHECK IF ATTACK LANDS ON ENEMY
 				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
@@ -985,6 +977,49 @@ public class Entity {
 			}
 		}
 	}
+	public boolean tossEntity() {
+		
+		boolean hit = false;
+		
+		throwCounter++;			
+		if (throwCounter <= 28) {
+			
+//			gp.cChecker.checkTile(this);
+//			if (!collisionOn) {
+				tTime += tAnimationSpeed;				
+				switch (direction) {
+					case "up": 	
+						worldY -= 3;
+						break;
+					case "down": 		
+						if (throwCounter == 1) worldY += 60;
+						else worldY += 4;						
+						break;
+					case "left": 						
+						getTrajectory(-135);
+						break;
+					case "right": 
+						getTrajectory(-45);						
+						hitbox.y += gp.tileSize;						
+						break;
+				}	
+//			}
+//			else {
+//				hit = true;
+//			}
+		}
+		else {		
+			hit = true;
+			hitbox.x = hitboxDefaultX;
+			hitbox.y = hitboxDefaultY;
+		}
+		
+		return hit;
+	}
+	public void getTrajectory(double angle) {
+		worldX = (int) (tSpeed * Math.cos(angle * Math.PI / 180.0) * tTime + xT);
+		worldY = (int) (0.5 * tG * tTime * tTime + tSpeed * Math.sin(angle * Math.PI / 180.0) * tTime + yT);
+	}
 	
 	// PARTICLES
 	public void generateParticle(Entity generator, Entity target) {
@@ -1251,6 +1286,22 @@ public class Entity {
 			if (captured) changeAlpha(g2, 0.7f);
 			
 			if (dying) dyingAnimation(g2);	
+			
+			if (thrown) {
+				g2.setColor(Color.BLACK);
+				switch (direction) {
+					case "up": 	
+						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
+						break;
+					case "down": 			
+						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
+						break;
+					case "left": 				
+						break;
+					case "right": 
+						break;
+				}	
+			}
 			
 			g2.drawImage(image, tempScreenX, tempScreenY, null);	
 			

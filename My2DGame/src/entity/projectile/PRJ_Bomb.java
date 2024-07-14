@@ -57,8 +57,20 @@ public class PRJ_Bomb extends Projectile {
 			worldX = gp.player.worldX;
 			worldY = gp.player.worldY - gp.tileSize + 5;
 			collision = false;
+			xT = worldX;
+			yT = worldY;
 		}
 		if (thrown) {
+			
+			if (tossEntity()) {			
+				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 			
+				if (enemyIndex != -1) {	explode();	}
+			}
+			
+			
+/*		
+			
 			throwCounter++;
 			collision = true;
 			
@@ -97,6 +109,7 @@ public class PRJ_Bomb extends Projectile {
 				throwCounter = 0;
 				collision = false;
 			}
+*/
 		}
 	}
 
@@ -176,6 +189,8 @@ public class PRJ_Bomb extends Projectile {
 		grabbed = false;
 		thrown = false;
 		throwCounter = 0;
+		throwCounter = 0;
+		tTime = 0;
 	}
 
 	public Color getParticleColor() {

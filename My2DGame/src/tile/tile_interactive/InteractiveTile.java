@@ -1,5 +1,6 @@
 package tile.tile_interactive;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -13,7 +14,7 @@ public class InteractiveTile extends Entity {
 	public InteractiveTile(GamePanel gp, int col, int row) {
 		super(gp);
 		this.gp = gp;
-		collision = true;
+		collision = true;		
 	}
 	
 	public void update() {
@@ -22,43 +23,21 @@ public class InteractiveTile extends Entity {
 			worldX = gp.player.worldX;
 			worldY = gp.player.worldY - gp.tileSize + 5;
 			collision = false;
+			xT = worldX;
+			yT = worldY;
 		}		
-		if (thrown) {
-
-			throwCounter++;
-			collision = true;
-
-			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-			if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
-			gp.player.damageEnemy(enemyIndex, this, 1, 0);
+		if (thrown) {		
 			
-			gp.cChecker.checkTile(this);	
-			gp.cChecker.checkEntity(this, gp.npc);
-			gp.cChecker.checkEntity(this, gp.obj);
-			gp.cChecker.checkEntity(this, gp.obj_i);
-			gp.cChecker.checkEntity(this, gp.iTile);
-			gp.cChecker.checkObject(this, false);
-			gp.cChecker.checkObject_I(this, false);
-			
-			if (!collisionOn) {
-				switch(direction) {
-					case "up": worldY -= 5; break;
-					case "down": worldY += 5; break;
-					case "left": worldX -= 5; break;
-					case "right": worldX += 5; break;
-				}			
-				if (30 < throwCounter){
-					playSE();				
-					checkDrop();
-					generateParticle(this, this);
-					alive = false;
-				}
-			}
-			else {
+			if (tossEntity()) {
+				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
+				gp.player.damageEnemy(enemyIndex, this, 2, 2);
+				
 				playSE();				
 				checkDrop();
 				generateParticle(this, this);
 				throwCounter = 0;
+				tTime = 0;
 				alive = false;
 			}
 		}
@@ -124,6 +103,11 @@ public class InteractiveTile extends Entity {
 			offCenter = true;
 		}
 		
+		if (thrown) {
+			g2.setColor(Color.BLACK);
+			g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+		}
+		
 		if (direction.equals("up")) image = up1;
 		else if (direction.equals("down")) image = down1;
 		else if (direction.equals("left")) image = left1;
@@ -133,6 +117,23 @@ public class InteractiveTile extends Entity {
 			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
 			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {				
+			
+			if (thrown) {
+				
+				g2.setColor(Color.BLACK);
+				switch (direction) {
+					case "up": 	
+						g2.fillOval(screenX + 5, screenY + 70 - throwCounter, 38, 10);
+						break;
+					case "down": 			
+						g2.fillOval(screenX + 5, screenY + 70 - throwCounter, 38, 10);
+						break;
+					case "left": 				
+						break;
+					case "right": 
+						break;
+				}	
+			}
 			
 			g2.drawImage(image, screenX, screenY, null);
 		}
