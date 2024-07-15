@@ -26,19 +26,27 @@ public class InteractiveTile extends Entity {
 			xT = worldX;
 			yT = worldY;
 		}		
-		if (thrown) {		
-			
+		if (thrown) {				
 			if (tossEntity()) {
-				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
-				gp.player.damageEnemy(enemyIndex, this, 2, 2);
+
+				gp.cChecker.checkPit(this, false);
 				
-				playSE();				
-				checkDrop();
-				generateParticle(this, this);
-				throwCounter = 0;
-				tTime = 0;
-				alive = false;
+				if (alive) {
+				
+					int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+					if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
+					gp.player.damageEnemy(enemyIndex, this, 2, 2);
+					
+					int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+					gp.player.damageInteractiveTile(iTileIndex, this);						
+					
+					playSE();				
+					checkDrop();
+					generateParticle(this, this);
+					throwCounter = 0;
+					tTime = 0;
+					alive = false;					
+				}				
 			}
 		}
 		
@@ -108,10 +116,16 @@ public class InteractiveTile extends Entity {
 			g2.fillOval(screenX + 10, screenY + 40, 30, 10);
 		}
 		
-		if (direction.equals("up")) image = up1;
-		else if (direction.equals("down")) image = down1;
-		else if (direction.equals("left")) image = left1;
-		else if (direction.equals("right")) image = right1;
+		switch (direction) {
+			case "up":
+			case "upleft":
+			case "upright": image = up1; break;
+			case "down": 
+			case "downleft":
+			case "downright": image = down1; break;
+			case "left": image = left1; break;
+			case "right": image = right1; break;
+		}
 		
 		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
 			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
@@ -119,18 +133,23 @@ public class InteractiveTile extends Entity {
 			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {				
 			
 			if (thrown) {
-				
 				g2.setColor(Color.BLACK);
 				switch (direction) {
-					case "up": 	
+					case "up":
+					case "upleft":
+					case "upright":
 						g2.fillOval(screenX + 5, screenY + 70 - throwCounter, 38, 10);
 						break;
-					case "down": 			
+					case "down": 	
+					case "downleft":
+					case "downright":
 						g2.fillOval(screenX + 5, screenY + 70 - throwCounter, 38, 10);
 						break;
 					case "left": 				
+						g2.fillOval(screenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);
 						break;
 					case "right": 
+						g2.fillOval(screenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);
 						break;
 				}	
 			}
@@ -139,6 +158,11 @@ public class InteractiveTile extends Entity {
 		}
 		else if (offCenter) {
 			g2.drawImage(image, screenX, screenY, null);
+		}
+		
+		if (gp.keyH.debug) {
+			g2.setColor(Color.RED);
+			g2.drawRect(screenX + hitbox.x, screenY + hitbox.y, hitbox.width, hitbox.height);
 		}
 	}
 }

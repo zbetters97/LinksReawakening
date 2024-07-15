@@ -17,6 +17,8 @@ public class COL_Rupee_Blue extends Entity {
 		value = 5;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
+		collision = false;
+		
 		down1 = setup("/collectables/COL_RUPEE_BLUE");
 	}
 	

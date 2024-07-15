@@ -18,12 +18,23 @@ public class CollisionChecker {
 
 	// TILE COLLISION
 	public void checkTile(Entity entity) {
-		
+						
 		// COLLISION BOX (left side, right side, top, bottom)
 		int entityLeftWorldX = entity.worldX + entity.hitbox.x;
 		int entityRightWorldX = entity.worldX + entity.hitbox.x + entity.hitbox.width;
 		int entityTopWorldY = entity.worldY + entity.hitbox.y;
 		int entityBottomWorldY = entity.worldY + entity.hitbox.y + entity.hitbox.height;
+		
+		// SHIFT ENTITY COLLISION BOX DOWN TO AVOID WALLS
+		if (entity.thrown) {			
+			switch (entity.direction) {
+				case "right":
+				case "left":
+					entityTopWorldY = entity.tWorldY + entity.hitbox.y;					
+					entityBottomWorldY = entity.tWorldY + entity.hitbox.y + entity.hitbox.height;
+					break;
+				}
+		}
 		
 		int entityLeftCol = entityLeftWorldX / gp.tileSize;
 		int entityRightCol = entityRightWorldX / gp.tileSize;
@@ -221,8 +232,7 @@ public class CollisionChecker {
 			}
 		}
 		// OTHER
-		else {
-			
+		else {			
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
 			}
@@ -565,8 +575,9 @@ public class CollisionChecker {
 					gp.gameState = gp.fallingState;
 				}
 				else {
-					if (entity.name.equals(PRJ_Bomb.prjName) && entity.thrown) {
-						entity.resetValues();
+					if (entity.thrown) {
+						entity.resetValues();						
+						entity.alive = false;
 					}
 					if (entity.onGround) {
 						entity.alive = false;
@@ -707,9 +718,21 @@ public class CollisionChecker {
 		for (int i  = 0; i < target[1].length; i++) {
 			
 			if (target[gp.currentMap][i] != null) {			
-				
+												
 				entity.hitbox.x = entity.worldX + entity.hitbox.x;
-				entity.hitbox.y = entity.worldY + entity.hitbox.y;
+				
+				// SHIFT ENTITY COLLISION BOX DOWN TO AVOID WALLS
+				if (entity.thrown) {			
+					switch (entity.direction) {
+						case "right":
+						case "left":
+							entity.hitbox.y = entity.tWorldY + entity.hitbox.y;
+							break;
+						}
+				}
+				else {
+					entity.hitbox.y = entity.worldY + entity.hitbox.y;
+				}
 				
 				target[gp.currentMap][i].hitbox.x = target[gp.currentMap][i].worldX + target[gp.currentMap][i].hitbox.x;
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitbox.y;
@@ -749,14 +772,13 @@ public class CollisionChecker {
 				}
 				
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
-										
+															
 					if (target[gp.currentMap][i] != entity) {		
 						index = i;	
 											
 						if (target[gp.currentMap][i].collision) {
-							entity.collisionOn = true;	
-						}
-												
+							entity.collisionOn = true;								
+						}												
 					}
 				}
 				

@@ -23,8 +23,8 @@ public class ITM_Boomerang extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
-						
+		if (!projectile.alive && user.shotAvailableCounter == 30) { 
+			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);
 						

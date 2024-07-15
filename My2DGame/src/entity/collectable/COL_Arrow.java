@@ -17,6 +17,8 @@ public class COL_Arrow extends Entity {
 		value = 1;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
+		collision = false;
+		
 		down1 = setup("/objects/PRJ_ARROWS", gp.tileSize - 15, gp.tileSize - 15);
 		image1 = down1;
 	}

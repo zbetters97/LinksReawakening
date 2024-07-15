@@ -80,7 +80,7 @@ public class Player extends Entity {
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 						
 		// HITBOX (x, y, width, height)
-		hitbox = new Rectangle(8, 16, 32, 28); 		
+		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
@@ -402,10 +402,22 @@ public class Player extends Entity {
 		else if (action == Action.CARRYING) {
 			if (keyH.grabPressed) {
 				playThrowSE();
+				
 				action = Action.THROWING;
-				grabbedObject.direction = direction;
 				grabbedObject.thrown = true;
 				grabbedObject.grabbed = false;
+				grabbedObject.tWorldY = worldY;
+				
+				switch (direction) {
+					case "up":
+					case "upleft":
+					case "upright": grabbedObject.direction = "up"; break;
+					case "down":
+					case "downleft":
+					case "downright": grabbedObject.direction = "down"; break;
+					default: grabbedObject.direction = direction; break;
+				}
+				
 				return;
 			}
 			if (keyH.itemPressed) {
@@ -428,9 +440,9 @@ public class Player extends Entity {
 			if (attacking) { attacking(); return; }						
 		}		
 		
-		// TAB DISABLED WHILE JUMPING/SOARING
+		// TAB DISABLED DURING CERTAIN ACTIONS
 		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING
-				&& action != Action.AIMING) { cycleItems(); }	
+				&& action != Action.AIMING && action != Action.CARRYING) { cycleItems(); }	
 		
 		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
 				action != Action.AIMING && action != Action.GRABBING) { walking(); }
@@ -997,6 +1009,8 @@ public class Player extends Entity {
 		String pullDirection = getOppositeDirection(direction);
 		switch (pullDirection) {
 			case "up":
+			case "upleft":
+			case "upright":
 				if (keyH.upPressed) {
 					pull(entity);
 				}
@@ -1007,6 +1021,8 @@ public class Player extends Entity {
 				}
 				break;
 			case "down":
+			case "downleft":
+			case "downright":
 				if (keyH.downPressed) {					
 					pull(entity);
 				}

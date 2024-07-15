@@ -14,8 +14,7 @@ public class IT_Block_Blue extends InteractiveTile {
 		this.gp = gp;
 		
 		name = itName;
-		switchedOn = false;
-		
+		switchedOn = false;		
 		direction = "up";
 		
 		this.worldX = gp.tileSize * col;

@@ -30,7 +30,7 @@ public class PRJ_Bomb extends Projectile {
 		maxLife = 240; life = maxLife;
 		alive = false;
 		
-		hitbox = new Rectangle(6, 9, 36, 36); 		
+		hitbox = new Rectangle(12, 15, 24, 27); 		
 		hitboxDefaultX = hitbox.x;
 	    hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
@@ -61,55 +61,18 @@ public class PRJ_Bomb extends Projectile {
 			yT = worldY;
 		}
 		if (thrown) {
-			
-			if (tossEntity()) {			
-				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 			
-				if (enemyIndex != -1) {	explode();	}
-			}
-			
-			
-/*		
-			
-			throwCounter++;
-			collision = true;
-			
-			// BOMB ROLLED INTO PIT
-			gp.cChecker.checkPit(this, false);
-			if (collisionOn) {
-				resetValues();		
-				return;
-			}
-			
-			gp.cChecker.checkEntity(this, gp.enemy);
-			gp.cChecker.checkEntity(this, gp.enemy_r); 			
-			gp.cChecker.checkTile(this);	
-			gp.cChecker.checkEntity(this, gp.npc);
-			gp.cChecker.checkEntity(this, gp.obj);
-			gp.cChecker.checkEntity(this, gp.obj_i);
-			gp.cChecker.checkEntity(this, gp.iTile);
-			gp.cChecker.checkObject(this, false);
-			gp.cChecker.checkObject_I(this, false);
-			
-			if (!collisionOn) {
-				switch(direction) {
-					case "up": worldY -= 5; break;
-					case "down": worldY += 5; break;
-					case "left": worldX -= 5; break;
-					case "right": worldX += 5; break;
-				}			
-				if (30 < throwCounter) {					
-					thrown = false;
-					throwCounter = 0;
-					collision = false;								
+			speed = 0;
+			if (tossEntity()) {									
+				
+				gp.cChecker.checkPit(this, false);
+				thrown = false;
+				
+				if (alive) {				
+					int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+					if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 			
+					if (enemyIndex != -1) {	explode(); }	
 				}
 			}
-			else {
-				thrown = false;
-				throwCounter = 0;
-				collision = false;
-			}
-*/
 		}
 	}
 
@@ -188,7 +151,6 @@ public class PRJ_Bomb extends Projectile {
 		alive = false;	
 		grabbed = false;
 		thrown = false;
-		throwCounter = 0;
 		throwCounter = 0;
 		tTime = 0;
 	}

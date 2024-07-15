@@ -15,6 +15,9 @@ public class COL_Rupee_Red extends Entity {
 		type = type_collectable;
 		name = colName;
 		value = 20;
+		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
+		
+		collision = false;
 		
 		down1 = setup("/collectables/COL_RUPEE_RED");
 	}

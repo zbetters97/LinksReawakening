@@ -168,7 +168,6 @@ public class Projectile extends Entity {
 		// PAUSE PLAYER INPUT
 		gp.gameState = gp.objectState;
 		
-		// CHECK TILE/NPC/ENEMY/OBJECT COLLISION
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);
@@ -179,8 +178,7 @@ public class Projectile extends Entity {
 		
 		int objectIndex = gp.cChecker.checkObject(this, true);
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-		if (enemyIndex != -1) 
-			gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
+		if (enemyIndex != -1) gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
 				
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 		if (projectileIndex != -1) {
@@ -196,18 +194,20 @@ public class Projectile extends Entity {
 		gp.player.damageInteractiveTile(iTileIndex, this);
 		
 		// OBJECT IS NOT canPickup, RETURN
-		if (collisionOn) 
+		if (collisionOn) {
 			life = 0;
+		}
 		
-		// MAX LENGTH REACHED OR OBJECT RECIEVED
-		if (life <= 0 || objectIndex != -1) {	
-			
+		// MAX LENGTH REACHED OR OBJECT GRABBED
+		if (life <= 0 || objectIndex != -1) {
+						
 			// PULL OBJECT TOWARDS PLAYER
 			if (objectIndex != -1 && 
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {				
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
+				life = 0;
 			}	
 			
 			switch (direction) {
@@ -263,7 +263,7 @@ public class Projectile extends Entity {
 			}	
 
 			life--;				
-		}			
+		}							
 
 		// MOVING ANIMATION
 		spriteCounter++;
@@ -299,7 +299,7 @@ public class Projectile extends Entity {
 		// COLLISION DETECTED
 		if (collisionOn)
 			life = 0;
-				
+						
 		// PULL PLAYER TOWARDS GRABBALE ENTITY
 		if ((objectIndex != -1 && gp.obj[gp.currentMap][objectIndex].hookGrabbable) ||
 				(objectiIndex != -1 && gp.obj_i[gp.currentMap][objectiIndex].hookGrabbable) ||
@@ -415,6 +415,7 @@ public class Projectile extends Entity {
 			if (objectIndex != -1 && 
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {
+				
 				hookGrabbed = true;					
 				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
 				gp.obj[gp.currentMap][objectIndex].worldY = worldY;

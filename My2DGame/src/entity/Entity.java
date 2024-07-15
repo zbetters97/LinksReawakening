@@ -31,8 +31,8 @@ public class Entity {
 	public int worldYStart;
 	public int worldX, worldY;		
 	protected int tempScreenX;
-
 	protected int tempScreenY;
+	
 	public String name;		
 	public Action action;
 	public boolean collision = true;
@@ -53,6 +53,7 @@ public class Entity {
 							attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3,
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,
+							grabUp1, grabDown1, grabLeft1, grabRight1,
 							buzzUp1, buzzUp2, lockedImage, die1, die2, die3, die4;
 		
 	// CHARACTER ATTRIBUTES
@@ -162,6 +163,7 @@ public class Entity {
 	public double tSpeed = 0.25;
 	public double tG = 0.00065;
 	public double tAnimationSpeed = 25;
+	public int tWorldY = 0;
 	
 	// ITEM ATTRIBUTES
 	public int value, attackValue;
@@ -696,7 +698,7 @@ public class Entity {
 				gp.player.damageProjectile(projectileIndex);	
 			}
 						
-			// RESTORE PLAYER HITBOX
+			// RESTORE HITBOX
 			worldX = currentWorldX;
 			worldY = currentWorldY;
 			hitbox.width = hitBoxWidth;
@@ -977,41 +979,55 @@ public class Entity {
 			}
 		}
 	}
+	
 	public boolean tossEntity() {
 		
 		boolean hit = false;
 		
 		throwCounter++;			
-		if (throwCounter <= 28) {
+		if (throwCounter <= 30) {
 			
-//			gp.cChecker.checkTile(this);
-//			if (!collisionOn) {
-				tTime += tAnimationSpeed;				
-				switch (direction) {
-					case "up": 	
-						worldY -= 3;
-						break;
-					case "down": 		
-						if (throwCounter == 1) worldY += 60;
-						else worldY += 4;						
-						break;
-					case "left": 						
-						getTrajectory(-135);
-						break;
-					case "right": 
-						getTrajectory(-45);						
-						hitbox.y += gp.tileSize;						
-						break;
-				}	
-//			}
-//			else {
-//				hit = true;
-//			}
+			tTime += tAnimationSpeed;				
+			switch (direction) {
+				case "up":
+				case "upleft":
+				case "upright":			
+					gp.cChecker.checkTile(this);
+					gp.cChecker.checkEntity(this, gp.obj);
+					gp.cChecker.checkEntity(this, gp.iTile);
+					if (!collisionOn) worldY -= 3;	
+					else hit = true;					
+					break;
+				case "down": 
+				case "downleft":
+				case "downright":
+					if (throwCounter == 1) worldY += 64;
+					else {								
+						gp.cChecker.checkTile(this);
+						gp.cChecker.checkEntity(this, gp.obj);
+						gp.cChecker.checkEntity(this, gp.iTile);
+						if (!collisionOn) worldY += 4;							
+						else hit = true;						
+					}
+					break;
+				case "left": 			
+					gp.cChecker.checkTile(this);
+					gp.cChecker.checkEntity(this, gp.obj);
+					gp.cChecker.checkEntity(this, gp.iTile);
+					if (!collisionOn) getTrajectory(-135);	
+					else { worldY = tWorldY; hit = true; }						
+					break;
+				case "right": 
+					gp.cChecker.checkTile(this);
+					gp.cChecker.checkEntity(this, gp.obj);
+					gp.cChecker.checkEntity(this, gp.iTile);
+					if (!collisionOn) getTrajectory(-45);
+					else { worldY = tWorldY; hit = true; }
+					break;
+			}	
 		}
 		else {		
 			hit = true;
-			hitbox.x = hitboxDefaultX;
-			hitbox.y = hitboxDefaultY;
 		}
 		
 		return hit;
@@ -1201,7 +1217,12 @@ public class Entity {
 		if (inFrame()) {
 			
 			if (hookGrabbed) {
-				image = this.image1;			
+				switch (direction) {
+					case "up": image = grabUp1; break;
+					case "down": image = grabDown1; break;
+					case "left": image = grabLeft1; break;
+					case "right": image = grabRight1; break;				
+				}
 			}
 			else if (buzzing) {
 				if (spriteNum == 1) image = buzzUp1;
@@ -1286,19 +1307,25 @@ public class Entity {
 			if (captured) changeAlpha(g2, 0.7f);
 			
 			if (dying) dyingAnimation(g2);	
-			
+						
 			if (thrown) {
 				g2.setColor(Color.BLACK);
 				switch (direction) {
-					case "up": 	
-						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
+					case "up":
+					case "upleft":
+					case "upright":
+						g2.fillOval(tempScreenX + 5, tempScreenY + 50 - throwCounter, 38, 10);
 						break;
-					case "down": 			
-						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
+					case "down": 	
+					case "downleft":
+					case "downright":
+						g2.fillOval(tempScreenX + 5, tempScreenY + 50 - throwCounter, 38, 10);
 						break;
-					case "left": 				
+					case "left": 	
+						g2.fillOval(tempScreenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);
 						break;
 					case "right": 
+						g2.fillOval(tempScreenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);
 						break;
 				}	
 			}

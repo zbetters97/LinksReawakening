@@ -17,6 +17,8 @@ public class COL_Bomb extends Entity {
 		value = 1;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		
+		collision = false;
+		
 		down1 = setup("/projectile/bomb_down_1");
 	}
 	

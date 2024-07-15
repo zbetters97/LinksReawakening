@@ -511,12 +511,13 @@ public class GamePanel extends JPanel implements Runnable {
 						
 			// POPULATE ENTITY LIST
 			entityList.add(player);			
+			for (Entity t : iTile[currentMap]) { if (t != null && t.type == t.type_obstacle) entityList.add(t); }
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
 			for (Entity er : enemy_r[currentMap]) { if (er != null) entityList.add(er); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
 			for (Entity ot : obj_i[currentMap]) { if (ot != null) entityList.add(ot); }
-			for (Entity a : particleList) { if (a != null) entityList.add(a); }
+			for (Entity p : particleList) { if (p != null) entityList.add(p); }
 			
 			for (int i = 0; i < projectile[1].length; i++) {
 				if (projectile[currentMap][i] != null)

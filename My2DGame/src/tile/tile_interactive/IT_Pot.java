@@ -7,7 +7,6 @@ import java.util.Random;
 import application.GamePanel;
 import entity.Entity;
 import entity.item.ITM_Shovel;
-import entity.projectile.PRJ_Arrow;
 import entity.projectile.PRJ_Hookshot;
 
 public class IT_Pot extends InteractiveTile {
@@ -20,45 +19,52 @@ public class IT_Pot extends InteractiveTile {
 		super(gp, col, row);
 		this.gp = gp;
 		
+		this.worldX = gp.tileSize * col;
+		this.worldY = gp.tileSize * row;
+		
+		type = type_obstacle;
 		name = itName;
 		life = 1;
 		destructible = true;
 		bombable = true;
 		grabbable = true;
 		
-		direction = "down";
-		
-		this.worldX = gp.tileSize * col;
-		this.worldY = gp.tileSize * row;
-		
-		hitbox = new Rectangle(0, 0, 48, 48);
+		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		down1 = setup("/tiles_interactive/pot");		
+		direction = "down";
+		
+		getImage();	
 	}
 	public IT_Pot(GamePanel gp, int col, int row, Entity loot) {
 		super(gp, col, row);
 		this.gp = gp;
+		
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
 		this.lootOne = loot;
 		this.lootTwo = loot;
 		
+		type = type_obstacle;
 		name = itName;
 		life = 1;
 		destructible = true;
 		bombable = true;
 		grabbable = true;
 		
-		direction = "down";
-		
-		hitbox = new Rectangle(0, 0, 48, 48);
+		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		down1 = setup("/tiles_interactive/pot");	
+		direction = "down";
+		
+		getImage();
+	}
+	
+	public void getImage() {
+		down1 = setup("/tiles_interactive/pot");
 		up1 = down1;
 		left1 = down1;
 		right1 = down1;
@@ -83,10 +89,10 @@ public class IT_Pot extends InteractiveTile {
 		
 		boolean isCorrectItem = false;
 		
-		if (!entity.name.equals(PRJ_Hookshot.prjName) || 
-				!entity.name.equals(PRJ_Arrow.prjName) ||
-				!entity.name.equals(ITM_Shovel.itmName))
+		if (!entity.name.equals(PRJ_Hookshot.prjName) && 
+				!entity.name.equals(ITM_Shovel.itmName)) {
 			isCorrectItem = true;
+		}
 		
 		return isCorrectItem;
 	}

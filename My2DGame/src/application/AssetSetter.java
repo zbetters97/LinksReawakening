@@ -306,9 +306,9 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 9, 92, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 8, 91, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 37, 77, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 43, 77, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 43, 77, new COL_Heart(gp)); i++;		
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 57, 88, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 57, 90, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 57, 90, new COL_Heart(gp)); i++;			
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 33, 70, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 34, 70, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 16, 66, new COL_Heart(gp)); i++;		
@@ -349,9 +349,6 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 29, 53); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Switch(gp, 50, 60); i++;	
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 62); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 50, 62); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 51, 62); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 64, 71); i++;
 		

@@ -16,8 +16,7 @@ public class IT_Switch extends InteractiveTile {
 		name = itName;
 		life = 3;
 		switchedOn = false;
-		bombable = true;
-		
+		bombable = true;		
 		direction = "down";
 		
 		this.worldX = gp.tileSize * col;
