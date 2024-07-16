@@ -217,6 +217,15 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldY = gp.tileSize * 67;	
 		i++;
 		
+		gp.obj[mapNum][i] = new OBJ_Oneway(gp, "down", true);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 57;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 91;	
+		i++;
+		gp.obj[mapNum][i] = new OBJ_Oneway(gp, "up", false);
+		gp.obj[mapNum][i].worldX = gp.tileSize * 57;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 90;	
+		i++;
+		
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new ITM_Bomb(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 50;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 83;	
@@ -307,8 +316,7 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 8, 91, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 37, 77, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 43, 77, new COL_Heart(gp)); i++;		
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 57, 88, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 57, 90, new COL_Heart(gp)); i++;			
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 48, 92, new COL_Heart(gp)); i++;		
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 33, 70, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 34, 70, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 16, 66, new COL_Heart(gp)); i++;		
@@ -335,8 +343,8 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 75, "up"); i++;
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 76, "down"); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 53, 86, "up"); i++;
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 53, 87, "down"); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 50, 87, "up"); i++;
+		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 50, 88, "down"); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 38, 70); i++;
 		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 35, 62); i++;

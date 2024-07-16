@@ -155,6 +155,7 @@ public class Entity {
 	public boolean active = false;	
 	public boolean switchedOn = false;
 	public boolean thrown = false;
+	public boolean turning = false;
 	
 	// THROWING VARIABLES
 	public double tTime = 0;
@@ -217,7 +218,7 @@ public class Entity {
 	public void checkDrop() { checkEnemyRoom(); }
 	public void use() {	}
 	public boolean use(Entity user) { return true; }
-	public void setCharge(Entity user) { }
+	public boolean setCharge(Entity user) { return true; }
 	public void resetValues() { }
 	public void interact() { }
 	public void move(String direction) { }	
@@ -985,7 +986,7 @@ public class Entity {
 		boolean hit = false;
 		
 		throwCounter++;			
-		if (throwCounter <= 30) {
+		if (throwCounter <= 29) {
 			
 			tTime += tAnimationSpeed;				
 			switch (direction) {
@@ -993,8 +994,9 @@ public class Entity {
 				case "upleft":
 				case "upright":			
 					gp.cChecker.checkTile(this);
-					gp.cChecker.checkEntity(this, gp.obj);
 					gp.cChecker.checkEntity(this, gp.iTile);
+					gp.cChecker.checkEntity(this, gp.obj);
+					gp.cChecker.checkEntity(this, gp.obj_i);
 					if (!collisionOn) worldY -= 3;	
 					else hit = true;					
 					break;
@@ -1004,23 +1006,26 @@ public class Entity {
 					if (throwCounter == 1) worldY += 64;
 					else {								
 						gp.cChecker.checkTile(this);
-						gp.cChecker.checkEntity(this, gp.obj);
 						gp.cChecker.checkEntity(this, gp.iTile);
+						gp.cChecker.checkEntity(this, gp.obj);
+						gp.cChecker.checkEntity(this, gp.obj_i);
 						if (!collisionOn) worldY += 4;							
 						else hit = true;						
 					}
 					break;
 				case "left": 			
 					gp.cChecker.checkTile(this);
-					gp.cChecker.checkEntity(this, gp.obj);
 					gp.cChecker.checkEntity(this, gp.iTile);
+					gp.cChecker.checkEntity(this, gp.obj);
+					gp.cChecker.checkEntity(this, gp.obj_i);
 					if (!collisionOn) getTrajectory(-135);	
 					else { worldY = tWorldY; hit = true; }						
 					break;
 				case "right": 
 					gp.cChecker.checkTile(this);
-					gp.cChecker.checkEntity(this, gp.obj);
 					gp.cChecker.checkEntity(this, gp.iTile);
+					gp.cChecker.checkEntity(this, gp.obj);
+					gp.cChecker.checkEntity(this, gp.obj_i);
 					if (!collisionOn) getTrajectory(-45);
 					else { worldY = tWorldY; hit = true; }
 					break;
@@ -1314,12 +1319,12 @@ public class Entity {
 					case "up":
 					case "upleft":
 					case "upright":
-						g2.fillOval(tempScreenX + 5, tempScreenY + 50 - throwCounter, 38, 10);
+						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
 						break;
 					case "down": 	
 					case "downleft":
 					case "downright":
-						g2.fillOval(tempScreenX + 5, tempScreenY + 50 - throwCounter, 38, 10);
+						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
 						break;
 					case "left": 	
 						g2.fillOval(tempScreenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);

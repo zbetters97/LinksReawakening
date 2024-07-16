@@ -131,7 +131,8 @@ public class EventHandler {
 			}
 
 			// BOSS CUTSCENES
-			if (!Progress.bossDefeated_1_1) { // QUEEN GOMA
+			// QUEEN GOMA
+			if (!Progress.bossDefeated_1_1) { 
 				if (hit(2, 61, 89, true)) {					
 					Progress.bossDefeated_1_1 = true;
 					
@@ -139,7 +140,7 @@ public class EventHandler {
 					gp.playMusic(6);
 					
 					spawnDoors(
-							new int[]{59,60}, new int[]{89,85}, new String[]{"right","right"}, new Boolean[]{false, true}
+							new int[]{59,59}, new int[]{89,85}, new String[]{"right","right"}, new Boolean[]{true, true}
 					);
 					
 					// SEARCH FOR BOSS
@@ -153,7 +154,8 @@ public class EventHandler {
 					}		
 				}
 			}
-			if (!Progress.bossDefeated_1_2) { // SKELETON
+			// SKELETON KING
+			if (!Progress.bossDefeated_1_2) { 
 				if (hit(3, 25, 27, false)) boss(1); 
 			}
 		}

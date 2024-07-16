@@ -727,8 +727,11 @@ public class CollisionChecker {
 						case "right":
 						case "left":
 							entity.hitbox.y = entity.tWorldY + entity.hitbox.y;
+							break;		
+						default:
+							entity.hitbox.y = entity.worldY + entity.hitbox.y;
 							break;
-						}
+					}
 				}
 				else {
 					entity.hitbox.y = entity.worldY + entity.hitbox.y;

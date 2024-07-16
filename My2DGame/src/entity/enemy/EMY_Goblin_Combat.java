@@ -97,7 +97,7 @@ public class EMY_Goblin_Combat extends Entity {
 	}
 	
 	public void setAction() {
-		
+				
 		if (!captured) {			
 			if (onPath) {
 				isOffPath(gp.player, 8);

@@ -33,6 +33,7 @@ public class Player extends Entity {
 	public int walletSize;
 	public int keys = 0;
 	public int boss_key = 0;	
+	public String aimDirection;
 	
 	public Entity capturedTarget;
 		
@@ -152,7 +153,7 @@ public class Player extends Entity {
 		direction = "up";
 	}
 	public void setDefaultItems() {		
-
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -164,7 +165,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-
+*/
 		inventory_item.add(new ITM_Boots(gp));	
 	}
 	public void restoreStatus() {
@@ -377,7 +378,7 @@ public class Player extends Entity {
 		if (knockback) { knockbackPlayer(); return;	}
 		
 		if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
-		if (lockon) { lockTarget(); }
+		if (lockon && action != Action.AIMING) { lockTarget(); }
 		else {
 			if (lockedTarget != null) {
 				lockedTarget.locked = false;
@@ -389,10 +390,29 @@ public class Player extends Entity {
 		else if (action == Action.SWINGING) { swinging(); return; }
 		else if (action == Action.THROWING) { throwing(); return; }		
 		else if (action == Action.AIMING) {
+			
+			switch (direction) {			
+				case "up":
+				case "upleft":
+				case "upright":
+				case "down":
+				case "downleft":
+				case "downright":
+					keyH.upPressed = false; keyH.downPressed = false;
+					if ((keyH.leftPressed || keyH.rightPressed)) { walking(); }
+					break;
+				case "left":
+				case "right":			
+					keyH.leftPressed = false; keyH.rightPressed = false;
+					if ((keyH.upPressed || keyH.downPressed)) { walking(); }
+					break;
+			}
+			
 			if (gp.keyH.itemPressed) {
 				currentItem.setCharge(this);
 			}
 			else {
+				lockon = false;
 				currentItem.use(this);
 			}
 		}
@@ -896,21 +916,20 @@ public class Player extends Entity {
 					currentItem.use(this);
 					break;
 				case ITM_Bow.itmName:
-					currentItem.setCharge(this);
+					if (currentItem.setCharge(this)) {
+						lockon = true;
+						lockonDirection = direction;	
+					}					
 					break;
 				case ITM_Boomerang.itmName: 
+				case ITM_Hookshot.itmName:	
+					action = Action.THROWING;
+					
 					// STOP MOVEMENT
 					keyH.itemPressed = false;
 					keyH.upPressed = false; keyH.downPressed  = false;
 					keyH.leftPressed  = false; keyH.rightPressed  = false;	
 					currentItem.use(this);
-					break;
-				case ITM_Hookshot.itmName:				
-					// STOP MOVEMENT
-					keyH.itemPressed = false;
-					keyH.upPressed = false; keyH.downPressed  = false;
-					keyH.leftPressed  = false; keyH.rightPressed  = false;	
-					currentItem.use();		
 					break;	
 			}	
 		}
@@ -1073,7 +1092,7 @@ public class Player extends Entity {
 	public void throwing() {
 		
 		throwCounter++;		
-		if (throwCounter > 15) {
+		if (throwCounter > 15 && gp.gameState == gp.playState) {
 			action = Action.IDLE;
 			throwCounter = 0;
 		}
@@ -1262,7 +1281,7 @@ public class Player extends Entity {
 		
 		// ATTACK HITS ENEMY
 		if (i != -1 && !enemies[gp.currentMap][i].guarded) {
-			
+						
 			// BUZZING ENEMY
 			if (enemies[gp.currentMap][i].buzzing && attacker == gp.player) {
 				if (!attacker.invincible) {
@@ -1278,7 +1297,7 @@ public class Player extends Entity {
 				}
 				
 				// HIT BY PROJECTILE (NOT PROJECTILE BEAM)
-				if (attacker.type == type_projectile && attacker.type != type_projectile) {
+				if (attacker.type == type_projectile) {
 					enemies[gp.currentMap][i].stunned = true;
 					enemies[gp.currentMap][i].spriteCounter = -30;
 				}

@@ -31,41 +31,46 @@ public class Projectile extends Entity {
 			return;
 		}
 		
-		if (name.equals(PRJ_Arrow.prjName)) useArrow();
+		if (name.equals(PRJ_Arrow.prjName)) arrow();
 		else if (name.equals(PRJ_Bomb.prjName)) {
-			if (!captured) useBomb(); 
+			if (!captured) bomb(); 
 			else { speed = 2; isCaptured(); }
 		}
-		else if (name.equals(PRJ_Boomerang.prjName)) useBoomerang();
-		else if (name.equals(PRJ_Hookshot.prjName)) useHookshot();
-		else if (name.equals(PRJ_Orb.prjName)) useRod();
-		else useProjectile();		
+		else if (name.equals(PRJ_Boomerang.prjName)) boomerang();
+		else if (name.equals(PRJ_Hookshot.prjName)) hookshot();
+		else if (name.equals(PRJ_Orb.prjName)) rod();
+		else projectile();		
 	}	
 	
-	public void useArrow() {
+	public void arrow() {
 						
-		// CHECK TILE COLLISION
 		collisionOn = false;		
-		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.npc);				
-		gp.cChecker.checkObject(this, false);
-		
-		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-		int objectIIndex = gp.cChecker.checkObject_I(this, false);		
 		
 		// SHOT BY PLAYER
 		if (user == gp.player) {
-						
-			gp.player.damageInteractiveTile(iTileIndex, this);
-			if (iTileIndex != -1) resetValues();
-			if (objectIIndex != -1) resetValues();
-			
+								
 			int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 			if (enemyIndex != -1) {
 				gp.player.damageEnemy(enemyIndex, this, attack, knockbackPower);
-				resetValues();
-			}									
+				
+				// CONTINUE MOVING IF AT FULL POWER
+				if (speed == 12) {
+					collisionOn = false;
+					alive = true;
+				}
+				else {
+					resetValues();						
+				}
+			}				
+			
+			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+			int objectIIndex = gp.cChecker.checkObject_I(this, false);		
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			
+			if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].collision) resetValues();
+			gp.player.damageInteractiveTile(iTileIndex, this);			
+			
+			if (objectIIndex != -1) resetValues();		
 			
 			if (projectileIndex != -1) {
 				Entity projectile = gp.projectile[gp.currentMap][projectileIndex];	
@@ -75,8 +80,7 @@ public class Projectile extends Entity {
 				
 				resetValues();			
 			}			
-		}
-		
+		}		
 		// SHOT BY ENEMEY AND PLAYER ON GROUND
 		else if (gp.player.onGround) {
 			boolean contactPlayer = gp.cChecker.checkPlayer(this);
@@ -86,6 +90,11 @@ public class Projectile extends Entity {
 				resetValues();
 			}			
 		}
+		
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.npc);				
+		gp.cChecker.checkObject(this, false);		
+		
 		// MOVE IN DIRECTION SHOT
 		if (!canPickup) {
 			switch (direction) {
@@ -111,7 +120,7 @@ public class Projectile extends Entity {
 		}
 	}
 	
-	public void useBomb() {
+	public void bomb() {
 		
 		if (!active) {
 						
@@ -163,7 +172,7 @@ public class Projectile extends Entity {
 		}
 	}
 	
-	public void useBoomerang() {
+	public void boomerang() {
 		
 		// PAUSE PLAYER INPUT
 		gp.gameState = gp.objectState;
@@ -277,7 +286,7 @@ public class Projectile extends Entity {
 		}	
 	}
 	
-	public void useHookshot() {
+	public void hookshot() {
 				
 		// PAUSE PLAYER INPUT
 		gp.gameState = gp.objectState;
@@ -514,7 +523,7 @@ public class Projectile extends Entity {
 		}
 	}
 	
-	public void useRod() {
+	public void rod() {
 		
 		// CHECK TILE COLLISION
 		collisionOn = false;		
@@ -580,7 +589,7 @@ public class Projectile extends Entity {
 		}		
 	}
 		
-	public void useProjectile() {
+	public void projectile() {
 		
 		// CHECK TILE COLLISION
 		collisionOn = false;		

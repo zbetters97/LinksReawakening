@@ -24,7 +24,7 @@ public class ITM_Bow extends Entity {
 		projectile = new PRJ_Arrow(gp);
 	}
 	
-	public void setCharge(Entity user) {
+	public boolean setCharge(Entity user) {
 		
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {	
@@ -32,7 +32,12 @@ public class ITM_Bow extends Entity {
 			if (charge < 120) charge++;
 									
 			gp.player.action = Action.AIMING; 
+			
+			return true;
 		}
+		else {
+			return false;
+		}		
 	}
 	
 	public boolean use(Entity user) {	

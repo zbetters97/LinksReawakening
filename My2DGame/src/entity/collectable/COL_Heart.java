@@ -33,6 +33,9 @@ public class COL_Heart extends Entity {
 	public boolean use(Entity user) {
 		playSE();
 		user.life += value;
+		if (user.life > user.maxLife) {
+			user.life = user.maxLife;
+		}
 		return true;
 	}
 	public void playSE() {

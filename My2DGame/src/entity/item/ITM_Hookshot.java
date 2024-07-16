@@ -21,14 +21,15 @@ public class ITM_Hookshot extends Entity {
 		projectile = new PRJ_Hookshot(gp);
 	}	
 	
-	public void use() {
-		if (!projectile.alive && gp.player.shotAvailableCounter == 30) { 			
+	public boolean use(Entity user) {
+		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
 							
-			projectile.set(gp.player.worldX, gp.player.worldY, gp.player.direction, true, gp.player);			
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);
 						
-			gp.player.shotAvailableCounter = 0;	
+			user.shotAvailableCounter = 0;	
 		}		
+		return true;
 	}
 	public void playSE() {
 		gp.playSE(5, 8);

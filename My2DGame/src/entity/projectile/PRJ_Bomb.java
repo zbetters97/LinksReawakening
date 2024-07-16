@@ -65,7 +65,10 @@ public class PRJ_Bomb extends Projectile {
 			if (tossEntity()) {									
 				
 				gp.cChecker.checkPit(this, false);
+				
 				thrown = false;
+				throwCounter = 0;
+				tTime = 0;
 				
 				if (alive) {				
 					int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
