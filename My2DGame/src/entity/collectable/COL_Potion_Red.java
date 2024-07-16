@@ -14,8 +14,8 @@ public class COL_Potion_Red extends Entity implements Cloneable {
 		
 		type = type_consumable;
 		name = colName;
-		description = "[Red Potion]\nHeals two hearts.";
-		value = 4;
+		description = "[Red Potion]\nHeals three hearts.";
+		value = 12;
 		price = 20;
 		stackable = true;
 		

@@ -18,9 +18,9 @@ public class PRJ_Hookshot extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
-		knockbackPower = 0;
+		maxLife = 30; life = maxLife;		
 		speed = 10;
-		maxLife = 30; life = maxLife;	
+		knockbackPower = 0;		
 		alive = false;
 
 		hitbox = new Rectangle(16, 16, 16, 16); 		

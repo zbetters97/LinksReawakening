@@ -13,11 +13,12 @@ public class PRJ_Sword extends Projectile {
 		this.gp = gp;
 		
 		type = type_projectile;
-		name = prjName;
-		attack = 1; 
+		name = prjName;		 
+		
+		maxLife = 60; life = maxLife;		
 		speed = 8; 
 		animationSpeed = 8;
-		maxLife = 60; life = maxLife;		
+		attack = 2;		
 		alive = false;
 		
 		getImage();

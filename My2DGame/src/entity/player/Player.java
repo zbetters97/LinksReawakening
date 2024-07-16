@@ -106,7 +106,7 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		maxLife = 14; life = maxLife;
+		maxLife = 20; life = maxLife;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
@@ -1246,7 +1246,8 @@ public class Player extends Entity {
 		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
 		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
 		else if (damageCounter >= 60) {
-			life--;
+			
+			life-= 2;
 			damageNum = 1;
 			damageCounter = 0;			
 			attackCanceled = false;

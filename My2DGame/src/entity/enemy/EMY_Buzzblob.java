@@ -15,31 +15,11 @@ public class EMY_Buzzblob extends Entity {
 	private int cycle = 0;
 	private int buzzCounter = 0;
 	
-	public EMY_Buzzblob(GamePanel gp) {
-		super(gp);			
-		this.gp = gp;
-		
-		type = type_enemy;
-		name = emyName;
-		
-		speed = 1; defaultSpeed = speed;
-		animationSpeed = 10;
-		attack = 2; 
-		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
-		
-		hitbox = new Rectangle(8, 16, 32, 32); 
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		getImage();
-		getBuzzImage();
-	}
 	public EMY_Buzzblob(GamePanel gp, int worldX, int worldY) {
 		super(gp);			
 		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		bounds = 6;
@@ -49,9 +29,9 @@ public class EMY_Buzzblob extends Entity {
 		
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 10;
-		attack = 2; 
+		attack = 4; 
 		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
+		maxLife = 8; life = maxLife;
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;

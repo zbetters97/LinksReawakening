@@ -10,9 +10,13 @@ public class BOS_Skeleton extends Entity {
 	public static final String emyName = "Skeleton King";
 	GamePanel gp;
 	
-	public BOS_Skeleton(GamePanel gp) {
+	public BOS_Skeleton(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		
 		type = type_boss;
 		name = emyName;
@@ -20,9 +24,9 @@ public class BOS_Skeleton extends Entity {
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 4;
-		knockbackPower = 5;
-		maxLife = 4; life = maxLife;
+		maxLife = 50; life = maxLife;
+		attack = 10;
+		knockbackPower = 5;		
 		currentBossPhase = bossPhase_1;
 		
 		swingSpeed1 = 45;

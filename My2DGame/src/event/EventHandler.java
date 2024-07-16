@@ -104,8 +104,7 @@ public class EventHandler {
 					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
 							new int[]{35,29}, new int[]{80,76}, new String[]{"left","down"},
-							Arrays.asList(new EMY_Slime_Red(gp), new EMY_Slime_Green(gp)),
-							new int[]{29,29}, new int[]{81,78}
+							Arrays.asList(new EMY_ChuChu_Red(gp,29,81), new EMY_ChuChu_Green(gp,29,78))
 					);
 				}
 			}
@@ -114,8 +113,7 @@ public class EventHandler {
 					Progress.enemy_room_1_2 = true;
 					spawnEnemies(
 							new int[]{25}, new int[]{64}, new String[]{"left"},
-							Arrays.asList(new EMY_Slime_Red(gp), new EMY_Slime_Red(gp)),
-							new int[]{16,18}, new int[]{64,64}
+							Arrays.asList(new EMY_ChuChu_Red(gp,16,64), new EMY_ChuChu_Red(gp,18,64))
 					);
 				}
 			}
@@ -124,8 +122,7 @@ public class EventHandler {
 					Progress.enemy_room_1_3 = true;
 					spawnEnemies(
 							new int[]{59}, new int[]{67}, new String[]{"up"},
-							Arrays.asList(new EMY_Wizzrobe(gp), new EMY_Buzzblob(gp), new EMY_Buzzblob(gp)),
-							new int[]{57,56,60}, new int[]{60,62,62}
+							Arrays.asList(new EMY_Wizzrobe(gp,57,60), new EMY_Buzzblob(gp,56,62), new EMY_Buzzblob(gp,60,62))
 					);
 				}
 			}
@@ -297,7 +294,7 @@ public class EventHandler {
 		gp.gameState = gp.transitionState;
 	}	
 	
-	private void spawnEnemies(int[] dX, int[] dY, String[] dir, List<Entity> enemyList, int[] worldX, int[] worldY) {
+	private void spawnEnemies(int[] dX, int[] dY, String[] dir, List<Entity> enemyList) {
 		
 		if (dir != null) {		
 			
@@ -333,8 +330,6 @@ public class EventHandler {
 					// CREATE NEW ENEMY
 					if (gp.enemy_r[gp.currentMap][c] == null) {
 						gp.enemy_r[gp.currentMap][c] = enemyList.get(i);
-						gp.enemy_r[gp.currentMap][c].worldX = worldX[i] * gp.tileSize;
-						gp.enemy_r[gp.currentMap][c].worldY = worldY[i] * gp.tileSize;
 						
 						break;
 					}

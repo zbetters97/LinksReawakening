@@ -12,7 +12,6 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import entity.Entity;
-import entity.collectable.COL_Heart;
 import entity.collectable.COL_Key;
 import entity.collectable.COL_Key_Boss;
 import entity.collectable.COL_Rupee_Blue;
@@ -35,7 +34,7 @@ public class UI {
 	
 	// HUD
 	private BufferedImage dialogue_next, dialogue_finish;
-	private BufferedImage flippers, heart_full, heart_half, heart_empty, rupee, key, boss_key;
+	private BufferedImage flippers, heart_4, heart_3, heart_2, heart_1, heart_0, rupee, key, boss_key;
 	private String rupee_count = "0";
 	public int rupeeCount = -1;
 	private int rCounter = 0;
@@ -99,19 +98,20 @@ public class UI {
 			e.printStackTrace();
 		}
 		
-		dialogue_next = setup("/font/dialogue_next"); 
-		dialogue_finish = setup("/font/dialogue_finish"); 
+		heart_0 = setup("/collectables/COL_HEART_0", gp.tileSize / 2, gp.tileSize / 2);
+		heart_1 = setup("/collectables/COL_HEART_1", gp.tileSize / 2, gp.tileSize / 2);
+		heart_2 = setup("/collectables/COL_HEART_2", gp.tileSize / 2, gp.tileSize / 2);
+		heart_3 = setup("/collectables/COL_HEART_3", gp.tileSize / 2, gp.tileSize / 2);
+		heart_4 = setup("/collectables/COL_HEART_4", gp.tileSize / 2, gp.tileSize / 2);
 		
-		
-		// CREATE HUD
-		heart_full = new COL_Heart(gp).image1;
-		heart_half = new COL_Heart(gp).image2;
-		heart_empty = new COL_Heart(gp).image3;		
 		rupee = new COL_Rupee_Blue(gp).down1;			
 		key = new COL_Key(gp).down1;
 		boss_key = new COL_Key_Boss(gp).down1;
 		
 		flippers = new EQP_Flippers(gp).down1;
+		
+		dialogue_next = setup("/font/dialogue_next"); 
+		dialogue_finish = setup("/font/dialogue_finish"); 
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -350,29 +350,39 @@ public class UI {
 		int i = 0;
 		
 		// DRAW MAX LIFE		
-		while (i < gp.player.maxLife / 2) {
-			g2.drawImage(heart_empty, x, y, null);
+		while (i < gp.player.maxLife / 4) {
+			g2.drawImage(heart_0, x, y, null);
 			i++;
 			x += gp.tileSize / 1.6;
 		}
 		
 		x = gp.tileSize / 2;
 		y = gp.tileSize / 2;
-		i = 0;
 		
-		// DRAW CURRENT LIFE
-		while (i < gp.player.life) {
-			
-			g2.drawImage(heart_half, x, y, null);
-			i++;
-			
-			if (i < gp.player.life) {
-				g2.drawImage(heart_full, x, y, null);
+		// PLAYER LIFE ALL FULL HEARTS
+		if (gp.player.life % 4 == 0) {			
+			for (i = 0; i < gp.player.life; i += 4) {
+				g2.drawImage(heart_4, x, y, null);	
+				x += gp.tileSize / 1.6;
+			}			
+		}
+		// QUARTER HEARTS
+		else {			
+			BufferedImage heart = heart_4;
+			i = 0; int c = 0; 
+			while (i < gp.player.life) {
+				
+				// QUARTERS OF HEARTS REMAINING				
+				if (i + 4 <= gp.player.life) { heart = heart_4; c = 4; }
+				else if (i + 3 == gp.player.life) { heart = heart_3; c = 3; }
+				else if (i + 2 == gp.player.life) { heart = heart_2; c = 2; }
+				else if (i + 1 == gp.player.life) { heart = heart_1; c = 1; }				
+				
+				g2.drawImage(heart, x, y, null);
+				x += gp.tileSize / 1.6;
+				i += c;				
 			}
-			
-			i++;
-			x += gp.tileSize / 1.6;
-		}			
+		}
 		
 		if (gp.gameState == gp.playState || gp.gameState == gp.objectState) {
 			
@@ -1747,4 +1757,19 @@ public class UI {
 		
 		return image;
 	}
+	public BufferedImage setup(String imagePath, int width, int height) {
+		
+		UtilityTool utility = new UtilityTool();
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+			image = utility.scaleImage(image, width, height);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return image;
+	}	
 }

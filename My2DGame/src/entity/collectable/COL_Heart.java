@@ -16,7 +16,7 @@ public class COL_Heart extends Entity {
 		
 		type = type_collectable;		
 		name = colName;
-		value = 2;
+		value = 4;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
 		collision = false;
 		
@@ -24,9 +24,6 @@ public class COL_Heart extends Entity {
 		hitboxDefaultX = hitbox.x;
 	    hitboxDefaultY = hitbox.y;
 		
-		image1 = setup("/collectables/COL_HEART_FULL", gp.tileSize / 2, gp.tileSize / 2);
-		image2 = setup("/collectables/COL_HEART_HALF", gp.tileSize / 2, gp.tileSize / 2);
-		image3 = setup("/collectables/COL_HEART_EMPTY", gp.tileSize / 2, gp.tileSize / 2);
 		down1 = setup("/collectables/COL_HEART");
 	}
 	

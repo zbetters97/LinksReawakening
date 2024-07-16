@@ -16,10 +16,10 @@ public class PRJ_Orb extends Projectile {
 						
 		type = type_projectile;
 		name = prjName;
-		knockbackPower = 0;
+		
+		maxLife = 40; life = maxLife;	
 		speed = 6; 		
-		animationSpeed = 8;			
-		maxLife = 40; life = maxLife;			
+		animationSpeed = 8;				
 		alive = false;
 		
 		hitbox = new Rectangle(12, 12, 24, 24); 		

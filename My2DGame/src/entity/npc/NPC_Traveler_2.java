@@ -7,8 +7,8 @@ public class NPC_Traveler_2 extends NPC_Traveler_Template {
 	
 	public static final String npcName = "Traveler 2";
 	
-	public NPC_Traveler_2(GamePanel gp) {		
-		super(gp);
+	public NPC_Traveler_2(GamePanel gp, int worldX, int worldY) {		
+		super(gp, worldX, worldY);
 		this.gp = gp;		
 		
 		type = type_npc;

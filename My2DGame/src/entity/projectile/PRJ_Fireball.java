@@ -16,9 +16,9 @@ public class PRJ_Fireball extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
-		attack = 2;	
-		speed = 7; 
 		maxLife = 60; life = maxLife;
+		speed = 7; 
+		attack = 2;		
 		alive = false;
 		
 		hitbox = new Rectangle(12, 12, 24, 24); 		

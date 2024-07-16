@@ -17,7 +17,7 @@ public class PRJ_Arrow extends Projectile {
 		type = type_projectile;
 		name = prjName;
 		speed = 6; 		
-		attack = 2; 	
+		attack = 3; 	
 		knockbackPower = 0;
 		useCost = 1;		
 		maxLife = 120; life = maxLife;

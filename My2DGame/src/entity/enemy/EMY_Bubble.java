@@ -13,9 +13,14 @@ public class EMY_Bubble extends Entity {
 	public static final String emyName = "Buble";
 	GamePanel gp;
 	
-	public EMY_Bubble(GamePanel gp) {
+	public EMY_Bubble(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
+		direction = "upleft";
 		
 		type = type_enemy;
 		name = emyName;
@@ -23,36 +28,9 @@ public class EMY_Bubble extends Entity {
 		
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
-		attack = 1;
-		knockbackPower = 0;
-		maxLife = 4; life = maxLife;
-		
-		hitbox = new Rectangle(8, 8, 32, 32);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		getImage();
-	}
-	
-	public EMY_Bubble(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
-		worldXStart = this.worldX;
-		worldYStart = this.worldY;
-		
-		direction = "upleft";
-		
-		type = type_enemy;
-		name = emyName;
-		onGround = false;
-		
-		speed = 3; defaultSpeed = speed;
-		animationSpeed = 0;
+		maxLife = 8; life = maxLife;
 		attack = 2;
-		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
+		knockbackPower = 0;		
 		
 		hitbox = new Rectangle(8, 8, 32, 32);
 		hitboxDefaultX = hitbox.x;
@@ -63,7 +41,7 @@ public class EMY_Bubble extends Entity {
 	
 	public void getImage() {
 		up1 = setup("/enemy/bubble_down_1");
-		up2 = setup("/enemy/bubble_down_1");
+		up2 = up1;
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

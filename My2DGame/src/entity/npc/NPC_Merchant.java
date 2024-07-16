@@ -9,9 +9,13 @@ public class NPC_Merchant extends Entity {
 	public static final String npcName = "Merchant 1";
 	GamePanel gp;
 	
-	public NPC_Merchant(GamePanel gp) {		
+	public NPC_Merchant(GamePanel gp, int worldX, int worldY) {		
 		super(gp);
 		this.gp = gp;		
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		
 		type = type_npc;
 		name = npcName;

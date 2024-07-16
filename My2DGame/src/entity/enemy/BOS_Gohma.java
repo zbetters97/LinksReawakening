@@ -18,23 +18,22 @@ public class BOS_Gohma extends Entity {
 		this.gp = gp;
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
-		this.worldXStart = this.worldX;
-		this.worldYStart = this.worldY;
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
+		bounds = 2;
 		
 		type = type_boss;
 		name = emyName;
 		sleep = true;
 		lockon = true;
 		direction = "down";			
-		lockonDirection = "right";
-		currentBossPhase = bossPhase_1;
-		bounds = 2;
+		lockonDirection = "right";		
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
+		maxLife = 32; life = maxLife;
 		attack = 4;
-		knockbackPower = 1;
-		maxLife = 12; life = maxLife;
+		knockbackPower = 1;		
 		currentBossPhase = bossPhase_1;
 								
 		hitbox = new Rectangle(51, 8, 42, 33); 

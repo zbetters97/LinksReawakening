@@ -12,9 +12,13 @@ public class EMY_Octorok extends Entity {
 	public static final String emyName = "Octorok";
 	GamePanel gp;
 	
-	public EMY_Octorok(GamePanel gp, String direction) {
+	public EMY_Octorok(GamePanel gp, int worldX, int worldY, String direction) {
 		super(gp);			
 		this.gp = gp;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		this.direction = direction;
 		
 		type = type_enemy;
@@ -23,9 +27,9 @@ public class EMY_Octorok extends Entity {
 		
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;
-		attack = 1;
+		maxLife = 8; life = maxLife;
+		attack = 2;
 		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
 		
 		hitbox = new Rectangle(0, 0, 48, 48);
 		hitboxDefaultX = hitbox.x;

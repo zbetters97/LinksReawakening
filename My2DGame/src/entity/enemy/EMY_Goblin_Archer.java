@@ -16,33 +16,11 @@ public class EMY_Goblin_Archer extends Entity {
 	public static final String emyName = "Archer Goblin";
 	GamePanel gp;
 	
-	public EMY_Goblin_Archer(GamePanel gp) {
-		super(gp);				
-		this.gp = gp;
-		
-		type = type_enemy;
-		name = emyName;
-		
-		speed = 0; defaultSpeed = speed; 
-		animationSpeed = 10;
-		attack = 1;
-		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
-						
-		hitbox = new Rectangle(8, 16, 32, 32); 
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		arrows = -1;
-		currentItem = new ITM_Bow(gp);
-		
-		getImage();
-	}
 	public EMY_Goblin_Archer(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		bounds = 7;
@@ -52,9 +30,9 @@ public class EMY_Goblin_Archer extends Entity {
 		
 		speed = 0; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 1;
+		attack = 3;
 		knockbackPower = 0;
-		maxLife = 6; life = maxLife;
+		maxLife = 10; life = maxLife;
 						
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;

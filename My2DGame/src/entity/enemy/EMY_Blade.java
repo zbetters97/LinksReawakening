@@ -15,10 +15,10 @@ public class EMY_Blade extends Entity {
 	public EMY_Blade(GamePanel gp, int worldX, int worldY) {
 		super(gp);			
 		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
-		this.worldXStart = this.worldX;
-		this.worldYStart = this.worldY;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		direction = "down";
 		
 		type = type_enemy;
@@ -27,9 +27,9 @@ public class EMY_Blade extends Entity {
 		
 		speed = 4; defaultSpeed = speed;
 		animationSpeed = 0;
-		attack = 1;
-		knockbackPower = 1;
 		maxLife = 1; life = maxLife;
+		attack = 4;
+		knockbackPower = 1;		
 		
 		hitbox = new Rectangle(8, 8, 32, 32);
 		hitboxDefaultX = hitbox.x;

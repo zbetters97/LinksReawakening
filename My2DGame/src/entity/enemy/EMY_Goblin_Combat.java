@@ -14,38 +14,11 @@ public class EMY_Goblin_Combat extends Entity {
 	public static final String emyName = "Combat Goblin";
 	GamePanel gp;
 	
-	public EMY_Goblin_Combat(GamePanel gp) {
-		super(gp);				
-		this.gp = gp;
-		
-		type = type_enemy;
-		name = emyName;
-		capturable = true;
-		
-		speed = 1; defaultSpeed = speed; 
-		animationSpeed = 10;
-		attack = 2; 
-		knockbackPower = 1;
-		maxLife = 8; life = maxLife;
-		
-		swingSpeed1 = 30;
-		swingSpeed2 = 60;		
-		
-		hitbox = new Rectangle(8, 16, 32, 32); 
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		attackbox.width = 36;
-		attackbox.height = 36;
-		
-		getImage();
-		getAttackImage();
-	}
 	public EMY_Goblin_Combat(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		bounds = 6;
@@ -54,11 +27,11 @@ public class EMY_Goblin_Combat extends Entity {
 		name = emyName;
 		capturable = true;
 		
+		maxLife = 16; life = maxLife;
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 2; 
-		knockbackPower = 1;
-		maxLife = 8; life = maxLife;
+		attack = 6; 
+		knockbackPower = 1;		
 		
 		swingSpeed1 = 30;
 		swingSpeed2 = 60;		

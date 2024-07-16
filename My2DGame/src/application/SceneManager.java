@@ -83,9 +83,7 @@ public class SceneManager {
 			for (int i = 0; i < gp.npc[1].length; i++) {
 				if (gp.npc[gp.currentMap][i] == null) {
 					
-					gp.npc[gp.currentMap][i] = new NPC_Traveler_2(gp);
-					gp.npc[gp.currentMap][i].worldX = gp.tileSize * 24;
-					gp.npc[gp.currentMap][i].worldY = gp.tileSize * 32;
+					gp.npc[gp.currentMap][i] = new NPC_Traveler_2(gp, 24, 32);
 					
 					npc2 = gp.npc[gp.currentMap][i];
 					

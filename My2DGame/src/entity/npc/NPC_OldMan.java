@@ -13,9 +13,13 @@ public class NPC_OldMan extends Entity {
 	GamePanel gp;
 	int itemIndex = 0;
 	
-	public NPC_OldMan(GamePanel gp) {		
+	public NPC_OldMan(GamePanel gp, int worldX, int worldY) {		
 		super(gp);
 		this.gp = gp;		
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		
 		hasItemToGive = true;
 		type = type_npc;

@@ -17,8 +17,10 @@ public class BOS_Stalfos extends Entity {
 	public BOS_Stalfos(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		lockon = true;
 		direction = "down";
 		lockonDirection = "right";
@@ -28,9 +30,9 @@ public class BOS_Stalfos extends Entity {
 		
 		speed = 2; defaultSpeed = speed; 
 		animationSpeed = 14;
-		attack = 0;
-		knockbackPower = 3;
-		maxLife = 12; life = maxLife;
+		maxLife = 32; life = maxLife;
+		attack = 8;
+		knockbackPower = 3;		
 		currentBossPhase = bossPhase_1;
 		
 		swingSpeed1 = 30;

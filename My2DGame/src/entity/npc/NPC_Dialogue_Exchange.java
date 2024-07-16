@@ -10,9 +10,13 @@ public class NPC_Dialogue_Exchange extends Entity {
 	public static final String npcName = "Wise Man";
 	GamePanel gp;
 	
-	public NPC_Dialogue_Exchange(GamePanel gp) {		
+	public NPC_Dialogue_Exchange(GamePanel gp, int worldX, int worldY) {		
 		super(gp);
 		this.gp = gp;		
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		
 		type = type_npc;
 		name = npcName;

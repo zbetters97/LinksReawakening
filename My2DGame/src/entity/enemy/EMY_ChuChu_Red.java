@@ -8,35 +8,16 @@ import entity.Entity;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
 
-public class EMY_Slime_Red extends Entity {
+public class EMY_ChuChu_Red extends Entity {
 
-	public static final String emyName = "Red Slime";
+	public static final String emyName = "Red ChuChu";
 	GamePanel gp;
 	
-	public EMY_Slime_Red(GamePanel gp) {
+	public EMY_ChuChu_Red(GamePanel gp, int worldX, int worldY) {
 		super(gp);			
 		this.gp = gp;
-		
-		type = type_enemy;
-		name = emyName;
-		
-		speed = 0; defaultSpeed = speed;
-		animationSpeed = 12;
-		attack = 2; 
-		knockbackPower = 0;
-		maxLife = 8; life = maxLife;
-		
-		hitbox = new Rectangle(2, 18, 44, 30);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		getImage();
-	}
-	public EMY_Slime_Red(GamePanel gp, int worldX, int worldY) {
-		super(gp);			
-		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		bounds = 7;
@@ -44,11 +25,11 @@ public class EMY_Slime_Red extends Entity {
 		type = type_enemy;
 		name = emyName;
 		
+		maxLife = 10; life = maxLife;
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 12;
-		attack = 2; 
-		knockbackPower = 0;
-		maxLife = 8; life = maxLife;
+		attack = 4; 
+		knockbackPower = 0;		
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;
@@ -58,9 +39,9 @@ public class EMY_Slime_Red extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/slime_red_down_1");
-		up2 = setup("/enemy/slime_red_down_2");
-		up3 = setup("/enemy/slime_red_down_3");
+		up1 = setup("/enemy/chuchu_red_down_1");
+		up2 = setup("/enemy/chuchu_red_down_2");
+		up3 = setup("/enemy/chuchu_red_down_3");
 		down1 = up1;
 		down2 = up2;
 		down3 = up3;

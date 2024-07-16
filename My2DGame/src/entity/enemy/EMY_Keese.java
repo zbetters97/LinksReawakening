@@ -8,37 +8,16 @@ import entity.Entity;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Green;
 
-public class EMY_Bat extends Entity {
+public class EMY_Keese extends Entity {
 
-	public static final String emyName = "Bat";
+	public static final String emyName = "Keese";
 	GamePanel gp;
-	
-	public EMY_Bat(GamePanel gp) {
+		
+	public EMY_Keese(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
-		
-		type = type_enemy;
-		name = emyName;
-		onGround = false;
-		
-		speed = 2; defaultSpeed = speed;
-		animationSpeed = 5;
-		attack = 1;
-		knockbackPower = 0;
-		maxLife = 4; life = maxLife;
-		
-		hitbox = new Rectangle(2, 18, 44, 30);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		getImage();
-	}
-	
-	public EMY_Bat(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		bounds = 5;
@@ -61,8 +40,8 @@ public class EMY_Bat extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/bat_down_1");
-		up2 = setup("/enemy/bat_down_2");
+		up1 = setup("/enemy/keese_down_1");
+		up2 = setup("/enemy/keese_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

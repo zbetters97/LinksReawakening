@@ -48,6 +48,7 @@ public class EntityGenerator {
 			case OBJ_Door_Boss.objName: obj = new OBJ_Door_Boss(gp); break;
 			case OBJ_Door_Closed.objName: obj = new OBJ_Door_Closed(gp); break;			
 			case OBJ_Door_Locked.objName: obj = new OBJ_Door_Locked(gp); break;
+			case OBJ_Door_Oneway.objName: obj = new OBJ_Door_Oneway(gp); break;
 			case OBJ_Tent.objName: obj = new OBJ_Tent(gp); break;
 			
 			case OI_Block_Pushable.obj_iName: obj = new OI_Block_Pushable(gp); break;		

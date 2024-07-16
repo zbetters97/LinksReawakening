@@ -16,28 +16,11 @@ public class EMY_Wizzrobe extends Entity {
 	
 	private int teleportCounter = 0;
 	
-	public EMY_Wizzrobe(GamePanel gp) {
-		super(gp);				
-		this.gp = gp;
-		
-		type = type_enemy;
-		name = emyName;
-		
-		collision = false;
-		
-		speed = 2; defaultSpeed = speed; 
-		animationSpeed = 10;
-		maxLife = 8; life = maxLife;
-		
-		projectile = new PRJ_Magic(gp);
-		
-		getImage();
-	}
 	public EMY_Wizzrobe(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.gp = gp;
-		this.worldX = worldX * 48;
-		this.worldY = worldY * 48;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		bounds = 6;
@@ -47,9 +30,9 @@ public class EMY_Wizzrobe extends Entity {
 		
 		collision = false;
 		
+		maxLife = 16; life = maxLife;
 		speed = 2; defaultSpeed = speed; 
 		animationSpeed = 10;
-		maxLife = 8; life = maxLife;
 		
 		projectile = new PRJ_Magic(gp);
 		

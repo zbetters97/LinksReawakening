@@ -14,7 +14,7 @@ public class EQP_Sword_Master extends Entity {
 		name = eqpName;
 		description = "[" + name + "]\nThe sword of the hero of legends.";
 				
-		attackValue = 3;
+		attackValue = 6;
 		knockbackPower = 1;
 		
 		swingSpeed1 = 3;

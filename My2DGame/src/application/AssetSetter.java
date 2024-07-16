@@ -23,92 +23,48 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 						
-		gp.npc[mapNum][i] = new NPC_Traveler_1(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 20;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 21;
-		i++;		
-		gp.npc[mapNum][i] = new NPC_OldMan(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 30;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 30;
-		i++;		
-		gp.npc[mapNum][i] = new NPC_Dialogue_Exchange(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 20;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 10;
+		gp.npc[mapNum][i] = new NPC_Traveler_1(gp, 20, 21); i++;		
+		gp.npc[mapNum][i] = new NPC_OldMan(gp, 30, 30); i++;		
+		gp.npc[mapNum][i] = new NPC_Dialogue_Exchange(gp, 20, 10);
 		gp.npc[mapNum][i].direction = "up";
 		i++;
 		
 		mapNum = 1;
 		i = 0;
 		
-		gp.npc[mapNum][i] = new NPC_Merchant(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize * 12;
-		gp.npc[mapNum][i].worldY = gp.tileSize * 7;
-		i++;
+		gp.npc[mapNum][i] = new NPC_Merchant(gp, 12, 7); i++;
 	}	
 	public void setEnemy() {		
 		
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.enemy[mapNum][i] = new EMY_Bat(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 40;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Bat(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 21;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 37;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 38;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 40;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 37;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 41;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Octorok(gp, "up");
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 46;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 36;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 27;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Octorok(gp,"left");
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 21;
-		i++;	
-		gp.enemy[mapNum][i] = new EMY_Octorok(gp, "left");
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 43;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 25;
-		i++;	
-		gp.enemy[mapNum][i] = new EMY_Zora(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 38;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 9;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 29;
-		i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp);
-		gp.enemy[mapNum][i].worldX = gp.tileSize * 12;
-		gp.enemy[mapNum][i].worldY = gp.tileSize * 31;
-		i++;
+		gp.enemy[mapNum][i] = new EMY_Keese(gp, 23, 40); i++;
+		gp.enemy[mapNum][i] = new EMY_Keese(gp, 21, 37); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 38, 40); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 37, 41); i++;
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 12, 46, "up"); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 36, 27); i++;
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 43, 21, "left"); i++;	
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 32, 25, "left"); i++;	
+		gp.enemy[mapNum][i] = new EMY_Zora(gp, 38, 9); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 12, 29); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 12, 31); i++;
 		
 		mapNum = 2;
 		i = 0;		
 		
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 28, 90); i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 10, 89); i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 12, 89); i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 37, 71); i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 47, 70); i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Green(gp, 40, 57); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 28, 90); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 10, 89); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 12, 89); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 37, 71); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 47, 70); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 40, 57); i++;
 		
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 48, 73); i++;	
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 37, 60); i++;
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 33, 54); i++;		
-		gp.enemy[mapNum][i] = new EMY_Slime_Red(gp, 28, 32); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 48, 73); i++;	
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 37, 60); i++;
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 33, 54); i++;		
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 28, 32); i++;
 		
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 19, 55); i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 29, 68); i++;
@@ -130,9 +86,7 @@ public class AssetSetter {
 		i = 0;
 		
 		if (!Progress.bossDefeated_1_2) {
-			gp.enemy[mapNum][i] = new BOS_Skeleton(gp);
-			gp.enemy[mapNum][i].worldX = gp.tileSize * 23;
-			gp.enemy[mapNum][i].worldY = gp.tileSize * 16;
+			gp.enemy[mapNum][i] = new BOS_Skeleton(gp, 23, 16);
 		}
 		i++;		
 	}
@@ -217,11 +171,11 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldY = gp.tileSize * 67;	
 		i++;
 		
-		gp.obj[mapNum][i] = new OBJ_Oneway(gp, "down", true);
+		gp.obj[mapNum][i] = new OBJ_Door_Oneway(gp, "down", true);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 57;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 91;	
 		i++;
-		gp.obj[mapNum][i] = new OBJ_Oneway(gp, "up", false);
+		gp.obj[mapNum][i] = new OBJ_Door_Oneway(gp, "up", false);
 		gp.obj[mapNum][i].worldX = gp.tileSize * 57;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 90;	
 		i++;

@@ -15,9 +15,9 @@ public class PRJ_Magic extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
-		attack = 4;	
-		speed = 8; 
 		maxLife = 120; life = maxLife;
+		speed = 8; 
+		attack = 2;			
 		alive = false;
 		
 		hitbox = new Rectangle(12, 12, 24, 24); 		

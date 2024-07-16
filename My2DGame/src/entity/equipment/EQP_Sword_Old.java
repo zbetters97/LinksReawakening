@@ -14,7 +14,7 @@ public class EQP_Sword_Old extends Entity {
 		name = eqpName;
 		description = "[" + name + "]\nA humble starter sword.";
 				
-		attackValue = 2;
+		attackValue = 4;
 		knockbackPower = 0;
 		
 		swingSpeed1 = 3;

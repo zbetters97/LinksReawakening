@@ -13,19 +13,23 @@ public class EMY_Zora extends Entity {
 	public static final String emyName = "Octorok";
 	GamePanel gp;
 	
-	public EMY_Zora(GamePanel gp) {
+	public EMY_Zora(GamePanel gp, int worldX, int worldY) {
 		super(gp);			
 		this.gp = gp;
+		this.worldX = worldX * gp.tileSize;
+		this.worldY = worldY * gp.tileSize;	
+		worldXStart = this.worldX;
+		worldYStart = this.worldY;
 		
 		type = type_enemy;
 		name = emyName;
 		canSwim = true;
 		direction = "down";
 		
+		maxLife = 12; life = maxLife;
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 12;				
-		maxLife = 6; life = maxLife;
-		attack = 0; 
+		attack = 2; 
 		knockbackPower = 0;
 		
 		hitbox = new Rectangle(0, 0, 48, 48);
