@@ -9,9 +9,20 @@ import entity.collectable.COL_Rupee_Green;
 
 public class IT_Wall_01 extends InteractiveTile {
 
-	public static final String itName = "Destructible Wall";
+	public static final String itName = "Destructible Wall 01";
 	GamePanel gp;
 	
+	public IT_Wall_01(GamePanel gp) {
+		super(gp);
+		this.gp = gp;
+		
+		name = itName;		
+		destructible = true;
+		bombable = true;
+		life = 1;
+		
+		getImage();
+	}
 	public IT_Wall_01(GamePanel gp, int col, int row, String direction) {
 		super(gp, col, row);
 		this.gp = gp;
@@ -25,6 +36,9 @@ public class IT_Wall_01 extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
+		getImage();
+	}
+	public void getImage() {
 		up1 = setup("/tiles_interactive/destructiblewall_01_up");
 		down1 = setup("/tiles_interactive/destructiblewall_01_down");
 		left1 = setup("/tiles_interactive/destructiblewall_01_left");

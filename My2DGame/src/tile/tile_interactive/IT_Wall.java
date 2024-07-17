@@ -12,6 +12,17 @@ public class IT_Wall extends InteractiveTile {
 	public static final String itName = "Destructible Wall";
 	GamePanel gp;
 	
+	public IT_Wall(GamePanel gp) {
+		super(gp);
+		this.gp = gp;
+		
+		name = itName;		
+		destructible = true;
+		bombable = true;
+		life = 1;
+		
+		down1 = setup("/tiles_interactive/destructiblewall");
+	}
 	public IT_Wall(GamePanel gp, int col, int row) {
 		super(gp, col, row);
 		this.gp = gp;

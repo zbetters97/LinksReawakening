@@ -2,7 +2,6 @@ package tile.tile_interactive;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.util.Random;
 
 import application.GamePanel;
 import entity.Entity;
@@ -13,8 +12,26 @@ public class IT_Pot extends InteractiveTile {
 
 	public static final String itName = "Pot";
 	GamePanel gp;
-	Entity lootOne, lootTwo;
 	
+	public IT_Pot(GamePanel gp) {
+		super(gp);
+		this.gp = gp;
+		
+		type = type_obstacle;
+		name = itName;
+		life = 1;
+		destructible = true;
+		bombable = true;
+		grabbable = true;
+		
+		hitbox = new Rectangle(8, 16, 32, 28); 	
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		direction = "down";
+		
+		getImage();	
+	}
 	public IT_Pot(GamePanel gp, int col, int row) {
 		super(gp, col, row);
 		this.gp = gp;
@@ -44,8 +61,7 @@ public class IT_Pot extends InteractiveTile {
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
-		this.lootOne = loot;
-		this.lootTwo = loot;
+		this.loot = loot;
 		
 		type = type_obstacle;
 		name = itName;
@@ -70,13 +86,8 @@ public class IT_Pot extends InteractiveTile {
 		right1 = down1;
 	}
 	
-	public void setLoot(Entity lootOne, Entity lootTwo) {
-		this.lootOne = lootOne;
-		this.lootTwo = lootTwo;
-	}
-	public void setLoot(Entity lootOne) {
-		this.lootOne = lootOne;
-		this.lootTwo = lootOne;
+	public void setLoot(Entity loot) {
+		this.loot = loot;		
 	}
 		
 	public void interact() {
@@ -115,10 +126,7 @@ public class IT_Pot extends InteractiveTile {
 	
 	// DROPPED ITEM
 	public void checkDrop() {
-		int i = new Random().nextInt(100) + 1;
-		
-		if (i <= 50) dropItem(lootOne);
-		else dropItem(lootTwo);
+		dropItem(loot);
 	}
 		
 	public void playSE() {

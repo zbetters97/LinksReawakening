@@ -10,6 +10,7 @@ import java.util.List;
 
 import application.GamePanel;
 import entity.Entity;
+import entity.object.OBJ_Door_Oneway;
 
 public class SaveLoad {
 
@@ -47,6 +48,7 @@ public class SaveLoad {
 			ds.cArea = gp.currentArea;
 			
 			ds.name = gp.player.name;
+			ds.direction = gp.player.direction;
 			ds.maxLife = gp.player.maxLife;
 			ds.life = gp.player.life;
 			ds.attack = gp.player.attack;
@@ -119,11 +121,22 @@ public class SaveLoad {
 			}
 			
 			// ENEMIES
-			ds.emyAlive = new boolean[gp.maxMap][gp.enemy[1].length];
+			ds.enemyWorldX = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyWorldY = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyLife = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyAlive = new boolean[gp.maxMap][gp.enemy[1].length];
+			ds.enemyAsleep = new boolean[gp.maxMap][gp.enemy[1].length];
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {				
 				for (int i = 0; i < gp.enemy[1].length; i++) {
 					if (gp.enemy[mapNum][i] == null) {
-						ds.emyAlive[mapNum][i] = false;
+						ds.enemyAlive[mapNum][i] = false;
+					}
+					else {
+						ds.enemyWorldX[mapNum][i] = gp.enemy[mapNum][i].worldX;
+						ds.enemyWorldY[mapNum][i] = gp.enemy[mapNum][i].worldY;
+						ds.enemyLife[mapNum][i] = gp.enemy[mapNum][i].life;
+						ds.enemyAlive[mapNum][i] = true;
+						ds.enemyAsleep[mapNum][i] = gp.enemy[mapNum][i].sleep;
 					}
 				}
 			}			
@@ -133,10 +146,21 @@ public class SaveLoad {
 			ds.mapObjectWorldX = new int[gp.maxMap][gp.obj[1].length];
 			ds.mapObjectWorldY = new int[gp.maxMap][gp.obj[1].length];
 			ds.mapObjectLootNames = new String[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectDirections = new String[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectSwitchedOn = new boolean[gp.maxMap][gp.obj[1].length];
 			ds.mapObjectOpened = new boolean[gp.maxMap][gp.obj[1].length];
+			
+			// MAP iTILES
+			ds.iTileNames = new String[gp.maxMap][gp.iTile[1].length];
+			ds.iTileWorldX = new int[gp.maxMap][gp.iTile[1].length];
+			ds.iTileWorldY = new int[gp.maxMap][gp.iTile[1].length];
+			ds.iTileDirections = new String[gp.maxMap][gp.iTile[1].length];
+			ds.iTileSwitchedOn = new boolean[gp.maxMap][gp.iTile[1].length];
+			ds.iTileLootNames = new String[gp.maxMap][gp.iTile[1].length];
 			
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
 				
+				// MAP OBJECTS
 				for (int i = 0; i < gp.obj[1].length; i++) {
 					
 					if (gp.obj[mapNum][i] == null) {
@@ -146,21 +170,42 @@ public class SaveLoad {
 						ds.mapObjectNames[mapNum][i] = gp.obj[mapNum][i].name;
 						ds.mapObjectWorldX[mapNum][i] = gp.obj[mapNum][i].worldX;
 						ds.mapObjectWorldY[mapNum][i] = gp.obj[mapNum][i].worldY;
-						
+						ds.mapObjectDirections[mapNum][i] = gp.obj[mapNum][i].direction;
+						ds.mapObjectSwitchedOn[mapNum][i] = gp.obj[mapNum][i].switchedOn;
+												
 						if (gp.obj[mapNum][i].loot != null) {
 							ds.mapObjectLootNames[mapNum][i] = gp.obj[mapNum][i].loot.name;
 						}
 						
 						ds.mapObjectOpened[mapNum][i] = gp.obj[mapNum][i].opened;
 					}					
-				}				
+				}		
+				
+				// MAP iTILES
+				for (int i = 0; i < gp.iTile[1].length; i++) {
+					
+					if (gp.iTile[mapNum][i] == null) {
+						ds.iTileNames[mapNum][i] = "NULL";
+					}
+					else {
+						ds.iTileNames[mapNum][i] = gp.iTile[mapNum][i].name;
+						ds.iTileWorldX[mapNum][i] = gp.iTile[mapNum][i].worldX;
+						ds.iTileWorldY[mapNum][i] = gp.iTile[mapNum][i].worldY;						
+						ds.iTileDirections[mapNum][i] = gp.iTile[mapNum][i].direction;			
+						ds.iTileSwitchedOn[mapNum][i] = gp.iTile[mapNum][i].switchedOn;						
+						
+						if (gp.iTile[mapNum][i].loot != null) {
+							ds.iTileLootNames[mapNum][i] = gp.iTile[mapNum][i].loot.name;
+						}						
+					}					
+				}			
 			}
 			
 			// WRITE THE DS OBJECT
 			oos.writeObject(ds);
 		}
 		catch(Exception e) { 
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -192,6 +237,7 @@ public class SaveLoad {
 			gp.player.worldY = ds.pWorldY;
 			
 			gp.player.name = ds.name;
+			gp.player.direction = ds.direction;
 			gp.player.maxLife = ds.maxLife;
 			gp.player.life = ds.life;
 			gp.player.attack = ds.attack;
@@ -260,15 +306,21 @@ public class SaveLoad {
 			// ENEMIES	
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {				
 				for (int i = 0; i < gp.enemy[1].length; i++) {
-					if (!ds.emyAlive[mapNum][i]) {
+					if (!ds.enemyAlive[mapNum][i]) {
 						gp.enemy[mapNum][i] = null;
+					}
+					else {
+						gp.enemy[mapNum][i].worldX = ds.enemyWorldX[mapNum][i];
+						gp.enemy[mapNum][i].worldY = ds.enemyWorldY[mapNum][i];
+						gp.enemy[mapNum][i].life = ds.enemyLife[mapNum][i];
+						gp.enemy[mapNum][i].sleep = ds.enemyAsleep[mapNum][i];
 					}
 				}
 			}		
-			
-			// MAP OBJECTS
+						
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
 				
+				// MAP OBJECTS
 				for (int i = 0; i < gp.obj[1].length; i++) {
 					
 					if (ds.mapObjectNames[mapNum][i].equals("NULL")) {
@@ -277,7 +329,10 @@ public class SaveLoad {
 					else {						
 						gp.obj[mapNum][i] = gp.eGenerator.getObject(ds.mapObjectNames[mapNum][i]);
 						gp.obj[mapNum][i].worldX = ds.mapObjectWorldX[mapNum][i];
-						gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];
+						gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];						
+						gp.obj[mapNum][i].direction = ds.mapObjectDirections[mapNum][i];
+						gp.obj[mapNum][i].switchedOn = ds.mapObjectSwitchedOn[mapNum][i];
+						
 					
 						if (ds.mapObjectLootNames[mapNum][i] != null) {
 							gp.obj[mapNum][i].setLoot(gp.eGenerator.getObject(ds.mapObjectLootNames[mapNum][i]));
@@ -289,11 +344,30 @@ public class SaveLoad {
 						}		
 						
 					}			
-				}				
+				}	
+				
+				// MAP iTILES
+				for (int i = 0; i < gp.iTile[1].length; i++) {
+					
+					if (ds.iTileNames[mapNum][i].equals("NULL")) {
+						gp.iTile[mapNum][i] = null;
+					}
+					else {						
+						gp.iTile[mapNum][i] = gp.iGenerator.getTile(ds.iTileNames[mapNum][i]);
+						gp.iTile[mapNum][i].worldX = ds.iTileWorldX[mapNum][i];
+						gp.iTile[mapNum][i].worldY = ds.iTileWorldY[mapNum][i];							
+						gp.iTile[mapNum][i].direction = ds.iTileDirections[mapNum][i];
+						gp.iTile[mapNum][i].switchedOn = ds.iTileSwitchedOn[mapNum][i];	
+						
+						if (ds.iTileLootNames[mapNum][i] != null) {
+							gp.iTile[mapNum][i].setLoot(gp.eGenerator.getObject(ds.iTileLootNames[mapNum][i]));
+						}						
+					}					
+				}			
 			}
 		}
 		catch(Exception e) { 
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 }

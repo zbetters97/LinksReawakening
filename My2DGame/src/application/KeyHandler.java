@@ -111,7 +111,7 @@ public class KeyHandler implements KeyListener {
 				gp.stopMusic();
 				gp.saveLoad.load();		
 				gp.gameState = gp.playState;
-				gp.setupMusic();
+				gp.setupMusic(true);
 			}
 			
 			// QUIT GAME OPTION
@@ -217,7 +217,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.titleScreenState = 0;
 				gp.ui.commandNum = 0;					
 				gp.gameState = 1;
-				gp.resetGame(true);
+				gp.resetGame();
 			}
 			// LETTER SELECT				
 			else {					
@@ -356,9 +356,10 @@ public class KeyHandler implements KeyListener {
 			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
 		}
-		if (code == KeyEvent.VK_SPACE) {
+		if (code == KeyEvent.VK_SPACE && lock) {
 			playSelectSE();
 			actionPressed = true;
+			lock = false;
 		}
 	}
 	
@@ -555,15 +556,17 @@ public class KeyHandler implements KeyListener {
 			
 			if (gp.ui.commandNum == 0) {
 				playSelectSE();
+				gp.stopMusic();				
+				gp.ui.commandNum = 0;				
+				gp.saveLoad.load();	
 				gp.gameState = gp.playState;
-				gp.ui.commandNum = 0;
-				gp.resetGame(false);
+				gp.setupMusic(true);
 			}
 			else if (gp.ui.commandNum == 1){
 				playSelectSE();	
 				gp.gameState = gp.titleState;
 				gp.ui.commandNum = 0;
-				gp.resetGame(true);
+				gp.resetGame();
 			}			
 		}
 	}
@@ -574,7 +577,7 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.gameState = gp.titleState;
 			gp.ui.commandNum = 0;
-			gp.resetGame(true);
+			gp.resetGame();
 		}
 	}
 	

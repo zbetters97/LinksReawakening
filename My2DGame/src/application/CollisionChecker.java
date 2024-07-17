@@ -69,7 +69,7 @@ public class CollisionChecker {
 				// tiles at top-left and left-top
 				entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
-				
+								
 				entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];	
 				
@@ -214,7 +214,7 @@ public class CollisionChecker {
 				if (!gp.player.invincible) {
 					
 					gp.player.playHurtSE();					
-					gp.player.life--;
+					gp.player.life -= 2;
 					gp.player.transparent = true;
 					gp.player.invincible = true;	
 					
@@ -1070,9 +1070,9 @@ public class CollisionChecker {
 	}
 	
 	// EXPLOSION COLLISION
-	public ArrayList<Integer> checkExplosion(Entity entity, Entity[][] target) {
+	public ArrayList<Entity> checkExplosion(Entity entity, Entity[][] target) {
 		
-		ArrayList<Integer> tiles = new ArrayList<Integer>();
+		ArrayList<Entity> impacted = new ArrayList<Entity>();
 		
 		for (int i  = 0; i < target[1].length; i++) {
 			
@@ -1088,9 +1088,9 @@ public class CollisionChecker {
 				target[gp.currentMap][i].hitbox.x = target[gp.currentMap][i].worldX + target[gp.currentMap][i].hitbox.x;
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitbox.y;
 				
-				// IF iTile IS HIT BY BOMB
+				// IF ENTITY IS HIT BY BOMB
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) 			
-					tiles.add(i);				
+					impacted.add(target[gp.currentMap][i]);				
 				
 				// reset bomb hitbox
 				entity.hitbox.x = entity.hitboxDefaultX;
@@ -1103,7 +1103,7 @@ public class CollisionChecker {
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].hitboxDefaultY;
 			}
 		}		
-		return tiles;
+		return impacted;
 	}
 	
 	// DIGGING COLLISION

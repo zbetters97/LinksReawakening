@@ -98,15 +98,15 @@ public class PRJ_Bomb extends Projectile {
 		generateParticle(this, this);
 		
 		// DAMAGE SURROUNDING ENEMIES
-		ArrayList<Integer> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
+		ArrayList<Entity> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
 		if (enemyIndexes.size() > 0) {
-			for (Integer e : enemyIndexes) 
+			for (Entity e : enemyIndexes) 
 				gp.player.damageEnemy(e, this, attack, knockbackPower);						
 		}
 		enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy_r);
 		if (enemyIndexes.size() > 0) {
-			for (Integer e : enemyIndexes) 
-				gp.player.damageEnemy(e, this, attack, knockbackPower);						
+			for (Entity er : enemyIndexes) 
+				gp.player.damageEnemy(er, this, attack, knockbackPower);						
 		}
 		
 		// DAMAGE SURROUNDING iTILES

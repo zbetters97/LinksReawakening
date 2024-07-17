@@ -41,7 +41,7 @@ public class ITM_Bow extends Entity {
 	}
 	
 	public boolean use(Entity user) {	
-		
+
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {			
 			playSE();
@@ -68,6 +68,7 @@ public class ITM_Bow extends Entity {
 			else {
 				projectile.attack = 2;
 				projectile.speed = 10;
+				charge = 0;	
 			}
 			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);		

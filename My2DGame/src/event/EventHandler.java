@@ -122,7 +122,7 @@ public class EventHandler {
 					Progress.enemy_room_1_3 = true;
 					spawnEnemies(
 							new int[]{59}, new int[]{67}, new String[]{"up"},
-							Arrays.asList(new EMY_Wizzrobe(gp,57,60), new EMY_Buzzblob(gp,56,62), new EMY_Buzzblob(gp,60,62))
+							Arrays.asList(new EMY_Wizzrobe(gp,57,60), new EMY_Buzzblob(gp,60,62))
 					);
 				}
 			}
@@ -132,12 +132,13 @@ public class EventHandler {
 			if (!Progress.bossDefeated_1_1) { 
 				if (hit(2, 61, 89, true)) {					
 					Progress.bossDefeated_1_1 = true;
+					Progress.canSave = false;
 					
 					gp.stopMusic();
 					gp.playMusic(6);
 					
 					spawnDoors(
-							new int[]{59,59}, new int[]{89,85}, new String[]{"right","right"}, new Boolean[]{true, true}
+							new int[]{60}, new int[]{85}, new String[]{"right"}, new Boolean[]{true, true}
 					);
 					
 					// SEARCH FOR BOSS
@@ -337,7 +338,8 @@ public class EventHandler {
 			}
 		}
 		
-		canTouchEvent = false;		
+		canTouchEvent = false;	
+		Progress.canSave = false;
 		
 		gp.csManager.scene = gp.csManager.enemy_spawn;
 		gp.gameState = gp.cutsceneState;	
@@ -379,6 +381,7 @@ public class EventHandler {
 		if (!gp.bossBattleOn) {			
 			if (num == 1) gp.csManager.scene = gp.csManager.boss_1;	
 			
+			Progress.canSave = false;
 			gp.gameState = gp.cutsceneState;			
 		}
 	}

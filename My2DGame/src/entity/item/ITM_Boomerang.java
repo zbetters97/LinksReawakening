@@ -29,6 +29,8 @@ public class ITM_Boomerang extends Entity {
 			addProjectile(projectile);
 						
 			user.shotAvailableCounter = 0;	
+			
+			user.action = Action.THROWING;
 		}			
 		return true;
 	}

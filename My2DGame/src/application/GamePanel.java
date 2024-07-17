@@ -116,6 +116,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public AssetSetter aSetter = new AssetSetter(this);
 	public PathFinder pFinder = new PathFinder(this);
 	public EntityGenerator eGenerator = new EntityGenerator(this);
+	public iTileGenerator iGenerator = new iTileGenerator(this);
 	public SceneManager csManager = new SceneManager(this);
 	
 	// SAVE LOAD MANAGER
@@ -141,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable {
 		currentArea = dungeon;
 		currentMap = 2;
 		
-		setupMusic();
+		setupMusic(false);
 
 		eManager.setup();
 		
@@ -213,7 +214,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// GAME PLAYING
 		if (gameState == playState || gameState == objectState) {
-			
+
 			// UPDATE PLAYER
 			player.update();	
 			
@@ -353,7 +354,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 		if (nextArea != currentArea) {
 			stopMusic();			
-			setupMusic();
+			setupMusic(false);
 		}		
 		
 		player.resetValues();
@@ -361,8 +362,7 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setInteractiveObjects();				
 	}
 	
-	public void removeTempEntity() {
-		
+	public void removeTempEntity() {		
 
 		for (int mapNum = 0; mapNum < maxMap; mapNum++) {
 			
@@ -377,7 +377,7 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}	
 			for (int i = 0; i < enemy_r[1].length; i++) {
-				if (enemy_r[mapNum][i] != null && enemy_r[mapNum][i].temp) {
+				if (enemy_r[mapNum][i] != null) {
 					enemy_r[mapNum][i] = null;
 				}
 			}	
@@ -431,47 +431,48 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
-	public void resetGame(boolean restart) {
+	public void resetGame() {
 		stopMusic();
 		
-		bossBattleOn = false;
 		removeTempEntity();
-		currentArea = outside;	
+		bossBattleOn = false;
 		csManager.scene = csManager.NA;
 		csManager.phase = 0;
 		
-		player.alive = true;		
+		player.alive = true;	
+		player.inventory.clear();
+		player.inventory_item.clear();
 		player.restoreStatus();
+		player.setDefaultValues();
 		player.setDefaultPosition();	
-		player.resetCounter();
+		player.resetCounter();		
 		
-		if (restart) {
-			player.inventory.clear();
-			player.inventory_item.clear();
-			player.setDefaultValues();	
-			
-			aSetter.setNPC();
-			aSetter.setEnemy();		
-			aSetter.setObject();
-			aSetter.setInteractiveObjects();
-			aSetter.setInteractiveTiles();
-			
-			eManager.lighting.resetDay();
-		}
+		aSetter.setNPC();
+		aSetter.setEnemy();		
+		aSetter.setObject();
+		aSetter.setInteractiveObjects();
+		aSetter.setInteractiveTiles();
 		
-		setupMusic();
+		eManager.lighting.resetDay();		
+		
+		setupMusic(true);
 	}
 	
-	public void setupMusic() {
+	public void setupMusic(boolean reset) {		
 		
-		if (nextArea != currentArea) {	
-			if (gameState == titleState) playMusic(0);			
-			else {			
-				if (currentMap == 0) playMusic(2);
-				else if (currentMap == 1) playMusic(3);
-				else if (currentMap == 2) playMusic(5);
-				else if (currentMap == 3) playMusic(5);
-			}
+		
+		if (gameState == titleState) playMusic(0);
+		else if (reset) {
+			if (currentMap == 0) playMusic(2);
+			else if (currentMap == 1) playMusic(3);
+			else if (currentMap == 2) playMusic(5);
+			else if (currentMap == 3) playMusic(5);
+		}		
+		else if (nextArea != currentArea) {							
+			if (currentMap == 0) playMusic(2);
+			else if (currentMap == 1) playMusic(3);
+			else if (currentMap == 2) playMusic(5);
+			else if (currentMap == 3) playMusic(5);
 		}
 	}	
 	public void playMusic(int c) {		

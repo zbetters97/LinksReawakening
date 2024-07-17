@@ -24,6 +24,7 @@ public class EMY_ChuChu_Red extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		capturable = true;
 		
 		maxLife = 10; life = maxLife;
 		speed = 0; defaultSpeed = speed;
@@ -57,7 +58,7 @@ public class EMY_ChuChu_Red extends Entity {
 		spriteCounter++;
 		if (spriteCounter > animationSpeed && animationSpeed != 0) {
 			
-			if (onPath) {
+			if (onPath || captured) {
 				speed = 1;
 				if (spriteNum == 1 || spriteNum == 2) spriteNum = 3;
 				else if (spriteNum == 3) spriteNum = 2;
@@ -73,19 +74,25 @@ public class EMY_ChuChu_Red extends Entity {
 	
 	public void setAction() {
 		
-		if (onPath) {
-			isOffPath(gp.player, 6);
+		if (!captured) {
 			if (onPath) {
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				isOffPath(gp.player, 6);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				}
+			}
+			else {				
+				isOnPath(gp.player, 4);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+					isOffPath(gp.player, 8);
+				}		
 			}
 		}
-		else {				
-			isOnPath(gp.player, 4);
-			if (onPath) {
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-				isOffPath(gp.player, 8);
-			}		
-		}
+	}
+	
+	public void attacking() {
+		attacking = false;
 	}
 	
 	public void damageReaction() {

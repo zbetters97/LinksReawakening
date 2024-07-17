@@ -11,6 +11,11 @@ public class InteractiveTile extends Entity {
 	
 	GamePanel gp;
 	
+	public InteractiveTile(GamePanel gp) {
+		super(gp);
+		this.gp = gp;
+		collision = true;		
+	}
 	public InteractiveTile(GamePanel gp, int col, int row) {
 		super(gp);
 		this.gp = gp;
@@ -32,10 +37,11 @@ public class InteractiveTile extends Entity {
 				gp.cChecker.checkPit(this, false);
 				
 				if (alive) {
-				
-					int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-					if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
-					gp.player.damageEnemy(enemyIndex, this, 2, 2);
+					
+					Entity enemy = getEnemy(this);		
+					if (enemy != null) {
+						gp.player.damageEnemy(enemy, this, 2, 2);					
+					}
 					
 					int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
 					gp.player.damageInteractiveTile(iTileIndex, this);						

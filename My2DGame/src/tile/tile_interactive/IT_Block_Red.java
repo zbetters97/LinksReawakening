@@ -6,19 +6,33 @@ import application.GamePanel;
 
 public class IT_Block_Red extends InteractiveTile {
 
-	public static final String itName = "Block";
+	public static final String itName = "Red Block";
 	GamePanel gp;
 	
-	public IT_Block_Red(GamePanel gp, int col, int row) {
-		super(gp, col, row);
+	public IT_Block_Red(GamePanel gp) {
+		super(gp);
 		this.gp = gp;
 		
 		name = itName;
 		switchedOn = false;		
 		direction = "up";
 		
+		hitbox = new Rectangle(0, 0, 48, 48); 	
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		up1 = setup("/tiles_interactive/block_red_off");
+		down1 = setup("/tiles_interactive/block_red_on");		
+	}
+	public IT_Block_Red(GamePanel gp, int col, int row) {
+		super(gp, col, row);
+		this.gp = gp;
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
+		
+		name = itName;
+		switchedOn = false;		
+		direction = "up";
 		
 		hitbox = new Rectangle(0, 0, 48, 48); 	
 		hitboxDefaultX = hitbox.x;

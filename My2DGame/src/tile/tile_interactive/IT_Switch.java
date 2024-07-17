@@ -9,6 +9,23 @@ public class IT_Switch extends InteractiveTile {
 	public static final String itName = "Switch";
 	GamePanel gp;
 	
+	public IT_Switch(GamePanel gp) {
+		super(gp);
+		this.gp = gp;
+		
+		name = itName;
+		life = 3;
+		switchedOn = false;
+		bombable = true;		
+		direction = "down";
+		
+		hitbox = new Rectangle(0,0,48,48);
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
+		up1 = setup("/tiles_interactive/switch_on");
+		down1 = setup("/tiles_interactive/switch_off");		
+	}
 	public IT_Switch(GamePanel gp, int col, int row) {
 		super(gp, col, row);
 		this.gp = gp;

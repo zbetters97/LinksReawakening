@@ -1,5 +1,6 @@
 package entity.enemy;
 
+import java.awt.Rectangle;
 import java.util.Random;
 
 import application.GamePanel;
@@ -27,7 +28,7 @@ public class EMY_Wizzrobe extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
-		
+		capturable = true;		
 		collision = false;
 		
 		maxLife = 16; life = maxLife;
@@ -35,6 +36,10 @@ public class EMY_Wizzrobe extends Entity {
 		animationSpeed = 10;
 		
 		projectile = new PRJ_Magic(gp);
+		
+		hitbox = new Rectangle(8, 16, 32, 32); 
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 		
 		getImage();
 	}
@@ -54,11 +59,35 @@ public class EMY_Wizzrobe extends Entity {
 	public void update() {	
 				
 		if (sleep) return;		
-		if (knockback) { knockbackEntity();	return; }		
+		if (knockback) { knockbackEntity();	return; }	
+		if (captured) { isCaptured(); return; }
 		if (teleporting) { teleport(); }		
 		else { attack(); }		
 		
 		manageValues();
+	}
+	
+	public void attacking() {
+		attacking = false;
+		spriteNum = 1;
+		useProjectile(1);
+	}
+	
+	public void cycleSprites() {
+		
+		if (captured) {
+			spriteNum = 2;
+		}
+		else {		
+			spriteCounter++;
+			if (spriteCounter > animationSpeed && animationSpeed != 0) {
+				
+				if (spriteNum == 1) spriteNum = 2;
+				else if (spriteNum == 2) spriteNum = 1;
+				
+				spriteCounter = 0;
+			}
+		}
 	}
 	
 	public void teleport() {

@@ -24,6 +24,7 @@ public class EMY_ChuChu_Green extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		capturable = true;
 		
 		maxLife = 6; life = maxLife;
 		speed = 0; defaultSpeed = speed;
@@ -54,13 +55,14 @@ public class EMY_ChuChu_Green extends Entity {
 	}
 	
 	public void cycleSprites() {
+				
 		spriteCounter++;
 		if (spriteCounter > animationSpeed && animationSpeed != 0) {
 			
-			if (onPath) {
+			if (onPath || captured) {
 				speed = 1;
 				if (spriteNum == 1 || spriteNum == 2) spriteNum = 3;
-				else if (spriteNum == 3) spriteNum = 2;
+				else if (spriteNum == 3) spriteNum = 2;	
 			}
 			else {			
 				spriteNum = 1;
@@ -73,19 +75,25 @@ public class EMY_ChuChu_Green extends Entity {
 	
 	public void setAction() {
 				
-		if (onPath) {
-			isOffPath(gp.player, 5);
+		if (!captured) {
 			if (onPath) {
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				isOffPath(gp.player, 5);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+				}
+			}
+			else {				
+				isOnPath(gp.player, 3);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+					isOffPath(gp.player, 8);
+				}		
 			}
 		}
-		else {				
-			isOnPath(gp.player, 3);
-			if (onPath) {
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-				isOffPath(gp.player, 8);
-			}		
-		}
+	}
+	
+	public void attacking() {
+		attacking = false;
 	}
 	
 	// ONLY FOLLOW PLAYER WHEN HIT

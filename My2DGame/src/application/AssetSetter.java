@@ -79,7 +79,7 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_Blade(gp, 73, 65); i++;		
 		
 		if (!Progress.bossDefeated_1_1) {
-			gp.enemy[mapNum][i] = new BOS_Gohma(gp, 64, 83);	
+			gp.enemy[mapNum][i] = new BOS_Gohma(gp, 64, 83); 
 		}		
 		
 		mapNum = 3;
@@ -238,13 +238,13 @@ public class AssetSetter {
 		i++;	
 	}
 	protected void setInteractiveTiles() {
-		
+				
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 30, 36, new COL_Rupee_Red(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 27, 16, new COL_Rupee_Red(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_DigSpot(gp, mapNum, 8, 24, new EQP_Sword_Master(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_DigSpot(gp, 30, 36, new COL_Rupee_Red(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_DigSpot(gp, 27, 16, new COL_Rupee_Red(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_DigSpot(gp, 8, 24, new EQP_Sword_Master(gp)); i++;
 		
 		gp.iTile[mapNum][i] = new IT_Wall(gp, 20, 16); i++;
 		

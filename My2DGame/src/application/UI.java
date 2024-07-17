@@ -11,7 +11,9 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import data.Progress;
 import entity.Entity;
+import entity.Entity.Action;
 import entity.collectable.COL_Key;
 import entity.collectable.COL_Key_Boss;
 import entity.collectable.COL_Rupee_Blue;
@@ -637,7 +639,7 @@ public class UI {
 	private void drawPauseScreen() {
 						
 		g2.setColor(Color.white);
-		g2.setFont(g2.getFont().deriveFont(32F));
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
 
 		// SUB WINDOW
 		int frameX = gp.tileSize * 2;
@@ -722,10 +724,16 @@ public class UI {
 		g2.drawString("Save Progress", textX, textY);
 		if (commandNum == 5) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.actionPressed) {				
-				subState = 3;
-				commandNum = 0;
-				gp.saveLoad.save();			
+			if (gp.keyH.actionPressed) {
+				if (Progress.canSave && gp.player.action == Action.IDLE) {
+					subState = 3;
+					commandNum = 0;
+					gp.saveLoad.save();		
+				}
+				else {
+					gp.keyH.playErrorSE();
+				}
+						
 			}
 		}
 
@@ -875,8 +883,10 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.actionPressed) {
-				subState = 4;
-				commandNum = 0;
+				gp.stopMusic();				
+				subState = 0;							
+				gp.gameState = gp.titleState;				
+				gp.resetGame();
 			}
 		}
 	}
@@ -900,7 +910,7 @@ public class UI {
 				gp.stopMusic();				
 				subState = 0;							
 				gp.gameState = gp.titleState;				
-				gp.resetGame(true);
+				gp.resetGame();
 			}
 		}
 		

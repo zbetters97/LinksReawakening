@@ -16,7 +16,7 @@ public class DataStorage implements Serializable {
 	
 	// PLAYER DATA
 	int cMap, cArea, pWorldX, pWorldY;
-	String name;
+	String name, direction;
 	int level, maxLife, life, strength, dexterity, attack, defense;
 	int rupees, maxArrows, arrows, maxBombs, bombs;
 	boolean canSwim;	
@@ -39,12 +39,26 @@ public class DataStorage implements Serializable {
 	Map<String, List<String>> npcInventory = new HashMap<>();
 	
 	// ENEMY
-	boolean emyAlive[][];
+	int enemyWorldX[][];
+	int enemyWorldY[][];
+	int enemyLife[][];
+	boolean enemyAlive[][];
+	boolean enemyAsleep[][];
 	
 	// MAP OBJECTS
 	String mapObjectNames[][];
 	int mapObjectWorldX[][];
 	int mapObjectWorldY[][];
+	String mapObjectDirections[][];
+	boolean mapObjectSwitchedOn[][];
 	String mapObjectLootNames[][];
 	boolean mapObjectOpened[][];
+	
+	// iTILES
+	String iTileNames[][];
+	int iTileWorldX[][];
+	int iTileWorldY[][];
+	String iTileDirections[][];
+	boolean iTileSwitchedOn[][];
+	String iTileLootNames[][];
 }

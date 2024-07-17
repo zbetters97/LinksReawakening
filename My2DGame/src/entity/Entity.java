@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import application.GamePanel;
 import application.UtilityTool;
+import data.Progress;
 import entity.enemy.EMY_Zora;
 import entity.projectile.PRJ_Seed;
 import entity.projectile.Projectile;
@@ -302,28 +303,21 @@ public class Entity {
 			}		
 		}
 
-		spriteCounter++;
-		if (spriteCounter > animationSpeed && animationSpeed != 0) {
-			
-			if (spriteNum == 1) spriteNum = 2;
-			else if (spriteNum == 2) spriteNum = 1;
-			
-			spriteCounter = 0;
-		}
+		cycleSprites();
+	}
+	public void isCaptured() {		
+		if (gp.keyH.actionPressed) { attacking = true; }
+		if (attacking) { attacking(); return; }		
+		if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
+			walking();
+		}	
+		manageValues();
 	}
 	public void getDirection() {
 		if (gp.keyH.upPressed) direction = "up";
 		if (gp.keyH.downPressed) direction = "down";
 		if (gp.keyH.leftPressed) direction = "left";
 		if (gp.keyH.rightPressed) direction = "right";				
-	}
-	public void isCaptured() {
-		
-		if (attacking) { attacking(); return; }
-		if (gp.keyH.actionPressed) { attacking = true; }
-		if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
-			walking();
-		}	
 	}
 	
 	// COLLISION CHECKER
@@ -405,6 +399,23 @@ public class Entity {
 			withinBounds = false;
 		
 		return withinBounds;
+	}
+	
+	public Entity getEnemy(Entity entity) {
+		
+		Entity enemy = null;
+		
+		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+		if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r);
+		
+		if (enemyIndex != -1) {
+			if (gp.enemy[gp.currentMap][enemyIndex] != null)
+				enemy = gp.enemy[gp.currentMap][enemyIndex];
+			if (gp.enemy_r[gp.currentMap][enemyIndex] != null)
+				enemy = gp.enemy_r[gp.currentMap][enemyIndex];
+		}
+		
+		return enemy;
 	}
 	
 	// PATH FINDING
@@ -682,13 +693,13 @@ public class Entity {
 			else {
 				
 				// CHECK IF ATTACK LANDS ON ENEMY
-				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 
-				
-				if (currentWeapon == null) 					
-					gp.player.damageEnemy(enemyIndex, this, attack, 0);
-				else
-					gp.player.damageEnemy(enemyIndex, this, attack, currentWeapon.knockbackPower);
+				Entity enemy = getEnemy(this);		
+				if (enemy != null) {				
+					if (currentWeapon == null) 			
+						gp.player.damageEnemy(enemy, this, attack, 0);
+					else
+						gp.player.damageEnemy(enemy, this, attack, currentWeapon.knockbackPower);
+				}
 				
 				// CHECK INTERACTIVE TILE
 				int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
@@ -1102,6 +1113,7 @@ public class Entity {
 	protected void checkEnemyRoom() {							
 		if (isRoomClear()) {
 			gp.removeTempEntity();
+			Progress.canSave = true;
 		}
 	}
 	private boolean isRoomClear() {		

@@ -153,7 +153,7 @@ public class Player extends Entity {
 		direction = "up";
 	}
 	public void setDefaultItems() {		
-/*
+
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));		
@@ -165,7 +165,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-*/
+
 		inventory_item.add(new ITM_Boots(gp));	
 	}
 	public void restoreStatus() {
@@ -370,10 +370,8 @@ public class Player extends Entity {
 /** UPDATER **/
 
 	public void update() {	
-		
-		// CHECK COLLISION (NOT ON DEBUG)
-		if (!keyH.debug) checkCollision();
 				
+		if (!keyH.debug) checkCollision();
 		if (action == Action.IDLE) { onGround = true; }
 		if (knockback) { knockbackPlayer(); return;	}
 		
@@ -443,27 +441,25 @@ public class Player extends Entity {
 			if (keyH.itemPressed) {
 				if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
 					
+					action = Action.THROWING;
+					grabbedObject.grabbed = false;
 					grabbedObject.worldX = gp.player.worldX;
 					grabbedObject.worldY = gp.player.worldY;
-					grabbedObject.grabbed = false;					
-					action = Action.THROWING;
 				}
 			}
 		}
 		
 		// DISABLED ACTIONS WHILE SWIMMING, AIMING, OR CARRYING
-		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.CARRYING) {			
+		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.JUMPING
+				&& action != Action.CARRYING && action != Action.SOARING) {			
 			if (keyH.actionPressed) { action(); }
+			if (attacking) { attacking(); return; }	
 			if (keyH.guardPressed) { action = Action.GUARDING; }	
 			if (keyH.grabPressed) { grabbing(); }			
-			if (keyH.itemPressed) { useItem(); }
-			if (attacking) { attacking(); return; }						
+			if (keyH.itemPressed) { useItem(); }					
+			if (keyH.tabPressed) { cycleItems(); }
 		}		
-		
-		// TAB DISABLED DURING CERTAIN ACTIONS
-		if (keyH.tabPressed && action != Action.JUMPING && action != Action.SOARING
-				&& action != Action.AIMING && action != Action.CARRYING) { cycleItems(); }	
-		
+				
 		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
 				action != Action.AIMING && action != Action.GRABBING) { walking(); }
 				
@@ -479,46 +475,59 @@ public class Player extends Entity {
 	// MOVEMENT
 	public void walking() {
 		
-		// FIND DIRECTION
-		getDirection();
-		
 		if (keyH.guardPressed && action != Action.SWIMMING) 
 			return;
 		
-		// MOVE PLAYER
-		if (!collisionOn) { 	
-			
-			if (lockon) {
-				switch (lockonDirection) {
-					case "up": worldY -= speed; break;
-					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-					
-					case "down": worldY += speed; break;
-					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-					case "downright": worldY += speed; worldX += speed - 0.5; break;
-					
-					case "left": worldX -= speed; break;
-					case "right": worldX += speed; break;
-				}
-			}
-			else {				
-				switch (direction) {
-					case "up": worldY -= speed; break;
-					case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-					case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-					
-					case "down": worldY += speed; break;
-					case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-					case "downright": worldY += speed; worldX += speed - 0.5; break;
-					
-					case "left": worldX -= speed; break;
-					case "right": worldX += speed; break;
-				}
-			}
+		getDirection();
+		if (!keyH.debug) checkCollision();
+		if (!collisionOn) { 				
+			if (lockon) move(lockonDirection);			
+			else move(direction);		
+			cycleSprites();	
 		}
+	}
+	public void getDirection() {
 		
-		// WALKING ANIMATION
+		// KEEP PLAYER FACING ENEMY
+		if (lockedTarget != null && lockon) {
+			if (keyH.upPressed) lockonDirection = "up";
+			if (keyH.downPressed) lockonDirection = "down";
+			if (keyH.leftPressed) lockonDirection = "left";
+			if (keyH.rightPressed) lockonDirection = "right";			
+			
+			if (keyH.upPressed && keyH.leftPressed) lockonDirection = "upleft";
+			if (keyH.upPressed && keyH.rightPressed) lockonDirection = "upright";
+			if (keyH.downPressed && keyH.leftPressed) lockonDirection = "downleft";
+			if (keyH.downPressed && keyH.rightPressed) lockonDirection = "downright";	
+		}		
+		else {			
+			if (keyH.upPressed) direction = "up";
+			if (keyH.downPressed) direction = "down";
+			if (keyH.leftPressed) direction = "left";
+			if (keyH.rightPressed) direction = "right";			
+			
+			if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
+			if (keyH.upPressed && keyH.rightPressed) direction = "upright";
+			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
+			if (keyH.downPressed && keyH.rightPressed) direction = "downright";	
+		}
+	}
+	public void move(String direction) {
+		switch (direction) {
+			case "up": worldY -= speed; break;
+			case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+			case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+			
+			case "down": worldY += speed; break;
+			case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+			case "downright": worldY += speed; worldX += speed - 0.5; break;
+			
+			case "left": worldX -= speed; break;
+			case "right": worldX += speed; break;
+		}
+	}
+	public void cycleSprites() {
+
 		spriteCounter++;
 		if (spriteCounter > animationSpeed) {
 							
@@ -542,33 +551,7 @@ public class Player extends Entity {
 				animationSpeed = 10; 
 			}					
 			spriteCounter = 0;
-		}		
-	}
-	public void getDirection() {
-		
-		if (lockedTarget == null && !lockon) {
-			if (keyH.upPressed) direction = "up";
-			if (keyH.downPressed) direction = "down";
-			if (keyH.leftPressed) direction = "left";
-			if (keyH.rightPressed) direction = "right";			
-			
-			if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
-			if (keyH.upPressed && keyH.rightPressed) direction = "upright";
-			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
-			if (keyH.downPressed && keyH.rightPressed) direction = "downright";	
-		}
-		// KEEP PLAYER FACING ENEMY
-		else {			
-			if (keyH.upPressed) lockonDirection = "up";
-			if (keyH.downPressed) lockonDirection = "down";
-			if (keyH.leftPressed) lockonDirection = "left";
-			if (keyH.rightPressed) lockonDirection = "right";			
-			
-			if (keyH.upPressed && keyH.leftPressed) lockonDirection = "upleft";
-			if (keyH.upPressed && keyH.rightPressed) lockonDirection = "upright";
-			if (keyH.downPressed && keyH.leftPressed) lockonDirection = "downleft";
-			if (keyH.downPressed && keyH.rightPressed) lockonDirection = "downright";	
-		}
+		}	
 	}
 	
 	// INTERACTIONS
@@ -923,7 +906,6 @@ public class Player extends Entity {
 					break;
 				case ITM_Boomerang.itmName: 
 				case ITM_Hookshot.itmName:	
-					action = Action.THROWING;
 					
 					// STOP MOVEMENT
 					keyH.itemPressed = false;
@@ -1089,10 +1071,9 @@ public class Player extends Entity {
 			keyH.grabPressed = false;	
 		}
 	}
-	public void throwing() {
-		
+	public void throwing() {		
 		throwCounter++;		
-		if (throwCounter > 15 && gp.gameState == gp.playState) {
+		if (throwCounter > 30 && gp.gameState == gp.playState) {
 			action = Action.IDLE;
 			throwCounter = 0;
 		}
@@ -1269,51 +1250,41 @@ public class Player extends Entity {
 	}		
 	
 	// DAMAGE
-	public void damageEnemy(int i, Entity attacker, int attack, int knockbackPower) {
-		
-		Entity[][] enemies = null;
-		
-		if (i != -1) {
-			if (gp.enemy[gp.currentMap][i] != null)
-				enemies = gp.enemy;
-			if (gp.enemy_r[gp.currentMap][i] != null)
-				enemies = gp.enemy_r;
-		}
-		
-		// ATTACK HITS ENEMY
-		if (i != -1 && !enemies[gp.currentMap][i].guarded) {
+	public void damageEnemy(Entity target, Entity attacker, int attack, int knockbackPower) {
+				
+		if (target != null && !target.guarded) {
 						
 			// BUZZING ENEMY
-			if (enemies[gp.currentMap][i].buzzing && attacker == gp.player) {
+			if (target.buzzing && attacker == gp.player) {
 				if (!attacker.invincible) {
-					enemies[gp.currentMap][i].playShockSE();
+					target.playShockSE();
 				}
-				enemies[gp.currentMap][i].damagePlayer(enemies[gp.currentMap][i].attack);
+				target.damagePlayer(target.attack);
 			}			
-			else if (!enemies[gp.currentMap][i].invincible && !enemies[gp.currentMap][i].captured) {
-				enemies[gp.currentMap][i].playHurtSE();
+			else if (!target.invincible && !target.captured) {
+				target.playHurtSE();
 				
-				if (knockbackPower > 0 && enemies[gp.currentMap][i].type != type_boss) {
-					setKnockback(enemies[gp.currentMap][i], attacker, knockbackPower);
+				if (knockbackPower > 0 && target.type != type_boss) {
+					setKnockback(target, attacker, knockbackPower);
 				}
 				
 				// HIT BY PROJECTILE (NOT PROJECTILE BEAM)
 				if (attacker.type == type_projectile) {
-					enemies[gp.currentMap][i].stunned = true;
-					enemies[gp.currentMap][i].spriteCounter = -30;
+					target.stunned = true;
+					target.spriteCounter = -30;
 				}
 								
 				int damage = attack;
 				if (damage < 0) damage = 0;				
 				
-				enemies[gp.currentMap][i].life -= damage;					
-				enemies[gp.currentMap][i].invincible = true;
-				enemies[gp.currentMap][i].damageReaction();
+				target.life -= damage;					
+				target.invincible = true;
+				target.damageReaction();
 				
 				// KILL ENEMY
-				if (enemies[gp.currentMap][i].life <= 0) {
-					enemies[gp.currentMap][i].playDeathSE();
-					enemies[gp.currentMap][i].dying = true;
+				if (target.life <= 0) {
+					target.playDeathSE();
+					target.dying = true;
 				}
 			}
 			

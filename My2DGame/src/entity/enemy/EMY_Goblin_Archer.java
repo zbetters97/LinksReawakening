@@ -27,8 +27,9 @@ public class EMY_Goblin_Archer extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		capturable = true;
 		
-		speed = 0; defaultSpeed = speed; 
+		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
 		attack = 3;
 		knockbackPower = 0;
@@ -57,21 +58,28 @@ public class EMY_Goblin_Archer extends Entity {
 	
 	public void setAction() {
 		
-		if (onPath) {
-			isOffPath(gp.player, 10);
+		if (!captured) {
 			if (onPath) {
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-				useItem(60);
+				isOffPath(gp.player, 10);				
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+					useItem(60);
+				}
+			}
+			else {				
+				getDirection(60);
+				isOnPath(gp.player, 6);
+				if (onPath) {
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+					isOffPath(gp.player, 8);
+				}		
 			}
 		}
-		else {				
-			getDirection(60);
-			isOnPath(gp.player, 5);
-			if (onPath) {
-				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-				isOffPath(gp.player, 8);
-			}		
-		}
+	}
+	
+	public void attacking() {
+		currentItem.use(this);
+		attacking = false;
 	}
 	
 	public void damageReaction() {

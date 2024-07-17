@@ -28,6 +28,8 @@ public class ITM_Hookshot extends Entity {
 			addProjectile(projectile);
 						
 			user.shotAvailableCounter = 0;	
+			
+			user.action = Action.THROWING;
 		}		
 		return true;
 	}

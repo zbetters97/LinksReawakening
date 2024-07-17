@@ -367,6 +367,7 @@ public class SceneManager {
 			scene = NA;
 			phase = 0;
 			
+			Progress.canSave = true;
 			gp.gameState = gp.playState;
 		}
 	}

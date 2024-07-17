@@ -26,6 +26,7 @@ public class EMY_Buzzblob extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		capturable = true;
 		
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 10;
@@ -88,9 +89,11 @@ public class EMY_Buzzblob extends Entity {
 			
 			spriteCounter = 0;
 		}		
+		
+		buzz();
 	}
 	
-	public void setAction() {
+	public void buzz() {
 		
 		// BUZZ FOR 2 SECONDS
 		if (buzzing) {
@@ -101,23 +104,33 @@ public class EMY_Buzzblob extends Entity {
 				attack = 2;
 			}
 		}
+	}
+	
+	public void attacking() {
+		buzzing = true;
+		attacking = false;
+	}
+	
+	public void setAction() {
 		
-		if (onPath) {			
-			isOffPath(gp.player, 6);									
-			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));	
-			if (!buzzing) {
-				if (isAttacking(180, gp.tileSize * 3, gp.tileSize * 3)) {
-					playShockSE();
-					buzzing = true;					
-					attack *= 2;
+		if (!captured) {
+			if (onPath) {			
+				isOffPath(gp.player, 6);									
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));	
+				if (!buzzing) {
+					if (isAttacking(180, gp.tileSize * 3, gp.tileSize * 3)) {
+						playShockSE();
+						buzzing = true;					
+						attack *= 2;
+					}
 				}
 			}
-		}
-		else {			
-			isOnPath(gp.player, 3);
-			getDirection(60);
-			buzzing = false;
-			attack = 2;			
+			else {			
+				isOnPath(gp.player, 3);
+				getDirection(60);
+				buzzing = false;
+				attack = 2;			
+			}
 		}
 	}
 	
