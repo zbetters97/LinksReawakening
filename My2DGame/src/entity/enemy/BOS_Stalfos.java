@@ -39,6 +39,8 @@ public class BOS_Stalfos extends Entity {
 		hitbox = new Rectangle(4, 32, 120, 128); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		attackbox.width = 128;
 		attackbox.height = 100;

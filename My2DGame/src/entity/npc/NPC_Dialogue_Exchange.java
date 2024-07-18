@@ -25,6 +25,8 @@ public class NPC_Dialogue_Exchange extends Entity {
 		hitbox = new Rectangle(8, 16, 32, 32); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		setDialogue();
 		setDialogueResponses();

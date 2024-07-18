@@ -24,7 +24,9 @@ public class IT_Pot extends InteractiveTile {
 		
 		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;		
+		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	public IT_Pot(GamePanel gp, int col, int row, Entity loot) {
 		super(gp, col, row);		
@@ -42,6 +44,8 @@ public class IT_Pot extends InteractiveTile {
 		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	
 	public void getImage() {

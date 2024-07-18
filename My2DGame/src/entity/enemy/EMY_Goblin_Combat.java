@@ -34,6 +34,8 @@ public class EMY_Goblin_Combat extends Entity {
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		swingSpeed1 = 30;
 		swingSpeed2 = 60;		

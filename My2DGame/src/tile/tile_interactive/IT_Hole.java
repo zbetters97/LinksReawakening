@@ -17,6 +17,8 @@ public class IT_Hole extends InteractiveTile {
 		hitbox = new Rectangle(0,0,0,0);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	public IT_Hole(GamePanel gp, int col, int row) {
 		super(gp, col, row);		
@@ -29,6 +31,8 @@ public class IT_Hole extends InteractiveTile {
 		hitbox = new Rectangle(0,0,0,0);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	
 	public void getImage() {

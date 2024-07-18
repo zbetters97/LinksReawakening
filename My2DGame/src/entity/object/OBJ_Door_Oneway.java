@@ -22,8 +22,6 @@ public class OBJ_Door_Oneway extends Entity {
 		collision = true;
 		switchedOn = true;
 		
-		hitbox = new Rectangle(0, 16, 48, 40);
-		
 		getTurnImage();
 	}	
 	public OBJ_Door_Oneway(GamePanel gp, String direction, boolean switchedOn) {

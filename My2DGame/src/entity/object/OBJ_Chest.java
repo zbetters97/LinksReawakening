@@ -21,6 +21,8 @@ public class OBJ_Chest extends Entity {
 		hitbox = new Rectangle(4, 16, 40, 32);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}	
 	public OBJ_Chest(GamePanel gp, Entity loot) {
 		super(gp);
@@ -35,6 +37,8 @@ public class OBJ_Chest extends Entity {
 		hitbox = new Rectangle(4, 16, 40, 32);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}	
 	
 	public void getImage() {

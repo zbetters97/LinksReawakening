@@ -31,6 +31,8 @@ public class BOS_Skeleton extends Entity {
 		hitbox = new Rectangle(gp.tileSize, gp.tileSize, hbScale - (gp.tileSize * 2), hbScale - gp.tileSize); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		swingSpeed1 = 45;
 		swingSpeed2 = 80;

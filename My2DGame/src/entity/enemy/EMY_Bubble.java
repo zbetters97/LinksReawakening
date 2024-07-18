@@ -33,6 +33,8 @@ public class EMY_Bubble extends Entity {
 		hitbox = new Rectangle(8, 8, 32, 32);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	
 	public void getImage() {

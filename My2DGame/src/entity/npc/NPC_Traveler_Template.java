@@ -24,6 +24,8 @@ public class NPC_Traveler_Template extends Entity {
 		hitbox = new Rectangle(8, 16, 32, 32); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		setDialogue();
 	}

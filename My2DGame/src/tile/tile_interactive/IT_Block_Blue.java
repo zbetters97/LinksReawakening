@@ -11,7 +11,7 @@ public class IT_Block_Blue extends InteractiveTile {
 		direction = "up";
 		
 		name = itName;
-		switchedOn = false;					
+		switchedOn = false;		
 	}
 	public IT_Block_Blue(GamePanel gp, int col, int row) {
 		super(gp, col, row);
@@ -20,7 +20,7 @@ public class IT_Block_Blue extends InteractiveTile {
 		direction = "up";
 		
 		name = itName;
-		switchedOn = false;		
+		switchedOn = false;	
 	}
 	
 	public void getImage() {

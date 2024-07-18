@@ -24,6 +24,8 @@ public class PRJ_Hookshot extends Projectile {
 		hitbox = new Rectangle(16, 16, 16, 16); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		getGrabImage();
 	}

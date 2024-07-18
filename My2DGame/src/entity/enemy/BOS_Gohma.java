@@ -37,6 +37,8 @@ public class BOS_Gohma extends Entity {
 		hitbox = new Rectangle(51, 8, 42, 33); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		projectile = new PRJ_Fireball(gp);
 		

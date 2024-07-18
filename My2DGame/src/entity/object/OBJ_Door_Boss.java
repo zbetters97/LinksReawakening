@@ -1,7 +1,5 @@
 package entity.object;
 
-import java.awt.Rectangle;
-
 import application.GamePanel;
 import entity.Entity;
 
@@ -17,8 +15,6 @@ public class OBJ_Door_Boss extends Entity {
 		name = objName;
 		direction = "down";
 		collision = true;
-		
-		hitbox = new Rectangle(0, 16, 48, 40);
 	}	
 	
 	public void getImage() {

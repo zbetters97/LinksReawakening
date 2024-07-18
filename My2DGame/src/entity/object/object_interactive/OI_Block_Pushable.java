@@ -27,6 +27,8 @@ public class OI_Block_Pushable extends Entity {
 		hitbox = new Rectangle(1, 1, 46, 46); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	
 	public void getImage() {		

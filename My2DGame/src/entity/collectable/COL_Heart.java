@@ -21,7 +21,9 @@ public class COL_Heart extends Entity {
 		
 		hitbox = new Rectangle(9, 9, 30, 30); 		
 		hitboxDefaultX = hitbox.x;
-	    hitboxDefaultY = hitbox.y;
+		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	
 	public void getImage() {

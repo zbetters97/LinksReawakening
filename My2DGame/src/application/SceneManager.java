@@ -484,6 +484,7 @@ public class SceneManager {
 		
 		gp.player.action = Action.IDLE;
 		gp.player.onGround = true;
+		gp.player.attackCanceled = false;
 		
 		gp.player.digNum = 0;
 		gp.player.digCounter = 0;	

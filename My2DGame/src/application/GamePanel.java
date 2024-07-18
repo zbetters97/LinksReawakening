@@ -488,11 +488,12 @@ public class GamePanel extends JPanel implements Runnable {
 		else {			
 			// DRAW TILES
 			tileM.draw(g2);	
+			
+			// DRAW iTILES (NOT GRABBED OR THROWN)
 			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null) {
-					if (!iTile[currentMap][i].grabbed) {
-						iTile[currentMap][i].draw(g2);	
-					}
+				if (iTile[currentMap][i] != null && 
+						(!iTile[currentMap][i].grabbed || !projectile[currentMap][i].thrown)) {
+					iTile[currentMap][i].draw(g2);						
 				}					
 			}
 						
@@ -504,10 +505,9 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity er : enemy_r[currentMap]) { if (er != null) entityList.add(er); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
 			for (Entity ot : obj_i[currentMap]) { if (ot != null) entityList.add(ot); }
-			for (Entity p : particleList) { if (p != null) entityList.add(p); }
-			
+			for (Entity p : particleList) { if (p != null) entityList.add(p); }			
 			for (int i = 0; i < projectile[1].length; i++) {
-				if (projectile[currentMap][i] != null)
+				if (projectile[currentMap][i] != null && !projectile[currentMap][i].grabbed)
 					entityList.add(projectile[currentMap][i]);
 			}
 			
@@ -522,12 +522,20 @@ public class GamePanel extends JPanel implements Runnable {
 			// DRAW ENTITIES
 			for (Entity e : entityList) { e.draw(g2); }
 			
+			// DRAW GRABBED iTILES
 			for (int i = 0; i < iTile[1].length; i++) {
 				if (iTile[currentMap][i] != null) {
 					if (iTile[currentMap][i].grabbed) {
 						iTile[currentMap][i].draw(g2);	
 					}
 				}					
+			}
+			
+			// DRAW GRABBED OR THROWN PROJECTILES
+			for (int i = 0; i < projectile[1].length; i++) {
+				if (projectile[currentMap][i] != null && 
+						(projectile[currentMap][i].grabbed || projectile[currentMap][i].thrown))
+					projectile[currentMap][i].draw(g2);
 			}
 			
 			// EMPTY ENTITY LIST

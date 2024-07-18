@@ -31,14 +31,16 @@ public class EMY_Goblin_Archer extends Entity {
 		animationSpeed = 10;
 		maxLife = 10; life = maxLife;
 		attack = 3;
-		knockbackPower = 0;		
-		
+		knockbackPower = 0;				
 		arrows = -1;
+		
 		currentItem = new ITM_Bow(gp);	
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 	}
 	
 	public void getImage() {

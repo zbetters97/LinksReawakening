@@ -85,6 +85,8 @@ public class Player extends Entity {
 		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
+		hitboxDefaultWidth = hitbox.width;
+		hitboxDefaultHeight = hitbox.height;
 		
 		attackbox.width = 32;
 		attackbox.height = 32;
