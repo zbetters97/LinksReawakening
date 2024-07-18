@@ -12,7 +12,7 @@ import entity.Entity;
 
 public class Map extends TileManager {
 
-	GamePanel gp;
+	private GamePanel gp;
 	BufferedImage worldMap[];
 	public boolean miniMapOn = false;
 	

@@ -5,11 +5,8 @@ import entity.Entity;
 
 public class Projectile extends Entity {
 
-	GamePanel gp;
-	
 	public Projectile(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 	}
 	
 	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {		
@@ -615,7 +612,7 @@ public class Projectile extends Entity {
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);
 		gp.cChecker.checkObject_I(this, false);
-		
+				
 		// SHOT BY PLAYER
 		if (user == gp.player) {
 			

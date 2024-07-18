@@ -5,16 +5,17 @@ import entity.Entity;
 
 public class ITM_Cape extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Rito Cape";
 	
 	public ITM_Cape(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
-		name = itmName;
+		name = itmName;		
 		description = "[" + name + "]\nEquip to soar over things!";
+	}
+	
+	public void getImage() {
 		down1 = setup("/items/ITEM_CAPE");
 	}
 	

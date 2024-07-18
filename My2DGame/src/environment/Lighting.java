@@ -11,7 +11,7 @@ import entity.Entity;
 
 public class Lighting {
 
-	GamePanel gp;
+	private GamePanel gp;
 	BufferedImage darknessFilter;
 	Entity eventMaster;
 	

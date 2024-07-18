@@ -11,13 +11,11 @@ import entity.collectable.COL_Rupee_Blue;
 public class EMY_Buzzblob extends Entity {
 
 	public static final String emyName = "Buzz Blob";
-	GamePanel gp;
 	private int cycle = 0;
 	private int buzzCounter = 0;
 	
 	public EMY_Buzzblob(GamePanel gp, int worldX, int worldY) {
-		super(gp);			
-		this.gp = gp;
+		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -28,17 +26,16 @@ public class EMY_Buzzblob extends Entity {
 		name = emyName;
 		capturable = true;
 		
+		maxLife = 8; life = maxLife;
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 10;
 		attack = 4; 
 		knockbackPower = 0;
-		maxLife = 8; life = maxLife;
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
+	
 		getBuzzImage();
 	}
 	

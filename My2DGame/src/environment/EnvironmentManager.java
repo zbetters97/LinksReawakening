@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class EnvironmentManager {
 
-	GamePanel gp;
+	private GamePanel gp;
 	public Lighting lighting;
 	
 	public EnvironmentManager(GamePanel gp) {

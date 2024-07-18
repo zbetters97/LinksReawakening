@@ -1052,7 +1052,7 @@ public class CollisionChecker {
 				
 				// IF iTile IS HIT BY BOMB
 				if (entity.hitbox.intersects(gp.iTile[gp.currentMap][i].hitbox) && 
-						gp.iTile[gp.currentMap][i].bombable) 			
+						gp.iTile[gp.currentMap][i].correctItem(entity)) 			
 					tiles.add(i);				
 				
 				// reset bomb hitbox

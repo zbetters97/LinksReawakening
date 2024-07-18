@@ -7,11 +7,9 @@ import application.GamePanel;
 public class IT_Hole extends InteractiveTile {
 
 	public static final String itName = "Hole";
-	GamePanel gp;
 	
 	public IT_Hole(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		name = itName;		
 		collision = false;
@@ -19,23 +17,21 @@ public class IT_Hole extends InteractiveTile {
 		hitbox = new Rectangle(0,0,0,0);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		down1 = setup("/tiles_interactive/hole");
 	}
 	public IT_Hole(GamePanel gp, int col, int row) {
-		super(gp, col, row);
-		this.gp = gp;
-		
-		name = itName;
+		super(gp, col, row);		
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		
+		name = itName;
 		collision = false;
 	
 		hitbox = new Rectangle(0,0,0,0);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/tiles_interactive/hole");
 	}
 }

@@ -6,19 +6,19 @@ import entity.Entity;
 public class COL_Arrow extends Entity {
 
 	public static final String colName = "COL Arrow";
-	GamePanel gp;
 	
 	public COL_Arrow(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
+		collision = false;
+		
 		type = type_collectable;
 		name = colName;
 		value = 1;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
-		
-		collision = false;
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/objects/PRJ_ARROWS", gp.tileSize - 15, gp.tileSize - 15);
 		image1 = down1;
 	}

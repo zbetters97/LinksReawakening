@@ -15,7 +15,7 @@ import application.UtilityTool;
 
 public class TileManager {
 	
-	GamePanel gp;
+	private GamePanel gp;
 	public Tile[] tile;
 	
 	public int blockTile1 = 38;

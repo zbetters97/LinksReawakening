@@ -6,22 +6,21 @@ import entity.projectile.PRJ_Arrow;
 
 public class ITM_Bow extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Hylian Bow";
 	
 	public ITM_Bow(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
-		name = itmName;
-		
-		charge = 0;
-		
+		name = itmName;		
 		description = "[" + name + "]\nEquip to fire an arrow!";
-		down1 = setup("/items/ITEM_BOW");
+		charge = 0;		
 		
 		projectile = new PRJ_Arrow(gp);
+	}
+	
+	public void getImage() {
+		down1 = setup("/items/ITEM_BOW");
 	}
 	
 	public boolean setCharge(Entity user) {

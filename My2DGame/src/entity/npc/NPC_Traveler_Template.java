@@ -7,12 +7,10 @@ import entity.Entity;
 
 public class NPC_Traveler_Template extends Entity {
 
-	protected GamePanel gp;	
 	protected int goalCol, goalRow;
 	
 	public NPC_Traveler_Template(GamePanel gp, int worldX, int worldY) {		
-		super(gp);
-		this.gp = gp;		
+		super(gp);	
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -27,7 +25,6 @@ public class NPC_Traveler_Template extends Entity {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		getImage();
 		setDialogue();
 	}
 	

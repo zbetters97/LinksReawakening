@@ -9,12 +9,10 @@ import entity.Particle;
 
 public class PRJ_Hookshot extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Claw";
+	public static final String prjName = "PRJ Claw";
 	
 	public PRJ_Hookshot(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_projectile;
 		name = prjName;
@@ -27,7 +25,6 @@ public class PRJ_Hookshot extends Projectile {
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		getImage();
 		getGrabImage();
 	}
 	

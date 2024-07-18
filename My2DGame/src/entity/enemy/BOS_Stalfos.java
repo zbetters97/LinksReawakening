@@ -12,21 +12,19 @@ import entity.Entity;
 public class BOS_Stalfos extends Entity {
 
 	public static final String emyName = "Stalfos King";
-	GamePanel gp;
 	
 	public BOS_Stalfos(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
-		this.gp = gp;
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
-		lockon = true;
 		direction = "down";
 		lockonDirection = "right";
 		
 		type = type_boss;
 		name = emyName;	
+		lockon = true;
 		
 		speed = 2; defaultSpeed = speed; 
 		animationSpeed = 14;
@@ -45,7 +43,6 @@ public class BOS_Stalfos extends Entity {
 		attackbox.width = 128;
 		attackbox.height = 100;
 		
-		getImage();
 		getAttackImage();
 		setDialogue();
 	}

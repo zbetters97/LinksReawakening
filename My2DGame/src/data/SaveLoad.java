@@ -14,7 +14,7 @@ import entity.object.OBJ_Door_Oneway;
 
 public class SaveLoad {
 
-	GamePanel gp;
+	private GamePanel gp;
 	
 	public SaveLoad(GamePanel gp) {
 		this.gp = gp;
@@ -71,12 +71,11 @@ public class SaveLoad {
 			}
 			
 			// PLAYER EQUIPMENT			
+			ds.canSwim = gp.player.canSwim;
 			if (gp.player.currentWeapon != null) 
 				ds.sword = gp.player.currentWeapon.name;
 			if (gp.player.currentShield != null)
-				ds.shield = gp.player.currentShield.name;
-			
-			ds.canSwim = gp.player.canSwim;
+				ds.shield = gp.player.currentShield.name;	
 			
 			// NPCs
 			ds.npcNames = new String[gp.maxMap][gp.npc[1].length];
@@ -264,9 +263,8 @@ public class SaveLoad {
 			// PLAYER EQUIPMENT
 			gp.player.currentWeapon = gp.eGenerator.getObject(ds.sword);
 			gp.player.currentShield = gp.eGenerator.getObject(ds.shield);
-			gp.player.canSwim = ds.canSwim;
-			
 			gp.player.getAttack();
+			gp.player.canSwim = ds.canSwim;		
 			
 			// NPCs
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {

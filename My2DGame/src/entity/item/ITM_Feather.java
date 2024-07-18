@@ -5,16 +5,17 @@ import entity.Entity;
 
 public class ITM_Feather extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Rito Feather";
 	
 	public ITM_Feather(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
-		name = itmName;
+		name = itmName;		
 		description = "[" + name + "]\nEquip to jump over things!";
+	}
+	
+	public void getImage() {
 		down1 = setup("/items/ITEM_FEATHER");
 	}
 	

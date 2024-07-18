@@ -1,46 +1,33 @@
 package tile.tile_interactive;
 
-import java.awt.Rectangle;
-
 import application.GamePanel;
 
 public class IT_Block_Blue extends InteractiveTile {
 
 	public static final String itName = "Blue Block";
-	GamePanel gp;
 	
 	public IT_Block_Blue(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
-		
-		name = itName;
-		switchedOn = false;		
 		direction = "up";
 		
-		hitbox = new Rectangle(0, 0, 48, 48); 	
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		up1 = setup("/tiles_interactive/block_blue_on");
-		down1 = setup("/tiles_interactive/block_blue_off");		
+		name = itName;
+		switchedOn = false;					
 	}
 	public IT_Block_Blue(GamePanel gp, int col, int row) {
 		super(gp, col, row);
-		this.gp = gp;
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
+		direction = "up";
 		
 		name = itName;
 		switchedOn = false;		
-		direction = "up";
-		
-		hitbox = new Rectangle(0, 0, 48, 48); 	
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
+	}
+	
+	public void getImage() {
 		up1 = setup("/tiles_interactive/block_blue_on");
 		down1 = setup("/tiles_interactive/block_blue_off");		
 	}
+	
 	public void update() { 		
 		if (switchedOn) direction = "up";
 		else direction = "down";

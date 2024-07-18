@@ -12,8 +12,7 @@ public class EQP_Sword_Old extends Entity {
 		
 		type = type_equipment;	
 		name = eqpName;
-		description = "[" + name + "]\nA humble starter sword.";
-				
+		description = "[" + name + "]\nA humble starter sword.";				
 		attackValue = 4;
 		knockbackPower = 0;
 		
@@ -22,7 +21,9 @@ public class EQP_Sword_Old extends Entity {
 		
 		attackbox.width = 40;
 		attackbox.height = 50;
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/items/EQP_SWORD_OLD");
 		image1 = down1;
 	}

@@ -371,7 +371,7 @@ public class KeyHandler implements KeyListener {
 			gp.gameState = gp.playState;
 		}
 		if (code == KeyEvent.VK_SPACE) {	
-						
+			
 			if (gp.ui.inventoryScreen == 0) {
 				gp.player.selectInventory();
 			}

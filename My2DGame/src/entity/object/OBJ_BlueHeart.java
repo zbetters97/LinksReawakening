@@ -6,19 +6,20 @@ import entity.Entity;
 public class OBJ_BlueHeart extends Entity {
 	
 	public static final String objName = "Blue Heart";
-	GamePanel gp;
 	
 	public OBJ_BlueHeart(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_pickupOnly;
 		name = objName;
-		image1 = setup("/objects/OBJ_BLUEHEART");
-		down1 = image1;
 		
 		setDialogue();
 	}	
+	
+	public void getImage() {
+		image1 = setup("/objects/OBJ_BLUEHEART");
+		down1 = image1;
+	}
 	
 	public void setDialogue() {
 		dialogues[0][0] = "You found the Blue Heart!";

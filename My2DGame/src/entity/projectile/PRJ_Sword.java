@@ -5,12 +5,10 @@ import entity.*;
 
 public class PRJ_Sword extends Projectile {
 	
-	GamePanel gp;
-	public final static String prjName = "Sword Beam";
+	public final static String prjName = "PRJ Sword Beam";
 	
 	public PRJ_Sword(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_projectile;
 		name = prjName;		 
@@ -20,8 +18,6 @@ public class PRJ_Sword extends Projectile {
 		animationSpeed = 8;
 		attack = 2;		
 		alive = false;
-		
-		getImage();
 	}
 	
 	public void getImage() {

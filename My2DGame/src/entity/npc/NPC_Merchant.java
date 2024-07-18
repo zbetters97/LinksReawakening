@@ -1,5 +1,7 @@
 package entity.npc;
 
+import java.awt.Rectangle;
+
 import application.GamePanel;
 import entity.Entity;
 import entity.item.ITM_Boomerang;
@@ -7,11 +9,9 @@ import entity.item.ITM_Boomerang;
 public class NPC_Merchant extends Entity {
 	
 	public static final String npcName = "Merchant 1";
-	GamePanel gp;
 	
 	public NPC_Merchant(GamePanel gp, int worldX, int worldY) {		
-		super(gp);
-		this.gp = gp;		
+		super(gp);	
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -20,28 +20,31 @@ public class NPC_Merchant extends Entity {
 		type = type_npc;
 		name = npcName;
 		direction = "down";
-		speed = 0;
+		speed = 0; defaultSpeed = speed;
 		animationSpeed = 25; 
 		
-		getImage();
-		setItems();
+		hitbox = new Rectangle(8, 16, 32, 32); 		
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
+		
 		setDialogue();
+		setItems();		
 	}
 	
 	public void getImage() {		
 		down1 = setup("/npc/merchant_down_1"); 
 		down2 = setup("/npc/merchant_down_2");
 	}	
-	
-	public void setItems() {		
-		inventory.add(new ITM_Boomerang(gp));
-	}
 	public void setDialogue() {
 		dialogues[0][0] = "Buy somethin', will ya!";		
 		dialogues[1][0] = "Hey! You don't have enough rupees!";
 		dialogues[2][0] = "Looks like yer all outa room, kid!";
 		dialogues[3][0] = "I think you should hold onto that!";
 		dialogues[4][0] = "Scram, kid!";
+	}		
+	
+	public void setItems() {		
+		inventory.add(new ITM_Boomerang(gp));
 	}	
 	
 	public void speak() {

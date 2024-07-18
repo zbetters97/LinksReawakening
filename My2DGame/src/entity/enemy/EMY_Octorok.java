@@ -1,7 +1,5 @@
 package entity.enemy;
 
-import java.awt.Rectangle;
-
 import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
@@ -10,11 +8,9 @@ import entity.projectile.PRJ_Seed;
 public class EMY_Octorok extends Entity {
 
 	public static final String emyName = "Octorok";
-	GamePanel gp;
 	
 	public EMY_Octorok(GamePanel gp, int worldX, int worldY, String direction) {
 		super(gp);			
-		this.gp = gp;
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -25,19 +21,13 @@ public class EMY_Octorok extends Entity {
 		name = emyName;
 		canSwim = true;
 		
-		speed = 1; defaultSpeed = speed;
-		animationSpeed = 15;
 		maxLife = 8; life = maxLife;
+		speed = 1; defaultSpeed = speed;
+		animationSpeed = 15;		
 		attack = 2;
 		knockbackPower = 0;
 		
-		hitbox = new Rectangle(0, 0, 48, 48);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-
 		projectile = new PRJ_Seed(gp);
-		
-		getImage();
 	}
 	
 	public void getImage() {

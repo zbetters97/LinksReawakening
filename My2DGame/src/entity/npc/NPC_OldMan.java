@@ -10,31 +10,29 @@ import entity.item.ITM_Hookshot;
 public class NPC_OldMan extends Entity {
 	
 	public static final String npcName = "Old Man";
-	GamePanel gp;
 	int itemIndex = 0;
 	
 	public NPC_OldMan(GamePanel gp, int worldX, int worldY) {		
-		super(gp);
-		this.gp = gp;		
+		super(gp);	
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		
-		hasItemToGive = true;
 		type = type_npc;
 		name = npcName;
 		direction = "down";
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 0; 
 		
+		hasItemToGive = true;
+		
 		hitbox = new Rectangle(8, 16, 32, 32); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
-		getImage();
-		setItems();
 		setDialogue();
+		setItems();		
 	}
 	
 	public void getImage() {		
@@ -43,11 +41,6 @@ public class NPC_OldMan extends Entity {
 		left1 = setup("/npc/oldman_left_1"); left2 = setup("/npc/oldman_left_2");
 		right1 = setup("/npc/oldman_right_1"); right2 = setup("/npc/oldman_right_2");
 	}
-	public void setItems() {		
-		inventory.add(new EQP_Sword_Old(gp));
-		inventory.add(new ITM_Hookshot(gp));
-	}
-	
 	public void setDialogue() {
 		dialogues[0][0] = "Many years ago, a boy just like you came\nup to me. He faced many challenges...";
 		dialogues[0][1] = "He sought after the golden triangle...\nWhat people seek after today\nis far more dangerous.";
@@ -62,6 +55,10 @@ public class NPC_OldMan extends Entity {
 		dialogues[3][0] = "Thank you, kind boy. Here is a gift for you.";
 		
 		dialogues[4][0] = "It's a secret to everyone.";
+	}
+	public void setItems() {		
+		inventory.add(new EQP_Sword_Old(gp));
+		inventory.add(new ITM_Hookshot(gp));
 	}
 	
 	public void speak() {		

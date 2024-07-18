@@ -7,12 +7,10 @@ import entity.*;
 
 public class PRJ_Arrow extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Arrow";
+	public static final String prjName = "PRJ Arrow";
 	
 	public PRJ_Arrow(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_projectile;
 		name = prjName;
@@ -28,8 +26,6 @@ public class PRJ_Arrow extends Projectile {
 		hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
 		hitboxDefaultHeight = hitbox.height;
-		
-		getImage();
 	}
 	
 	public void getImage() {

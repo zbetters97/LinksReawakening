@@ -11,72 +11,37 @@ import entity.projectile.PRJ_Hookshot;
 public class IT_Pot extends InteractiveTile {
 
 	public static final String itName = "Pot";
-	GamePanel gp;
 	
 	public IT_Pot(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
+		direction = "down";
 		
 		type = type_obstacle;
 		name = itName;
 		life = 1;
 		destructible = true;
-		bombable = true;
 		grabbable = true;
 		
 		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		direction = "down";
-		
-		getImage();	
-	}
-	public IT_Pot(GamePanel gp, int col, int row) {
-		super(gp, col, row);
-		this.gp = gp;
-		
-		this.worldX = gp.tileSize * col;
-		this.worldY = gp.tileSize * row;
-		
-		type = type_obstacle;
-		name = itName;
-		life = 1;
-		destructible = true;
-		bombable = true;
-		grabbable = true;
-		
-		hitbox = new Rectangle(8, 16, 32, 28); 	
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		direction = "down";
-		
-		getImage();	
+		hitboxDefaultY = hitbox.y;		
 	}
 	public IT_Pot(GamePanel gp, int col, int row, Entity loot) {
-		super(gp, col, row);
-		this.gp = gp;
-		
+		super(gp, col, row);		
 		this.worldX = gp.tileSize * col;
-		this.worldY = gp.tileSize * row;
-		
+		this.worldY = gp.tileSize * row;		
 		this.loot = loot;
+		direction = "down";
 		
 		type = type_obstacle;
 		name = itName;
 		life = 1;
 		destructible = true;
-		bombable = true;
 		grabbable = true;
 		
 		hitbox = new Rectangle(8, 16, 32, 28); 	
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		direction = "down";
-		
-		getImage();
 	}
 	
 	public void getImage() {

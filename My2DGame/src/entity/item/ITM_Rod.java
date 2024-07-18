@@ -6,17 +6,14 @@ import entity.projectile.PRJ_Orb;
 
 public class ITM_Rod extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Magical Rod";
 	
 	public ITM_Rod(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to control enemies!";
-		down1 = setup("/items/ITEM_ROD");
 		
 		swingSpeed1 = 3;
 		swingSpeed2 = 15;
@@ -25,6 +22,10 @@ public class ITM_Rod extends Entity {
 		attackbox.height = 36;
 		
 		projectile = new PRJ_Orb(gp);
+	}
+	
+	public void getImage() {
+		down1 = setup("/items/ITEM_ROD");
 	}
 	
 	public void use() {		

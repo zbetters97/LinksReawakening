@@ -12,11 +12,9 @@ import entity.collectable.COL_Rupee_Red;
 public class EMY_Goblin_Combat extends Entity {
 
 	public static final String emyName = "Combat Goblin";
-	GamePanel gp;
 	
 	public EMY_Goblin_Combat(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
+		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
@@ -33,17 +31,16 @@ public class EMY_Goblin_Combat extends Entity {
 		attack = 6; 
 		knockbackPower = 1;		
 		
-		swingSpeed1 = 30;
-		swingSpeed2 = 60;		
-		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
+		swingSpeed1 = 30;
+		swingSpeed2 = 60;		
+		
 		attackbox.width = 36;
 		attackbox.height = 36;
 		
-		getImage();
 		getAttackImage();
 	}
 	

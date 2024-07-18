@@ -6,20 +6,21 @@ import entity.projectile.PRJ_Bomb;
 
 public class ITM_Bomb extends Entity {
 	
-	GamePanel gp;
 	public static final String itmName = "Bombs";
 	
 	public ITM_Bomb(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to blow things up!";
-		down1 = setup("/items/ITEM_BOMB");
 		
 		projectile = new PRJ_Bomb(gp);
 	}	
+	
+	public void getImage() {
+		down1 = setup("/items/ITEM_BOMB");
+	}
 	
 	public boolean use(Entity user) {
 		
@@ -42,6 +43,7 @@ public class ITM_Bomb extends Entity {
 		}
 		return true;
 	}
+	
 	public void playSE() {
 		gp.playSE(5, 4);
 	}

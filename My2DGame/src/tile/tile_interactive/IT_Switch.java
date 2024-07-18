@@ -1,50 +1,39 @@
 package tile.tile_interactive;
 
-import java.awt.Rectangle;
-
 import application.GamePanel;
+import entity.Entity;
 
 public class IT_Switch extends InteractiveTile {
 
 	public static final String itName = "Switch";
-	GamePanel gp;
 	
 	public IT_Switch(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
+		direction = "down";
 		
 		name = itName;
 		life = 3;
-		switchedOn = false;
-		bombable = true;		
-		direction = "down";
-		
-		hitbox = new Rectangle(0,0,48,48);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
-		up1 = setup("/tiles_interactive/switch_on");
-		down1 = setup("/tiles_interactive/switch_off");		
+		switchedOn = false;	
 	}
 	public IT_Switch(GamePanel gp, int col, int row) {
 		super(gp, col, row);
-		this.gp = gp;
+		this.worldX = gp.tileSize * col;
+		this.worldY = gp.tileSize * row;
+		direction = "down";
 		
 		name = itName;
 		life = 3;
-		switchedOn = false;
-		bombable = true;		
-		direction = "down";
-		
-		this.worldX = gp.tileSize * col;
-		this.worldY = gp.tileSize * row;
-		
-		hitbox = new Rectangle(0,0,48,48);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-		
+		switchedOn = false;	
+	}
+	
+	public void getImage() {
 		up1 = setup("/tiles_interactive/switch_on");
 		down1 = setup("/tiles_interactive/switch_off");		
+	}
+	
+	public boolean correctItem(Entity entity) {		
+		boolean correctItem = true;		
+		return correctItem;
 	}
 		
 	public void interact() {

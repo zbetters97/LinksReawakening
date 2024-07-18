@@ -13,11 +13,9 @@ public class OI_Block_Pushable extends Entity {
 	
 	public static final String obj_iName = "Pushable Block";
 	public int pushCounter = 0;
-	GamePanel gp;
 	
 	public OI_Block_Pushable(GamePanel gp) {		
 		super(gp);
-		this.gp = gp;		
 		
 		type = type_obstacle;
 		name = obj_iName;
@@ -29,11 +27,9 @@ public class OI_Block_Pushable extends Entity {
 		hitbox = new Rectangle(1, 1, 46, 46); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
-	private void getImage() {		
+	public void getImage() {		
 		up1 = setup("/objects_interactive/block_pushable"); 
 		up2 = up1;
 		down1 = up1;

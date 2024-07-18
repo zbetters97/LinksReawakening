@@ -10,24 +10,22 @@ import entity.projectile.PRJ_Fireball;
 public class BOS_Gohma extends Entity {
 
 	public static final String emyName = "Queen Gohma";
-	GamePanel gp;
 	private int cycle = 0;
 	
 	public BOS_Gohma(GamePanel gp, int worldX, int worldY) {
-		super(gp);			
-		this.gp = gp;
+		super(gp);				
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
+		direction = "down";
+		lockonDirection = "right";	
 		bounds = 2;
 		
 		type = type_boss;
 		name = emyName;
 		sleep = true;
 		lockon = true;
-		direction = "down";			
-		lockonDirection = "right";		
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
@@ -42,7 +40,6 @@ public class BOS_Gohma extends Entity {
 		
 		projectile = new PRJ_Fireball(gp);
 		
-		getImage();
 		getAttackImage();
 	}
 	

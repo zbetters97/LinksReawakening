@@ -7,12 +7,10 @@ import application.GamePanel;
 
 public class PRJ_Orb extends Projectile {
 
-	public static final String prjName = "Magical Orb";
-	GamePanel gp;	
+	public static final String prjName = "PRJ Orb";
 	
 	public PRJ_Orb(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 						
 		type = type_projectile;
 		name = prjName;
@@ -25,8 +23,6 @@ public class PRJ_Orb extends Projectile {
 		hitbox = new Rectangle(12, 12, 24, 24); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

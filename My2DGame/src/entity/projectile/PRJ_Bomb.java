@@ -10,12 +10,10 @@ import tile.tile_interactive.IT_Switch;
 
 public class PRJ_Bomb extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Bomb";
+	public static final String prjName = "PRJ Bomb";
 	
 	public PRJ_Bomb(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_projectile;
 		name = prjName;
@@ -35,8 +33,6 @@ public class PRJ_Bomb extends Projectile {
 	    hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
 		hitboxDefaultHeight = hitbox.height;
-		
-		getImage();
 	}
 	
 	public void getImage() {

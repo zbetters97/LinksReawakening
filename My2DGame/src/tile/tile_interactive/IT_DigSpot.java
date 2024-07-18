@@ -11,33 +11,28 @@ public class IT_DigSpot extends InteractiveTile {
 	public static final String itName = "Dig Spot";
 	int mapNum;
 	Entity item;
-	GamePanel gp;	
 	
 	public IT_DigSpot(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		name = itName;		
 		destructible = true;
-		diggable = true;
 		collision = false;
 		life = 1;
-		
-		down1 = setup("/tiles/017");
 	}	
 	public IT_DigSpot(GamePanel gp, int col, int row, Entity item) {
 		super(gp, col, row);
-		this.gp = gp;
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
 		this.item = item;
 		
 		name = itName;		
 		destructible = true;
-		diggable = true;
 		collision = false;
 		life = 1;
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/tiles/017");
 	}
 	

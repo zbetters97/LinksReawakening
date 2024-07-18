@@ -26,6 +26,12 @@ public class Player extends Entity {
 	// KEY INPUT
 	KeyHandler keyH;
 	
+	// POSITIONING
+	public int screenX;
+	public int screenY;	
+	public int safeWorldX = 0;
+	public int safeWorldY = 0;
+	
 	// INVENTORY
 	public final int maxItemInventorySize = 20;
 	public ArrayList<Entity> inventory_item = new ArrayList<>();
@@ -33,21 +39,16 @@ public class Player extends Entity {
 	public int walletSize;
 	public int keys = 0;
 	public int boss_key = 0;	
-	public String aimDirection;
 	
+	// MISC
+	public String aimDirection;	
 	public Entity capturedTarget;
-		
-	// POSITIONING
-	public int screenX;
-	public int screenY;	
-	public int safeWorldX = 0;
-	public int safeWorldY = 0;
 	
 	// COUNTERS
 	public int digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1, 
 			damageNum = 1, pullNum = 1, throwNum = 1;
 	public int digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, 
-			damageCounter = 0, pullCounter = 0, throwCounter = 0;
+			damageCounter = 0, pullCounter = 0, throwCounter = 0, lowHPCounter = 0;
 	
 	// IMAGES
 	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
@@ -124,7 +125,6 @@ public class Player extends Entity {
 		setDefaultItems();	
 		setDialogue();
 
-		getImage();
 		getAttackImage();
 		getGuardImage();		
 		getDigImage();
@@ -169,6 +169,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Boots(gp));	
 	}
 	public void restoreStatus() {
+		action = Action.IDLE;
 		life = maxLife;
 		speed = defaultSpeed;
 		knockback = false;
@@ -176,13 +177,12 @@ public class Player extends Entity {
 		transparent = false;
 		onGround = true;
 		grabbedObject = null;
+		currentItem = null;
+		canMove = true;
 		
 		resetValues();
 	}	
-	public void resetValues() {
-
-		action = Action.IDLE;
-		
+	public void resetValues() {		
 		digNum = 1;
 		digCounter = 0;	
 		jumpNum = 1;
@@ -197,6 +197,7 @@ public class Player extends Entity {
 		pullCounter = 0;
 		throwNum = 1;
 		throwCounter = 0;
+		lowHPCounter = 0;
 		
 		if (grabbedObject != null) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
@@ -489,7 +490,7 @@ public class Player extends Entity {
 	public void getDirection() {
 		
 		// KEEP PLAYER FACING ENEMY
-		if (lockedTarget != null && lockon) {
+		if (lockon) {
 			if (keyH.upPressed) lockonDirection = "up";
 			if (keyH.downPressed) lockonDirection = "down";
 			if (keyH.leftPressed) lockonDirection = "left";
@@ -513,17 +514,20 @@ public class Player extends Entity {
 		}
 	}
 	public void move(String direction) {
-		switch (direction) {
-			case "up": worldY -= speed; break;
-			case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
-			case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
-			
-			case "down": worldY += speed; break;
-			case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
-			case "downright": worldY += speed; worldX += speed - 0.5; break;
-			
-			case "left": worldX -= speed; break;
-			case "right": worldX += speed; break;
+		
+		if (canMove) {
+			switch (direction) {
+				case "up": worldY -= speed; break;
+				case "upleft": worldY -= speed - 0.5; worldX -= speed - 0.5; break;
+				case "upright": worldY -= speed - 0.5; worldX += speed - 0.5; break;
+				
+				case "down": worldY += speed; break;
+				case "downleft": worldY += speed - 0.5; worldX -= speed - 0.5; break;
+				case "downright": worldY += speed; worldX += speed - 0.5; break;
+				
+				case "left": worldX -= speed; break;
+				case "right": worldX += speed; break;
+			}
 		}
 	}
 	public void cycleSprites() {
@@ -730,7 +734,7 @@ public class Player extends Entity {
 		}
 		
 		// TARGET FOUND WITHIN 10 TILES
-		if (lockedTarget != null && getTileDistance(lockedTarget) < 12) {
+		if (lockedTarget != null && getTileDistance(lockedTarget) < 10) {
 			if (lockedTarget.alive) {
 				lockedTarget.locked = true;
 				direction = findTargetDirection(lockedTarget);
@@ -752,6 +756,7 @@ public class Player extends Entity {
 		Entity target = null;
 		
 		int currentDistance = 6;
+		
 		for (int i = 0; i < gp.enemy[1].length; i++) {
 			
 			if (gp.enemy[gp.currentMap][i] != null && gp.enemy[gp.currentMap][i].type != type_boss) {
@@ -1259,7 +1264,7 @@ public class Player extends Entity {
 				if (!attacker.invincible) {
 					target.playShockSE();
 				}
-				target.damagePlayer(target.attack);
+				damagePlayer(target.attack);
 			}			
 			else if (!target.invincible && !target.captured) {
 				target.playHurtSE();
@@ -1319,7 +1324,7 @@ public class Player extends Entity {
 				gp.iTile[gp.currentMap][i].interact();
 			}
 		
-			else if (i != -1 && gp.iTile[gp.currentMap][i].destructible && !gp.iTile[gp.currentMap][i].invincible &&
+			else if (i != -1 && !gp.iTile[gp.currentMap][i].invincible &&
 					gp.iTile[gp.currentMap][i].correctItem(entity)) {
 				
 				gp.iTile[gp.currentMap][i].playSE();
@@ -1339,6 +1344,17 @@ public class Player extends Entity {
 	
 	// CHECKERS
 	public void manageValues() {
+		
+		if (life <= 4) {
+			lowHPCounter++;
+			if (lowHPCounter == 90) {
+				playLowHPSE();
+				lowHPCounter = 0;
+			}
+		}
+		else {
+			lowHPCounter = 0;
+		}
 						
 		// KEEP ARROWS WITHIN MAX
 		if (arrows > maxArrows)	
@@ -1385,7 +1401,16 @@ public class Player extends Entity {
 		}
 	}
 	
-	// SOUND EFFECTS	
+	// SOUND EFFECTS
+	private void playLiftSE() {
+		gp.playSE(4, 10);
+	}
+	public void playThrowSE() {
+		gp.playSE(4, 11);
+	}
+	public void playGetItemSE() {
+		gp.playSE(5, 0);
+	}
 	public void playGuardSE() {
 		gp.playSE(2, 1);
 	}
@@ -1406,6 +1431,9 @@ public class Player extends Entity {
 	}
 	public void playHurtSE() {
 		gp.playSE(2, 5);
+	}
+	public void playLowHPSE() {
+		gp.playSE(2, 7);
 	}
 	public void playDeathSE() {
 		gp.playSE(2, 6);

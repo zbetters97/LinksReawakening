@@ -8,22 +8,23 @@ import entity.Entity;
 public class COL_Heart extends Entity {
 	
 	public static final String colName = "COL Heart";
-	GamePanel gp;
 	
 	public COL_Heart(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
+		
+		collision = false;
 		
 		type = type_collectable;		
 		name = colName;
 		value = 4;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
-		collision = false;
 		
 		hitbox = new Rectangle(9, 9, 30, 30); 		
 		hitboxDefaultX = hitbox.x;
 	    hitboxDefaultY = hitbox.y;
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/collectables/COL_HEART");
 	}
 	

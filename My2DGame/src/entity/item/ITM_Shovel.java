@@ -5,16 +5,17 @@ import entity.Entity;
 
 public class ITM_Shovel extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Wooden Shovel";
 	
 	public ITM_Shovel(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to dig for treasure!";
+	}
+	
+	public void getImage() {
 		down1 = setup("/items/ITEM_SHOVEL");
 	}
 	

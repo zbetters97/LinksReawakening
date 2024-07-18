@@ -7,7 +7,6 @@ import application.GamePanel;
 
 public class Particle extends Entity {
 
-	GamePanel gp;
 	Entity generator;
 	Color color;
 	int size;
@@ -15,10 +14,8 @@ public class Particle extends Entity {
 	int yd;
 	
 	public Particle(GamePanel gp, Entity generator, Color color, 
-			int size, int speed, int maxLife, int xd, int yd) {
-		
+			int size, int speed, int maxLife, int xd, int yd) {		
 		super(gp);
-		this.gp = gp;
 		
 		this.generator = generator;
 		this.color = color;

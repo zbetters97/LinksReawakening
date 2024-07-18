@@ -458,9 +458,7 @@ public class GamePanel extends JPanel implements Runnable {
 		setupMusic(true);
 	}
 	
-	public void setupMusic(boolean reset) {		
-		
-		
+	public void setupMusic(boolean reset) {			
 		if (gameState == titleState) playMusic(0);
 		else if (reset) {
 			if (currentMap == 0) playMusic(2);
@@ -475,19 +473,7 @@ public class GamePanel extends JPanel implements Runnable {
 			else if (currentMap == 3) playMusic(5);
 		}
 	}	
-	public void playMusic(int c) {		
-		music.setFile(0, c);
-		music.play();
-		music.loop();
-	}
-	public void stopMusic() {
-		music.stop();
-	}
-	public void playSE(int i, int c) {
-		se.setFile(i, c);
-		se.play();
-	}	
-
+	
 	private void drawToTempScreen() {
 		
 		// TITLE SCREEN
@@ -564,5 +550,18 @@ public class GamePanel extends JPanel implements Runnable {
 		Graphics g = getGraphics();
 		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
 		g.dispose();
+	}	
+	
+	public void playMusic(int c) {		
+		music.setFile(0, c);
+		music.play();
+		music.loop();
 	}
+	public void stopMusic() {
+		music.stop();
+	}
+	public void playSE(int i, int c) {
+		se.setFile(i, c);
+		se.play();
+	}	
 }

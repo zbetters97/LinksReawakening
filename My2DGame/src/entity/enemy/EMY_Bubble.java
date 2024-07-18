@@ -11,11 +11,9 @@ import entity.collectable.COL_Rupee_Green;
 public class EMY_Bubble extends Entity {
 
 	public static final String emyName = "Buble";
-	GamePanel gp;
 	
 	public EMY_Bubble(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
+		super(gp);			
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -35,8 +33,6 @@ public class EMY_Bubble extends Entity {
 		hitbox = new Rectangle(8, 8, 32, 32);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

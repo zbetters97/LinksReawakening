@@ -13,7 +13,9 @@ public class EQP_Flippers extends Entity {
 		type = type_equipment;
 		name = eqpName;
 		description = "[" + name + "]\nSwim through water!";
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/items/EQP_FLIPPERS");
 	}
 }

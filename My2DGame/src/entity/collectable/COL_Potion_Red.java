@@ -6,11 +6,9 @@ import entity.Entity;
 public class COL_Potion_Red extends Entity implements Cloneable {
 
 	public static final String colName = "Red Potion";
-	GamePanel gp;
 	
 	public COL_Potion_Red(GamePanel gp) {
 		super(gp);		
-		this.gp = gp;
 		
 		type = type_consumable;
 		name = colName;
@@ -19,8 +17,11 @@ public class COL_Potion_Red extends Entity implements Cloneable {
 		price = 20;
 		stackable = true;
 		
-		down1 = setup("/collectables/COL_POTION_RED");
 		setDialogue();
+	}
+	
+	public void getImage() {
+		down1 = setup("/collectables/COL_POTION_RED");
 	}
 	
 	public void setDialogue() {

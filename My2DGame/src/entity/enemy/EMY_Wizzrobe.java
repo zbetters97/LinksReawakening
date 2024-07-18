@@ -13,13 +13,11 @@ import entity.projectile.PRJ_Magic;
 public class EMY_Wizzrobe extends Entity {
 
 	public static final String emyName = "Wizzrobe";
-	GamePanel gp;
 	
 	private int teleportCounter = 0;
 	
 	public EMY_Wizzrobe(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
+		super(gp);			
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
@@ -28,8 +26,8 @@ public class EMY_Wizzrobe extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
-		capturable = true;		
 		collision = false;
+		capturable = true;		
 		
 		maxLife = 16; life = maxLife;
 		speed = 2; defaultSpeed = speed; 
@@ -40,8 +38,6 @@ public class EMY_Wizzrobe extends Entity {
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

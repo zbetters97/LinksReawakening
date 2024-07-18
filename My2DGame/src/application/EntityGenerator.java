@@ -44,7 +44,6 @@ public class EntityGenerator {
 			case ITM_Shovel.itmName: obj = new ITM_Shovel(gp); break;	
 			
 			case OBJ_BlueHeart.objName: obj = new OBJ_BlueHeart(gp); break;
-			case OBJ_Block.objName: obj = new OBJ_Block(gp); break;
 			case OBJ_Block_Locked.objName: obj = new OBJ_Block_Locked(gp); break;
 			case OBJ_Chest.objName: obj = new OBJ_Chest(gp); break;
 			case OBJ_Door_Boss.objName: obj = new OBJ_Door_Boss(gp); break;

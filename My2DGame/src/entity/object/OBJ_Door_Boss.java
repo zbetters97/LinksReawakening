@@ -9,29 +9,28 @@ public class OBJ_Door_Boss extends Entity {
 	
 	public static final String objName = "Boss Door";
 	private int openCounter = 0;
-	GamePanel gp;
 	
 	public OBJ_Door_Boss(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_obstacle;
 		name = objName;
 		direction = "down";
-		
-		up1 = setup("/objects/door_boss_down_1");
-		down1 = up1;
-		left1 = up1;
-		right1 = up1;
-		
-		up2 = setup("/objects/door_boss_down_2");
-		down2 = up2;
-		left2 = up2;
-		right2 = up2;
+		collision = true;
 		
 		hitbox = new Rectangle(0, 16, 48, 40);
-		collision = true;
 	}	
+	
+	public void getImage() {
+		up1 = setup("/objects/door_boss_down_1");
+		up2 = setup("/objects/door_boss_down_2");
+		down1 = up1;
+		down2 = up2;
+		left1 = up1;
+		left2 = up2;
+		right1 = up1;
+		right2 = up2;
+	}
 	
 	public void update() {
 		if (opening) {

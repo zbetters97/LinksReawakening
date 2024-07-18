@@ -8,9 +8,6 @@ public class NPC_Traveler_1 extends NPC_Traveler_Template {
 	
 	public NPC_Traveler_1(GamePanel gp, int worldX, int worldY) {		
 		super(gp, worldX, worldY);
-		this.gp = gp;	
-		worldXStart = this.worldX;
-		worldYStart = this.worldY;
 		
 		name = npcName;
 		hasCutscene = true;	

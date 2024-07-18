@@ -13,7 +13,9 @@ public class EQP_Shield extends Entity {
 		type = type_equipment;
 		name = eqpName;
 		description = "[" + name + "]\nA humble starter shield.";
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/items/EQP_SHIELD");
 	}
 }

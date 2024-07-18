@@ -6,19 +6,19 @@ import entity.Entity;
 public class COL_Rupee_Blue extends Entity {
 
 	public static final String colName = "COL Blue Rupee";
-	GamePanel gp;
 	
 	public COL_Rupee_Blue(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
+		
+		collision = false;
 		
 		type = type_collectable;
 		name = colName;
 		value = 5;
 		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
-		
-		collision = false;
-		
+	}
+	
+	public void getImage() {
 		down1 = setup("/collectables/COL_RUPEE_BLUE");
 	}
 	

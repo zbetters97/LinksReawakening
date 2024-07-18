@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class PathFinder {
 
-	GamePanel gp;
+	private GamePanel gp;
 	Node[][]node;
 	
 	ArrayList<Node> openList = new ArrayList<>();

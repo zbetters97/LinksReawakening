@@ -6,12 +6,10 @@ import application.GamePanel;
 
 public class PRJ_Boomerang extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Boomerang";
+	public static final String prjName = "PRJ Boomerang";
 	
 	public PRJ_Boomerang(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 						
 		type = type_projectile;
 		name = prjName;
@@ -25,8 +23,6 @@ public class PRJ_Boomerang extends Projectile {
 		hitbox = new Rectangle(12, 12, 24, 24); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

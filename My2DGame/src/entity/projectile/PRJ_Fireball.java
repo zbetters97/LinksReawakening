@@ -7,12 +7,10 @@ import application.GamePanel;
 
 public class PRJ_Fireball extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Fireball";
+	public static final String prjName = "PRJ Fireball";
 	
 	public PRJ_Fireball(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_projectile;
 		name = prjName;
@@ -24,8 +22,6 @@ public class PRJ_Fireball extends Projectile {
 		hitbox = new Rectangle(12, 12, 24, 24); 		
 		hitboxDefaultX = hitbox.x;
 	    hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

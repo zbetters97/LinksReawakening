@@ -111,14 +111,6 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 40;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 11;
 		i++;
-		gp.obj[mapNum][i] = new OBJ_Block(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 12;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 21;
-		i++;
-		gp.obj[mapNum][i] = new OBJ_Block(gp);
-		gp.obj[mapNum][i].worldX = gp.tileSize * 27;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 21;
-		i++;
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new EQP_Flippers(gp));
 		gp.obj[mapNum][i].worldX = gp.tileSize * 38;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 7;		
@@ -191,8 +183,8 @@ public class AssetSetter {
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, new COL_Key_Boss(gp));
-		gp.obj[mapNum][i].worldX = gp.tileSize * 58;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 59;	
+		gp.obj[mapNum][i].worldX = gp.tileSize * 59;
+		gp.obj[mapNum][i].worldY = gp.tileSize * 56;	
 		i++;
 		
 		gp.obj[mapNum][i] = new OBJ_Door_Boss(gp);
@@ -256,10 +248,8 @@ public class AssetSetter {
 		mapNum = 1;
 		i = 0;
 		
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 10, 12);
-		gp.iTile[mapNum][i].setLoot(new COL_Rupee_Blue(gp), new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 14, 12);
-		gp.iTile[mapNum][i].setLoot(new COL_Rupee_Green(gp), new COL_Potion_Red(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 10, 12, new COL_Heart(gp));
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 14, 12, new COL_Rupee_Blue(gp));
 		
 		mapNum = 2;
 		i = 0;

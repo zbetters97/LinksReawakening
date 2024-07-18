@@ -6,20 +6,21 @@ import entity.projectile.PRJ_Boomerang;
 
 public class ITM_Boomerang extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Hylian Boomerang";
 	
 	public ITM_Boomerang(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to pull in far away\nitems!";
 		price = 40;
-		down1 = setup("/items/ITEM_BOOMERANG");
 		
 		projectile = new PRJ_Boomerang(gp);
+	}
+	
+	public void getImage() {
+		down1 = setup("/items/ITEM_BOOMERANG");
 	}
 	
 	public boolean use(Entity user) {

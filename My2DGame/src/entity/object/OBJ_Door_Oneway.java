@@ -12,36 +12,31 @@ public class OBJ_Door_Oneway extends Entity {
 	
 	public static final String objName = "Oneway Door";
 	public BufferedImage turnUp1, turnUp2, turnUp3, turnDown1, turnDown2, turnDown3;
-	GamePanel gp;
 	
 	public OBJ_Door_Oneway(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_obstacle;
 		name = objName;
 		direction = "down";
+		collision = true;
 		switchedOn = true;
 		
 		hitbox = new Rectangle(0, 16, 48, 40);
-		collision = true;
 		
-		getImage();
 		getTurnImage();
 	}	
 	public OBJ_Door_Oneway(GamePanel gp, String direction, boolean switchedOn) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_obstacle;
 		name = objName;
 		this.direction = direction;
 		this.switchedOn = switchedOn;
-		
-		hitbox = new Rectangle(0, 16, 48, 40);
 		collision = true;
 		
-		getImage();
+		hitbox = new Rectangle(0, 16, 48, 40);
+		
 		getTurnImage();
 	}	
 	public void getImage() {

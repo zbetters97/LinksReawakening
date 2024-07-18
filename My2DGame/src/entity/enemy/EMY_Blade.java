@@ -10,11 +10,9 @@ public class EMY_Blade extends Entity {
 	public static final String emyName = "Blade";
 	private boolean playerFound = false;
 	private boolean returning = false;
-	GamePanel gp;
 	
 	public EMY_Blade(GamePanel gp, int worldX, int worldY) {
 		super(gp);			
-		this.gp = gp;
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -25,17 +23,15 @@ public class EMY_Blade extends Entity {
 		name = emyName;
 		guarded = true;
 		
-		speed = 4; defaultSpeed = speed;
-		animationSpeed = 0;
 		maxLife = 1; life = maxLife;
+		speed = 4; defaultSpeed = speed;
+		animationSpeed = 0;		
 		attack = 4;
 		knockbackPower = 1;		
 		
 		hitbox = new Rectangle(8, 8, 32, 32);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

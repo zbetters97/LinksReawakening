@@ -57,6 +57,7 @@ public class Sound {
 		player[4] = getClass().getResource("/sound/PLAYER_FALL.wav");
 		player[5] = getClass().getResource("/sound/PLAYER_HURT.wav");
 		player[6] = getClass().getResource("/sound/PLAYER_DIE.wav");
+		player[7] = getClass().getResource("/sound/PLAYER_LOWHP.wav");
 		
 		// 3
 		enemies[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

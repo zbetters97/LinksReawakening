@@ -159,6 +159,7 @@ public class UI {
 		else if (gp.gameState == gp.dialogueState) {
 			drawHUD();
 			drawDialogueScreen();
+			skipDialogue();
 		}
 		// TRADE STATE
 		else if (gp.gameState == gp.tradeState) {
@@ -908,7 +909,8 @@ public class UI {
 			
 			if (gp.keyH.actionPressed) {
 				gp.stopMusic();				
-				subState = 0;							
+				subState = 0;					
+				inventoryScreen = 0;
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
 			}
@@ -1221,7 +1223,7 @@ public class UI {
 		g2.drawString(count, x, y);	
 	}
 	
-	// DIALOGUE
+	// DIALOGUE	
 	public void drawDialogueScreen() {
 				
 		if (npc.hasCutscene) {
@@ -1259,16 +1261,6 @@ public class UI {
 					canSkip = true;
 				}
 	
-				if (gp.keyH.actionPressed && canSkip) {
-					canSkip = false;
-					charIndex = 0;
-					combinedText = "";
-					
-					if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
-						npc.dialogueIndex++;
-						gp.keyH.actionPressed = false;
-					}				
-				}
 				dialogueCounter = 0;
 			}
 			else
@@ -1315,31 +1307,17 @@ public class UI {
 	  		g2.drawImage(dialogue_finish, x, y + 30, null);
   		}
 	}
-	
-	// ITEM GET 
-	private void drawItemGetScreen() {
-	
-		int x = gp.tileSize * 2;
-		int y = (gp.screenWidth / 2 ) - gp.tileSize;
-		int width = gp.screenWidth - (gp.tileSize * 4);
-		int height = gp.tileSize * 4;		
-		drawSubWindow(x, y, width, height);
-		
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
-		x += gp.tileSize;
-		y += gp.tileSize;
-		
-		for (String line : currentDialogue.split("\n")) { 
-			g2.drawString(line, x, y);	
-			y += 40;
-		} 
-		
-		// DISPLAY ITEM ABOVE PLAYER
-		if (newItem != null) {			
-			gp.player.drawing = false;
-			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
-			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
-		}			
+	private void skipDialogue() {
+		if (gp.keyH.actionPressed && canSkip) {
+			canSkip = false;
+			charIndex = 0;
+			combinedText = "";
+			
+			if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
+				npc.dialogueIndex++;
+				gp.keyH.actionPressed = false;
+			}				
+		}
 	}
 			
 	// TRADE
@@ -1359,10 +1337,10 @@ public class UI {
 		
 		gp.keyH.actionPressed = false;
 	}
-	
 	private void dialogue_select() {
 	
 		drawDialogueScreen();
+		
 		int x = gp.tileSize * 8;
 		int y = gp.tileSize * 4;
 		int width = gp.tileSize * 6;
@@ -1383,11 +1361,16 @@ public class UI {
 				// IF RESPONSE IS SELECTED, DRAW DIALOGUE ANSWER
 				if (commandNum == i) {
 					g2.drawString(">", x-24, y);
-					if (gp.keyH.actionPressed) {
+					if (gp.keyH.actionPressed && canSkip) {
 						commandNum = 0;
 						subState = 0;
 						responseSet = 0;
 						response = false;
+						
+						canSkip = false;
+						charIndex = 0;
+						combinedText = "";						
+						dialogueCounter = 0;
 						
 						// CORROSPONDING ANSWER
 						npc.dialogueSet = i + offset;	
@@ -1397,9 +1380,7 @@ public class UI {
 				}		
 			}
 		}		
-		
-	}
-	
+	}	
 	private void trade_select() {
 				
 		npc.dialogueSet = 0;
@@ -1577,6 +1558,32 @@ public class UI {
 		}		
 	}
 		
+	// ITEM GET 
+	private void drawItemGetScreen() {
+	
+		int x = gp.tileSize * 2;
+		int y = (gp.screenWidth / 2 ) - gp.tileSize;
+		int width = gp.screenWidth - (gp.tileSize * 4);
+		int height = gp.tileSize * 4;		
+		drawSubWindow(x, y, width, height);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
+		x += gp.tileSize;
+		y += gp.tileSize;
+		
+		for (String line : currentDialogue.split("\n")) { 
+			g2.drawString(line, x, y);	
+			y += 40;
+		} 
+		
+		// DISPLAY ITEM ABOVE PLAYER
+		if (newItem != null) {			
+			gp.player.drawing = false;
+			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
+			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+		}			
+	}
+	
 	// TRANSITION
 	private void drawTransition() {
 		
@@ -1752,7 +1759,7 @@ public class UI {
 	    
 	    return count;
 	}
-	public BufferedImage setup(String imagePath) {	
+	private BufferedImage setup(String imagePath) {	
 		
 		UtilityTool utility = new UtilityTool();
 		BufferedImage image = null;
@@ -1767,7 +1774,7 @@ public class UI {
 		
 		return image;
 	}
-	public BufferedImage setup(String imagePath, int width, int height) {
+	private BufferedImage setup(String imagePath, int width, int height) {
 		
 		UtilityTool utility = new UtilityTool();
 		BufferedImage image = null;

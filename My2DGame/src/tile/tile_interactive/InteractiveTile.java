@@ -9,17 +9,11 @@ import entity.Entity;
 
 public class InteractiveTile extends Entity {
 	
-	GamePanel gp;
-	
 	public InteractiveTile(GamePanel gp) {
-		super(gp);
-		this.gp = gp;
-		collision = true;		
+		super(gp);	
 	}
 	public InteractiveTile(GamePanel gp, int col, int row) {
 		super(gp);
-		this.gp = gp;
-		collision = true;		
 	}
 	
 	public void update() {

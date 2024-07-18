@@ -11,11 +11,9 @@ import entity.collectable.COL_Rupee_Blue;
 public class EMY_ChuChu_Green extends Entity {
 
 	public static final String emyName = "Green ChuChu";
-	GamePanel gp;
 	
 	public EMY_ChuChu_Green(GamePanel gp, int worldX, int worldY) {
-		super(gp);			
-		this.gp = gp;
+		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -35,8 +33,6 @@ public class EMY_ChuChu_Green extends Entity {
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {	

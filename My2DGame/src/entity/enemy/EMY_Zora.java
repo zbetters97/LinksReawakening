@@ -1,6 +1,5 @@
 package entity.enemy;
 
-import java.awt.Rectangle;
 import java.util.Random;
 
 import application.GamePanel;
@@ -11,20 +10,18 @@ import entity.projectile.PRJ_Fireball;
 public class EMY_Zora extends Entity {
 
 	public static final String emyName = "Octorok";
-	GamePanel gp;
 	
 	public EMY_Zora(GamePanel gp, int worldX, int worldY) {
 		super(gp);			
-		this.gp = gp;
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
+		direction = "down";
 		
 		type = type_enemy;
 		name = emyName;
-		canSwim = true;
-		direction = "down";
+		canSwim = true;		
 		
 		maxLife = 12; life = maxLife;
 		speed = 0; defaultSpeed = speed;
@@ -32,13 +29,8 @@ public class EMY_Zora extends Entity {
 		attack = 2; 
 		knockbackPower = 0;
 		
-		hitbox = new Rectangle(0, 0, 48, 48);
-		hitboxDefaultX = hitbox.x;
-		hitboxDefaultY = hitbox.y;
-
 		projectile = new PRJ_Fireball(gp);
 		
-		getImage();
 		getAttackImage();
 	}
 	

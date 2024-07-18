@@ -11,11 +11,9 @@ import entity.collectable.COL_Rupee_Green;
 public class EMY_Keese extends Entity {
 
 	public static final String emyName = "Keese";
-	GamePanel gp;
 		
 	public EMY_Keese(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
+		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
@@ -26,17 +24,15 @@ public class EMY_Keese extends Entity {
 		name = emyName;
 		onGround = false;
 		
+		maxLife = 4; life = maxLife;		
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 5;
 		attack = 1;
 		knockbackPower = 0;
-		maxLife = 4; life = maxLife;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

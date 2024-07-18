@@ -6,12 +6,10 @@ import application.GamePanel;
 
 public class PRJ_Magic extends Projectile {
 
-	GamePanel gp;
-	public static final String prjName = "Magic";
+	public static final String prjName = "PRJ Magic";
 	
 	public PRJ_Magic(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 		
 		type = type_projectile;
 		name = prjName;
@@ -23,8 +21,6 @@ public class PRJ_Magic extends Projectile {
 		hitbox = new Rectangle(12, 12, 24, 24); 		
 		hitboxDefaultX = hitbox.x;
 	    hitboxDefaultY = hitbox.y;
-		
-		getImage();
 	}
 	
 	public void getImage() {

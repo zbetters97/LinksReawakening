@@ -98,7 +98,7 @@ public class EventHandler {
 			else if (hit(2, 70, 49, true)) teleport(3, 18, 40, gp.dungeon, 3, "right"); // DUNGEON F2
 			else if (hit(3, 18, 40, true)) teleport(2, 70, 49, gp.dungeon, 2, "down"); // DUNEGOEN F1
 						
-			// ENEMY SPAWN
+			// ENEMY ROOMS
 			if (!Progress.enemy_room_1_1) {
 				if (hit(2, 33, 80, true)) {
 					Progress.enemy_room_1_1 = true;
@@ -121,8 +121,8 @@ public class EventHandler {
 				if (hit(2, 59, 65, true)) {
 					Progress.enemy_room_1_3 = true;
 					spawnEnemies(
-							new int[]{59}, new int[]{67}, new String[]{"up"},
-							Arrays.asList(new EMY_Wizzrobe(gp,57,60), new EMY_Buzzblob(gp,60,62))
+							new int[]{59,59}, new int[]{67,60}, new String[]{"up","down"},
+							Arrays.asList(new EMY_Wizzrobe(gp,57,62), new EMY_Buzzblob(gp,62,62))
 					);
 				}
 			}

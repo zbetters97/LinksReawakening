@@ -6,20 +6,21 @@ import entity.projectile.PRJ_Hookshot;
 
 public class ITM_Hookshot extends Entity {
 
-	GamePanel gp;
 	public static final String itmName = "Hookshot";
 	
 	public ITM_Hookshot(GamePanel gp) {
 		super(gp);
-		this.gp = gp;
 
 		type = type_item;
-		name = itmName;
+		name = itmName;		
 		description = "[" + name + "]\nEquip to grab things!";
-		down1 = setup("/items/ITEM_Hookshot");
 		
 		projectile = new PRJ_Hookshot(gp);
 	}	
+	
+	public void getImage() {
+		down1 = setup("/items/ITEM_Hookshot");
+	}
 	
 	public boolean use(Entity user) {
 		if (!projectile.alive && user.shotAvailableCounter == 30) { 			

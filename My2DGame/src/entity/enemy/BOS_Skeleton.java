@@ -8,11 +8,9 @@ import entity.Entity;
 public class BOS_Skeleton extends Entity {
 
 	public static final String emyName = "Skeleton King";
-	GamePanel gp;
 	
 	public BOS_Skeleton(GamePanel gp, int worldX, int worldY) {
-		super(gp);				
-		this.gp = gp;
+		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
@@ -28,19 +26,18 @@ public class BOS_Skeleton extends Entity {
 		attack = 10;
 		knockbackPower = 5;		
 		currentBossPhase = bossPhase_1;
-		
-		swingSpeed1 = 45;
-		swingSpeed2 = 80;
 						
 		int hbScale = gp.tileSize * 5;
 		hitbox = new Rectangle(gp.tileSize, gp.tileSize, hbScale - (gp.tileSize * 2), hbScale - gp.tileSize); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		
+		swingSpeed1 = 45;
+		swingSpeed2 = 80;
+		
 		attackbox.width = 170;
 		attackbox.height = 170;
 		
-		getImage();
 		getAttackImage();
 		setDialogue();
 	}
