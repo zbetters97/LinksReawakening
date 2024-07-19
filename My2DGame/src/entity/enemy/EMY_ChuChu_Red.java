@@ -73,18 +73,20 @@ public class EMY_ChuChu_Red extends Entity {
 	public void setAction() {
 		
 		if (!captured) {
-			if (onPath) {
-				isOffPath(gp.player, 6);
-				if (onPath) {
-					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-				}
+			
+			isOffPath(gp.player, 8);
+			if (onPath && playerWithinBounds()) {	
+				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
 			}
 			else {				
-				isOnPath(gp.player, 4);
-				if (onPath) {
-					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-					isOffPath(gp.player, 8);
-				}		
+				
+				// SEARCH FOR PLAYER IF WITHIN BOUNDS
+				if (playerWithinBounds()) {
+					isOnPath(gp.player, 6);
+				}
+				else {
+					onPath = false;
+				}
 			}
 		}
 	}

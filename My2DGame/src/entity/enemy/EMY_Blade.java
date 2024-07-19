@@ -24,7 +24,7 @@ public class EMY_Blade extends Entity {
 		guarded = true;
 		
 		maxLife = 1; life = maxLife;
-		speed = 4; defaultSpeed = speed;
+		speed = 5; defaultSpeed = speed;
 		animationSpeed = 0;		
 		attack = 4;
 		knockbackPower = 1;		
@@ -45,11 +45,12 @@ public class EMY_Blade extends Entity {
 	
 	// UPDATER
 	public void update() {
-				
+		
 		if (returning) {	
-			
-			// RETURN TO STARTING POINT
-			if (worldX != worldXStart || worldY != worldYStart) {
+						
+			// RETURNING TO STARTING POINT 
+			if ((!(worldXStart - 3 <= worldX && worldX <= worldXStart + 3)) ||
+					(!(worldYStart - 3 <= worldY && worldY <= worldYStart + 3))) {
 				
 				checkCollision();
 				if (!collisionOn) { 	

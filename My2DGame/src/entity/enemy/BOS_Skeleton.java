@@ -40,7 +40,7 @@ public class BOS_Skeleton extends Entity {
 		attackbox.width = 170;
 		attackbox.height = 170;
 		
-		getAttackImage();
+		
 		setDialogue();
 	}
 	
@@ -126,7 +126,7 @@ public class BOS_Skeleton extends Entity {
 				attack++; 
 				defaultSpeed++; speed = defaultSpeed;
 				getImage();
-				getAttackImage();
+				
 			}
 		}
 		else if (currentBossPhase == 2) {

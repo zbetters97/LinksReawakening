@@ -57,20 +57,28 @@ public class EMY_Goblin_Archer extends Entity {
 	public void setAction() {
 		
 		if (!captured) {
-			if (onPath) {
-				isOffPath(gp.player, 10);				
-				if (onPath) {
-					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+			
+			if (onPath) {					
+				isOffPath(gp.player, 10);	
+				
+				if (onPath && playerWithinBounds()) {					
+					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));		
+					useItem(60);
+				}
+				else if (onPath) {
 					useItem(60);
 				}
 			}
-			else {				
+			else {					
 				getDirection(60);
-				isOnPath(gp.player, 6);
-				if (onPath) {
-					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-					isOffPath(gp.player, 8);
-				}		
+				
+				// SEARCH FOR PLAYER IF WITHIN BOUNDS
+				if (playerWithinBounds()) {
+					isOnPath(gp.player, 7);
+				}
+				else {
+					onPath = false;
+				}	
 			}
 		}
 	}

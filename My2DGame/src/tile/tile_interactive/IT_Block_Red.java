@@ -11,6 +11,7 @@ public class IT_Block_Red extends InteractiveTile {
 		direction = "up";
 		
 		name = itName;
+		collision = false;
 		switchedOn = false;		
 	}
 	public IT_Block_Red(GamePanel gp, int col, int row) {
@@ -20,7 +21,8 @@ public class IT_Block_Red extends InteractiveTile {
 		direction = "up";
 		
 		name = itName;
-		switchedOn = false;	
+		collision = false;
+		switchedOn = false;		
 	}
 	
 	public void getImage() {

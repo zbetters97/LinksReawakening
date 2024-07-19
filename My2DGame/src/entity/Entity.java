@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import application.GamePanel;
 import application.UtilityTool;
 import data.Progress;
+import entity.enemy.EMY_Stalfos;
 import entity.enemy.EMY_Zora;
 import entity.projectile.PRJ_Seed;
 import entity.projectile.Projectile;
@@ -212,10 +213,12 @@ public class Entity {
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 		getImage();
+		getAttackImage();
 	}
 	
 	// CHILD ONLY		
 	public void getImage() { }
+	public void getAttackImage() { }
 	public void setLoot(Entity loot) { }
 	public void setAction() { }	
 	public void move(String direction) { }
@@ -318,6 +321,10 @@ public class Entity {
 
 	// CAPTURED
 	public void isCaptured() {		
+		
+		worldXStart = worldX;
+		worldYStart = worldY;
+		
 		if (gp.keyH.actionPressed) { attacking = true; }
 		if (attacking) { attacking(); return; }		
 		if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
@@ -329,21 +336,39 @@ public class Entity {
 		
 		checkCollision();
 		if (!collisionOn) {
-			switch (direction) {
-				case "up": worldY -= speed; break;		
-				case "down": worldY += speed; break;		
-				case "left": worldX -= speed; break;
-				case "right": worldX += speed; break;
-			}		
+			if (lockon) {
+				switch (lockonDirection) {
+					case "up": worldY -= speed; break;		
+					case "down": worldY += speed; break;		
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
+				}	
+			}
+			else {
+				switch (direction) {
+					case "up": worldY -= speed; break;		
+					case "down": worldY += speed; break;		
+					case "left": worldX -= speed; break;
+					case "right": worldX += speed; break;
+				}	
+			}
 		}
 
 		cycleSprites();
 	}
 	public void getDirection() {
-		if (gp.keyH.upPressed) direction = "up";
-		if (gp.keyH.downPressed) direction = "down";
-		if (gp.keyH.leftPressed) direction = "left";
-		if (gp.keyH.rightPressed) direction = "right";				
+		if (lockon) {
+			if (gp.keyH.upPressed) lockonDirection = "up";
+			if (gp.keyH.downPressed) lockonDirection = "down";
+			if (gp.keyH.leftPressed) lockonDirection = "left";
+			if (gp.keyH.rightPressed) lockonDirection = "right";				
+		}
+		else {
+			if (gp.keyH.upPressed) direction = "up";
+			if (gp.keyH.downPressed) direction = "down";
+			if (gp.keyH.leftPressed) direction = "left";
+			if (gp.keyH.rightPressed) direction = "right";				
+		}		
 	}
 	
 	// DIALOGUE
@@ -428,6 +453,18 @@ public class Entity {
 		
 		return withinBounds;
 	}
+	public boolean playerWithinBounds() {
+		
+		boolean playerWithinBounds = true;
+		
+		int tileDistance = (Math.abs(worldXStart - gp.player.worldX) + Math.abs(worldYStart - gp.player.worldY)) / gp.tileSize;
+
+		if (tileDistance > bounds)
+			playerWithinBounds = false;
+		
+		return playerWithinBounds;		
+	}
+	
 	public boolean findPath(int goalCol, int goalRow) {
 		
 		boolean pathFound = false;
@@ -762,6 +799,23 @@ public class Entity {
 		
 		return oppositeDirection;
 	}
+	protected String getPlayerDirection() {
+		
+		String pDirection = "";
+		
+		switch (gp.player.direction) {
+			case "up": 
+			case "upleft": 
+			case "upright": pDirection = "up"; break;
+			case "down": 
+			case "downleft": 
+			case "downright": pDirection = "down"; break;
+			case "left": pDirection = "left"; break;
+			case "right": pDirection = "right"; break;
+		}
+		
+		return pDirection;
+	}
 	protected void hurtAnimation(Graphics2D g2) {		
 		invincibleCounter++;			
 		if (invincibleCounter % 5 == 0) 
@@ -776,12 +830,15 @@ public class Entity {
 		// LONGER DYING ANIMATION FOR BOSSES
 		if (type == type_boss) {
 			if (dyingCounter > 180) {
-				alive = false;		
+				alive = false;
+				gp.pFinder.pathList.clear();
 			}
 		}
 		else {
-			if (dyingCounter > 40) 
-				alive = false;			
+			if (dyingCounter > 40) {
+				alive = false;		
+				gp.pFinder.pathList.clear();
+			}
 		}		
 	}
 	protected void dropItem(Entity droppedItem) { 								
@@ -1021,7 +1078,8 @@ public class Entity {
 					if (!collisionOn) getTrajectory(-135);	
 					else { worldY = tWorldY; hit = true; }						
 					break;
-				case "right": 					
+				case "right": 		
+					checkThrownCollision();
 					if (!collisionOn) getTrajectory(-45);
 					else { worldY = tWorldY; hit = true; }
 					break;
@@ -1145,7 +1203,7 @@ public class Entity {
 		
 		return image;
 	}	
-	public void changeAlpha(Graphics2D g2, float alphaValue) {
+	public void changeAlpha(Graphics2D g2, float alphaValue) {		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 	
@@ -1229,8 +1287,8 @@ public class Entity {
 				}
 			}
 			
-			// AVOIDS BUG WITH ZORA ATTACKING SPRITE
-			if (name.equals(EMY_Zora.emyName)) {
+			// AVOIDS BUG WITH ATTACKING SPRITE
+			if (name.equals(EMY_Zora.emyName) || name.equals(EMY_Stalfos.emyName)) {
 				offCenter();
 			}
 						
@@ -1245,34 +1303,13 @@ public class Entity {
 				hurtAnimation(g2);
 			}		
 			
-			if (captured) changeAlpha(g2, 0.7f);
-			
+			if (action == Action.JUMPING) drawShadow(g2, 5, 50, tempScreenY + 40);
+			if (thrown) drawShadow(g2, 5, 70, tWorldY - gp.player.worldY + gp.player.screenY + 40);						
+			if (captured) changeAlpha(g2, 0.7f);	
 			if (dying) dyingAnimation(g2);	
-						
-			if (thrown) {
-				g2.setColor(Color.BLACK);
-				switch (direction) {
-					case "up":
-					case "upleft":
-					case "upright":
-						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
-						break;
-					case "down": 	
-					case "downleft":
-					case "downright":
-						g2.fillOval(tempScreenX + 5, tempScreenY + 70 - throwCounter, 38, 10);
-						break;
-					case "left": 	
-						g2.fillOval(tempScreenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);
-						break;
-					case "right": 
-						g2.fillOval(tempScreenX + 5, tWorldY - gp.player.worldY + gp.player.screenY + 40, 38, 10);
-						break;
-				}	
-			}
-			
-			g2.drawImage(image, tempScreenX, tempScreenY, null);	
-			
+
+			g2.drawImage(image, tempScreenX, tempScreenY, null);
+					
 			if (locked) {	
 				
 				// LOCKON IMAGE X, Y				
@@ -1293,6 +1330,28 @@ public class Entity {
 			// RESET OPACITY
 			changeAlpha(g2, 1f);			
 		}
+	}
+	private void drawShadow(Graphics2D g2, int offsetX, int offsetYUD, int offsetYLR) {
+		
+		g2.setColor(Color.BLACK);
+		switch (direction) {
+			case "up":
+			case "upleft":
+			case "upright":
+				g2.fillOval(tempScreenX + offsetX, tempScreenY + offsetYUD - throwCounter, 38, 10);
+				break;
+			case "down": 	
+			case "downleft":
+			case "downright":
+				g2.fillOval(tempScreenX + offsetX, tempScreenY + offsetYUD - throwCounter, 38, 10);
+				break;
+			case "left": 	
+				g2.fillOval(tempScreenX + offsetX, offsetYLR, 38, 10);
+				break;
+			case "right": 
+				g2.fillOval(tempScreenX + offsetX, offsetYLR, 38, 10);
+				break;
+		}	
 	}
 	public boolean inFrame() {
 		

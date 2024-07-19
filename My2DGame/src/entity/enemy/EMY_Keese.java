@@ -23,6 +23,7 @@ public class EMY_Keese extends Entity {
 		type = type_enemy;
 		name = emyName;
 		onGround = false;
+		capturable = true;
 		
 		maxLife = 4; life = maxLife;		
 		speed = 2; defaultSpeed = speed;
@@ -49,7 +50,12 @@ public class EMY_Keese extends Entity {
 	}
 	
 	public void setAction() {	
-		getDirection(25);
+		if (!captured) {
+			getDirection(25);
+		}
+	}
+	public void attacking() {
+		attacking = false;
 	}
 	
 	// BAT CHASES PLAYER WHEN HIT

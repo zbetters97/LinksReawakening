@@ -57,18 +57,12 @@ public class EMY_Wizzrobe extends Entity {
 	public void update() {	
 				
 		if (sleep) return;		
-		if (knockback) { knockbackEntity();	return; }	
-		if (captured) { isCaptured(); return; }
+		if (knockback) { knockbackEntity();	manageValues(); return; }	
+		if (captured) { isCaptured(); manageValues(); return; }
 		if (teleporting) { teleport(); }		
 		else { attack(); }		
 		
 		manageValues();
-	}
-	
-	public void attacking() {
-		attacking = false;
-		spriteNum = 1;
-		useProjectile(1);
 	}
 	
 	public void cycleSprites() {
@@ -141,14 +135,19 @@ public class EMY_Wizzrobe extends Entity {
 			
 			// FIND PLAYER AND SHOOT PROJECTILE
 			if (onPath) {
-				isOffPath(gp.player, 12);
 				approachPlayer(10);
 				if (teleportCounter == 45) {
 					useProjectile(1);
 				}
+				isOffPath(gp.player, 12);
 			}
 			else {
-				isOnPath(gp.player, 10);	
+				if (playerWithinBounds()) {
+					isOnPath(gp.player, 10);	
+				}
+				else {
+					onPath = false;
+				}
 			}
 
 			// DISAPEAR AFTER 3 SECONDS
@@ -160,6 +159,12 @@ public class EMY_Wizzrobe extends Entity {
 				teleportCounter = 0;					
 			}
 		}
+	}
+	
+	public void attacking() {
+		attacking = false;
+		spriteNum = 1;
+		useProjectile(1);
 	}
 	
 	// TELEPORT IF HIT

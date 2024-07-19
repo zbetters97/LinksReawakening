@@ -113,8 +113,8 @@ public class EMY_Buzzblob extends Entity {
 	public void setAction() {
 		
 		if (!captured) {
-			if (onPath) {			
-				isOffPath(gp.player, 6);									
+			isOffPath(gp.player, 6);	
+			if (onPath && playerWithinBounds()) {														
 				searchPath(getGoalCol(gp.player), getGoalRow(gp.player));	
 				if (!buzzing) {
 					if (isAttacking(180, gp.tileSize * 3, gp.tileSize * 3)) {
@@ -124,9 +124,17 @@ public class EMY_Buzzblob extends Entity {
 					}
 				}
 			}
-			else {			
-				isOnPath(gp.player, 3);
-				getDirection(60);
+			else {		
+				getDirection(60);		
+				
+				// SEARCH FOR PLAYER IF WITHIN BOUNDS
+				if (playerWithinBounds()) {
+					isOnPath(gp.player, 3);
+				}
+				else {
+					onPath = false;
+				}
+				
 				buzzing = false;
 				attack = 2;			
 			}

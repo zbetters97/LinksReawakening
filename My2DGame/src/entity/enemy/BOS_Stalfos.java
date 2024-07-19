@@ -45,7 +45,7 @@ public class BOS_Stalfos extends Entity {
 		attackbox.width = 128;
 		attackbox.height = 100;
 		
-		getAttackImage();
+		
 		setDialogue();
 	}
 	

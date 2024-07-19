@@ -31,7 +31,7 @@ public class EMY_Zora extends Entity {
 		
 		projectile = new PRJ_Fireball(gp);
 		
-		getAttackImage();
+		
 	}
 	
 	public void getImage() {
@@ -59,11 +59,25 @@ public class EMY_Zora extends Entity {
 	public void update() {
 		
 		if (sleep) return;		
-		if (knockback) { knockbackEntity();	return; }
+		if (knockback) { knockbackEntity(); manageValues();	return; }
 		if (stunned) { manageValues(); return; }
 		
-		setAction();
-		
+		setAction();		
+		move();		
+		manageValues();
+	}
+	
+	public void setAction() {
+		if (onPath) {			
+			isOffPath(gp.player, 7);
+			approachPlayer(10);
+		}
+		else {	
+			isOnPath(gp.player, 6);
+		}
+	}
+	
+	public void move() {
 		if (onPath) {			
 			spriteNum = 2;
 			
@@ -85,18 +99,6 @@ public class EMY_Zora extends Entity {
 			attacking = false;
 			spriteNum = 1;
 			spriteCounter = 0;			
-		}
-		
-		manageValues();
-	}
-	
-	public void setAction() {
-		if (onPath) {			
-			isOffPath(gp.player, 7);
-			approachPlayer(10);
-		}
-		else {	
-			isOnPath(gp.player, 6);
 		}
 	}
 	

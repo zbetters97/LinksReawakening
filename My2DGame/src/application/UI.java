@@ -631,6 +631,17 @@ public class UI {
 		g2.setColor(Color.RED);
 		g2.drawRect(gp.player.screenX + gp.player.hitbox.x, gp.player.screenY + gp.player.hitbox.y, 
 				gp.player.hitbox.width, gp.player.hitbox.height);
+			
+		g2.setColor(new Color(255,0,0,100));
+		for (int i = 0; i < gp.pFinder.pathList.size(); i++) {
+			
+			int worldX = gp.pFinder.pathList.get(i).col * gp.tileSize;
+			int worldY = gp.pFinder.pathList.get(i).row * gp.tileSize;
+			int screenX = worldX - gp.player.worldX + gp.player.screenX;
+			int screenY = worldY - gp.player.worldY + gp.player.screenY;
+			
+			g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);			
+		}
 		
 		g2.setColor(Color.WHITE);
 		g2.setFont(PK_DS);

@@ -11,6 +11,7 @@ public class IT_Block_Blue extends InteractiveTile {
 		direction = "up";
 		
 		name = itName;
+		collision = true;
 		switchedOn = false;		
 	}
 	public IT_Block_Blue(GamePanel gp, int col, int row) {
@@ -20,6 +21,7 @@ public class IT_Block_Blue extends InteractiveTile {
 		direction = "up";
 		
 		name = itName;
+		collision = true;
 		switchedOn = false;	
 	}
 	

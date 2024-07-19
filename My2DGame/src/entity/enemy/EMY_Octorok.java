@@ -45,13 +45,27 @@ public class EMY_Octorok extends Entity {
 	public void update() {
 		
 		if (sleep) return;		
-		if (knockback) { knockbackEntity();	return; }
+		if (knockback) { knockbackEntity(); manageValues();	return; }
 		if (stunned) { manageValues(); return; }
-		if (captured) { isCaptured(); return; }
 		if (attacking) { attacking(); }
 		
-		setAction();
-		
+		setAction();		
+		move();
+		cycleSprites();		
+		manageValues();
+	}
+	
+	public void setAction() {
+		if (onPath) {			
+			isOffPath(gp.player, 8);
+			useProjectile(90);
+		}
+		else {	
+			isOnPath(gp.player, 5);
+		}
+	}
+	
+	public void move() {
 		if (onPath) {
 			
 			switch(direction) {
@@ -82,19 +96,6 @@ public class EMY_Octorok extends Entity {
 					}
 					break;
 			}		
-		}
-		cycleSprites();
-		
-		manageValues();
-	}
-	
-	public void setAction() {
-		if (onPath) {			
-			isOffPath(gp.player, 8);
-			useProjectile(90);
-		}
-		else {	
-			isOnPath(gp.player, 5);
 		}
 	}
 	

@@ -492,7 +492,7 @@ public class GamePanel extends JPanel implements Runnable {
 			// DRAW iTILES (NOT GRABBED OR THROWN)
 			for (int i = 0; i < iTile[1].length; i++) {
 				if (iTile[currentMap][i] != null && 
-						(!iTile[currentMap][i].grabbed || !projectile[currentMap][i].thrown)) {
+						(!iTile[currentMap][i].grabbed || !iTile[currentMap][i].thrown)) {
 					iTile[currentMap][i].draw(g2);						
 				}					
 			}

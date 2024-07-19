@@ -665,7 +665,7 @@ public class Player extends Entity {
 					item.name.equals(EQP_Sword_Master.eqpName)) {
 				currentWeapon = item;
 				attack = gp.player.getAttack();
-				getAttackImage();	
+				getAttackImage();
 			}			
 			else if (item.name.equals(EQP_Flippers.eqpName)) {
 				canSwim = true;
@@ -1131,8 +1131,6 @@ public class Player extends Entity {
 	}
 	public void soaring() {
 
-		checkCollision();
-		
 		if (60 > jumpCounter) {		
 			
 			if (!collisionOn) {	
@@ -1282,7 +1280,7 @@ public class Player extends Entity {
 				}
 								
 				int damage = attack;
-				if (damage < 0) damage = 0;				
+				if (damage < 0) damage = 1;		
 				
 				target.life -= damage;					
 				target.invincible = true;

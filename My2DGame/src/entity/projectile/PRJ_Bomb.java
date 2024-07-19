@@ -49,28 +49,32 @@ public class PRJ_Bomb extends Projectile {
 	public void update() {
 		super.update();
 		
-		if (grabbed) {
-			worldX = gp.player.worldX;
-			worldY = gp.player.worldY - gp.tileSize + 5;
-			collision = false;
-			xT = worldX;
-			yT = worldY;
-		}
-		if (thrown) {
-			speed = 0;
-			if (tossEntity()) {									
-				
-				gp.cChecker.checkPit(this, false);
-				
-				thrown = false;
-				throwCounter = 0;
-				tTime = 0;
-				
-				if (alive) {				
-					int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-					if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 			
-					if (enemyIndex != -1) {	explode(); }	
-				}
+		if (grabbed) grabbed();		
+		else if (thrown) thrown();
+	}
+	
+	private void grabbed() {
+		worldX = gp.player.worldX;
+		worldY = gp.player.worldY - gp.tileSize + 5;
+		collision = false;
+		xT = worldX;
+		yT = worldY;
+	}
+	private void thrown() {
+		speed = 0;
+		if (tossEntity()) {									
+			
+			gp.cChecker.checkPit(this, false);
+			
+			thrown = false;
+			throwCounter = 0;
+			tTime = 0;
+			collisionOn = false;
+			
+			if (alive) {				
+				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 			
+				if (enemyIndex != -1) {	explode(); }	
 			}
 		}
 	}

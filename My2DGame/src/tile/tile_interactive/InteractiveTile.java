@@ -18,37 +18,8 @@ public class InteractiveTile extends Entity {
 	
 	public void update() {
 		
-		if (grabbed) {
-			worldX = gp.player.worldX;
-			worldY = gp.player.worldY - gp.tileSize + 5;
-			collision = false;
-			xT = worldX;
-			yT = worldY;
-		}		
-		if (thrown) {				
-			if (tossEntity()) {
-
-				gp.cChecker.checkPit(this, false);
-				
-				if (alive) {
-					
-					Entity enemy = getEnemy(this);		
-					if (enemy != null) {
-						gp.player.damageEnemy(enemy, this, 2, 2);					
-					}
-					
-					int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-					gp.player.damageInteractiveTile(iTileIndex, this);						
-					
-					playSE();				
-					checkDrop();
-					generateParticle(this, this);
-					throwCounter = 0;
-					tTime = 0;
-					alive = false;					
-				}				
-			}
-		}
+		if (grabbed) grabbed();		
+		else if (thrown) thrown();
 		
 		// SHIELD AFTER HIT
 		if (invincible) {
@@ -59,6 +30,39 @@ public class InteractiveTile extends Entity {
 				invincible = false;
 				invincibleCounter = 0;
 			}
+		}
+	}
+	
+	private void grabbed() {
+		worldX = gp.player.worldX;
+		worldY = gp.player.worldY - gp.tileSize + 5;
+		collision = false;
+		xT = worldX;
+		yT = worldY;
+	}
+	
+	private void thrown() { 
+		if (tossEntity()) {
+
+			gp.cChecker.checkPit(this, false);
+			
+			if (alive) {
+				
+				Entity enemy = getEnemy(this);		
+				if (enemy != null) {
+					gp.player.damageEnemy(enemy, this, 2, 2);					
+				}
+				
+				int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+				gp.player.damageInteractiveTile(iTileIndex, this);						
+				
+				playSE();				
+				checkDrop();
+				generateParticle(this, this);
+				throwCounter = 0;
+				tTime = 0;
+				alive = false;					
+			}				
 		}
 	}
 	

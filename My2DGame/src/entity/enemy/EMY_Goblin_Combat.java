@@ -43,7 +43,7 @@ public class EMY_Goblin_Combat extends Entity {
 		attackbox.width = 36;
 		attackbox.height = 36;
 		
-		getAttackImage();
+		
 	}
 	
 	public void getImage() {
@@ -70,10 +70,11 @@ public class EMY_Goblin_Combat extends Entity {
 	
 	public void setAction() {
 				
-		if (!captured) {			
-			if (onPath) {
-				isOffPath(gp.player, 8);
-				if (onPath) {
+		if (!captured) {
+			
+			if (onPath) {					
+				isOffPath(gp.player, 8);				
+				if (onPath && playerWithinBounds()) {					
 					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
 					if (!attacking) {
 						if (isAttacking(30, gp.tileSize * 3, gp.tileSize))
@@ -83,11 +84,14 @@ public class EMY_Goblin_Combat extends Entity {
 			}
 			else {				
 				getDirection(60);
-				isOnPath(gp.player, 5);
-				if (onPath) {
-					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-					isOffPath(gp.player, 8);
-				}		
+				
+				// SEARCH FOR PLAYER IF WITHIN BOUNDS
+				if (playerWithinBounds()) {
+					isOnPath(gp.player, 5);
+				}
+				else {
+					onPath = false;
+				}
 			}
 		}
 	}

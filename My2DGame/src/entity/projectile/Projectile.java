@@ -44,10 +44,10 @@ public class Projectile extends Entity {
 		collisionOn = false;		
 		
 		// SHOT BY PLAYER
-		if (user == gp.player) {
+		if (user == gp.player || user.captured) {
 								
 			Entity enemy = getEnemy(this);		
-			if (enemy != null) {
+			if (enemy != null && enemy != user) {
 				gp.player.damageEnemy(enemy, this, attack, knockbackPower);
 				
 				// CONTINUE MOVING IF AT FULL POWER
@@ -58,7 +58,10 @@ public class Projectile extends Entity {
 				else {
 					resetValues();						
 				}
-			}				
+			}		
+			else {
+				collisionOn = false;
+			}
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
 			int objectIIndex = gp.cChecker.checkObject_I(this, false);		
@@ -546,6 +549,7 @@ public class Projectile extends Entity {
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);	
+		gp.cChecker.checkEntity(this, gp.obj);
 		gp.cChecker.checkObject_I(this, false);
 
 		int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
@@ -609,17 +613,17 @@ public class Projectile extends Entity {
 		
 		// CHECK TILE COLLISION
 		collisionOn = false;		
-		gp.cChecker.checkTile(this);		
-		gp.cChecker.checkEntity(this, gp.iTile);
-		gp.cChecker.checkObject_I(this, false);
-				
+		
 		// SHOT BY PLAYER
-		if (user == gp.player) {
+		if (user == gp.player || user.captured) {
+			Entity enemy = getEnemy(this);
 			
-			Entity enemy = getEnemy(this);		
-			if (enemy != null) {
+			if (enemy != null && enemy != user) {
 				gp.player.damageEnemy(enemy, this, attack, knockbackPower);
 				alive = false;
+			}
+			else {
+				collisionOn = false;
 			}
 			
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
@@ -672,6 +676,11 @@ public class Projectile extends Entity {
 				}
 			}
 		}
+		
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkEntity(this, gp.obj);
+		gp.cChecker.checkObject_I(this, false);
 		
 		if (!collisionOn) {
 			

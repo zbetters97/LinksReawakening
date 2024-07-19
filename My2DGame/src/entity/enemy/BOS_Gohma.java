@@ -26,6 +26,7 @@ public class BOS_Gohma extends Entity {
 		name = emyName;
 		sleep = true;
 		lockon = true;
+		capturable = true;
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
@@ -41,30 +42,46 @@ public class BOS_Gohma extends Entity {
 		hitboxDefaultHeight = hitbox.height;
 		
 		projectile = new PRJ_Fireball(gp);
-		
-		getAttackImage();
 	}
 	
 	public void getImage() {
 		
 		int scale = gp.tileSize * 3;
-		
-		down1 = setup("/boss/gohma_down_1", scale, gp.tileSize);
-		down2 = setup("/boss/gohma_down_2", scale, gp.tileSize);
-		down3 = setup("/boss/gohma_down_3", scale, gp.tileSize);
+		up1 = setup("/boss/gohma_down_1", scale, gp.tileSize);
+		up2 = setup("/boss/gohma_down_2", scale, gp.tileSize);
+		up3 = setup("/boss/gohma_down_3", scale, gp.tileSize);
+		down1 = up1;
+		down2 = up2;
+		down3 = up3;
+		left1 = up1;
+		left2 = up2;
+		left3 = up3;
+		right1 = up1;
+		right2 = up2;
+		right3 = up3;
 	}
 	public void getAttackImage() {		
 		
 		int scale = gp.tileSize * 3;
 		
-		attackDown1 = setup("/boss/gohma_attack_down_1", scale, gp.tileSize); 
-		attackDown2 = setup("/boss/gohma_attack_down_2", scale, gp.tileSize);	
-		attackDown3 = setup("/boss/gohma_attack_down_3", scale, gp.tileSize);	
+		attackUp1 = setup("/boss/gohma_attack_down_1", scale, gp.tileSize); 
+		attackUp2 = setup("/boss/gohma_attack_down_2", scale, gp.tileSize);	
+		attackUp3 = setup("/boss/gohma_attack_down_3", scale, gp.tileSize);
+		attackDown1 = attackUp1;
+		attackDown2 = attackUp2;
+		attackDown3 = attackUp3;
+		attackLeft1 = attackUp1;
+		attackLeft2 = attackUp2;
+		attackLeft3 = attackUp3;
+		attackRight1 = attackUp1;
+		attackRight2 = attackUp2;
+		attackRight3 = attackUp3;
 	}
 	
 	public void update() {
 
-		if (sleep) return;		
+		if (sleep) return;	
+		if (captured) { speed = 2; isCaptured(); manageValues(); return; }
 		
 		setAction();		
 		move();		
@@ -73,11 +90,18 @@ public class BOS_Gohma extends Entity {
 		manageValues();
 	}
 	
+	public void attacking() {
+		useProjectile(1, gp.tileSize);
+		attacking = false;
+	}
+	
 	public void move() {
 		
 		checkCollision();
 		if (!collisionOn && withinBounds()) { 						
 			switch (lockonDirection) {
+				case "up":
+				case "down":
 				case "left": worldX -= speed; break;
 				case "right": worldX += speed; break;
 			}
