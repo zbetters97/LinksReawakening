@@ -100,7 +100,7 @@ public class Player extends Entity {
 	// DEFAULT VALUES
 	public void setDefaultValues() {
 			
-		action = Action.IDLE;		
+		action = Action.IDLE;	
 		onGround = true;
 		grabbedObject = null;
 		canSwim = true;
@@ -109,7 +109,7 @@ public class Player extends Entity {
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		maxLife = 20; life = maxLife;
+		maxLife = 12; life = maxLife;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
@@ -171,6 +171,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Boots(gp));	
 	}
 	public void restoreStatus() {
+		alive = true;
 		action = Action.IDLE;
 		life = maxLife;
 		speed = defaultSpeed;
@@ -1529,6 +1530,7 @@ public class Player extends Entity {
 							if (spriteNum == 1) image1 = swimUp1;
 							else if (spriteNum == 2) image1 = swimUp2;
 							break;
+						case AIMING:
 						case THROWING:
 							image1 = throwUp1;
 							break;
@@ -1583,6 +1585,7 @@ public class Player extends Entity {
 							if (spriteNum == 1) image1 = swimDown1;
 							else if (spriteNum == 2) image1 = swimDown2;
 							break;
+						case AIMING:
 						case THROWING:
 							image1 = throwDown1;
 							break;
@@ -1642,8 +1645,9 @@ public class Player extends Entity {
 						case SWIMMING:
 							if (spriteNum == 1) image1 = swimLeft1;
 							else if (spriteNum == 2) image1 = swimLeft2;
-							break;
-						case THROWING:
+							break;						
+						case AIMING:
+						case THROWING:						
 							image1 = throwLeft1;
 							break;
 						default:
@@ -1701,6 +1705,7 @@ public class Player extends Entity {
 							if (spriteNum == 1) image1 = swimRight1;
 							else if (spriteNum == 2) image1 = swimRight2;
 							break;
+						case AIMING:
 						case THROWING:
 							image1 = throwRight1;
 							break;

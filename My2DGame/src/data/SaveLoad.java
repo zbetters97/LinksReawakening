@@ -5,8 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import application.GamePanel;
 import entity.Entity;
@@ -14,20 +18,25 @@ import entity.object.OBJ_Door_Oneway;
 
 public class SaveLoad {
 
-	private GamePanel gp;
+	public String[] saveFiles = { "save_1.dat", "save_2.dat", "save_3.dat" };
+	public boolean ready = true;
+	private GamePanel gp;	
 	
 	public SaveLoad(GamePanel gp) {
 		this.gp = gp;
 	}
 	
-	public void save() {		
+	public void save(int saveSlot) {		
 		
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("save.dat")));
-
-			// SAVE DATA TO DS
-			DataStorage ds = new DataStorage();
+		try {							
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(saveFiles[saveSlot])));			
 			
+			// CURRENT DATE/TIME
+			DataStorage ds = new DataStorage();		
+			
+			// SAVE DATA TO DS
+			ds.file_date =  new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date(System.currentTimeMillis()));
+
 			// DAY DATA
 			ds.dayState = gp.eManager.lighting.dayState;
 			ds.dayCounter = gp.eManager.lighting.dayCounter;
@@ -208,10 +217,10 @@ public class SaveLoad {
 		}
 	}
 	
-	public void load() {
+	public void load(int saveSlot) {
 		
-		try {			
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File("save.dat")));
+		try {								
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(saveFiles[saveSlot])));
 			
 			// LOAD DATA FROM DS
 			DataStorage ds = (DataStorage)ois.readObject();
@@ -229,7 +238,7 @@ public class SaveLoad {
 			Progress.bossDefeated_1_1 = ds.bossDefeated_1_1;
 			Progress.bossDefeated_1_2 = ds.bossDefeated_1_2;
 			
-			// PLAYER DATA
+			// PLAYER DATA			
 			gp.currentMap = ds.cMap;
 			gp.currentArea = ds.cArea;
 			gp.player.worldX = ds.pWorldX;
@@ -363,9 +372,29 @@ public class SaveLoad {
 					}					
 				}			
 			}
+			
+			ready = true;
 		}
 		catch(Exception e) { 
 			e.printStackTrace();
 		}
+	}
+	
+	public String loadFileData(int saveSlot) {
+		
+		try {			
+			File f = new File(saveFiles[saveSlot]);
+			
+			if (f.exists()) { 
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(saveFiles[saveSlot])));				
+				DataStorage ds = (DataStorage)ois.readObject();				
+				return ds.toString();			
+			}
+		}
+		catch(Exception e) { 
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

@@ -8,6 +8,9 @@ import java.util.Map;
 
 public class DataStorage implements Serializable {
 	
+	// FILE INFO
+	String file_date;
+	
 	// DAY STATE
 	int dayState, dayCounter, bloodMoonCounter;
 	
@@ -61,4 +64,8 @@ public class DataStorage implements Serializable {
 	String iTileDirections[][];
 	boolean iTileSwitchedOn[][];
 	String iTileLootNames[][];
+	
+	public String toString() {
+		return "[" + name + "]  " + file_date;
+	}
 }

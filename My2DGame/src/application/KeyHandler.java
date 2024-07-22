@@ -81,37 +81,45 @@ public class KeyHandler implements KeyListener {
 		else if (gp.ui.titleScreenState == 1) {
 			newGameMenu(code);	
 		}
+		// LOAD GAME
+		else if (gp.ui.titleScreenState == 2) {
+			loadGameMenu(code);	
+		}
 	}
 	private void mainMenu(int code) {
 		
 		if (code == KeyEvent.VK_UP) {
-			playCursorSE();
-			gp.ui.commandNum--;
-			if (gp.ui.commandNum < 0)
-				gp.ui.commandNum = 0;
+			if (gp.ui.commandNum > 0) {
+				playCursorSE();
+				gp.ui.commandNum--;
+				
+				if (gp.ui.commandNum < 0)
+					gp.ui.commandNum = 0;
+			}
 		}
 		if (code == KeyEvent.VK_DOWN) {
-			playCursorSE();
-			gp.ui.commandNum++;
-			if (gp.ui.commandNum > 2)
-				gp.ui.commandNum = 2;
+			if (gp.ui.commandNum < 2) {
+				playCursorSE();
+				gp.ui.commandNum++;
+				
+				if (gp.ui.commandNum > 2)
+					gp.ui.commandNum = 2;
+			}
 		}
 		if (code == KeyEvent.VK_SPACE) { 
 			
 			// NEW GAME OPTION
 			if (gp.ui.commandNum == 0) {
 				playSelectSE();
+				gp.ui.commandNum = 0;
 				gp.ui.titleScreenState = 1;
 			}
 			
 			// LOAD GAME OPTION
 			else if (gp.ui.commandNum == 1) {
 				playSelectSE();		
-
-				gp.stopMusic();
-				gp.saveLoad.load();		
-				gp.gameState = gp.playState;
-				gp.setupMusic(true);
+				gp.ui.commandNum = 0;
+				gp.ui.titleScreenState = 2;
 			}
 			
 			// QUIT GAME OPTION
@@ -192,8 +200,7 @@ public class KeyHandler implements KeyListener {
 				if (gp.player.name.length() > 0) {
 					playSelectSE();
 					gp.player.name = gp.player.name.substring(
-						0, gp.player.name.length() - 1
-					);							
+							0, gp.player.name.length() - 1);							
 				}
 				else
 					playErrorSE();
@@ -214,10 +221,12 @@ public class KeyHandler implements KeyListener {
 			// ENTER BUTTON
 			else if (gp.ui.commandNum == 29) {
 				playSelectSE();
+				gp.ui.commandNum = 0;			
+				gp.fileSlot = 0;						
+				gp.gameState = gp.playState;
+				gp.resetGame();		
+				gp.setupMusic(true);
 				gp.ui.titleScreenState = 0;
-				gp.ui.commandNum = 0;					
-				gp.gameState = 1;
-				gp.resetGame();
 			}
 			// LETTER SELECT				
 			else {					
@@ -237,6 +246,82 @@ public class KeyHandler implements KeyListener {
 				}
 			}
 		}		
+	}
+	private void loadGameMenu(int code) {
+		
+		if (code == KeyEvent.VK_UP) {
+			if (gp.ui.commandNum > 0) {
+				playCursorSE();
+				gp.ui.commandNum--;
+				
+				if (gp.ui.commandNum < 0)
+					gp.ui.commandNum = 0;
+			}
+		}
+		if (code == KeyEvent.VK_DOWN) {
+			if (gp.ui.commandNum < 3) {
+				playCursorSE();
+				gp.ui.commandNum++;
+				
+				if (gp.ui.commandNum > 3)
+					gp.ui.commandNum = 3;
+			}
+		}
+		if (code == KeyEvent.VK_SPACE) { 
+									
+			// LOAD GAME OPTION 1
+			if (gp.ui.commandNum == 0) {
+				if (gp.saveLoad.loadFileData(0) != null) {
+					playSelectSE();		
+
+					gp.stopMusic();
+					gp.saveLoad.load(0);	
+					gp.fileSlot = 0;
+					gp.gameState = gp.playState;
+					gp.setupMusic(true);						
+				}
+				else {
+					playErrorSE();
+				}
+			}
+			// LOAD GAME OPTION 2
+			else if (gp.ui.commandNum == 1) {
+				
+				if (gp.saveLoad.loadFileData(1) != null) {
+					playSelectSE();		
+
+					gp.stopMusic();
+					gp.saveLoad.load(1);	
+					gp.fileSlot = 1;
+					gp.gameState = gp.playState;
+					gp.setupMusic(true);						
+				}
+				else {
+					playErrorSE();
+				}
+			}
+			// LOAD GAME OPTION 3
+			else if (gp.ui.commandNum == 2) {
+				if (gp.saveLoad.loadFileData(2) != null) {
+					playSelectSE();		
+
+					gp.stopMusic();
+					gp.saveLoad.load(2);
+					gp.fileSlot = 2;
+					gp.gameState = gp.playState;
+					gp.setupMusic(true);						
+				}
+				else {
+					playErrorSE();
+				}
+			}
+			// BACK OPTION
+			else if (gp.ui.commandNum == 3) {
+				playSelectSE();
+				gp.ui.commandNum = 0;
+				gp.ui.titleScreenState = 0;
+			}
+		}
 	}
 	
 	// PLAY
@@ -305,9 +390,11 @@ public class KeyHandler implements KeyListener {
 		
 		int maxCommandNum = 0;
 		switch (gp.ui.subState) {
-			case 0: maxCommandNum = 6; break;
+			case 0: maxCommandNum = 7; break;
 			case 3:
-			case 4: maxCommandNum = 1; break;
+			case 4: 
+			case 5: maxCommandNum = 3; break;
+			case 6: maxCommandNum = 1; break;
 		}
 		
 		if (code == KeyEvent.VK_UP) { 
@@ -326,26 +413,26 @@ public class KeyHandler implements KeyListener {
 			
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
-					gp.music.volumeScale--;
-					gp.music.checkVolume();
 					playCursorSE();
+					gp.music.volumeScale--;
+					gp.music.checkVolume();					
 				}
 				if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
-					gp.se.volumeScale--;
 					playCursorSE();
+					gp.se.volumeScale--;					
 				}
 			}
 		}
 		if (code == KeyEvent.VK_RIGHT) {
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
+					playCursorSE();
 					gp.music.volumeScale++;
-					gp.music.checkVolume();
-					playCursorSE();
+					gp.music.checkVolume();					
 				}
-				if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {
-					gp.se.volumeScale++;
+				if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {					
 					playCursorSE();
+					gp.se.volumeScale++;					
 				}
 			}
 		}
@@ -550,23 +637,45 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		if (code == KeyEvent.VK_SPACE) {
-
-			gp.ui.deathSprite = 0;
-			gp.ui.deathCounter = 0;
 			
 			if (gp.ui.commandNum == 0) {
 				playSelectSE();
-				gp.stopMusic();				
-				gp.ui.commandNum = 0;				
-				gp.saveLoad.load();	
-				gp.gameState = gp.playState;
-				gp.setupMusic(true);
+												
+				if (gp.saveLoad.loadFileData(gp.fileSlot) != null) {					
+					gp.stopMusic();
+					
+					gp.ui.commandNum = 0;					
+					gp.saveLoad.ready = false;
+					gp.resetGame();
+					gp.saveLoad.load(gp.fileSlot);						
+					if (gp.saveLoad.ready) {
+						gp.ui.deathSprite = 0;
+						gp.ui.deathCounter = 0;
+						
+						gp.gameState = gp.playState;	
+						gp.setupMusic(true);	
+					}
+				}
+				else {
+					gp.ui.commandNum = 0;						
+					gp.ui.titleScreenState = 0;
+					gp.resetGame();
+					gp.setupMusic(true);
+					gp.gameState = gp.playState;
+				}
+				
 			}
-			else if (gp.ui.commandNum == 1){
-				playSelectSE();	
-				gp.gameState = gp.titleState;
+			else if (gp.ui.commandNum == 1) {
+				playSelectSE();		
+				
+				gp.ui.deathSprite = 0;
+				gp.ui.deathCounter = 0;
+				
 				gp.ui.commandNum = 0;
+				gp.gameState = gp.titleState;			
+				
 				gp.resetGame();
+				gp.setupMusic(true);
 			}			
 		}
 	}
@@ -578,6 +687,7 @@ public class KeyHandler implements KeyListener {
 			gp.gameState = gp.titleState;
 			gp.ui.commandNum = 0;
 			gp.resetGame();
+			gp.setupMusic(true);
 		}
 	}
 	

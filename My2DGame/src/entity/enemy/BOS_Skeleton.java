@@ -40,7 +40,7 @@ public class BOS_Skeleton extends Entity {
 		attackbox.width = 170;
 		attackbox.height = 170;
 		
-		
+		getImage();
 		setDialogue();
 	}
 	
@@ -48,7 +48,7 @@ public class BOS_Skeleton extends Entity {
 		
 		int scale = gp.tileSize * 5;
 		
-		if (currentBossPhase == bossPhase_1) {
+		if (currentBossPhase == bossPhase_1) {			
 			up1 = setup("/boss/skeletonlord_up_1", scale, scale);
 			up2 = setup("/boss/skeletonlord_up_2", scale, scale);
 			down1 = setup("/boss/skeletonlord_down_1", scale, scale);

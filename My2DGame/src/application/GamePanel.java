@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Graphics2D g2;
 	private Thread gameThread;
 	private int FPS = 60;
+	public int fileSlot = 0;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -136,10 +137,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-//		gameState = titleState;	
-//		currentArea = outside;
-		gameState = playState;
-		currentArea = dungeon;
+		gameState = titleState;	
+		currentArea = outside;
+//		gameState = playState;
+//		currentArea = dungeon;
 		currentMap = 2;
 		
 		setupMusic(false);
@@ -453,20 +454,13 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setInteractiveObjects();
 		aSetter.setInteractiveTiles();
 		
-		eManager.lighting.resetDay();		
-		
-		setupMusic(true);
+		eManager.lighting.resetDay();	
 	}
 	
-	public void setupMusic(boolean reset) {			
+	public void setupMusic(boolean reset) {		
+		
 		if (gameState == titleState) playMusic(0);
-		else if (reset) {
-			if (currentMap == 0) playMusic(2);
-			else if (currentMap == 1) playMusic(3);
-			else if (currentMap == 2) playMusic(5);
-			else if (currentMap == 3) playMusic(5);
-		}		
-		else if (nextArea != currentArea) {							
+		else if (reset || nextArea != currentArea) {							
 			if (currentMap == 0) playMusic(2);
 			else if (currentMap == 1) playMusic(3);
 			else if (currentMap == 2) playMusic(5);
@@ -485,7 +479,8 @@ public class GamePanel extends JPanel implements Runnable {
 			map.drawFullMapScreen(g2);
 		}		
 		// GAME START
-		else {			
+		else {		
+	
 			// DRAW TILES
 			tileM.draw(g2);	
 			
@@ -556,7 +551,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	private void drawToScreen() {		
 		Graphics g = getGraphics();
-		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
+		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);	
 		g.dispose();
 	}	
 	

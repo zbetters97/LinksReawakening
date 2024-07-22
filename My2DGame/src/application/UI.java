@@ -158,8 +158,7 @@ public class UI {
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.dialogueState) {
 			drawHUD();
-			drawDialogueScreen();
-			skipDialogue();
+			drawDialogueScreen(true);
 		}
 		// TRADE STATE
 		else if (gp.gameState == gp.tradeState) {
@@ -180,7 +179,7 @@ public class UI {
 			drawSleepScreen();
 		}
 		// GAME OVER STATE
-		else if (gp.gameState == gp.gameOverState) {
+		else if (gp.gameState == gp.gameOverState && gp.saveLoad.ready) {
 			drawGameOverScreen();
 		}
 	}
@@ -343,6 +342,53 @@ public class UI {
 			if (commandNum == 29 && gp.player.name.length() > 0) 
 				g2.drawString(">", x - gp.tileSize / 2, y);	
 		}
+		// LOAD GAME SELECTED
+		else if (titleScreenState == 2) {
+			
+			// TEXT COLOR
+			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(35F));
+			
+			x += gp.tileSize;
+			y = gp.tileSize * 3;			
+			int width = gp.tileSize * 10;
+			int height = gp.tileSize * 2;			
+			
+			if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);
+			else drawSubWindow(x+40, y, width, height);				
+			
+			y += gp.tileSize * 2;	
+			if (commandNum == 1) drawSubWindow(x+40, y, width, height, Color.GREEN);				
+			else drawSubWindow(x+40, y, width, height);	
+						
+			y += gp.tileSize * 2;	
+			if (commandNum == 2) drawSubWindow(x+40, y, width, height, Color.GREEN);			
+			else drawSubWindow(x+40, y, width, height);				
+			 
+			if (gp.saveLoad.loadFileData(0) == null) text = "1)";			
+			else text = "1) " + gp.saveLoad.loadFileData(0);
+			x = gp.tileSize * 4;
+			y = (gp.tileSize * 4) + 15;	
+			g2.drawString(text, x, y);		
+			
+			if (gp.saveLoad.loadFileData(1) == null) text = "2)";			
+			else text = "2) " + gp.saveLoad.loadFileData(1);
+			y += gp.tileSize * 2;	
+			g2.drawString(text, x, y);	
+			
+			if (gp.saveLoad.loadFileData(2) == null) text = "3)";			
+			else text = "3) " + gp.saveLoad.loadFileData(2);
+			y += gp.tileSize * 2;	
+			g2.drawString(text, x, y);				
+			
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
+			text = "GO BACK";
+			x = getXforCenteredText(text);
+			y += (gp.tileSize * 2) + 25;
+			g2.drawString(text, x, y);
+			if (commandNum == 3) 
+				g2.drawString(">", x - gp.tileSize / 2, y);
+		}
 	}
 	
 	// HUD
@@ -389,57 +435,14 @@ public class UI {
 		
 		if (gp.gameState == gp.playState || gp.gameState == gp.objectState) {
 			
-			// DRAW ITEM SLOT
 			drawItemSlot();
-			
-			// DRAW BOW CHARGE
+			drawRupees();			
 			drawChargeBar();
-		}
-		
-		if (gp.currentArea == gp.dungeon) {	
 			
-			// DRAW KEYS
-			drawKeys();			
-		}
-						
-		// DRAW RUPEE IMAGE
-		x = gp.tileSize * 14 - 20;
-		y = gp.tileSize * 10 + 20;		
-		g2.drawImage(rupee, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
-						
-		// DRAW RUPEE COUNT
-		x += gp.tileSize - 8;
-		y += gp.tileSize - 12;	
-		
-		if (rupeeCount >= gp.player.walletSize)
-			rupeeCount = gp.player.walletSize;
-		
-		if (rupeeCount != -1) {
-			if (gp.player.rupees < rupeeCount) {
-				if (rCounter == 2) { 
-					playWalletSE(); 
-					gp.player.rupees++; 
-					rCounter = 0; 
-				}
-				else rCounter++;
+			if (gp.currentArea == gp.dungeon) {		
+				drawKeys();			
 			}
-			else if (gp.player.rupees > rupeeCount) {
-				if (rCounter == 2) { 
-					playWalletSE(); 
-					gp.player.rupees--; 
-					rCounter = 0; 
-				}
-				else rCounter++;
-			}
-		}
-								
-		if (gp.player.walletSize == 99) rupee_count = String.format("%02d", gp.player.rupees);
-		else if (gp.player.walletSize == 999) rupee_count = String.format("%03d", gp.player.rupees);
-		else if (gp.player.walletSize == 9999) rupee_count = String.format("%04d", gp.player.rupees);
-		
-		g2.setColor(Color.WHITE);
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
-		g2.drawString(rupee_count, x, y);		
+		}		
 		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
@@ -488,31 +491,6 @@ public class UI {
 			}
 		}	
 	}
-	private void drawChargeBar() {
-		
-		if (gp.player.currentItem != null && gp.player.currentItem.charge > 0 &&
-				gp.keyH.itemPressed) {
-			
-			int x = gp.player.getScreenX() - 7;
-			int y = gp.player.getScreenY() - 20;			
-			int width = 62;
-			int height = 10;		
-			int charge = gp.player.currentItem.charge;						
-			
-			g2.setColor(new Color(0,0,0));
-			g2.fillRect(x, y, width, height);		
-			g2.setColor(Color.WHITE);
-			g2.setStroke(new BasicStroke(2));
-			g2.drawRect(x, y, width, height);	
-			
-			if (40 > charge) g2.setColor(new Color(0,105,0)); 	
-			if (80 > charge && charge >= 40) g2.setColor(new Color(0,155,0)); 	
-			else if (120 > charge && charge >= 80) g2.setColor(new Color(0,205,0)); 	
-			else if (charge >= 120) g2.setColor(new Color(0,240,0));
-			
-			g2.fillRect(x + 1, y + 1, (charge / 2), height - 2);
-		}
-	}
 	private void drawKeys() {
 		
 		int x;
@@ -536,6 +514,47 @@ public class UI {
 		g2.setColor(Color.WHITE);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(Integer.toString(gp.player.keys), x, y);				
+	}
+	private void drawRupees() {
+		
+		// DRAW RUPEE IMAGE
+		int x = gp.tileSize * 14 - 20;
+		int y = gp.tileSize * 10 + 20;		
+		g2.drawImage(rupee, x, y, gp.tileSize - 5, gp.tileSize - 5, null);	
+						
+		// DRAW RUPEE COUNT
+		x += gp.tileSize - 8;
+		y += gp.tileSize - 12;	
+		
+		if (rupeeCount >= gp.player.walletSize)
+			rupeeCount = gp.player.walletSize;
+		
+		if (rupeeCount != -1) {
+			if (gp.player.rupees < rupeeCount) {
+				if (rCounter == 2) { 
+					playWalletSE(); 
+					gp.player.rupees++; 
+					rCounter = 0; 
+				}
+				else rCounter++;
+			}
+			else if (gp.player.rupees > rupeeCount) {
+				if (rCounter == 2) { 
+					playWalletSE(); 
+					gp.player.rupees--; 
+					rCounter = 0; 
+				}
+				else rCounter++;
+			}
+		}
+								
+		if (gp.player.walletSize == 99) rupee_count = String.format("%02d", gp.player.rupees);
+		else if (gp.player.walletSize == 999) rupee_count = String.format("%03d", gp.player.rupees);
+		else if (gp.player.walletSize == 9999) rupee_count = String.format("%04d", gp.player.rupees);
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
+		g2.drawString(rupee_count, x, y);			
 	}
 	private void drawEnemyHPBar(Entity[][] enemies) {
 		
@@ -598,6 +617,31 @@ public class UI {
 			}			
 		}				
 	}
+	private void drawChargeBar() {
+		
+		if (gp.player.currentItem != null && gp.player.currentItem.charge > 0 &&
+				gp.keyH.itemPressed) {
+			
+			int x = gp.player.getScreenX() - 7;
+			int y = gp.player.getScreenY() - 20;			
+			int width = 62;
+			int height = 10;		
+			int charge = gp.player.currentItem.charge;						
+			
+			g2.setColor(new Color(0,0,0));
+			g2.fillRect(x, y, width, height);		
+			g2.setColor(Color.WHITE);
+			g2.setStroke(new BasicStroke(2));
+			g2.drawRect(x, y, width, height);	
+			
+			if (40 > charge) g2.setColor(new Color(0,105,0)); 	
+			if (80 > charge && charge >= 40) g2.setColor(new Color(0,155,0)); 	
+			else if (120 > charge && charge >= 80) g2.setColor(new Color(0,205,0)); 	
+			else if (charge >= 120) g2.setColor(new Color(0,240,0));
+			
+			g2.fillRect(x + 1, y + 1, (charge / 2), height - 2);
+		}
+	}
 	private void drawDebug() {
 		
 		int x = 10; 
@@ -657,7 +701,7 @@ public class UI {
 		int frameX = gp.tileSize * 2;
 		int frameY = gp.tileSize;
 		int frameWidth = gp.tileSize * 12;
-		int frameHeight = gp.tileSize * 9;
+		int frameHeight = gp.tileSize * 10;
 		
 		drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 		
@@ -665,8 +709,10 @@ public class UI {
 			case 0: options_top(frameX, frameY); break;
 			case 1: options_fullscreenNotif(frameX, frameY); break;
 			case 2: options_controls(frameX, frameY); break;
-			case 3: options_saveGameConfirm(frameX, frameY); break;
-			case 4: options_quitGameConfirm(frameX, frameY); break;
+			case 3: options_saveGameSlot(frameX, frameY); break;
+			case 4: options_saveGameConfirm(frameX, frameY); break;
+			case 5: options_loadGameSlot(frameX, frameY); break;
+			case 6: options_quitGameConfirm(frameX, frameY); break;
 		}
 		gp.keyH.actionPressed = false;
 	}
@@ -731,7 +777,7 @@ public class UI {
 			}
 		}
 				
-		// BACK
+		// SAVE
 		textY += gp.tileSize;
 		g2.drawString("Save Progress", textX, textY);
 		if (commandNum == 5) {
@@ -739,8 +785,24 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				if (Progress.canSave && gp.player.action == Action.IDLE) {
 					subState = 3;
-					commandNum = 0;
-					gp.saveLoad.save();		
+					commandNum = 0;					
+				}
+				else {
+					gp.keyH.playErrorSE();
+				}
+						
+			}
+		}
+		
+		// LOAD
+		textY += gp.tileSize;
+		g2.drawString("Load Previous Save", textX, textY);
+		if (commandNum == 6) {
+			g2.drawString(">", textX - 25, textY);
+			if (gp.keyH.actionPressed) {
+				if (Progress.canSave && gp.player.action == Action.IDLE) {
+					subState = 5;
+					commandNum = 0;					
 				}
 				else {
 					gp.keyH.playErrorSE();
@@ -752,10 +814,10 @@ public class UI {
 		// QUIT GAME
 		textY += gp.tileSize;
 		g2.drawString("Quit to Title Screen", textX, textY);
-		if (commandNum == 6) {
+		if (commandNum == 7) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.actionPressed) {
-				subState = 4;
+				subState = 6;
 				commandNum = 0;
 			}
 		}
@@ -825,10 +887,11 @@ public class UI {
 		
 		// LABELS
 		textX = frameX + gp.tileSize;
-		textY = frameY + gp.tileSize * 2;		
+		textY += gp.tileSize;		
 		g2.drawString("ACTION", textX, textY); textY += 35;
 		g2.drawString("INVENTORY", textX, textY); textY += 35;
 		g2.drawString("MAP", textX, textY); textY += 35;
+		g2.drawString("MINI-MAP", textX, textY); textY += 35;
 		g2.drawString("GUARD", textX, textY); textY += 35;
 		g2.drawString("LOCK-ON", textX, textY); textY += 35;
 		g2.drawString("GRAB/THROW", textX, textY); textY += 35;
@@ -841,21 +904,117 @@ public class UI {
 		g2.drawString("SPACEBAR", textX, textY); textY += 35;
 		g2.drawString("E", textX, textY); textY += 35;
 		g2.drawString("M", textX, textY); textY += 35;
+		g2.drawString("N", textX, textY); textY += 35;
 		g2.drawString("Z", textX, textY); textY += 35;
 		g2.drawString("F", textX, textY); textY += 35;
 		g2.drawString("G", textX, textY); textY += 35;
 		g2.drawString("Q", textX, textY); textY += 35;
 		g2.drawString("T", textX, textY); textY += 35;		
 		
-		// BACK
-		textX = frameX + gp.tileSize;
-		textY = frameY + gp.tileSize * 8;
-		g2.drawString("Back", textX, textY);
+		// BACK		
+		text = "BACK";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize;
+		g2.drawString(text, textX, textY);
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.actionPressed) {
 				commandNum = 4;
+				subState = 0;
+			}
+		}
+	}
+	private void options_saveGameSlot(int frameX, int frameY) {
+		
+		// TITLE
+		String text = "SAVE GAME SLOT";
+		int textX = getXforCenteredText(text);
+		int textY = frameX + gp.tileSize * 2;		
+		g2.drawString(text, textX, textY);		
+		
+		textX = gp.tileSize * 3;
+		for (int i = 0; i < 3; i++) {
+			if (gp.saveLoad.loadFileData(i) == null) text = i + 1 + ")  [EMPTY]";			
+			else text = i + 1 + ")  " + gp.saveLoad.loadFileData(i);
+			
+			textY += gp.tileSize;
+			g2.drawString(text, textX, textY);
+			if (commandNum == i) {
+				g2.drawString(">", textX - 25, textY);
+				
+				if (gp.keyH.actionPressed) {
+					subState = 4;
+					commandNum = 0;
+					gp.saveLoad.save(i);
+					gp.fileSlot = i;
+				}
+			}		
+		}
+		
+		text = "BACK";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize * 2;
+		g2.drawString(text, textX, textY);
+		if (commandNum == 3) {
+			g2.drawString(">", textX - 25, textY);
+			
+			if (gp.keyH.actionPressed) {
+				commandNum = 5;
+				subState = 0;
+			}
+		}
+	}
+	private void options_loadGameSlot(int frameX, int frameY) {
+
+		// TITLE
+		String text = "LOAD GAME SLOT";
+		int textX = getXforCenteredText(text);
+		int textY = frameX + gp.tileSize * 2;		
+		g2.drawString(text, textX, textY);		
+		
+		textX = gp.tileSize * 3;
+		for (int i = 0; i < 3; i++) {
+			
+			textY += gp.tileSize;
+			if (gp.saveLoad.loadFileData(i) == null) {
+				text = i + 1 + ")  [EMPTY]";		
+				g2.drawString(text, textX, textY);
+				if (commandNum == i) {
+					g2.drawString(">", textX - 25, textY);
+					if (gp.keyH.actionPressed) {
+						gp.keyH.playErrorSE();
+					}
+				}		
+			}
+			else {
+				text = i + 1 + ")  " + gp.saveLoad.loadFileData(i);
+				g2.drawString(text, textX, textY);
+				if (commandNum == i) {
+					g2.drawString(">", textX - 25, textY);
+					
+					if (gp.keyH.actionPressed) {
+						gp.stopMusic();
+						commandNum = 0;
+						subState = 0;
+						gp.fileSlot = i;
+						gp.saveLoad.load(i);
+						gp.gameState = gp.playState;
+						gp.setupMusic(true);
+					}
+				}		
+			}			
+		}
+		
+		text = "BACK";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize * 2;
+		g2.drawString(text, textX, textY);
+		if (commandNum == 3) {
+			g2.drawString(">", textX - 25, textY);
+			
+			if (gp.keyH.actionPressed) {
+				commandNum = 6;
 				subState = 0;
 			}
 		}
@@ -881,8 +1040,10 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.actionPressed) {
-				subState = 0;					
+				subState = 0;		
 				commandNum = 0;
+				inventoryScreen = 0;
+				titleScreenState = 0;
 				gp.gameState = gp.playState;
 			}
 		}
@@ -896,9 +1057,13 @@ public class UI {
 			
 			if (gp.keyH.actionPressed) {
 				gp.stopMusic();				
-				subState = 0;							
+				subState = 0;		
+				commandNum = 0;
+				inventoryScreen = 0;
+				titleScreenState = 0;
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
+				gp.setupMusic(true);
 			}
 		}
 	}
@@ -920,10 +1085,13 @@ public class UI {
 			
 			if (gp.keyH.actionPressed) {
 				gp.stopMusic();				
-				subState = 0;					
+				subState = 0;		
+				commandNum = 0;
 				inventoryScreen = 0;
+				titleScreenState = 0;
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
+				gp.setupMusic(true);
 			}
 		}
 		
@@ -936,7 +1104,7 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.actionPressed) {
-				commandNum = 0;
+				commandNum = 7;
 				subState = 0;
 			}
 		}
@@ -1235,7 +1403,7 @@ public class UI {
 	}
 	
 	// DIALOGUE	
-	public void drawDialogueScreen() {
+	public void drawDialogueScreen(boolean skip) {
 				
 		if (npc.hasCutscene) {
 			gp.csManager.scene = gp.csManager.npc;
@@ -1256,17 +1424,16 @@ public class UI {
 		
 		// NPC HAS SOMETHING TO SAY
 		if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {	
-			
 			if (dialogueCounter == textSpeed) {
 				char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
 
-				if (charIndex < characters.length) {
-					
+				if (charIndex < characters.length) {					
 					playDialogueSE();
+					
 					String s = String.valueOf(characters[charIndex]);				
 					combinedText += s;
 					currentDialogue = combinedText;					
-					charIndex++;
+					charIndex++;					
 				}
 				if (charIndex >= characters.length) {
 					canSkip = true;
@@ -1317,6 +1484,8 @@ public class UI {
 			y = gp.tileSize * 10;
 	  		g2.drawImage(dialogue_finish, x, y + 30, null);
   		}
+  		
+  		if (skip) skipDialogue();
 	}
 	private void skipDialogue() {
 		if (gp.keyH.actionPressed && canSkip) {
@@ -1350,7 +1519,7 @@ public class UI {
 	}
 	private void dialogue_select() {
 	
-		drawDialogueScreen();
+		drawDialogueScreen(false);
 		
 		int x = gp.tileSize * 8;
 		int y = gp.tileSize * 4;
@@ -1395,7 +1564,7 @@ public class UI {
 	private void trade_select() {
 				
 		npc.dialogueSet = 0;
-		drawDialogueScreen();
+		drawDialogueScreen(false);
 		
 		// DRAW OPTIONS WINDOW
 		int x = gp.tileSize * 11;
@@ -1426,9 +1595,12 @@ public class UI {
 		g2.drawString("Leave", x, y);
 		if (commandNum == 2) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.actionPressed) {				
-				commandNum = 0;
+			if (gp.keyH.actionPressed) {					
 				subState = 0;
+				commandNum = 0;
+				canSkip = false;
+				charIndex = 0;
+				combinedText = "";
 				npc.startDialogue(npc, 4);
 			}	
 		}
@@ -1477,6 +1649,9 @@ public class UI {
 				// NOT ENOUGH RUPEES
 				if (npc.inventory.get(itemIndex).price > gp.player.rupees) {
 					subState = 0;
+					canSkip = false;
+					charIndex = 0;
+					combinedText = "";
 					npc.startDialogue(npc, 1);
 				}
 				else {				
@@ -1495,6 +1670,9 @@ public class UI {
 						}									
 					}
 					else {
+						canSkip = false;
+						charIndex = 0;
+						combinedText = "";
 						npc.startDialogue(npc, 2);
 					}
 				}
@@ -1562,7 +1740,10 @@ public class UI {
 				// NOT SELLABLE
 				else {					
 					subState = 0;
-					commandNum = 0;					
+					commandNum = 0;		
+					canSkip = false;
+					charIndex = 0;
+					combinedText = "";
 					npc.startDialogue(npc, 3);
 				}
 			}
@@ -1654,26 +1835,20 @@ public class UI {
 				
 		if (deathSprite < 18)
 			playerDeathAnimation();		
-		else {
-						
+		else {						
 			if (!gp.music.clip.isActive())
 				gp.playMusic(0);
 			
 			// REDUCED OPACITY BLACK
 			g2.setColor(new Color(0,0,0,200)); 
 			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-			
-			String text;
-			int x;
-			int y;		
-			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 80F));
-			
-			text = "Game Over";
-			
+						
 			// TITLE SHADOW
 			g2.setColor(Color.BLACK);
-			x = getXforCenteredText(text);
-			y = gp.tileSize * 4;
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 80F));
+			String text = "Game Over";
+			int x = getXforCenteredText(text);
+			int y = gp.tileSize * 5;
 			g2.drawString(text, x, y);
 			
 			// TITLE
@@ -1683,16 +1858,16 @@ public class UI {
 			// CONTINUE
 			g2.setColor(Color.WHITE);
 			g2.setFont(g2.getFont().deriveFont(40F));
-			text = "Continue";
+			text = "Continue From Last Save";
 			x = getXforCenteredText(text);
-			y += gp.tileSize * 3;
+			y += gp.tileSize * 2;
 			g2.drawString(text, x, y);
 			if (commandNum == 0) {
 				g2.drawString(">", x - 40, y);
 			}
 			
 			// QUIT
-			text = "Save and Quit";
+			text = "Quit to Title Screen";
 			x = getXforCenteredText(text);
 			y += gp.tileSize;
 			g2.drawString(text, x, y);
@@ -1702,7 +1877,7 @@ public class UI {
 		}
 	}
 	private void playerDeathAnimation() {
-						
+		
 		// CHANGE IMAGE EVERY 6 FRAMES
 		deathCounter++;
 		if (deathCounter > 6) {
@@ -1746,6 +1921,18 @@ public class UI {
 		g2.setColor(c);
 		g2.setStroke(new BasicStroke(5));
 		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
+	}	
+	private void drawSubWindow(int x, int y, int width, int height, Color color) {
+		
+		// BLACK COLOR (RGB, Transparency)
+		Color c = new Color(0,0,0,220);
+		g2.setColor(c);
+		g2.fillRoundRect(x, y, width, height, 25, 25); // 25px round corners
+
+		g2.setColor(color);
+		g2.setStroke(new BasicStroke(5));
+		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
+		g2.setColor(Color.WHITE);
 	}	
 	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
 		int itemIndex = slotCol + (slotRow * 5);

@@ -75,7 +75,7 @@ public class SceneManager {
 		
 		if (phase == 0) {	
 			resetPlayerCounters();	
-			gp.ui.drawDialogueScreen();
+			gp.ui.drawDialogueScreen(true);
 			npc1 = gp.ui.npc;
 		}
 		else if (phase == 1) {
@@ -108,7 +108,7 @@ public class SceneManager {
 					
 					npc2.pathCompleted = false;
 					npc2.dialogueSet = 1;
-					gp.ui.drawDialogueScreen();
+					gp.ui.drawDialogueScreen(true);
 					
 					// LOOK AT SPEAKER
 					if (gp.ui.npc.dialogueIndex % 2 == 0) {						
@@ -317,7 +317,7 @@ public class SceneManager {
 			}				
 		}
 		else if (phase == 3) {
-			gp.ui.drawDialogueScreen();
+			gp.ui.drawDialogueScreen(true);
 		}
 		else if (phase == 4) {
 			playBossMusic();
@@ -380,7 +380,7 @@ public class SceneManager {
 			phase++;
 		}
 		else if (phase == 1) {
-			gp.ui.drawDialogueScreen();
+			gp.ui.drawDialogueScreen(true);
 		}		
 		else if (phase == 2) {
 			playEndingMusic();

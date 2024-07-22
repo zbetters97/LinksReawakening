@@ -24,7 +24,7 @@ public class EMY_Bubble extends Entity {
 		name = emyName;
 		onGround = false;
 		
-		speed = 2; defaultSpeed = speed;
+		speed = 4; defaultSpeed = speed;
 		animationSpeed = 5;
 		maxLife = 8; life = maxLife;
 		attack = 2;
