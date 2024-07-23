@@ -76,7 +76,8 @@ public class EMY_Blade extends Entity {
 					move();
 				}			
 				// COLLISION DETECTED, MOVE BACKWARDS
-				else {						
+				else {			
+					playSE();
 					returning = true;
 					playerFound = false;
 					speed = 2;
@@ -99,32 +100,44 @@ public class EMY_Blade extends Entity {
 				
 				// DIRECTION OF PLAYER RELATIVE TO BLADE
 				if (Math.abs(worldX - gp.player.worldX) <= gp.tileSize) {
+					
+					// PLAYER ABOVE
 					if (worldY - gp.player.worldY >= 0) {
 						direction = "up";
 						playerFound = true;
 					}	
+					// PLAYER BELOW
 					else if (worldY - gp.player.worldY < 0) {
 						direction = "down";
 						playerFound = true;
 					}
 				}
 				else if (Math.abs(worldY - gp.player.worldY) <= gp.tileSize) {
+					
+					// PLAYER LEFT
 					if (worldX - gp.player.worldX >= 0) {
 						direction = "left";
 						playerFound = true;
-					}	
+					}						
+					// PLAYER RIGHT
 					else if (worldX - gp.player.worldX < 0) {
 						direction = "right";
 						playerFound = true;
 					}
 				}		
+				// PLAYER NOT CLOSE TO BLADE
 				else {
 					playerFound = false;
 				}
 			}
+			// PLAYER NOT WITHIN 6 TILES
 			else {
 				playerFound = false;
 			}
 		}
+	}
+	
+	public void playSE() {
+		gp.playSE(4, 8);
 	}
 }

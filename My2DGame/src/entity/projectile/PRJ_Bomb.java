@@ -134,7 +134,7 @@ public class PRJ_Bomb extends Projectile {
 		}			
 		
 		// DAMAGE PLAYER
-		boolean contactPlayer = gp.cChecker.checkExplosion(this);
+		boolean contactPlayer = gp.cChecker.checkPlayerExplosion(this);
 		if (contactPlayer && !gp.player.invincible) 
 			damagePlayer(attack);				
 		

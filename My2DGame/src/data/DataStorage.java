@@ -10,6 +10,7 @@ public class DataStorage implements Serializable {
 	
 	// FILE INFO
 	String file_date;
+	boolean gameCompleted;
 	
 	// DAY STATE
 	int dayState, dayCounter, bloodMoonCounter;

@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Thread gameThread;
 	private int FPS = 60;
 	public int fileSlot = 0;
+	public boolean gameCompleted = false;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -307,16 +308,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 		else if (gameState == cutsceneState) {
-			player.resetValues();
-			
-			player.digNum = 0;
-			player.digCounter = 0;	
-			player.jumpNum = 0;
-			player.jumpCounter = 0;			
-			player.rodNum = 0;
-			player.rodCounter = 0;
-			player.damageNum = 0;
-			player.damageCounter = 0;
+			player.resetValues();	
 			
 			// UPDATE NPCs
 			for (int i = 0; i < npc[1].length; i++) {
@@ -363,7 +355,7 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setInteractiveObjects();				
 	}
 	
-	public void removeTempEntity() {		
+	public void removeTempEntity(boolean reset) {		
 
 		for (int mapNum = 0; mapNum < maxMap; mapNum++) {
 			
@@ -386,7 +378,7 @@ public class GamePanel extends JPanel implements Runnable {
 				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
 					
 					if (obj[mapNum][i].name.equals(OBJ_Door_Closed.objName)) {
-						obj[mapNum][i].playSE();
+						if (!reset) obj[mapNum][i].playSE();
 						obj[mapNum][i].opening = true;
 					}
 					else {
@@ -435,7 +427,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public void resetGame() {
 		stopMusic();
 		
-		removeTempEntity();
+		removeTempEntity(true);
 		bossBattleOn = false;
 		csManager.scene = csManager.NA;
 		csManager.phase = 0;

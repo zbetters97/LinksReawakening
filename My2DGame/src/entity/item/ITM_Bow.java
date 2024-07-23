@@ -30,7 +30,7 @@ public class ITM_Bow extends Entity {
 			
 			if (charge < 120) charge++;
 									
-			gp.player.action = Action.AIMING; 
+			user.action = Action.AIMING; 
 			
 			return true;
 		}
@@ -47,7 +47,7 @@ public class ITM_Bow extends Entity {
 			
 			if (user == gp.player) {	
 				
-				gp.player.action = Action.IDLE; 	
+				user.action = Action.IDLE; 	
 				
 				if (80 > charge && charge >= 40) {
 					projectile.attack++;

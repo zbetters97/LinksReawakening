@@ -67,7 +67,7 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 28, 32); i++;
 		
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 19, 55); i++;
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 29, 68); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 29, 67); i++;
 		
 		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 41, 59); i++;		
 		gp.enemy[mapNum][i] = new EMY_Wizzrobe(gp, 38, 52); i++;
@@ -263,7 +263,7 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 48, 92, new COL_Heart(gp)); i++;		
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 33, 70, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 34, 70, new COL_Heart(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 16, 66, new COL_Heart(gp)); i++;		
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 16, 67, new COL_Heart(gp)); i++;		
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 61, 90, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 62, 90, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 68, 90, new COL_Heart(gp)); i++;

@@ -36,7 +36,8 @@ public class SaveLoad {
 			
 			// SAVE DATA TO DS
 			ds.file_date =  new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date(System.currentTimeMillis()));
-
+			ds.gameCompleted = gp.gameCompleted;
+			
 			// DAY DATA
 			ds.dayState = gp.eManager.lighting.dayState;
 			ds.dayCounter = gp.eManager.lighting.dayCounter;
@@ -225,6 +226,9 @@ public class SaveLoad {
 			// LOAD DATA FROM DS
 			DataStorage ds = (DataStorage)ois.readObject();
 						
+			// FILE DATA
+			gp.gameCompleted = ds.gameCompleted;
+			
 			// DAY DATA
 			gp.eManager.lighting.dayState = ds.dayState;
 			gp.eManager.lighting.dayCounter = ds.dayCounter;

@@ -23,7 +23,7 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, DIGGING, GRABBING, GUARDING, JUMPING, RUNNING, SOARING, SWINGING, SWIMMING, THROWING;
+		IDLE, AIMING, CARRYING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWINGING, SWIMMING, THROWING;
 	}
 	
 	protected GamePanel gp;
@@ -896,7 +896,7 @@ public class Entity {
 	// ENEMY ROOM CHECK
 	private void checkEnemyRoom() {							
 		if (isRoomClear()) {
-			gp.removeTempEntity();
+			gp.removeTempEntity(false);
 			Progress.canSave = true;
 		}
 	}

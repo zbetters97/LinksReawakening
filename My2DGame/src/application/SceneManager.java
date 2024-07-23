@@ -74,8 +74,8 @@ public class SceneManager {
 	private void scene_npc_1() {
 		
 		if (phase == 0) {	
-			resetPlayerCounters();	
-			gp.ui.drawDialogueScreen(true);
+			gp.player.resetValues();	
+			gp.ui.drawDialogueScreen(true);				
 			npc1 = gp.ui.npc;
 		}
 		else if (phase == 1) {
@@ -148,10 +148,11 @@ public class SceneManager {
 	private void scene_enemy_spawn() {
 				
 		if (phase == 0) {
+			playDoorCloseSE();
+			gp.player.resetValues();
 			
-			lookDirection = gp.player.direction;
-			
-			switch (gp.player.direction) {
+			lookDirection = gp.player.direction;			
+			switch (lookDirection) {
 				case "up":
 				case "upleft":
 				case "upright":
@@ -170,8 +171,6 @@ public class SceneManager {
 					break;
 			}
 			
-			resetPlayerCounters();
-			playDoorCloseSE();
 			phase++;
 		}
 		else if (phase == 1) {
@@ -257,9 +256,11 @@ public class SceneManager {
 	}	
 	private void scene_boss_1() {
 		
-		if (phase == 0) {
-			resetPlayerCounters();
+		if (phase == 0) {			
 			gp.stopMusic();	
+			
+			gp.player.resetValues();
+			
 			gp.bossBattleOn = true;
 			
 			// ADD IRON DOOR BEHIND PLAYER
@@ -344,9 +345,10 @@ public class SceneManager {
 	}	
 	private void scene_boss_1_defeat(int num) {
 		if (phase == 0) {			
-			resetPlayerCounters();
 			gp.stopMusic();
 			playVictoryMusic();
+			
+			gp.player.resetValues();
 
 			gp.bossBattleOn = false;
 			
@@ -374,7 +376,7 @@ public class SceneManager {
 	private void scene_ending() {
 						
 		if (phase == 0) {
-			resetPlayerCounters();
+			gp.player.resetValues();
 			gp.stopMusic();
 			gp.ui.npc = new OBJ_BlueHeart(gp);
 			phase++;
@@ -415,7 +417,7 @@ public class SceneManager {
 				alpha = 1f;
 			}		
 			
-			String text = "Your long journey has finally come to an end.\n"
+			String text = gp.player.name + "...\nYour long journey has finally come to an end.\n"
 					+ "No evil spirit can ever retain this treasure.\n"
 					+ "Time to return home and rest well\n"
 					+ "knowing the world is at peace...";			
@@ -474,26 +476,6 @@ public class SceneManager {
 			}
 			drawString(1f, 38f, y, credits, 40);
 		}
-	}
-	
-	private void resetPlayerCounters() {
-		
-		if (gp.player.action == Action.CARRYING) {
-			gp.player.grabbedObject.alive = false;				
-		}
-		
-		gp.player.action = Action.IDLE;
-		gp.player.onGround = true;
-		gp.player.attackCanceled = false;
-		
-		gp.player.digNum = 0;
-		gp.player.digCounter = 0;	
-		gp.player.jumpNum = 0;
-		gp.player.jumpCounter = 0;			
-		gp.player.rodNum = 0;
-		gp.player.rodCounter = 0;
-		gp.player.damageNum = 0;
-		gp.player.damageCounter = 0;
 	}
 	
 	private boolean counterReached(int target) {

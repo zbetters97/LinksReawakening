@@ -1,9 +1,9 @@
 Player name
-Link
+LINK
 Fullscreen
 False
 Music volume
-2
+1
 Sound effects volume
 3
 Text speed

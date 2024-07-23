@@ -141,19 +141,10 @@ public class UI {
 			drawEnemyHPBar(gp.enemy_r);
 			drawPauseScreen();
 		}		
-		// CHARACTER STATE
+		// INVENTORY STATE
 		else if (gp.gameState == gp.inventoryState) {
-			drawHUD();
-			
-			drawEquipment();
-			drawInventoryTitle();
-
-			if (inventoryScreen == 0) {
-				drawInventory(gp.player, true);
-			}
-			else {
-				drawItemInventory();			
-			}			
+			drawHUD();			
+			drawInventory();					
 		}
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.dialogueState) {
@@ -213,182 +204,177 @@ public class UI {
 		x = getXforCenteredText(text);
 		y += gp.tileSize * 1.5;
 		
-		// TEXT SHADOW
-//		g2.setColor(Color.BLACK);
 		g2.setColor(Color.WHITE);
 		g2.drawString(text, x+10, y+5);
 		
-		// TEXT COLOR
-//		g2.setColor(Color.WHITE);
 		g2.setColor(Color.BLACK);
 		g2.drawString(text, x+10, y);
 		g2.setColor(Color.WHITE);
 		
 		// MAIN TITLE SCREEN
-		if (titleScreenState == 0) {			
-			
-			// MARIN IMAGE			
-//		    x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2; // center sprite 
-//			y += gp.tileSize - (gp.tileSize / 2); 
-//			g2.drawImage(gp.player.sing, x, y, gp.tileSize * 2, gp.tileSize * 2, null);			 
-			
-			// LINK IMAGE
-			x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2; // center sprite
-			
-//			y += gp.tileSize * 4;			
-			y += gp.tileSize * 4;
-			
-//			g2.drawImage(gp.player.sit, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
-			
-			// MENU OPTIONS
-			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
-			text = "NEW GAME";
-			x = getXforCenteredText(text);
-			y += gp.tileSize * 3;
-			g2.drawString(text, x, y);
-			if (commandNum == 0) g2.drawString(">", x - gp.tileSize / 2, y);
-			
-			text = "LOAD GAME";
-			x = getXforCenteredText(text);
-			y += gp.tileSize + 15;
-			g2.drawString(text, x, y);
-			if (commandNum == 1) g2.drawString(">", x - gp.tileSize / 2, y);			
-			
-			text = "QUIT";
-			x = getXforCenteredText(text);
-			y += gp.tileSize + 15;
-			g2.drawString(text, x, y);
-			if (commandNum == 2) g2.drawString(">", x - gp.tileSize / 2, y);
-			
+		if (titleScreenState == 0) {				
+			menu_main();			
 		}
 		// NEW GAME SELECTED
 		else if (titleScreenState == 1) {
-						
-			y = gp.tileSize * 3;			
-			int width = gp.screenWidth - (gp.tileSize * 4);
-			int height = gp.screenHeight - (gp.tileSize * 4);			
-			drawSubWindow(x+40, y, width, height);
-			
-			// TEXT COLOR
-			g2.setColor(Color.WHITE);
-			g2.setFont(g2.getFont().deriveFont(42F));
-			
-			// NAME SELECT TITLE
-			text = "YOUR NAME, PLEASE";
-			x = getXforCenteredText(text);
-			y += gp.tileSize;
-			g2.drawString(text, x, y);
-			
-			// DISPLAY NAME
-			if (gp.player.name.length() <= 10) 
-				text = "-> " + gp.player.name + "_";
-			else 
-				text = "-> " + gp.player.name;		
-			x = gp.screenWidth / 3;
-			y += gp.tileSize * 1.5;
-			g2.drawString(text, x, y);			
-			
-			// DISPLAY ON-SCREEN KEYBOARD
-			x = gp.tileSize * 2;
-			y += gp.tileSize;			
-			
-			String keyboard = "";
-			
-			if (gp.keyH.capital) keyboard = "QWERTYUIOPASDFGHJKLZXCVBNM";	
-			else keyboard = "qwertyuiopasdfghjklzxcvbnm";
-			
-			for (int i = 0; i < keyboard.length(); i++) {	
-				
-				// NEW LINE (RESET X)
-				if (keyboard.charAt(i) == 'A' || keyboard.charAt(i) == 'Z') {
-					x = gp.tileSize * 2;
-					y+= gp.tileSize;
-				}
-				if (keyboard.charAt(i) == 'a' || keyboard.charAt(i) == 'z') {
-					x = gp.tileSize * 2;
-					y+= gp.tileSize;
-				}
-				
-				// HIGHLIGHT SELECTED LETTER
-				x += gp.tileSize;		
-				if (commandNum == i) 
-					g2.drawString("(" + keyboard.charAt(i) + ")", x, y);
-				else
-					g2.drawString(" " + keyboard.charAt(i) + " ", x, y);
-			} 	
-			
-			// DEL BUTTON (SAME Y AS KEYBOARD)
-			x += gp.tileSize + 10;		
-			if (commandNum == 26) 
-				g2.drawString("(DEL)", x, y);	
-			else
-				g2.drawString(" DEL ", x, y);	
-			
-			x += gp.tileSize + 30;		
-			if (commandNum == 27) 
-				g2.drawString("(CAP)", x, y);	
-			else
-				g2.drawString(" CAP ", x, y);	
-
-			// BACK / ENTER BUTTONS
-			x = gp.screenWidth / 3;
-			y += gp.tileSize * 1.8;
-			g2.drawString("GO BACK", x, y);
-			if (commandNum == 28) 
-				g2.drawString(">", x - gp.tileSize / 2, y);	
-			
-			x += gp.tileSize * 4;		
-			g2.drawString("ENTER", x, y);
-			if (commandNum == 29 && gp.player.name.length() > 0) 
-				g2.drawString(">", x - gp.tileSize / 2, y);	
+			menu_newGame();
 		}
 		// LOAD GAME SELECTED
-		else if (titleScreenState == 2) {
-			
-			// TEXT COLOR
-			g2.setColor(Color.WHITE);
-			g2.setFont(g2.getFont().deriveFont(35F));
-			
-			x += gp.tileSize;
-			y = gp.tileSize * 3;			
-			int width = gp.tileSize * 10;
-			int height = gp.tileSize * 2;			
-			
-			if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);
-			else drawSubWindow(x+40, y, width, height);				
-			
-			y += gp.tileSize * 2;	
-			if (commandNum == 1) drawSubWindow(x+40, y, width, height, Color.GREEN);				
-			else drawSubWindow(x+40, y, width, height);	
-						
-			y += gp.tileSize * 2;	
-			if (commandNum == 2) drawSubWindow(x+40, y, width, height, Color.GREEN);			
-			else drawSubWindow(x+40, y, width, height);				
-			 
-			if (gp.saveLoad.loadFileData(0) == null) text = "1)";			
-			else text = "1) " + gp.saveLoad.loadFileData(0);
-			x = gp.tileSize * 4;
-			y = (gp.tileSize * 4) + 15;	
-			g2.drawString(text, x, y);		
-			
-			if (gp.saveLoad.loadFileData(1) == null) text = "2)";			
-			else text = "2) " + gp.saveLoad.loadFileData(1);
-			y += gp.tileSize * 2;	
-			g2.drawString(text, x, y);	
-			
-			if (gp.saveLoad.loadFileData(2) == null) text = "3)";			
-			else text = "3) " + gp.saveLoad.loadFileData(2);
-			y += gp.tileSize * 2;	
-			g2.drawString(text, x, y);				
-			
-			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
-			text = "GO BACK";
-			x = getXforCenteredText(text);
-			y += (gp.tileSize * 2) + 25;
-			g2.drawString(text, x, y);
-			if (commandNum == 3) 
-				g2.drawString(">", x - gp.tileSize / 2, y);
+		else if (titleScreenState == 2) {			
+			menu_loadGame();
 		}
+	}
+	
+	private void menu_main() {
+		
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
+		
+		// MENU OPTIONS		
+		String text = "NEW GAME";
+		int x = getXforCenteredText(text);
+		int y = (gp.tileSize * 9) - 20;
+		g2.drawString(text, x, y);
+		if (commandNum == 0) g2.drawString(">", x - gp.tileSize / 2, y);
+		
+		text = "LOAD GAME";
+		x = getXforCenteredText(text);
+		y += gp.tileSize + 15;
+		g2.drawString(text, x, y);
+		if (commandNum == 1) g2.drawString(">", x - gp.tileSize / 2, y);			
+		
+		text = "QUIT";
+		x = getXforCenteredText(text);
+		y += gp.tileSize + 15;
+		g2.drawString(text, x, y);
+		if (commandNum == 2) g2.drawString(">", x - gp.tileSize / 2, y);
+	}
+	private void menu_newGame() {
+	
+		// TEXT COLOR
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(42F));
+		
+		int x = 66;
+		int y = gp.tileSize * 3;			
+		int width = gp.screenWidth - (gp.tileSize * 4);
+		int height = gp.screenHeight - (gp.tileSize * 4);			
+		drawSubWindow(x + 40, y, width, height);
+		
+		// NAME SELECT TITLE
+		String text = "YOUR NAME, PLEASE";
+		x = getXforCenteredText(text);
+		y += gp.tileSize;
+		g2.drawString(text, x, y);
+		
+		// DISPLAY NAME
+		if (gp.player.name.length() <= 10) 
+			text = "-> " + gp.player.name + "_";
+		else 
+			text = "-> " + gp.player.name;		
+		x = gp.screenWidth / 3;
+		y += gp.tileSize * 1.5;
+		g2.drawString(text, x, y);			
+		
+		// DISPLAY ON-SCREEN KEYBOARD
+		x = gp.tileSize * 2;
+		y += gp.tileSize;			
+		
+		String keyboard = "";
+		
+		if (gp.keyH.capital) keyboard = "QWERTYUIOPASDFGHJKLZXCVBNM";	
+		else keyboard = "qwertyuiopasdfghjklzxcvbnm";
+		
+		for (int i = 0; i < keyboard.length(); i++) {	
+			
+			// NEW LINE (RESET X)
+			if (keyboard.charAt(i) == 'A' || keyboard.charAt(i) == 'Z') {
+				x = gp.tileSize * 2;
+				y+= gp.tileSize;
+			}
+			if (keyboard.charAt(i) == 'a' || keyboard.charAt(i) == 'z') {
+				x = gp.tileSize * 2;
+				y+= gp.tileSize;
+			}
+			
+			// HIGHLIGHT SELECTED LETTER
+			x += gp.tileSize;		
+			if (commandNum == i) 
+				g2.drawString("(" + keyboard.charAt(i) + ")", x, y);
+			else
+				g2.drawString(" " + keyboard.charAt(i) + " ", x, y);
+		} 	
+		
+		// DEL BUTTON (SAME Y AS KEYBOARD)
+		x += gp.tileSize + 10;		
+		if (commandNum == 26) 
+			g2.drawString("(DEL)", x, y);	
+		else
+			g2.drawString(" DEL ", x, y);	
+		
+		x += gp.tileSize + 30;		
+		if (commandNum == 27) 
+			g2.drawString("(CAP)", x, y);	
+		else
+			g2.drawString(" CAP ", x, y);	
+
+		// BACK / ENTER BUTTONS
+		x = gp.screenWidth / 3;
+		y += gp.tileSize * 1.8;
+		g2.drawString("GO BACK", x, y);
+		if (commandNum == 28) 
+			g2.drawString(">", x - gp.tileSize / 2, y);	
+		
+		x += gp.tileSize * 4;		
+		g2.drawString("ENTER", x, y);
+		if (commandNum == 29 && gp.player.name.length() > 0) 
+			g2.drawString(">", x - gp.tileSize / 2, y);	
+	}
+	private void menu_loadGame() {
+		
+		// TEXT COLOR
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(35F));
+		
+		String text = "";
+		int x = 66 + gp.tileSize;
+		int y = gp.tileSize * 3;			
+		int width = gp.tileSize * 10;
+		int height = gp.tileSize * 2;			
+		
+		if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);
+		else drawSubWindow(x+40, y, width, height);				
+		
+		y += gp.tileSize * 2;	
+		if (commandNum == 1) drawSubWindow(x+40, y, width, height, Color.GREEN);				
+		else drawSubWindow(x+40, y, width, height);	
+					
+		y += gp.tileSize * 2;	
+		if (commandNum == 2) drawSubWindow(x+40, y, width, height, Color.GREEN);			
+		else drawSubWindow(x+40, y, width, height);				
+		 
+		if (gp.saveLoad.loadFileData(0) == null) text = "1)";			
+		else text = "1) " + gp.saveLoad.loadFileData(0);
+		x = gp.tileSize * 4;
+		y = (gp.tileSize * 4) + 15;	
+		g2.drawString(text, x, y);		
+		
+		if (gp.saveLoad.loadFileData(1) == null) text = "2)";			
+		else text = "2) " + gp.saveLoad.loadFileData(1);
+		y += gp.tileSize * 2;	
+		g2.drawString(text, x, y);	
+		
+		if (gp.saveLoad.loadFileData(2) == null) text = "3)";			
+		else text = "3) " + gp.saveLoad.loadFileData(2);
+		y += gp.tileSize * 2;	
+		g2.drawString(text, x, y);				
+		
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
+		text = "GO BACK";
+		x = getXforCenteredText(text);
+		y += (gp.tileSize * 2) + 25;
+		g2.drawString(text, x, y);
+		if (commandNum == 3) 
+			g2.drawString(">", x - gp.tileSize / 2, y);
 	}
 	
 	// HUD
@@ -592,7 +578,7 @@ public class UI {
 				}
 				
 				// REGULAR ENEMY HEALTH BAR
-/*				else {
+				else if (gp.gameCompleted) {
 					
 					// LENGTH OF HALF HEART
 					double oneScale = (double)gp.tileSize / enemy.maxLife; 
@@ -612,8 +598,7 @@ public class UI {
 						enemy.hpBarCounter = 0;
 						enemy.hpBarOn = false;						
 					}
-				}
-*/				
+				}				
 			}			
 		}				
 	}
@@ -891,10 +876,10 @@ public class UI {
 		g2.drawString("ACTION", textX, textY); textY += 35;
 		g2.drawString("INVENTORY", textX, textY); textY += 35;
 		g2.drawString("MAP", textX, textY); textY += 35;
-		g2.drawString("MINI-MAP", textX, textY); textY += 35;
 		g2.drawString("GUARD", textX, textY); textY += 35;
+		g2.drawString("ROLL", textX, textY); textY += 35;
 		g2.drawString("LOCK-ON", textX, textY); textY += 35;
-		g2.drawString("GRAB/THROW", textX, textY); textY += 35;
+		g2.drawString("GRAB / THROW", textX, textY); textY += 35;
 		g2.drawString("USE ITEM", textX, textY); textY += 35;
 		g2.drawString("CYCLE ITEMS", textX, textY); textY += 35;	
 		
@@ -904,8 +889,8 @@ public class UI {
 		g2.drawString("SPACEBAR", textX, textY); textY += 35;
 		g2.drawString("E", textX, textY); textY += 35;
 		g2.drawString("M", textX, textY); textY += 35;
-		g2.drawString("N", textX, textY); textY += 35;
 		g2.drawString("Z", textX, textY); textY += 35;
+		g2.drawString("R", textX, textY); textY += 35;
 		g2.drawString("F", textX, textY); textY += 35;
 		g2.drawString("G", textX, textY); textY += 35;
 		g2.drawString("Q", textX, textY); textY += 35;
@@ -914,7 +899,7 @@ public class UI {
 		// BACK		
 		text = "BACK";
 		textX = getXforCenteredText(text);
-		textY += gp.tileSize;
+		textY += (gp.tileSize / 2);
 		g2.drawString(text, textX, textY);
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
@@ -1111,7 +1096,7 @@ public class UI {
 	}
 	
 	// INVENTORY	
-	private void drawInventoryTitle() {
+	private void drawInventory() {
 		
 		int x = gp.tileSize * 9;
 		int y = 0;
@@ -1139,8 +1124,17 @@ public class UI {
 		x = getXforCenteredText(text);
 		g2.drawString(text, x + gp.tileSize * 4, y);
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 37F));
+		
+		inventory_equipment();
+		
+		if (inventoryScreen == 0) {
+			inventory_collectables(gp.player, true);
+		}
+		else {
+			inventory_items();			
+		}	
 	}
-	private void drawEquipment() {
+	private void inventory_equipment() {
 
 		int frameX = (gp.tileSize * 7) + 15;
 		int frameY = gp.tileSize + 5;
@@ -1211,7 +1205,7 @@ public class UI {
 		}
 		
 	}
-	private void drawInventory(Entity entity, boolean cursor) {
+	private void inventory_collectables(Entity entity, boolean cursor) {
 		
 		// ITEM WINDOW
 		int frameX = 0;
@@ -1317,7 +1311,7 @@ public class UI {
 			}
 		}			
 	}
-	private void drawItemInventory() {
+	private void inventory_items() {
 
 		int frameX = gp.tileSize * 9;
 		int frameY = gp.tileSize;
@@ -1607,8 +1601,8 @@ public class UI {
 	}
 	private void trade_buy() {
 		
-		drawInventory(gp.player, false);
-		drawInventory(npc, true);
+		inventory_collectables(gp.player, false);
+		inventory_collectables(npc, true);
 		
 		// DRAW PRICE WINDOW
 		int x = gp.tileSize * 2;
@@ -1682,8 +1676,8 @@ public class UI {
 	private void trade_sell() {
 		
 		// DRAW PLAYER INVENTORY
-		drawInventory(gp.player, true);
-		drawInventory(npc, false);
+		inventory_collectables(gp.player, true);
+		inventory_collectables(npc, false);
 				
 		// DRAW PRICE WINDOW
 		int x = gp.tileSize * 2;

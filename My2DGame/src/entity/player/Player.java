@@ -45,26 +45,33 @@ public class Player extends Entity {
 	public Entity capturedTarget;
 	
 	// COUNTERS
-	public int digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1, 
-			damageNum = 1, pullNum = 1, throwNum = 1;
-	public int digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, 
-			damageCounter = 0, pullCounter = 0, throwCounter = 0, lowHPCounter = 0;
+	public int damageNum = 1, rollNum = 1, pullNum = 1, throwNum = 1, 
+			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
+	
+	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, throwCounter = 0, 
+			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0;
 	
 	// IMAGES
-	public BufferedImage digUp1, digUp2, digDown1, digDown2, 
-							digLeft1, digLeft2, digRight1, digRight2,
-							grabUp1, grabUp2, grabUp3, grabDown1, grabDown2, grabDown3, 
-							grabLeft1, grabLeft2, grabLeft3, grabRight1, grabRight2, grabRight3,
-							carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,
-							throwUp1, throwDown1, throwLeft1, throwRight1,
-							jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
-							jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3,
-							soarUp1, soarDown1, soarLeft1, soarRight1,
-							rodUp1, rodUp2, rodDown1, rodDown2, 
-							rodLeft1, rodLeft2, rodRight1, rodRight2,
-							swimUp1, swimUp2, swimDown1, swimDown2, 
-							swimLeft1, swimLeft2, swimRight1, swimRight2,
-							titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3;	
+	public BufferedImage 	
+		swimUp1, swimUp2, swimDown1, swimDown2, 
+		swimLeft1, swimLeft2, swimRight1, swimRight2,	
+		
+		rollUp1, rollUp2, rollUp3, rollUp4, rollDown1, rollDown2, rollDown3, rollDown4,
+		rollLeft1, rollLeft2, rollLeft3, rollLeft4, rollRight1, rollRight2, rollRight3, rollRight4,
+		
+		grabUp1, grabUp2, grabUp3, grabDown1, grabDown2, grabDown3, 
+		grabLeft1, grabLeft2, grabLeft3, grabRight1, grabRight2, grabRight3,
+		carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,
+		throwUp1, throwDown1, throwLeft1, throwRight1,
+		
+		digUp1, digUp2, digDown1, digDown2, digLeft1, digLeft2, digRight1, digRight2,
+		
+		jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
+		jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3,
+		soarUp1, soarDown1, soarLeft1, soarRight1,
+		rodUp1, rodUp2, rodDown1, rodDown2, rodLeft1, rodLeft2, rodRight1, rodRight2,
+								
+		titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3;	
 	
 /** END PLAYER VARIABLES **/		
 	
@@ -101,15 +108,15 @@ public class Player extends Entity {
 	public void setDefaultValues() {
 			
 		action = Action.IDLE;	
-		onGround = true;
 		grabbedObject = null;
-		canSwim = true;
+		onGround = true;		
+		canSwim = false;		
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
-		maxLife = 12; life = maxLife;
+		maxLife = 20; life = maxLife;
 		walletSize = 99; rupees = 0;
 		
 		maxArrows = 10; arrows = maxArrows;
@@ -119,7 +126,7 @@ public class Player extends Entity {
 		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		
-		projectile = new PRJ_Sword(gp);
+//		projectile = new PRJ_Sword(gp);
 		
 		attack = getAttack();
 		
@@ -128,17 +135,17 @@ public class Player extends Entity {
 		setDialogue();
 
 		getAttackImage();
-		getGuardImage();		
+		getGuardImage();
+		getRollImage();
+		getSwimImage();			
+		getGrabImage();
+		getCarryImage();		
+		getThrowImage();		
 		getDigImage();
 		getJumpImage();
 		getSoarImage();
 		getRodImage();
-		getSwimImage();	
 		getMiscImage();
-		
-		getGrabImage();
-		getCarryImage();		
-		getThrowImage();
 	}	
 	public void setDefaultPosition() {	
 /*	
@@ -155,52 +162,51 @@ public class Player extends Entity {
 		direction = "up";
 	}
 	public void setDefaultItems() {		
-
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
-		inventory_item.add(new ITM_Boots(gp));		
-		
+		inventory_item.add(new ITM_Boots(gp));				
 		inventory_item.add(new ITM_Bomb(gp));
 		inventory_item.add(new ITM_Feather(gp));
-		inventory_item.add(new ITM_Bow(gp));
-		
+		inventory_item.add(new ITM_Bow(gp));		
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
-		inventory_item.add(new ITM_Rod(gp));
-
-		inventory_item.add(new ITM_Boots(gp));	
+		inventory_item.add(new ITM_Rod(gp));	
 	}
 	public void restoreStatus() {
-		alive = true;
-		action = Action.IDLE;
-		life = maxLife;
-		speed = defaultSpeed;
-		knockback = false;
-		invincible = false;
-		transparent = false;
-		onGround = true;
-		grabbedObject = null;
-		currentItem = null;
+		alive = true;		
 		canMove = true;
+		currentItem = null;
+		life = maxLife;
+		speed = defaultSpeed;	
 		
 		resetValues();
 	}	
-	public void resetValues() {		
+	public void resetValues() {	
+				
+		action = Action.IDLE;
+		onGround = true;
+		knockback = false;
+		invincible = false;
+		transparent = false;	
+		attackCanceled = false;
+		
+		damageNum = 1;
+		damageCounter = 0;			
+		lowHPCounter = 0;
+		rollNum = 1;
+		rollCounter = 0;		
+		pullNum = 1;
+		pullCounter = 0;		
+		throwNum = 1;
+		throwCounter = 0;		
 		digNum = 1;
-		digCounter = 0;	
+		digCounter = 0;		
 		jumpNum = 1;
-		jumpCounter = 0;			
+		jumpCounter = 0;
+		soarNum = 1;
+		soarCounter = 0; 		
 		rodNum = 1;
 		rodCounter = 0;
-		damageNum = 1;
-		damageCounter = 0;		
-		soarNum = 1;
-		soarCounter = 0; 
-		pullNum = 1;
-		pullCounter = 0;
-		throwNum = 1;
-		throwCounter = 0;
-		lowHPCounter = 0;
 		
 		if (grabbedObject != null) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
@@ -275,15 +281,33 @@ public class Player extends Entity {
 		guardRight1 = setup("/player/boy_guard_right_1"); 
 		guardRight2 = guardRight1;
 	}
-	public void getDigImage() {
-		digUp1 = setup("/player/boy_dig_up_1"); 
-		digUp2 = setup("/player/boy_dig_up_2");			
-		digDown1 = setup("/player/boy_dig_down_1"); 
-		digDown2 = setup("/player/boy_dig_down_2");		
-		digLeft1 = setup("/player/boy_dig_left_1"); 
-		digLeft2 = setup("/player/boy_dig_left_2");		
-		digRight1 = setup("/player/boy_dig_right_1"); 
-		digRight2 = setup("/player/boy_dig_right_2");		
+	public void getRollImage() {
+		rollUp1 = setup("/player/boy_roll_up_1");
+		rollUp2 = setup("/player/boy_roll_up_2");
+		rollUp3 = setup("/player/boy_roll_up_3");			
+		rollUp4 = setup("/player/boy_roll_up_4");			
+		rollDown1 = setup("/player/boy_roll_down_1");
+		rollDown2 = setup("/player/boy_roll_down_2");
+		rollDown3 = setup("/player/boy_roll_down_3");		
+		rollDown4 = setup("/player/boy_roll_down_4");		
+		rollLeft1 = setup("/player/boy_roll_left_1");
+		rollLeft2 = setup("/player/boy_roll_left_2");
+		rollLeft3 = setup("/player/boy_roll_left_3");	
+		rollLeft4 = setup("/player/boy_roll_left_4");	
+		rollRight1 = setup("/player/boy_roll_right_1");
+		rollRight2 = setup("/player/boy_roll_right_2");
+		rollRight3 = setup("/player/boy_roll_right_3");
+		rollRight4 = setup("/player/boy_roll_right_4");
+	}
+	public void getSwimImage() {			
+		swimUp1 = setup("/player/boy_swim_up_1"); 
+		swimUp2 = setup("/player/boy_swim_up_2");			
+		swimDown1 = setup("/player/boy_swim_down_1"); 
+		swimDown2 = setup("/player/boy_swim_down_2");		
+		swimLeft1 = setup("/player/boy_swim_left_1"); 
+		swimLeft2 = setup("/player/boy_swim_left_2");		
+		swimRight1 = setup("/player/boy_swim_right_1"); 
+		swimRight2 = setup("/player/boy_swim_right_2");		
 	}
 	public void getGrabImage() {
 		grabUp1 = setup("/player/boy_grab_up_1"); 		
@@ -315,6 +339,16 @@ public class Player extends Entity {
 		throwLeft1 = setup("/player/boy_throw_left_1"); 	
 		throwRight1 = setup("/player/boy_throw_right_1"); 	
 	}
+	public void getDigImage() {
+		digUp1 = setup("/player/boy_dig_up_1"); 
+		digUp2 = setup("/player/boy_dig_up_2");			
+		digDown1 = setup("/player/boy_dig_down_1"); 
+		digDown2 = setup("/player/boy_dig_down_2");		
+		digLeft1 = setup("/player/boy_dig_left_1"); 
+		digLeft2 = setup("/player/boy_dig_left_2");		
+		digRight1 = setup("/player/boy_dig_right_1"); 
+		digRight2 = setup("/player/boy_dig_right_2");		
+	}
 	public void getJumpImage() {
 		jumpUp1 = setup("/player/boy_jump_up_1");
 		jumpUp2 = setup("/player/boy_jump_up_2");
@@ -345,16 +379,6 @@ public class Player extends Entity {
 		rodRight1 = setup("/player/boy_rod_right_1", gp.tileSize * 2, gp.tileSize * 2); 
 		rodRight2 = setup("/player/boy_rod_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
-	public void getSwimImage() {			
-		swimUp1 = setup("/player/boy_swim_up_1"); 
-		swimUp2 = setup("/player/boy_swim_up_2");			
-		swimDown1 = setup("/player/boy_swim_down_1"); 
-		swimDown2 = setup("/player/boy_swim_down_2");		
-		swimLeft1 = setup("/player/boy_swim_left_1"); 
-		swimLeft2 = setup("/player/boy_swim_left_2");		
-		swimRight1 = setup("/player/boy_swim_right_1"); 
-		swimRight2 = setup("/player/boy_swim_right_2");		
-	}
 	public void getMiscImage() {		
 		drown = setup("/player/boy_drown");
 		fall1 = setup("/player/boy_fall_1");
@@ -377,7 +401,7 @@ public class Player extends Entity {
 				
 		if (!keyH.debug) checkCollision();
 		if (action == Action.IDLE) { onGround = true; }
-		if (knockback) { knockbackPlayer(); return;	}
+		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return;	}
 		
 		if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
 		if (lockon && action != Action.AIMING) { lockTarget(); }
@@ -388,9 +412,9 @@ public class Player extends Entity {
 			}
 		}	
 		
-		if (action == Action.DIGGING) { digging(); return; }
-		else if (action == Action.SWINGING) { swinging(); return; }
-		else if (action == Action.THROWING) { throwing(); return; }		
+		if (action == Action.DIGGING) { digging(); manageValues(); checkDeath(); return; }
+		else if (action == Action.SWINGING) { swinging(); manageValues(); checkDeath(); return; }
+		else if (action == Action.THROWING) { throwing(); manageValues(); checkDeath(); return; }		
 		else if (action == Action.AIMING) {
 			
 			switch (direction) {			
@@ -420,7 +444,8 @@ public class Player extends Entity {
 		}
 		else if (action == Action.GRABBING) { grabbing(); }		
 		else if (action == Action.JUMPING) { jumping(); }	
-		else if (action == Action.SOARING) { jumping(); }	
+		else if (action == Action.SOARING) { jumping(); }
+		else if (action == Action.ROLLING) { rolling(); }
 		else if (action == Action.CARRYING) {
 			if (keyH.grabPressed) {
 				playThrowSE();
@@ -455,9 +480,9 @@ public class Player extends Entity {
 		
 		// DISABLED ACTIONS WHILE SWIMMING, AIMING, OR CARRYING
 		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.JUMPING
-				&& action != Action.CARRYING && action != Action.SOARING) {			
+				&& action != Action.CARRYING && action != Action.SOARING && action != Action.ROLLING) {			
 			if (keyH.actionPressed) { action(); }
-			if (attacking) { attacking(); return; }	
+			if (attacking) { attacking(); manageValues(); checkDeath(); return; }	
 			if (keyH.guardPressed) { action = Action.GUARDING; }	
 			if (keyH.grabPressed) { grabbing(); }			
 			if (keyH.itemPressed) { useItem(); }					
@@ -465,7 +490,9 @@ public class Player extends Entity {
 		}		
 				
 		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
-				action != Action.AIMING && action != Action.GRABBING) { walking(); }
+				action != Action.AIMING && action != Action.GRABBING) { 
+			walking(); 					
+		}
 				
 		manageValues();		
 		checkDeath();
@@ -479,15 +506,21 @@ public class Player extends Entity {
 	// MOVEMENT
 	public void walking() {
 		
-		if (keyH.guardPressed && action != Action.SWIMMING) 
-			return;
+		if (keyH.guardPressed && action != Action.SWIMMING) {
+			getDirection(); return;
+		}
 		
-		getDirection();
+		// DONT CHANGE DIRECTIONS WHILE ROLLING
+		if (action != Action.ROLLING) getDirection();
+		
 		if (!keyH.debug) checkCollision();
 		if (!collisionOn) { 				
 			if (lockon) move(lockonDirection);			
 			else move(direction);		
 			cycleSprites();	
+			
+			// ONLY ROLL WHILE MOVING
+			if (keyH.rollPressed && action == Action.IDLE) { action = Action.ROLLING; }	
 		}
 	}
 	public void getDirection() {
@@ -890,6 +923,53 @@ public class Player extends Entity {
 	}	
 	
 	// ITEM HANDLING
+	public void selectInventory() {
+		
+		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
+		if (inventoryIndex < inventory.size()) {			
+			keyH.playSelectSE();
+			
+			if (action != Action.SWIMMING) 
+				action = Action.IDLE;
+			
+			itemIndex = inventoryIndex;										
+									
+			Entity selectedItem = inventory.get(inventoryIndex);
+			if (selectedItem.type == type_consumable) {
+				if (selectedItem.use(this)) {
+					
+					if (selectedItem.amount > 1) {
+						selectedItem.amount--;
+					}
+					else {
+						inventory.remove(selectedItem);
+					}
+				}
+			}
+		}
+	}
+	public void selectItem() {
+		
+		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
+		if (inventoryIndex < inventory_item.size()) {		
+			
+			if (action != Action.IDLE && action != Action.SWIMMING) {
+				return;
+			}
+			
+			keyH.playSelectSE();
+			itemIndex = inventoryIndex;										
+									
+			Entity selectedItem = inventory_item.get(inventoryIndex);
+			
+			if (selectedItem == currentItem) {
+				currentItem = null;
+			}
+			else {
+				currentItem = selectedItem;	
+			}
+		}
+	}
 	public void useItem() {
 		
 		if (currentItem != null) {							
@@ -929,48 +1009,6 @@ public class Player extends Entity {
 			startDialogue(this, 2);
 		}			
 	}
-
-	public void selectItem() {
-		
-		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
-		if (inventoryIndex < inventory_item.size()) {		
-			
-			if (action != Action.IDLE && action != Action.SWIMMING) {
-				return;
-			}
-			
-			keyH.playSelectSE();
-			itemIndex = inventoryIndex;										
-									
-			Entity selectedItem = inventory_item.get(inventoryIndex);
-			currentItem = selectedItem;
-		}
-	}
-	public void selectInventory() {
-		
-		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
-		if (inventoryIndex < inventory.size()) {			
-			keyH.playSelectSE();
-			
-			if (action != Action.SWIMMING) 
-				action = Action.IDLE;
-			
-			itemIndex = inventoryIndex;										
-									
-			Entity selectedItem = inventory.get(inventoryIndex);
-			if (selectedItem.type == type_consumable) {
-				if (selectedItem.use(this)) {
-					
-					if (selectedItem.amount > 1) {
-						selectedItem.amount--;
-					}
-					else {
-						inventory.remove(selectedItem);
-					}
-				}
-			}
-		}
-	}
 	public void cycleItems() {
 		
 		if (currentItem != null) {
@@ -986,6 +1024,23 @@ public class Player extends Entity {
 	}	
 
 	// ANIMATIONS	
+	public void rolling() {
+		
+		speed = 5;		
+		
+		rollCounter++;				
+		if (5 >= rollCounter) rollNum = 1;		
+		else if (10 > rollCounter && rollCounter > 5) rollNum = 2;		
+		else if (15 > rollCounter && rollCounter > 10) rollNum = 3;		
+		else if (20 > rollCounter && rollCounter > 15) rollNum = 4;		
+		else if (rollCounter > 20) {
+			rollNum = 1;
+			rollCounter = 0;
+			attackCanceled = false;
+			action = Action.IDLE;	
+			speed = defaultSpeed;
+		}
+	}
 	public void grabbing() {
 		
 		int i = gp.cChecker.checkEntity(this, gp.iTile);
@@ -1172,8 +1227,7 @@ public class Player extends Entity {
 			action = Action.IDLE;
 			gp.gameState = gp.playState;
 		}
-	}
-	
+	}	
 	public void swinging() {
 
 		rodCounter++;
@@ -1223,37 +1277,6 @@ public class Player extends Entity {
 			action = Action.IDLE;
 		}
 	}			
-	
-	public void takingDamage() {
-		
-		damageCounter++;
-				
-		if (6 >= damageCounter) damageNum = 1; 
-		else if (18 > damageCounter && 12 >= damageCounter) damageNum = 2;		
-		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
-		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
-		else if (damageCounter >= 60) {
-			
-			life-= 2;
-			damageNum = 1;
-			damageCounter = 0;			
-			attackCanceled = false;
-			transparent = true;
-			
-			if (action == Action.CARRYING) {
-				grabbedObject.alive = false;				
-			}
-			action = Action.IDLE;
-			
-			// MOVE PLAYER TO SAFE SPOT
-			worldX = safeWorldX;
-			worldY = safeWorldY;
-			safeWorldX = 0;
-			safeWorldY = 0;
-			
-			gp.gameState = gp.playState;
-		}		
-	}		
 	
 	// DAMAGE
 	public void damageEnemy(Entity target, Entity attacker, int attack, int knockbackPower) {
@@ -1342,6 +1365,36 @@ public class Player extends Entity {
 			}
 		}
 	}
+	public void takingDamage() {
+		
+		damageCounter++;
+				
+		if (6 >= damageCounter) damageNum = 1; 
+		else if (18 > damageCounter && 12 >= damageCounter) damageNum = 2;		
+		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
+		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
+		else if (damageCounter >= 60) {
+			
+			life-= 2;
+			damageNum = 1;
+			damageCounter = 0;			
+			attackCanceled = false;
+			transparent = true;
+			
+			if (action == Action.CARRYING) {
+				grabbedObject.alive = false;				
+			}
+			action = Action.IDLE;
+			
+			// MOVE PLAYER TO SAFE SPOT
+			worldX = safeWorldX;
+			worldY = safeWorldY;
+			safeWorldX = 0;
+			safeWorldY = 0;
+			
+			gp.gameState = gp.playState;
+		}		
+	}		
 	
 	// CHECKERS
 	public void manageValues() {
@@ -1518,6 +1571,12 @@ public class Player extends Entity {
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
 							break;
+						case ROLLING:
+							if (rollNum == 1) image1 = rollUp1;
+							else if (rollNum == 2) image1 = rollUp2; 
+							else if (rollNum == 3) image1 = rollUp3; 
+							else if (rollNum == 4) image1 = rollUp4; 
+							break;
 						case SWINGING:
 							tempScreenY -= gp.tileSize;
 							if (rodNum == 1) {
@@ -1577,6 +1636,12 @@ public class Player extends Entity {
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
 							break;
+						case ROLLING:
+							if (rollNum == 1) image1 = rollDown1;
+							else if (rollNum == 2) image1 = rollDown2; 
+							else if (rollNum == 3) image1 = rollDown3; 
+							else if (rollNum == 4) image1 = rollDown4; 
+							break;
 						case SWINGING:
 							if (rodNum == 1) image1 = rodDown1;
 							else if (rodNum == 2) image1 = rodDown2;
@@ -1633,6 +1698,12 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+							break;
+						case ROLLING:
+							if (rollNum == 1) image1 = rollLeft1;
+							else if (rollNum == 2) image1 = rollLeft2; 
+							else if (rollNum == 3) image1 = rollLeft3; 
+							else if (rollNum == 4) image1 = rollLeft4; 
 							break;
 						case SWINGING:
 							tempScreenX -= gp.tileSize;
@@ -1693,6 +1764,12 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+							break;
+						case ROLLING:
+							if (rollNum == 1) image1 = rollRight1;
+							else if (rollNum == 2) image1 = rollRight2; 
+							else if (rollNum == 3) image1 = rollRight3; 
+							else if (rollNum == 4) image1 = rollRight4; 
 							break;
 						case SWINGING:			
 							if (rodNum == 1) {

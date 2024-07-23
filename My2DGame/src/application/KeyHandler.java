@@ -12,7 +12,7 @@ public class KeyHandler implements KeyListener {
 	private GamePanel gp;
 	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, selectPressed, guardPressed, grabPressed, lockPressed, itemPressed, tabPressed;
+	public boolean actionPressed, selectPressed, rollPressed, guardPressed, grabPressed, lockPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
@@ -113,6 +113,7 @@ public class KeyHandler implements KeyListener {
 				playSelectSE();
 				gp.ui.commandNum = 0;
 				gp.ui.titleScreenState = 1;
+				gp.player.name = "LINK";
 			}
 			
 			// LOAD GAME OPTION
@@ -318,7 +319,7 @@ public class KeyHandler implements KeyListener {
 			// BACK OPTION
 			else if (gp.ui.commandNum == 3) {
 				playSelectSE();
-				gp.ui.commandNum = 0;
+				gp.ui.commandNum = 1;
 				gp.ui.titleScreenState = 0;
 			}
 		}
@@ -332,6 +333,7 @@ public class KeyHandler implements KeyListener {
 		 * SPACE: ACTION
 		 * Z: GUARD
 		 * G: GRAB
+		 * R: ROLL
 		 * F: Z-TARGET
 		 * Q: ITEM
 		 * T: TAB ITEM
@@ -349,9 +351,10 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_RIGHT) rightPressed = true;
 		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
 		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
-		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
-		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }	
 		if (code == KeyEvent.VK_G && lock) { grabPressed = true; lock = false; }
+		if (code == KeyEvent.VK_R && lock) { rollPressed = true; lock = false; }
+		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
+		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }			
 		if (code == KeyEvent.VK_Z && lock) { 
 			guardPressed = true; 
 			lock = false; 
@@ -700,6 +703,7 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_LEFT) leftPressed = false;
 		if (code == KeyEvent.VK_RIGHT) rightPressed = false;
 		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
+		if (code == KeyEvent.VK_R) { rollPressed = false; lock = true; }
 		if (code == KeyEvent.VK_Z) { 
 			guardPressed = false; 
 			lock = true;
