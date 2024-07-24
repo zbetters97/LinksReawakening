@@ -214,6 +214,7 @@ public class Entity {
 		this.gp = gp;
 		getImage();
 		getAttackImage();
+		lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);
 	}
 	
 	// CHILD ONLY		
@@ -1310,15 +1311,9 @@ public class Entity {
 
 			g2.drawImage(image, tempScreenX, tempScreenY, null);
 					
-			if (locked) {	
-				
-				// LOCKON IMAGE X, Y				
-				tempScreenX = getScreenX() - 10;
-				tempScreenY = getScreenY() - 10;								
-				
-				lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);				
-				changeAlpha(g2, 0.8f);
-				g2.drawImage(lockedImage, tempScreenX, tempScreenY, null);
+			// LOCKON IMAGE
+			if (locked) {						
+				g2.drawImage(lockedImage, getScreenX() - 10, getScreenY() - 10, null);
 			}
 			
 			// DRAW HITBOX

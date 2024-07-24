@@ -45,7 +45,7 @@ public class KeyHandler implements KeyListener {
 		else if (gp.gameState == gp.mapState) {
 			mapState(code);
 		}
-		// ITEM STATE
+		// INVENTORY STATE
 		else if (gp.gameState == gp.inventoryState) {
 			inventoryState(code);
 		}

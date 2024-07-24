@@ -2,9 +2,12 @@ package entity.projectile;
 
 import application.GamePanel;
 import entity.Entity;
+import entity.Entity.Action;
 
 public class Projectile extends Entity {
 
+	private boolean returning = false;
+	
 	public Projectile(GamePanel gp) {
 		super(gp);
 	}
@@ -219,15 +222,14 @@ public class Projectile extends Entity {
 		
 		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
 		gp.player.damageInteractiveTile(iTileIndex, this);
-		
-		// OBJECT IS NOT canPickup, RETURN
-		if (collisionOn) {
-			life = 0;
+				
+		// MAX LENGTH REACHED OR OBJECT GRABBED
+		if (life <= 0 || objectIndex != -1 || collisionOn) {
+			returning = true;
 		}
 		
-		// MAX LENGTH REACHED OR OBJECT GRABBED
-		if (life <= 0 || objectIndex != -1) {
-						
+		if (returning) {		
+			
 			// PULL OBJECT TOWARDS PLAYER
 			if (objectIndex != -1 && 
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
@@ -244,7 +246,8 @@ public class Projectile extends Entity {
 					if (worldY + gp.tileSize / 2 <= gp.player.worldY) 				
 							worldY += 5;				
 					else {
-						alive = false;
+						returning = false;
+						alive = false;						
 						gp.gameState = gp.playState;
 					}					
 					break;			
@@ -254,6 +257,7 @@ public class Projectile extends Entity {
 					if (worldY - gp.tileSize / 2 >= gp.player.worldY) 
 						worldY -= 5;						
 					else {
+						returning = false;
 						alive = false;
 						gp.gameState = gp.playState;
 					}						
@@ -261,7 +265,8 @@ public class Projectile extends Entity {
 				case "left": 
 					if (worldX + gp.tileSize / 2 <= gp.player.worldX) 				
 						worldX += 5;			
-					else {						
+					else {				
+						returning = false;
 						alive = false;	
 						gp.gameState = gp.playState;
 					}						
@@ -270,14 +275,15 @@ public class Projectile extends Entity {
 					if (worldX - gp.tileSize / 2 >= gp.player.worldX) 				
 						worldX -= 5;				
 					else {
+						returning = false;
 						alive = false;
 						gp.gameState = gp.playState;
 					}						
 					break;				
-			}		
+			}					
 		}
 		else {
-			// MOVE IN DIRECTION SHOT
+			// MOVE IN DIRECTION THROWN
 			switch (direction) {
 				case "up": 
 				case "upleft": 
@@ -290,11 +296,10 @@ public class Projectile extends Entity {
 			}	
 
 			life--;				
-		}							
-
-		// MOVING ANIMATION
+		}						
+		
 		spriteCounter++;
-		if (spriteCounter > animationSpeed) { // speed of sprite change
+		if (spriteCounter > animationSpeed) { 
 			playSE();
 			
 			if (spriteNum == 1) spriteNum = 2;

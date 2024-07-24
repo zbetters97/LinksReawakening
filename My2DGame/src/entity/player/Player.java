@@ -1562,7 +1562,7 @@ public class Player extends Entity {
 							break;
 						case JUMPING:
 						case SOARING:
-							tempScreenY -= 20;
+							tempScreenY -= 30;
 							if (jumpNum == 1) image1 = jumpUp1;
 							else if (jumpNum == 2) image1 = jumpUp2; 
 							else if (jumpNum == 3) image1 = jumpUp3; 
@@ -1627,7 +1627,7 @@ public class Player extends Entity {
 							break;
 						case JUMPING:
 						case SOARING:
-							tempScreenY -= 20;
+							tempScreenY -= 30;
 							if (jumpNum == 1) image1 = jumpDown1;
 							else if (jumpNum == 2) image1 = jumpDown2; 
 							else if (jumpNum == 3) image1 = jumpDown3; 
@@ -1690,7 +1690,7 @@ public class Player extends Entity {
 							break;
 						case JUMPING:
 						case SOARING:
-							tempScreenY -= 20;
+							tempScreenY -= 30;
 							if (jumpNum == 1) image1 = jumpLeft1;
 							else if (jumpNum == 2) image1 = jumpLeft2; 
 							else if (jumpNum == 3) image1 = jumpLeft3; 
@@ -1756,7 +1756,7 @@ public class Player extends Entity {
 							break;
 						case JUMPING:	
 						case SOARING:
-							tempScreenY -= 20;
+							tempScreenY -= 30;
 							if (jumpNum == 1) image1 = jumpRight1;
 							else if (jumpNum == 2) image1 = jumpRight2; 
 							else if (jumpNum == 3) image1 = jumpRight3; 
