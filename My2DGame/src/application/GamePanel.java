@@ -27,6 +27,7 @@ import tile.tile_interactive.InteractiveTile;
 public class GamePanel extends JPanel implements Runnable {
 	
 	// GENERAL CONFIG
+	private static final long serialVersionUID = 5792031433632402979L;
 	public ConfigManager config = new ConfigManager(this);
 	private Graphics2D g2;
 	private Thread gameThread;
@@ -102,7 +103,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public Player player = new Player(this, keyH);	
 	public Entity npc[][] = new Entity[maxMap][10]; 
 	public Entity enemy[][] = new Entity[maxMap][50]; 
-	public Entity enemy_r[][] = new Entity[maxMap][50]; // HOLDS ENEMY ROOMS
 	public Entity obj[][] = new Entity[maxMap][20];
 	public Entity obj_i[][] = new Entity[maxMap][20]; 
 	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][100];
@@ -182,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	@Override
-	public void run() {
+	public void run() {		
 		
 		long currentTime;
 		long lastTime = System.nanoTime();
@@ -197,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
 			lastTime = currentTime;
 			
 			if (delta >= 1) {
-									
+				
 				// UPDATE GAME INFORMATION
 				update();
 				
@@ -206,9 +206,10 @@ public class GamePanel extends JPanel implements Runnable {
 				
 				// SEND TEMP SCREEN TO MONITOR
 				drawToScreen();
-				
-				delta--;		
-			}
+
+//				delta--;
+				delta = 0;		
+			}		
 		}
 	}
 	
@@ -242,21 +243,7 @@ public class GamePanel extends JPanel implements Runnable {
 					}
 				}
 			}
-			
-			// UPDATE ENEMY ROOMS			
-			for (int i = 0; i < enemy_r[1].length; i++) {
-				if (enemy_r[currentMap][i] != null) {
-					
-					if (enemy_r[currentMap][i].alive && !enemy_r[currentMap][i].dying) 
-						enemy_r[currentMap][i].update();			
-					
-					if (!enemy_r[currentMap][i].alive) {
-						enemy_r[currentMap][i].checkDrop();
-						enemy_r[currentMap][i] = null;	
-					}
-				}
-			}
-			
+						
 			// UPDATE OBJECTS
 			for (int i = 0; i < obj[1].length; i++) {
 				if (obj[currentMap][i] != null) {
@@ -369,11 +356,6 @@ public class GamePanel extends JPanel implements Runnable {
 					enemy[mapNum][i] = null;
 				}
 			}	
-			for (int i = 0; i < enemy_r[1].length; i++) {
-				if (enemy_r[mapNum][i] != null) {
-					enemy_r[mapNum][i] = null;
-				}
-			}	
 			for (int i = 0; i < obj[1].length; i++) {
 				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
 					
@@ -471,8 +453,7 @@ public class GamePanel extends JPanel implements Runnable {
 			map.drawFullMapScreen(g2);
 		}		
 		// GAME START
-		else {		
-	
+		else {					
 			// DRAW TILES
 			tileM.draw(g2);	
 			
@@ -489,7 +470,6 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity t : iTile[currentMap]) { if (t != null && t.type == t.type_obstacle) entityList.add(t); }
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
-			for (Entity er : enemy_r[currentMap]) { if (er != null) entityList.add(er); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
 			for (Entity ot : obj_i[currentMap]) { if (ot != null) entityList.add(ot); }
 			for (Entity p : particleList) { if (p != null) entityList.add(p); }			

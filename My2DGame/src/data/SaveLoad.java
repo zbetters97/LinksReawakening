@@ -8,13 +8,10 @@ import java.io.ObjectOutputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.object.OBJ_Door_Oneway;
 
 public class SaveLoad {
 
@@ -212,6 +209,7 @@ public class SaveLoad {
 			
 			// WRITE THE DS OBJECT
 			oos.writeObject(ds);
+			oos.close();
 		}
 		catch(Exception e) { 
 			e.printStackTrace();
@@ -376,8 +374,7 @@ public class SaveLoad {
 					}					
 				}			
 			}
-			
-			ready = true;
+			ois.close();
 		}
 		catch(Exception e) { 
 			e.printStackTrace();
@@ -391,7 +388,8 @@ public class SaveLoad {
 			
 			if (f.exists()) { 
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(saveFiles[saveSlot])));				
-				DataStorage ds = (DataStorage)ois.readObject();				
+				DataStorage ds = (DataStorage)ois.readObject();			
+				ois.close();
 				return ds.toString();			
 			}
 		}

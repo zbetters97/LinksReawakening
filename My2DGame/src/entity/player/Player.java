@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import application.GamePanel;
 import application.KeyHandler;
+import data.Progress;
 import entity.Entity;
 import entity.equipment.*;
 import entity.item.*;
@@ -177,7 +178,8 @@ public class Player extends Entity {
 		canMove = true;
 		currentItem = null;
 		life = maxLife;
-		speed = defaultSpeed;	
+		speed = defaultSpeed;
+		Progress.canSave = true;
 		
 		resetValues();
 	}	
@@ -623,9 +625,6 @@ public class Player extends Entity {
 		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
 		contactEnemy(enemyIndex, gp.enemy);
 		
-		enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r);
-		contactEnemy(enemyIndex, gp.enemy_r);
-		
 		// CHECK INTERACTIVE OBJECTS COLLISION
 		int objTIndex = gp.cChecker.checkObject_I(this, true);
 		interactObject(objTIndex);	
@@ -795,7 +794,8 @@ public class Player extends Entity {
 		
 		for (int i = 0; i < gp.enemy[1].length; i++) {
 			
-			if (gp.enemy[gp.currentMap][i] != null && gp.enemy[gp.currentMap][i].type != type_boss) {
+			if (gp.enemy[gp.currentMap][i] != null && gp.enemy[gp.currentMap][i].type != type_boss &&
+					!gp.enemy[gp.currentMap][i].teleporting) {
 				int enemyDistance = getTileDistance(gp.enemy[gp.currentMap][i]);
 				if (enemyDistance < currentDistance) {
 					currentDistance = enemyDistance;
@@ -805,20 +805,6 @@ public class Player extends Entity {
 		}
 		if (target != null) {
 			playLockOnSE();
-		}
-		else {
-			for (int i = 0; i < gp.enemy_r[1].length; i++) {
-				
-				if (gp.enemy_r[gp.currentMap][i] != null && gp.enemy_r[gp.currentMap][i].type != type_boss) {
-					int enemyDistance = getTileDistance(gp.enemy_r[gp.currentMap][i]);
-					if (enemyDistance < currentDistance) {
-						currentDistance = enemyDistance;
-						target = gp.enemy_r[gp.currentMap][i];
-					}
-				}
-			}
-			if (target != null)
-				playLockOnSE();
 		}
 		
 		return target;
@@ -890,7 +876,6 @@ public class Player extends Entity {
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkEntity(this, gp.enemy_r);
 		gp.cChecker.checkEntity(this, gp.obj);
 		gp.cChecker.checkEntity(this, gp.obj_i);
 		gp.cChecker.checkEntity(this, gp.iTile);

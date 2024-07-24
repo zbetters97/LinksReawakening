@@ -75,7 +75,6 @@ public class Map extends TileManager {
 		// DRAW ENTITIES
 		drawEntities(g2, gp.npc, Color.BLUE, x, y, scale, false);
 		drawEntities(g2, gp.enemy, Color.RED, x, y, scale, false);
-		drawEntities(g2, gp.enemy_r, Color.RED, x, y, scale, false);
 		drawEntities(g2, gp.obj, Color.YELLOW, x, y, scale, false);
 		
 		// TEXT HINT (BOTTOM CENTER)
@@ -122,7 +121,6 @@ public class Map extends TileManager {
 			// DRAW ENTITIES
 			drawEntities(graphics, gp.npc, Color.BLUE, x, y, scale, true);
 			drawEntities(graphics, gp.enemy, Color.RED, x, y, scale, true);
-			drawEntities(graphics, gp.enemy_r, Color.RED, x, y, scale, true);
 			drawEntities(graphics, gp.obj, Color.YELLOW, x, y, scale, true);
 			
 			graphics.dispose();

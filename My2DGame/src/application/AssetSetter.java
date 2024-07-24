@@ -61,7 +61,7 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 47, 70); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 40, 57); i++;
 		
-		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 48, 73); i++;	
+		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 50, 78); i++;	
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 37, 60); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 33, 54); i++;		
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 28, 32); i++;

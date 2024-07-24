@@ -72,8 +72,7 @@ public class PRJ_Bomb extends Projectile {
 			collisionOn = false;
 			
 			if (alive) {				
-				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-				if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(this, gp.enemy_r); 			
+				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);		
 				if (enemyIndex != -1) {	explode(); }	
 			}
 		}
@@ -103,12 +102,6 @@ public class PRJ_Bomb extends Projectile {
 			for (Entity e : enemyIndexes) 
 				gp.player.damageEnemy(e, this, attack, knockbackPower);						
 		}
-		enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy_r);
-		if (enemyIndexes.size() > 0) {
-			for (Entity er : enemyIndexes) 
-				gp.player.damageEnemy(er, this, attack, knockbackPower);						
-		}
-		
 		// DAMAGE SURROUNDING iTILES
 		ArrayList<Integer> iTileIndexes = gp.cChecker.checkiTileExplosion(this);
 		if (iTileIndexes.size() > 0) {

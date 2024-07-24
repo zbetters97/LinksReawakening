@@ -56,8 +56,7 @@ public class OI_Block_Pushable extends Entity {
 			gp.cChecker.checkEntity(this, gp.iTile);
 			gp.cChecker.checkEntity(this, gp.obj);			
 			gp.cChecker.checkEntity(this, gp.npc);
-			gp.cChecker.checkEntity(this, gp.enemy);
-			gp.cChecker.checkEntity(this, gp.enemy_r);				
+			gp.cChecker.checkEntity(this, gp.enemy);			
 							
 			if (isCorrectTile() && !collisionOn) {
 				playSE();

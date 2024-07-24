@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 
 import data.Progress;
 import entity.Entity;
-import entity.Entity.Action;
 import entity.enemy.BOS_Skeleton;
 import entity.npc.NPC_Traveler_2;
 import entity.object.OBJ_BlueHeart;

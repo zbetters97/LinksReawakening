@@ -326,12 +326,12 @@ public class EventHandler {
 			for (int i = 0; i < enemyList.size(); i++) {
 				
 				// FIND OPEN SLOT IN GP ENEMY LIST
-				for (int c = 0; c < gp.enemy_r[1].length; c++) {
+				for (int c = 0; c < gp.enemy[1].length; c++) {
 					
 					// CREATE NEW ENEMY
-					if (gp.enemy_r[gp.currentMap][c] == null) {
-						gp.enemy_r[gp.currentMap][c] = enemyList.get(i);
-						
+					if (gp.enemy[gp.currentMap][c] == null) {
+						gp.enemy[gp.currentMap][c] = enemyList.get(i);
+						gp.enemy[gp.currentMap][c].temp = true;
 						break;
 					}
 				}

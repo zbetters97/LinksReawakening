@@ -2,7 +2,6 @@ package entity.projectile;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.Entity.Action;
 
 public class Projectile extends Entity {
 
@@ -300,9 +299,9 @@ public class Projectile extends Entity {
 		
 		spriteCounter++;
 		if (spriteCounter > animationSpeed) { 
-			playSE();
 			
-			if (spriteNum == 1) spriteNum = 2;
+			
+			if (spriteNum == 1) { playSE(); spriteNum = 2; }
 			else if (spriteNum == 2) spriteNum = 1;
 			
 			spriteCounter = 0;

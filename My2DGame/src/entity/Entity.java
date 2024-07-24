@@ -301,7 +301,6 @@ public class Entity {
 		gp.cChecker.checkPit(this, false);	
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
-		gp.cChecker.checkEntity(this, gp.enemy_r);
 		gp.cChecker.checkEntity(this, gp.obj);
 		gp.cChecker.checkEntity(this, gp.obj_i);
 		gp.cChecker.checkEntity(this, gp.iTile);
@@ -608,13 +607,8 @@ public class Entity {
 		Entity enemy = null;
 		
 		int enemyIndex = gp.cChecker.checkEntity(entity, gp.enemy);
-		if (enemyIndex == -1) enemyIndex = gp.cChecker.checkEntity(entity, gp.enemy_r);
-		
 		if (enemyIndex != -1) {
-			if (gp.enemy[gp.currentMap][enemyIndex] != null)
-				enemy = gp.enemy[gp.currentMap][enemyIndex];
-			if (gp.enemy_r[gp.currentMap][enemyIndex] != null)
-				enemy = gp.enemy_r[gp.currentMap][enemyIndex];
+			enemy = gp.enemy[gp.currentMap][enemyIndex];
 		}
 		
 		return enemy;
@@ -902,8 +896,8 @@ public class Entity {
 		}
 	}
 	private boolean isRoomClear() {		
-		for (Entity e : gp.enemy_r[gp.currentMap]) {
-			if (e != null && e.alive)
+		for (Entity e : gp.enemy[gp.currentMap]) {
+			if (e != null && e.alive && e.temp)
 				return false;
 		}		
 		return true;

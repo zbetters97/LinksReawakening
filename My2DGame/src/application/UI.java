@@ -132,13 +132,11 @@ public class UI {
 				gp.gameState == gp.fallingState || gp.gameState == gp.drowningState) {
 			drawHUD();
 			drawEnemyHPBar(gp.enemy);
-			drawEnemyHPBar(gp.enemy_r);
 		}		
 		// PAUSE STATE
 		else if (gp.gameState == gp.pauseState) {
 			drawHUD();
 			drawEnemyHPBar(gp.enemy);
-			drawEnemyHPBar(gp.enemy_r);
 			drawPauseScreen();
 		}		
 		// INVENTORY STATE
@@ -339,19 +337,19 @@ public class UI {
 		int x = 66 + gp.tileSize;
 		int y = gp.tileSize * 3;			
 		int width = gp.tileSize * 10;
-		int height = gp.tileSize * 2;			
-		
-		if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);
-		else drawSubWindow(x+40, y, width, height);				
+		int height = gp.tileSize * 2;	
+						
+		if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);		
+		else drawSubWindow(x+40, y, width, height);	
 		
 		y += gp.tileSize * 2;	
 		if (commandNum == 1) drawSubWindow(x+40, y, width, height, Color.GREEN);				
 		else drawSubWindow(x+40, y, width, height);	
-					
+		
 		y += gp.tileSize * 2;	
 		if (commandNum == 2) drawSubWindow(x+40, y, width, height, Color.GREEN);			
-		else drawSubWindow(x+40, y, width, height);				
-		 
+		else drawSubWindow(x+40, y, width, height);		
+		
 		if (gp.saveLoad.loadFileData(0) == null) text = "1)";			
 		else text = "1) " + gp.saveLoad.loadFileData(0);
 		x = gp.tileSize * 4;
@@ -980,6 +978,7 @@ public class UI {
 					
 					if (gp.keyH.actionPressed) {
 						gp.stopMusic();
+						gp.resetGame();
 						commandNum = 0;
 						subState = 0;
 						gp.fileSlot = i;
@@ -1858,6 +1857,23 @@ public class UI {
 			g2.drawString(text, x, y);
 			if (commandNum == 0) {
 				g2.drawString(">", x - 40, y);
+				
+				if (gp.keyH.actionPressed) {
+					gp.stopMusic();
+					
+					gp.resetGame();
+					commandNum = 0;	
+					titleScreenState = 0;
+					deathSprite = 0;
+					deathCounter = 0;
+					
+					if (gp.saveLoad.loadFileData(gp.fileSlot) != null) {						
+						gp.saveLoad.load(gp.fileSlot);					
+					}
+					
+					gp.gameState = gp.playState;
+					gp.setupMusic(true);			
+				}
 			}
 			
 			// QUIT
@@ -1867,11 +1883,23 @@ public class UI {
 			g2.drawString(text, x, y);
 			if (commandNum == 1) {
 				g2.drawString(">", x - 40, y);
+				
+				if (gp.keyH.actionPressed) {
+					gp.stopMusic();		
+					
+					commandNum = 0;	
+					titleScreenState = 0;
+					deathSprite = 0;
+					deathCounter = 0;
+					
+					gp.resetGame();
+					gp.gameState = gp.titleState;
+					gp.setupMusic(true);
+				}
 			}
 		}
 	}
 	private void playerDeathAnimation() {
-		
 		// CHANGE IMAGE EVERY 6 FRAMES
 		deathCounter++;
 		if (deathCounter > 6) {

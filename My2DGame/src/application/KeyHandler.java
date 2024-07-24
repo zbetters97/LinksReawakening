@@ -267,7 +267,7 @@ public class KeyHandler implements KeyListener {
 				if (gp.ui.commandNum > 3)
 					gp.ui.commandNum = 3;
 			}
-		}
+		}		
 		if (code == KeyEvent.VK_SPACE) { 
 									
 			// LOAD GAME OPTION 1
@@ -639,47 +639,10 @@ public class KeyHandler implements KeyListener {
 				gp.ui.commandNum = 1;
 			}
 		}
-		if (code == KeyEvent.VK_SPACE) {
-			
-			if (gp.ui.commandNum == 0) {
-				playSelectSE();
-												
-				if (gp.saveLoad.loadFileData(gp.fileSlot) != null) {					
-					gp.stopMusic();
-					
-					gp.ui.commandNum = 0;					
-					gp.saveLoad.ready = false;
-					gp.resetGame();
-					gp.saveLoad.load(gp.fileSlot);						
-					if (gp.saveLoad.ready) {
-						gp.ui.deathSprite = 0;
-						gp.ui.deathCounter = 0;
-						
-						gp.gameState = gp.playState;	
-						gp.setupMusic(true);	
-					}
-				}
-				else {
-					gp.ui.commandNum = 0;						
-					gp.ui.titleScreenState = 0;
-					gp.resetGame();
-					gp.setupMusic(true);
-					gp.gameState = gp.playState;
-				}
-				
-			}
-			else if (gp.ui.commandNum == 1) {
-				playSelectSE();		
-				
-				gp.ui.deathSprite = 0;
-				gp.ui.deathCounter = 0;
-				
-				gp.ui.commandNum = 0;
-				gp.gameState = gp.titleState;			
-				
-				gp.resetGame();
-				gp.setupMusic(true);
-			}			
+		if (code == KeyEvent.VK_SPACE && lock) {			
+			playSelectSE();
+			actionPressed = true;
+			lock = false;
 		}
 	}
 	

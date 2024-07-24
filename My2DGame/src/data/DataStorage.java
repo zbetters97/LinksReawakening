@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class DataStorage implements Serializable {
 	
+	private static final long serialVersionUID = -5792031433632402979L;
+	
 	// FILE INFO
 	String file_date;
 	boolean gameCompleted;
