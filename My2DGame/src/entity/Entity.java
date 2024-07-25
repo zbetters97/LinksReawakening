@@ -23,7 +23,7 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWINGING, SWIMMING, THROWING;
+		IDLE, AIMING, CARRYING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
 	}
 	
 	protected GamePanel gp;
@@ -58,7 +58,8 @@ public class Entity {
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,							
 							grabUp1, grabDown1, grabLeft1, grabRight1,							
-							buzzUp1, buzzUp2, lockedImage, die1, die2, die3, die4;
+							buzzUp1, buzzUp2, die1, die2, die3, die4,
+							lockedImage = setup("/enemy/lockon", 48 + 20, 48 + 20);
 		
 	// CHARACTER ATTRIBUTES	
 	public Action action;	
@@ -68,19 +69,19 @@ public class Entity {
 	public int bombs, maxBombs;	
 	public Entity currentWeapon, currentShield, currentItem;
 	public Projectile projectile;		
+	public boolean hasItemToGive = false;	
+	public boolean hasCutscene = false;	
+	public boolean canMove = true;
+	public boolean canSwim = false;	
 	public boolean moving = false;
-	public boolean attacking = false;
-	public boolean teleporting = false;
-	public boolean buzzing = false;	
 	public boolean onPath = false;
 	public boolean pathCompleted = false;		
 	public boolean guarded = false;
 	public boolean captured = false;
 	public boolean capturable = false;	
-	public boolean canMove = true;
-	public boolean canSwim = false;	
-	public boolean hasItemToGive = false;	
-	public boolean hasCutscene = false;	
+	public boolean attacking = false;
+	public boolean teleporting = false;
+	public boolean buzzing = false;		
 		
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
@@ -100,6 +101,7 @@ public class Entity {
 	public String knockbackDirection = "";
 	
 	// STUNNED
+	public boolean canStun = false;
 	public boolean stunned = false;
 	public int stunnedCounter = 0;
 	
@@ -108,13 +110,13 @@ public class Entity {
 	public int invincibleCounter = 0;
 	public boolean transparent = false;
 	
-	// LIFE
-	public boolean hpBarOn = false;
-	public int hpBarCounter = 0;
+	// LIFE	
 	public boolean alive = true;
 	public boolean dying = false;
 	public int dyingCounter = 0;	
-		
+	public boolean hpBarOn = false;
+	public int hpBarCounter = 0;
+	
 	// DEFAULT HITBOX
 	public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
 	public int hitboxDefaultX = hitbox.x;
@@ -152,10 +154,10 @@ public class Entity {
 	public boolean pressable = false;
 	public boolean active = false;	
 	public boolean switchedOn = false;
-	public boolean turning = false;	
 	public boolean opened = false;
 	public boolean opening = false;
 	public boolean closing = false;
+	public boolean turning = false;	
 	
 	// THROWING 
 	public boolean thrown = false;
@@ -170,13 +172,13 @@ public class Entity {
 	public int tWorldY = 0;
 	
 	// ITEM ATTRIBUTES
-	public int value, attackValue;
-	public int charge = 0;
-	public int knockbackPower = 0;
 	public String description = "";
-	public int price;
-	public int useCost;	
+	public int price, value;
+	public int attackValue;	
+	public int knockbackPower = 0;
 	public int amount = 1;
+	public int useCost;	
+	public int charge = 0;	
 	public int lifeDuration = -1;
 	public boolean stackable = false;	
 	
@@ -195,39 +197,38 @@ public class Entity {
 	public final int type_boss = 3;
 	
 	// INVENTORY TYPES
-	public final int type_equipment = 4;
-	public final int type_item = 5;
+	public final int type_equipment = 4;	
+	public final int type_consumable = 5;
 	public final int type_collectable = 6;
-	public final int type_consumable = 7;
-	public final int type_quest = 8;
-	public final int type_key = 9;
-	public final int type_boss_key = 10;
+	public final int type_item = 7;
+	public final int type_key = 8;
+	public final int type_boss_key = 9;
 	
 	// OBJECT TYPES
-	public final int type_projectile = 11;	
-	public final int type_obstacle = 12;
-	public final int type_obstacle_i = 13;
-	public final int type_pickupOnly = 14;
+	public final int type_projectile = 10;	
+	public final int type_obstacle = 11;
+	public final int type_obstacle_i = 12;
+	public final int type_pickupOnly = 13;
 	
 	// CONSTRUCTOR
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 		getImage();
 		getAttackImage();
-		lockedImage = setup("/enemy/lockon", gp.tileSize + 20, gp.tileSize + 20);
 	}
 	
 	// CHILD ONLY		
 	public void getImage() { }
 	public void getAttackImage() { }
-	public void setLoot(Entity loot) { }
 	public void setAction() { }	
 	public void move(String direction) { }
 	public void setPath(int c, int r) { }	
 	public void use() {	}
 	public boolean use(Entity user) { return true; }
+	public void setLoot(Entity loot) { }
 	public boolean setCharge(Entity user) { return true; }	
 	public void interact() { }
+	public void speak() { }	
 	public void explode() {	}
 	public void damageReaction() { }	
 	public void checkDrop() { checkEnemyRoom(); }
@@ -242,7 +243,7 @@ public class Entity {
 	// UPDATER
 	public void update() {
 		
-		if (sleep || stunned) { manageValues(); return; }		
+		if (sleep || stunned) { manageValues(); return; }	
 		if (captured) { isCaptured(); manageValues(); return; }
 		if (knockback) { knockbackEntity();	manageValues(); return; }	
 		if (attacking) { attacking(); }
@@ -259,6 +260,7 @@ public class Entity {
 		
 		manageValues();
 	}	
+			
 	public void move() {
 		
 		checkCollision();
@@ -281,17 +283,7 @@ public class Entity {
 		if (type == type_npc) {
 			cycleSprites();
 		}
-	}
-	public void cycleSprites() {
-		spriteCounter++;
-		if (spriteCounter > animationSpeed && animationSpeed != 0) {
-			
-			if (spriteNum == 1) spriteNum = 2;
-			else if (spriteNum == 2) spriteNum = 1;
-			
-			spriteCounter = 0;
-		}
-	}
+	}	
 	
 	// COLLISION CHECKER
 	protected void checkCollision() {		
@@ -370,9 +362,18 @@ public class Entity {
 			if (gp.keyH.rightPressed) direction = "right";				
 		}		
 	}
+	public void cycleSprites() {
+		spriteCounter++;
+		if (spriteCounter > animationSpeed && animationSpeed != 0) {
+			
+			if (spriteNum == 1) spriteNum = 2;
+			else if (spriteNum == 2) spriteNum = 1;
+			
+			spriteCounter = 0;
+		}
+	}
 	
 	// DIALOGUE
-	public void speak() { }	
 	public void startDialogue(Entity entity, int setNum) {
 		dialogueSet = setNum;
 		gp.ui.npc = entity;		
@@ -385,19 +386,7 @@ public class Entity {
 		gp.ui.offset = offset;		
 		gp.ui.response = true;
 		gp.gameState = gp.dialogueState;
-	}
-	public void facePlayer() {
-		switch (gp.player.direction) {		
-			case "up":
-			case "upleft":
-			case "upright": direction = "down"; break;
-			case "down":
-			case "downleft":
-			case "downright": direction = "up"; break;
-			case "left": direction = "right"; break;
-			case "right": direction = "left"; break;		
-		}	
-	}
+	}	
 	
 	// PATH FINDING
 	public void isOnPath(Entity target, int distance) {
@@ -796,20 +785,20 @@ public class Entity {
 	}
 	protected String getPlayerDirection() {
 		
-		String pDirection = "";
+		String playerDirection = "";
 		
 		switch (gp.player.direction) {
 			case "up": 
 			case "upleft": 
-			case "upright": pDirection = "up"; break;
+			case "upright": playerDirection = "up"; break;
 			case "down": 
 			case "downleft": 
-			case "downright": pDirection = "down"; break;
-			case "left": pDirection = "left"; break;
-			case "right": pDirection = "right"; break;
+			case "downright": playerDirection = "down"; break;
+			case "left": playerDirection = "left"; break;
+			case "right": playerDirection = "right"; break;
 		}
 		
-		return pDirection;
+		return playerDirection;
 	}
 	protected void hurtAnimation(Graphics2D g2) {		
 		invincibleCounter++;			
@@ -1134,14 +1123,14 @@ public class Entity {
 			}
 		}
 		
-		// ENTITY SHIELD AFTER HIT
+		// SHIELD AFTER HIT
 		if (invincible) {
 			invincibleCounter++;
 			
 			// REFRESH TIME (1 SECOND)
 			if (invincibleCounter > 60) {
-				invincible = false;
 				invincibleCounter = 0;
+				invincible = false;
 			}
 		}
 		

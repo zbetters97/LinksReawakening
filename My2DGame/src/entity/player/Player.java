@@ -34,7 +34,7 @@ public class Player extends Entity {
 	public int safeWorldY = 0;
 	
 	// INVENTORY
-	public final int maxItemInventorySize = 20;
+	public final int maxItemInventorySize = 10;
 	public ArrayList<Entity> inventory_item = new ArrayList<>();
 	public int itemIndex = 0;
 	public int walletSize;
@@ -1282,8 +1282,8 @@ public class Player extends Entity {
 					setKnockback(target, attacker, knockbackPower);
 				}
 				
-				// HIT BY PROJECTILE (NOT PROJECTILE BEAM)
-				if (attacker.type == type_projectile) {
+				// HIT BY STUN WEAPON
+				if (attacker.canStun && !target.stunned) {
 					target.stunned = true;
 					target.spriteCounter = -30;
 				}
@@ -1383,6 +1383,8 @@ public class Player extends Entity {
 	
 	// CHECKERS
 	public void manageValues() {
+		
+		if (keyH.debug) life = maxLife;
 		
 		if (life <= 4) {
 			lowHPCounter++;

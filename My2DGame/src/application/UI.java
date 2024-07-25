@@ -575,8 +575,8 @@ public class UI {
 					g2.drawString(enemy.name, x, y - 8);
 				}
 				
-				// REGULAR ENEMY HEALTH BAR
-				else if (gp.gameCompleted) {
+				// REGULAR ENEMY HEALTH BAR (UNLOCKED WHEN GAME IS COMPLETED)
+				else if (Progress.gameCompleted) {
 					
 					// LENGTH OF HALF HEART
 					double oneScale = (double)gp.tileSize / enemy.maxLife; 

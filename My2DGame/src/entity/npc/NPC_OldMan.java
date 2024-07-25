@@ -87,7 +87,7 @@ public class NPC_OldMan extends Entity {
 			dialogueSet = 4;			
 		}
 		
-		facePlayer();
+		direction = getOppositeDirection(gp.player.direction);
 		startDialogue(this, dialogueSet);
 	}
 	

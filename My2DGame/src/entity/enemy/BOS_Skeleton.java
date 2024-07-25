@@ -3,6 +3,7 @@ package entity.enemy;
 import java.awt.Rectangle;
 
 import application.GamePanel;
+import data.Progress;
 import entity.Entity;
 
 public class BOS_Skeleton extends Entity {
@@ -166,6 +167,7 @@ public class BOS_Skeleton extends Entity {
 	
 	// DROPPED ITEM
 	public void checkDrop() {			
+		Progress.bossDefeated_1_2 = true;
 		gp.csManager.scene = gp.csManager.boss_1_defeat;
 		gp.gameState = gp.cutsceneState;		
 	}

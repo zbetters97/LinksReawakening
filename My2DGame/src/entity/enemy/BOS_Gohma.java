@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.util.Random;
 
 import application.GamePanel;
+import data.Progress;
 import entity.Entity;
 import entity.projectile.PRJ_Fireball;
 
@@ -216,6 +217,8 @@ public class BOS_Gohma extends Entity {
 		super.checkDrop();
 		
 		gp.stopMusic();
-		gp.playMusic(5);		
+		gp.playMusic(5);	
+		
+		Progress.bossDefeated_1_1 = true;
 	}
 }

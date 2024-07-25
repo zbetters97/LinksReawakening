@@ -103,8 +103,9 @@ public class EventHandler {
 				if (hit(2, 33, 80, true)) {
 					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
-							new int[]{35,29}, new int[]{80,76}, new String[]{"left","down"},
-							Arrays.asList(new EMY_ChuChu_Red(gp,29,81), new EMY_ChuChu_Green(gp,29,78))
+							Arrays.asList(new EMY_ChuChu_Red(gp,29,81), new EMY_ChuChu_Green(gp,29,78)),
+							new int[]{35,29}, new int[]{80,76}, new String[]{"left","down"}, new Boolean[]{true, true}
+							
 					);
 				}
 			}
@@ -112,17 +113,18 @@ public class EventHandler {
 				if (hit(2, 23, 64, true)) {
 					Progress.enemy_room_1_2 = true;
 					spawnEnemies(
-							new int[]{25}, new int[]{64}, new String[]{"left"},
-							Arrays.asList(new EMY_ChuChu_Red(gp,16,64), new EMY_ChuChu_Red(gp,18,64))
+							Arrays.asList(new EMY_ChuChu_Red(gp,16,64), new EMY_ChuChu_Red(gp,18,64)),
+							new int[]{25}, new int[]{64}, new String[]{"left"}, new Boolean[]{true}
+							
 					);
 				}
 			}
 			if (!Progress.enemy_room_1_3) {
 				if (hit(2, 59, 65, true)) {
 					Progress.enemy_room_1_3 = true;
-					spawnEnemies(
-							new int[]{59,59}, new int[]{67,60}, new String[]{"up","down"},
-							Arrays.asList(new EMY_Wizzrobe(gp,57,62), new EMY_Buzzblob(gp,62,62))
+					spawnEnemies(							
+							Arrays.asList(new EMY_Wizzrobe(gp,57,62), new EMY_Buzzblob(gp,62,62)),
+							new int[]{59,59}, new int[]{67,60}, new String[]{"up","down"}, new Boolean[]{true, true}
 					);
 				}
 			}
@@ -131,34 +133,21 @@ public class EventHandler {
 			// QUEEN GOMA
 			if (!Progress.bossDefeated_1_1) { 
 				if (hit(2, 61, 89, true)) {					
-					Progress.bossDefeated_1_1 = true;
-					Progress.canSave = false;
-					
-					gp.stopMusic();
-					gp.playMusic(6);
-					
-					spawnDoors(
-							new int[]{60}, new int[]{85}, new String[]{"right"}, new Boolean[]{true, true}
+					miniBoss(
+							BOS_Gohma.emyName, 
+							new int[]{60}, new int[]{85}, new String[]{"right"}, new Boolean[]{true}
 					);
-					
-					// SEARCH FOR BOSS
-					for (int i = 0; i < gp.enemy[1].length; i++) {
-						if (gp.enemy[gp.currentMap][i] != null && 
-								gp.enemy[gp.currentMap][i].name.equals(BOS_Gohma.emyName)) {
-							
-							gp.enemy[gp.currentMap][i].sleep = false;							
-							break;
-						}
-					}		
 				}
 			}
 			// SKELETON KING
 			if (!Progress.bossDefeated_1_2) { 
-				if (hit(3, 25, 27, false)) boss(1); 
+				if (hit(3, 25, 27, false)) {
+					boss(1); 
+				}
 			}
 		}
 	}
-	
+			
 	private boolean hit(int map, int col, int row, List<String> reqDirection, boolean fullTile) {
 		
 		boolean hit = false;
@@ -256,9 +245,9 @@ public class EventHandler {
 		gp.ui.showHint = true;
 		
 		if (gp.keyH.actionPressed) {
-			gp.playSE(6, 3);			
-			gp.ui.showHint = false;
+			playFairySE();	
 			
+			gp.ui.showHint = false;
 			gp.keyH.actionPressed = false;
 			gp.player.attackCanceled = true;	
 			
@@ -295,33 +284,13 @@ public class EventHandler {
 		gp.gameState = gp.transitionState;
 	}	
 	
-	private void spawnEnemies(int[] dX, int[] dY, String[] dir, List<Entity> enemyList) {
+	private void spawnEnemies(List<Entity> enemyList, int[] dX, int[] dY, String[] dir, Boolean[] temp) {
 		
-		if (dir != null) {		
-			
-			// LOOP THROUGH ALL PASSED DOORS
-			for (int i = 0; i < dir.length; i++) {
-				
-				// FIND OPEN SLOT IN GP OBJ LIST
-				for (int c = 0; c < gp.obj[1].length; c++) {
-					
-					// CREATE NEW DOOR
-					if (gp.obj[gp.currentMap][c] == null) {	
-						gp.obj[gp.currentMap][c] = new OBJ_Door_Closed(gp);
-						gp.obj[gp.currentMap][c].closing = true;
-						gp.obj[gp.currentMap][c].worldX = dX[i] * gp.tileSize;
-						gp.obj[gp.currentMap][c].worldY = dY[i] * gp.tileSize;
-						gp.obj[gp.currentMap][c].direction = dir[i];
-						gp.obj[gp.currentMap][c].temp = true;
-						
-						break;
-					}
-				}
-			}	
-		}
+		canTouchEvent = false;	
+		Progress.canSave = false;
 		
 		if (enemyList != null) {
-		
+			
 			// LOOP THROUGH ALL PASSED ENEMIES
 			for (int i = 0; i < enemyList.size(); i++) {
 				
@@ -338,8 +307,16 @@ public class EventHandler {
 			}
 		}
 		
-		canTouchEvent = false;	
-		Progress.canSave = false;
+		if (dir != null) {		
+			
+			// LOOP THROUGH ALL PASSED DOORS
+			for (int i = 0; i < dir.length; i++) {				
+				spawnDoors(
+						new int[]{dX[i]}, new int[]{dY[i]}, 
+						new String[]{dir[i]}, new Boolean[]{temp[i]}
+				);				
+			}	
+		}
 		
 		gp.csManager.scene = gp.csManager.enemy_spawn;
 		gp.gameState = gp.cutsceneState;	
@@ -357,6 +334,7 @@ public class EventHandler {
 					
 					// CREATE NEW DOOR
 					if (gp.obj[gp.currentMap][c] == null) {	
+						
 						gp.obj[gp.currentMap][c] = new OBJ_Door_Closed(gp);
 						gp.obj[gp.currentMap][c].closing = true;
 						gp.obj[gp.currentMap][c].worldX = dX[i] * gp.tileSize;
@@ -376,6 +354,40 @@ public class EventHandler {
 		gp.gameState = gp.cutsceneState;	
 	}
 	
+	private void miniBoss(String miniBoss, int[] dX, int[] dY, String[] dir, Boolean[] temp) {
+		
+		gp.stopMusic();
+		gp.playMusic(6);
+		
+		canTouchEvent = false;
+		Progress.canSave = false;	
+		
+		// SEARCH FOR BOSS
+		for (int i = 0; i < gp.enemy[1].length; i++) {
+			if (gp.enemy[gp.currentMap][i] != null && 
+					gp.enemy[gp.currentMap][i].name.equals(miniBoss)) {
+				
+				gp.enemy[gp.currentMap][i].sleep = false;							
+				break;
+			}
+		}	
+		
+		if (dir != null) {		
+			
+			// LOOP THROUGH ALL PASSED DOORS
+			for (int i = 0; i < dir.length; i++) {				
+				spawnDoors(
+						new int[]{dX[i]}, new int[]{dY[i]}, 
+						new String[]{dir[i]}, new Boolean[]{temp[i]}
+				);				
+			}	
+		}
+		
+		gp.csManager.scene = gp.csManager.enemy_spawn;
+		gp.gameState = gp.cutsceneState;	
+	}
+	
+	
 	private void boss(int num) {	
 		
 		if (!gp.bossBattleOn) {			
@@ -386,6 +398,9 @@ public class EventHandler {
 		}
 	}
 	
+	private void playFairySE() {
+		gp.playSE(6, 3);
+	}
 	private void playStairsUpSE() {
 		gp.playSE(6, 4);
 	}

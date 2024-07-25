@@ -17,6 +17,7 @@ public class PRJ_Bomb extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
+		canStun = true;
 		grabbable = true;
 		capturable = true;
 		collision = false;

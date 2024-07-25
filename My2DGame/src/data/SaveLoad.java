@@ -27,13 +27,14 @@ public class SaveLoad {
 		
 		try {							
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(saveFiles[saveSlot])));			
-			
-			// CURRENT DATE/TIME
+						
+			// SAVE DATA TO DS 
 			DataStorage ds = new DataStorage();		
 			
-			// SAVE DATA TO DS
+			// CURRENT DATE/TIME
 			ds.file_date =  new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date(System.currentTimeMillis()));
-			ds.gameCompleted = gp.gameCompleted;
+			
+			
 			
 			// DAY DATA
 			ds.dayState = gp.eManager.lighting.dayState;
@@ -47,6 +48,7 @@ public class SaveLoad {
 			ds.puzzle_1_1 = Progress.puzzle_1_1;
 			ds.bossDefeated_1_1 = Progress.bossDefeated_1_1;
 			ds.bossDefeated_1_2 = Progress.bossDefeated_1_2;
+			ds.gameCompleted = Progress.gameCompleted;
 			
 			// PLAYER DATA
 			ds.cMap = gp.currentMap;
@@ -92,8 +94,33 @@ public class SaveLoad {
 			ds.npcHasCutscene = new boolean[gp.maxMap][gp.npc[1].length];
 			ds.npcHasItem = new boolean[gp.maxMap][gp.npc[1].length];
 			
+			// ENEMIES
+			ds.enemyWorldX = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyWorldY = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyLife = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyAlive = new boolean[gp.maxMap][gp.enemy[1].length];
+			ds.enemyAsleep = new boolean[gp.maxMap][gp.enemy[1].length];
+			
+			// MAP OBJECTS
+			ds.mapObjectNames = new String[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectWorldX = new int[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectWorldY = new int[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectLootNames = new String[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectDirections = new String[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectSwitchedOn = new boolean[gp.maxMap][gp.obj[1].length];
+			ds.mapObjectOpened = new boolean[gp.maxMap][gp.obj[1].length];
+			
+			// MAP iTILES
+			ds.iTileNames = new String[gp.maxMap][gp.iTile[1].length];
+			ds.iTileWorldX = new int[gp.maxMap][gp.iTile[1].length];
+			ds.iTileWorldY = new int[gp.maxMap][gp.iTile[1].length];
+			ds.iTileDirections = new String[gp.maxMap][gp.iTile[1].length];
+			ds.iTileSwitchedOn = new boolean[gp.maxMap][gp.iTile[1].length];
+			ds.iTileLootNames = new String[gp.maxMap][gp.iTile[1].length];
+			
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
 				
+				// NPCs
 				for (int i = 0; i < gp.npc[1].length; i++) {
 					
 					if (gp.npc[mapNum][i] == null) {
@@ -123,16 +150,9 @@ public class SaveLoad {
 							ds.npcInventory.put(gp.npc[mapNum][i].name, items);
 						}
 					}					
-				}				
-			}
-			
-			// ENEMIES
-			ds.enemyWorldX = new int[gp.maxMap][gp.enemy[1].length];
-			ds.enemyWorldY = new int[gp.maxMap][gp.enemy[1].length];
-			ds.enemyLife = new int[gp.maxMap][gp.enemy[1].length];
-			ds.enemyAlive = new boolean[gp.maxMap][gp.enemy[1].length];
-			ds.enemyAsleep = new boolean[gp.maxMap][gp.enemy[1].length];
-			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {				
+				}	
+				
+				// ENEMIES
 				for (int i = 0; i < gp.enemy[1].length; i++) {
 					if (gp.enemy[mapNum][i] == null) {
 						ds.enemyAlive[mapNum][i] = false;
@@ -145,26 +165,6 @@ public class SaveLoad {
 						ds.enemyAsleep[mapNum][i] = gp.enemy[mapNum][i].sleep;
 					}
 				}
-			}			
-			
-			// MAP OBJECTS
-			ds.mapObjectNames = new String[gp.maxMap][gp.obj[1].length];
-			ds.mapObjectWorldX = new int[gp.maxMap][gp.obj[1].length];
-			ds.mapObjectWorldY = new int[gp.maxMap][gp.obj[1].length];
-			ds.mapObjectLootNames = new String[gp.maxMap][gp.obj[1].length];
-			ds.mapObjectDirections = new String[gp.maxMap][gp.obj[1].length];
-			ds.mapObjectSwitchedOn = new boolean[gp.maxMap][gp.obj[1].length];
-			ds.mapObjectOpened = new boolean[gp.maxMap][gp.obj[1].length];
-			
-			// MAP iTILES
-			ds.iTileNames = new String[gp.maxMap][gp.iTile[1].length];
-			ds.iTileWorldX = new int[gp.maxMap][gp.iTile[1].length];
-			ds.iTileWorldY = new int[gp.maxMap][gp.iTile[1].length];
-			ds.iTileDirections = new String[gp.maxMap][gp.iTile[1].length];
-			ds.iTileSwitchedOn = new boolean[gp.maxMap][gp.iTile[1].length];
-			ds.iTileLootNames = new String[gp.maxMap][gp.iTile[1].length];
-			
-			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
 				
 				// MAP OBJECTS
 				for (int i = 0; i < gp.obj[1].length; i++) {
@@ -185,7 +185,7 @@ public class SaveLoad {
 						
 						ds.mapObjectOpened[mapNum][i] = gp.obj[mapNum][i].opened;
 					}					
-				}		
+				}	
 				
 				// MAP iTILES
 				for (int i = 0; i < gp.iTile[1].length; i++) {
@@ -205,7 +205,7 @@ public class SaveLoad {
 						}						
 					}					
 				}			
-			}
+			}	
 			
 			// WRITE THE DS OBJECT
 			oos.writeObject(ds);
@@ -225,7 +225,7 @@ public class SaveLoad {
 			DataStorage ds = (DataStorage)ois.readObject();
 						
 			// FILE DATA
-			gp.gameCompleted = ds.gameCompleted;
+			Progress.gameCompleted = ds.gameCompleted;
 			
 			// DAY DATA
 			gp.eManager.lighting.dayState = ds.dayState;
@@ -276,10 +276,10 @@ public class SaveLoad {
 			gp.player.currentShield = gp.eGenerator.getObject(ds.shield);
 			gp.player.getAttack();
 			gp.player.canSwim = ds.canSwim;		
-			
-			// NPCs
+						
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
 				
+				// NPCs
 				for (int i = 0; i < gp.npc[1].length; i++) {
 					
 					if (ds.npcNames[mapNum][i].equals("NULL")) {
@@ -310,24 +310,19 @@ public class SaveLoad {
 						}
 					}			
 				}				
-			}
-			
-			// ENEMIES	
-			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {				
+				
+				// ENEMIES	
 				for (int i = 0; i < gp.enemy[1].length; i++) {
 					if (!ds.enemyAlive[mapNum][i]) {
 						gp.enemy[mapNum][i] = null;
 					}
-					else {
+					else if (gp.enemy[mapNum][i] != null){
 						gp.enemy[mapNum][i].worldX = ds.enemyWorldX[mapNum][i];
 						gp.enemy[mapNum][i].worldY = ds.enemyWorldY[mapNum][i];
 						gp.enemy[mapNum][i].life = ds.enemyLife[mapNum][i];
 						gp.enemy[mapNum][i].sleep = ds.enemyAsleep[mapNum][i];
 					}
 				}
-			}		
-						
-			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
 				
 				// MAP OBJECTS
 				for (int i = 0; i < gp.obj[1].length; i++) {
@@ -340,11 +335,11 @@ public class SaveLoad {
 						gp.obj[mapNum][i].worldX = ds.mapObjectWorldX[mapNum][i];
 						gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];						
 						gp.obj[mapNum][i].direction = ds.mapObjectDirections[mapNum][i];
-						gp.obj[mapNum][i].switchedOn = ds.mapObjectSwitchedOn[mapNum][i];
-						
+						gp.obj[mapNum][i].switchedOn = ds.mapObjectSwitchedOn[mapNum][i];						
 					
 						if (ds.mapObjectLootNames[mapNum][i] != null) {
 							gp.obj[mapNum][i].setLoot(gp.eGenerator.getObject(ds.mapObjectLootNames[mapNum][i]));
+							
 						}
 						
 						gp.obj[mapNum][i].opened = ds.mapObjectOpened[mapNum][i];

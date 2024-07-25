@@ -44,7 +44,7 @@ public class DataStorage implements Serializable {
 	boolean npcHasItem[][];
 	Map<String, List<String>> npcInventory = new HashMap<>();
 	
-	// ENEMY
+	// ENEMIES
 	int enemyWorldX[][];
 	int enemyWorldY[][];
 	int enemyLife[][];

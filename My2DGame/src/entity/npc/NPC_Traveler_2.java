@@ -38,7 +38,7 @@ public class NPC_Traveler_2 extends NPC_Traveler_Template {
 			dialogueSet = 3;
 		
 		if (!onPath) {
-			facePlayer();
+			direction = getOppositeDirection(gp.player.direction);
 			startDialogue(this, dialogueSet);	
 		}	
 		else

@@ -30,7 +30,8 @@ public class EntityGenerator {
 		
 			case EQP_Shield.eqpName: obj = new EQP_Shield(gp); break;	
 			case EQP_Sword_Old.eqpName: obj = new EQP_Sword_Old(gp); break;
-			case EQP_Sword_Master.eqpName: obj = new EQP_Sword_Master(gp); break;			
+			case EQP_Sword_Master.eqpName: obj = new EQP_Sword_Master(gp); break;	
+			case EQP_Flippers.eqpName: obj = new EQP_Flippers(gp); break;
 			
 			case ITM_Bomb.itmName: obj = new ITM_Bomb(gp); break;		
 			case ITM_Boomerang.itmName: obj = new ITM_Boomerang(gp); break;

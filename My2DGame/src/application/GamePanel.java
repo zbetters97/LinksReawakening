@@ -33,7 +33,6 @@ public class GamePanel extends JPanel implements Runnable {
 	private Thread gameThread;
 	private int FPS = 60;
 	public int fileSlot = 0;
-	public boolean gameCompleted = false;
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
@@ -217,109 +216,27 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// GAME PLAYING
 		if (gameState == playState || gameState == objectState) {
-
-			// UPDATE PLAYER
-			player.update();	
 			
-			// UPDATE ENVIRONMENT
 			eManager.update();
-									
-			// UPDATE NPCs
-			for (int i = 0; i < npc[1].length; i++) {
-				if (npc[currentMap][i] != null)
-					npc[currentMap][i].update();
-			}
 			
-			// UPDATE ENEMIES			
-			for (int i = 0; i < enemy[1].length; i++) {
-				if (enemy[currentMap][i] != null) {
-					
-					if (enemy[currentMap][i].alive && !enemy[currentMap][i].dying) 
-						enemy[currentMap][i].update();			
-					
-					if (!enemy[currentMap][i].alive) {
-						enemy[currentMap][i].checkDrop();
-						enemy[currentMap][i] = null;	
-					}
-				}
-			}
-						
-			// UPDATE OBJECTS
-			for (int i = 0; i < obj[1].length; i++) {
-				if (obj[currentMap][i] != null) {
-					obj[currentMap][i].update();
-					if (!obj[currentMap][i].alive)
-						obj[currentMap][i] = null;
-				}
-			}
-			
-			// UPDATE INTERACTIVE OBJECTS
-			for (int i = 0; i < obj_i[1].length; i++) {
-				if (obj_i[currentMap][i] != null) {
-					obj_i[currentMap][i].update();
-					if (!obj_i[currentMap][i].alive)
-						obj_i[currentMap][i] = null;
-				}
-			}
-			
-			// UPDATE INTERACTIVE TILES
-			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null) {
-					iTile[currentMap][i].update();
-					if (!iTile[currentMap][i].alive) {
-						iTile[currentMap][i] = null;
-					}
-				}
-			}
-			
-			// UPDATE PROJECTILES			
-			for (int i = 0; i < projectile[1].length; i++) {
-				if (projectile[currentMap][i] != null) {
-					if (projectile[currentMap][i].alive) 
-						projectile[currentMap][i].update();	
-				
-					if (!projectile[currentMap][i].alive)
-						projectile[currentMap][i] = null;
-				}
-			}
-			
-			// UPDATE PARTICLES			
-			for (int i = 0; i < particleList.size(); i++) {
-				if (particleList.get(i) != null) {
-					if (particleList.get(i).alive) 
-						particleList.get(i).update();	
-					
-					if (!particleList.get(i).alive)
-						particleList.remove(i);	
-				}
-			}
+			player.update();	
+			updateNPC();
+			updateEnemies();
+			updateObjects();
+			updateiTiles();
+			updateProjectiles();
+			updateParticles();
 		}
+		// CUTSCENE
 		else if (gameState == cutsceneState) {
-			player.resetValues();	
 			
-			// UPDATE NPCs
-			for (int i = 0; i < npc[1].length; i++) {
-				if (npc[currentMap][i] != null)
-					npc[currentMap][i].update();
-			}
+			player.resetValues();
 			
-			// UPDATE OBJECTS
-			for (int i = 0; i < obj[1].length; i++) {
-				if (obj[currentMap][i] != null) {
-					obj[currentMap][i].update();
-					if (!obj[currentMap][i].alive)
-						obj[currentMap][i] = null;
-				}
-			}
-			// UPDATE INTERACTIVE TILES
-			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null) {
-					iTile[currentMap][i].update();
-					if (!iTile[currentMap][i].alive) {
-						iTile[currentMap][i] = null;
-					}
-				}
-			}
+			updateNPC();			
+			updateObjects();
+			updateObjects();
+			updateiTiles();
+			updateParticles();			
 		}
 		
 		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
@@ -328,6 +245,75 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// GAME PAUSED
 		if (gameState == pauseState) { }
+	}
+	
+	private void updateNPC() {
+		for (int i = 0; i < npc[1].length; i++) {
+			if (npc[currentMap][i] != null)
+				npc[currentMap][i].update();
+		}
+	}	
+	private void updateEnemies() {		
+		for (int i = 0; i < enemy[1].length; i++) {
+			if (enemy[currentMap][i] != null) {
+				
+				if (enemy[currentMap][i].alive && !enemy[currentMap][i].dying) 
+					enemy[currentMap][i].update();			
+				
+				if (!enemy[currentMap][i].alive) {
+					enemy[currentMap][i].checkDrop();
+					enemy[currentMap][i] = null;	
+				}
+			}
+		}
+	}	
+	private void updateObjects() {
+		for (int i = 0; i < obj[1].length; i++) {
+			if (obj[currentMap][i] != null) {
+				obj[currentMap][i].update();
+				if (!obj[currentMap][i].alive)
+					obj[currentMap][i] = null;
+			}
+		}
+		for (int i = 0; i < obj_i[1].length; i++) {
+			if (obj_i[currentMap][i] != null) {
+				obj_i[currentMap][i].update();
+				if (!obj_i[currentMap][i].alive)
+					obj_i[currentMap][i] = null;
+			}
+		}
+	}	
+	private void updateiTiles() {
+		for (int i = 0; i < iTile[1].length; i++) {
+			if (iTile[currentMap][i] != null) {
+				iTile[currentMap][i].update();
+				if (!iTile[currentMap][i].alive) {
+					iTile[currentMap][i] = null;
+				}
+			}
+		}
+	}
+	private void updateProjectiles() {
+		for (int i = 0; i < projectile[1].length; i++) {
+			if (projectile[currentMap][i] != null) {
+				if (projectile[currentMap][i].alive) 
+					projectile[currentMap][i].update();	
+			
+				if (!projectile[currentMap][i].alive)
+					projectile[currentMap][i] = null;
+			}
+		}
+	}
+	private void updateParticles() {
+		for (int i = 0; i < particleList.size(); i++) {
+			if (particleList.get(i) != null) {
+				if (particleList.get(i).alive) 
+					particleList.get(i).update();	
+				
+				if (!particleList.get(i).alive)
+					particleList.remove(i);	
+			}
+		}
 	}
 	
 	public void changeArea() {
@@ -375,7 +361,6 @@ public class GamePanel extends JPanel implements Runnable {
 			}	
 		}
 	}
-	
 	public void removeProjectiles() {		
 		for (int i = 0; i < projectile[1].length; i++) {
 			if (projectile[currentMap][i] != null) {
@@ -385,11 +370,10 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 	}
-	
 	public void openDoor(int worldX, int worldY, String objName) {
 		
-		worldX *= 48;
-		worldY *= 48;
+		worldX *= tileSize;
+		worldY *= tileSize;
 		
 		for (int i = 0; i < obj[1].length; i++) {					
 			if (obj[currentMap][i] != null && 

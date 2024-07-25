@@ -5,7 +5,7 @@ import entity.Entity;
 
 public class EQP_Sword_Old extends Entity {
 
-	public static final String eqpName = "Traveler's Sword";
+	public static final String eqpName = "Kokiri Sword";
 	
 	public EQP_Sword_Old(GamePanel gp) {
 		super(gp);

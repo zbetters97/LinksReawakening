@@ -48,7 +48,7 @@ public class OI_Block_Pushable extends Entity {
 			
 			// INCREASE SPEED TO DETECT COLLISION
 			direction = dir;
-			speed = 48;			
+			speed = gp.tileSize;			
 			
 			collisionOn = false;
 			gp.cChecker.checkPlayer(this);
@@ -70,7 +70,7 @@ public class OI_Block_Pushable extends Entity {
 		
 		if (moving) {
 			pushCounter++;
-			if (pushCounter <= 48) {	
+			if (pushCounter <= gp.tileSize) {	
 				push();
 			}
 			else {

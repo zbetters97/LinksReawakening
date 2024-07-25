@@ -17,13 +17,13 @@ public class SceneManager {
 
 	private GamePanel gp;
 	private Graphics2D g2;
-	public int scene;
-	public int phase;	
+	public int scene = 0;
+	public int phase = 0;	
 	private int counter = 0;
 	private String lookDirection = "";
 	private float alpha = 0f;
-	private int y;
-	private String credits;	
+	private int y = 0;
+	private String credits = "";	
 	
 	public int worldX = 0;
 	public int worldY = 0;
@@ -351,8 +351,6 @@ public class SceneManager {
 
 			gp.bossBattleOn = false;
 			
-			if (num == 1) Progress.bossDefeated_1_2 = true;
-			
 			phase++;
 		}
 		else if (phase == 1) {
@@ -375,8 +373,8 @@ public class SceneManager {
 	private void scene_ending() {
 						
 		if (phase == 0) {
-			gp.player.resetValues();
 			gp.stopMusic();
+			gp.player.resetValues();			
 			gp.ui.npc = new OBJ_BlueHeart(gp);
 			phase++;
 		}
@@ -385,6 +383,7 @@ public class SceneManager {
 		}		
 		else if (phase == 2) {
 			playEndingMusic();
+			Progress.gameCompleted = true;
 			phase++;
 		}
 		else if (phase == 3) {
@@ -400,7 +399,8 @@ public class SceneManager {
 			alpha += 0.005;			
 			if (alpha > 1f) {
 				alpha = 1f;
-			}						
+			}		
+
 			drawBlackScreen(alpha);
 			
 			if (alpha == 1f) {
@@ -411,6 +411,7 @@ public class SceneManager {
 		else if (phase == 5) {
 			
 			drawBlackScreen(1f);
+			
 			alpha += 0.005;			
 			if (alpha > 1f) {
 				alpha = 1f;

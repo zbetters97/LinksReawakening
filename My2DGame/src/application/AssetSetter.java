@@ -46,7 +46,6 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 12, 46, "up"); i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 36, 27); i++;
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 43, 21, "left"); i++;	
-		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 32, 25, "left"); i++;	
 		gp.enemy[mapNum][i] = new EMY_Zora(gp, 38, 9); i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 12, 29); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 12, 31); i++;
@@ -81,6 +80,7 @@ public class AssetSetter {
 		if (!Progress.bossDefeated_1_1) {
 			gp.enemy[mapNum][i] = new BOS_Gohma(gp, 64, 83); 
 		}		
+		i++;
 		
 		mapNum = 3;
 		i = 0;
@@ -248,8 +248,8 @@ public class AssetSetter {
 		mapNum = 1;
 		i = 0;
 		
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 10, 12, new COL_Heart(gp));
-		gp.iTile[mapNum][i] = new IT_Pot(gp, 14, 12, new COL_Rupee_Blue(gp));
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 10, 12, new COL_Heart(gp)); i++;
+		gp.iTile[mapNum][i] = new IT_Pot(gp, 14, 12, new COL_Rupee_Blue(gp)); i++;
 		
 		mapNum = 2;
 		i = 0;
@@ -283,6 +283,7 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Switch(gp, 27, 89); i++;	
 		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 34, 89); i++;
 		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 20, 89); i++;
+		gp.iTile[mapNum][i] = new IT_Switch(gp, 15, 92); i++;	
 		
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 75, "up"); i++;
 		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 76, "down"); i++;

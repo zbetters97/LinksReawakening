@@ -62,12 +62,12 @@ public class BOS_Stalfos extends Entity {
 		right2 = up2;		
 	}	
 	public void getAttackImage() {			
-		attackLeft1 = setup("/boss/stalfos_attack_left_1", 40 * 4, 48 * 4);
-		attackLeft2 = setup("/boss/stalfos_attack_left_2", 40 * 4, 48 * 4);
-		attackLeft3 = setup("/boss/stalfos_attack_left_3", 40 * 4, 48 * 4);
-		attackRight1 = setup("/boss/stalfos_attack_right_1", 40 * 4, 48 * 4);
-		attackRight2 = setup("/boss/stalfos_attack_right_2", 40 * 4, 48 * 4);
-		attackRight3 = setup("/boss/stalfos_attack_right_3", 40 * 4, 48 * 4);
+		attackLeft1 = setup("/boss/stalfos_attack_left_1", 40 * 4, gp.tileSize * 4);
+		attackLeft2 = setup("/boss/stalfos_attack_left_2", 40 * 4, gp.tileSize * 4);
+		attackLeft3 = setup("/boss/stalfos_attack_left_3", 40 * 4, gp.tileSize * 4);
+		attackRight1 = setup("/boss/stalfos_attack_right_1", 40 * 4, gp.tileSize * 4);
+		attackRight2 = setup("/boss/stalfos_attack_right_2", 40 * 4, gp.tileSize * 4);
+		attackRight3 = setup("/boss/stalfos_attack_right_3", 40 * 4, gp.tileSize * 4);
 	}
 	
 	public void setDialogue() {

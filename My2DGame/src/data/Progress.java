@@ -15,4 +15,7 @@ public class Progress {
 	// BOSSES (_B)
 	public static boolean bossDefeated_1_1;
 	public static boolean bossDefeated_1_2;
+	
+	// GENERAL PROGRESS
+	public static boolean gameCompleted = false;
 }

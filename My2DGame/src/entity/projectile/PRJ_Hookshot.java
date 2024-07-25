@@ -16,6 +16,8 @@ public class PRJ_Hookshot extends Projectile {
 		
 		type = type_projectile;
 		name = prjName;
+		canStun = true;
+		
 		maxLife = 30; life = maxLife;		
 		speed = 10;
 		knockbackPower = 0;		

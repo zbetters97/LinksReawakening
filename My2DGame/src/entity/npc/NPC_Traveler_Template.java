@@ -42,7 +42,7 @@ public class NPC_Traveler_Template extends Entity {
 	public void speak() {
 		
 		if (!onPath) {
-			facePlayer();
+			direction = getOppositeDirection(gp.player.direction);
 			startDialogue(this, dialogueSet);	
 		}	
 		else

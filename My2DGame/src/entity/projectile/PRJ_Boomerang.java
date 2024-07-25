@@ -13,6 +13,7 @@ public class PRJ_Boomerang extends Projectile {
 						
 		type = type_projectile;
 		name = prjName;
+		canStun = true;
 
 		knockbackPower = 1;
 		speed = 8; 		

@@ -60,7 +60,7 @@ public class NPC_Dialogue_Exchange extends Entity {
 		gp.ui.npc = this;
 		dialogueSet = 0;		
 		
-		facePlayer();
+		direction = getOppositeDirection(gp.player.direction);
 		startDialogue(this, dialogueSet, 0, 2);
 	}
 }
