@@ -62,7 +62,7 @@ public class SaveLoad {
 			ds.life = gp.player.life;
 			ds.attack = gp.player.attack;
 						
-			ds.rupees = gp.player.rupees;
+			ds.rupees = gp.ui.rupeeCount;
 			ds.maxArrows = gp.player.maxArrows;
 			ds.arrows = gp.player.arrows;
 			ds.maxBombs = gp.player.maxBombs;
@@ -93,6 +93,7 @@ public class SaveLoad {
 			ds.npcDialogueSet = new int[gp.maxMap][gp.npc[1].length];
 			ds.npcHasCutscene = new boolean[gp.maxMap][gp.npc[1].length];
 			ds.npcHasItem = new boolean[gp.maxMap][gp.npc[1].length];
+			ds.npcDrawing = new boolean[gp.maxMap][gp.npc[1].length];
 			
 			// ENEMIES
 			ds.enemyWorldX = new int[gp.maxMap][gp.enemy[1].length];
@@ -133,6 +134,7 @@ public class SaveLoad {
 						ds.npcDialogueSet[mapNum][i] = gp.npc[mapNum][i].dialogueSet;
 						ds.npcHasCutscene[mapNum][i] = gp.npc[mapNum][i].hasCutscene;
 						ds.npcHasItem[mapNum][i] = gp.npc[mapNum][i].hasItemToGive;
+						ds.npcDrawing[mapNum][i] = gp.npc[mapNum][i].drawing;
 						
 						// IF NPC HAS ITEMS
 						if (gp.npc[mapNum][i].inventory.size() > 0) {
@@ -253,6 +255,7 @@ public class SaveLoad {
 			gp.player.attack = ds.attack;
 						
 			gp.player.rupees = ds.rupees;
+			gp.ui.rupeeCount = gp.player.rupees;
 			gp.player.maxArrows = ds.maxArrows;
 			gp.player.arrows = ds.arrows;
 			gp.player.maxBombs = ds.maxBombs;
@@ -285,12 +288,13 @@ public class SaveLoad {
 					if (ds.npcNames[mapNum][i].equals("NULL")) {
 						gp.npc[mapNum][i] = null;
 					}
-					else {
+					else if (gp.npc[mapNum][i] != null) {						
 						gp.npc[mapNum][i].worldX = ds.npcWorldX[mapNum][i];
 						gp.npc[mapNum][i].worldY = ds.npcWorldY[mapNum][i];		
 						gp.npc[mapNum][i].dialogueSet = ds.npcDialogueSet[mapNum][i];
 						gp.npc[mapNum][i].hasCutscene = ds.npcHasCutscene[mapNum][i];
 						gp.npc[mapNum][i].hasItemToGive = ds.npcHasItem[mapNum][i];
+						gp.npc[mapNum][i].drawing = ds.npcDrawing[mapNum][i];
 						
 						// LOOP THROUGH NPC NAMES IN NPC INVENTORY
 						for (String name : ds.npcInventory.keySet()) {
@@ -330,7 +334,7 @@ public class SaveLoad {
 					if (ds.mapObjectNames[mapNum][i].equals("NULL")) {
 						gp.obj[mapNum][i] = null;
 					}
-					else {						
+					else if (gp.obj[mapNum][i] != null){						
 						gp.obj[mapNum][i] = gp.eGenerator.getObject(ds.mapObjectNames[mapNum][i]);
 						gp.obj[mapNum][i].worldX = ds.mapObjectWorldX[mapNum][i];
 						gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];						
@@ -338,8 +342,7 @@ public class SaveLoad {
 						gp.obj[mapNum][i].switchedOn = ds.mapObjectSwitchedOn[mapNum][i];						
 					
 						if (ds.mapObjectLootNames[mapNum][i] != null) {
-							gp.obj[mapNum][i].setLoot(gp.eGenerator.getObject(ds.mapObjectLootNames[mapNum][i]));
-							
+							gp.obj[mapNum][i].setLoot(gp.eGenerator.getObject(ds.mapObjectLootNames[mapNum][i]));							
 						}
 						
 						gp.obj[mapNum][i].opened = ds.mapObjectOpened[mapNum][i];
@@ -356,7 +359,7 @@ public class SaveLoad {
 					if (ds.iTileNames[mapNum][i].equals("NULL")) {
 						gp.iTile[mapNum][i] = null;
 					}
-					else {						
+					else if (gp.iTile[mapNum][i] != null) {						
 						gp.iTile[mapNum][i] = gp.iGenerator.getTile(ds.iTileNames[mapNum][i]);
 						gp.iTile[mapNum][i].worldX = ds.iTileWorldX[mapNum][i];
 						gp.iTile[mapNum][i].worldY = ds.iTileWorldY[mapNum][i];							

@@ -1,5 +1,7 @@
 package entity.item;
 
+import java.awt.event.KeyEvent;
+
 import application.GamePanel;
 import entity.Entity;
 
@@ -13,6 +15,8 @@ public class ITM_Boots extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to run fast!";
+		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.button_item) + 
+				" to run!";
 	}	
 	
 	public void getImage() {

@@ -1,5 +1,7 @@
 package entity.item;
 
+import java.awt.event.KeyEvent;
+
 import application.GamePanel;
 import entity.Entity;
 import entity.projectile.PRJ_Bomb;
@@ -14,6 +16,8 @@ public class ITM_Bomb extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to blow things up!";
+		getDescription = "When equipped, press " + KeyEvent.getKeyText(gp.button_grab) + 
+				" to throw a bomb\nor " + KeyEvent.getKeyText(gp.button_item) + " to set it down!";
 		
 		projectile = new PRJ_Bomb(gp);
 	}	

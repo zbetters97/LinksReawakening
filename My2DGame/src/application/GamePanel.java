@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,24 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	public Sound music = new Sound();
 	public Sound se = new Sound();	
-	public UI ui = new UI(this);	
+	public UI ui = new UI(this);
+	
+	// BUTTON MAPPING
+	public int button_dirUP = KeyEvent.VK_UP;
+	public int button_dirDOWN = KeyEvent.VK_DOWN;
+	public int button_dirLEFT = KeyEvent.VK_LEFT;
+	public int button_dirRIGHT = KeyEvent.VK_RIGHT;
+	public int button_action = KeyEvent.VK_SPACE;		
+	public int button_guard = KeyEvent.VK_Z;
+	public int button_target = KeyEvent.VK_F;
+	public int button_roll = KeyEvent.VK_R;
+	public int button_grab = KeyEvent.VK_G;	
+	public int button_item = KeyEvent.VK_Q;
+	public int button_tab = KeyEvent.VK_T;	
+	public int button_inventory = KeyEvent.VK_E;		
+	public int button_map = KeyEvent.VK_M;
+	public int button_minimap = KeyEvent.VK_N;
+	public int button_pause = KeyEvent.VK_ESCAPE;
 	
 	// SCREEN SETTINGS
 	private final int originalTileSize = 16; // 16x16 tile
@@ -126,7 +144,6 @@ public class GamePanel extends JPanel implements Runnable {
 /** CONSTRUCTOR **/
 	
 	public GamePanel() {
-		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // screen size
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true); // improves rendering performance
@@ -137,10 +154,13 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-		gameState = titleState;	
+/*		
+ 		gameState = titleState;	
 		currentArea = outside;
-//		gameState = playState;
-//		currentArea = dungeon;
+		currentMap = 0;
+*/		
+		gameState = playState;
+		currentArea = dungeon;
 		currentMap = 2;
 		
 		setupMusic(false);
@@ -421,8 +441,8 @@ public class GamePanel extends JPanel implements Runnable {
 		else if (reset || nextArea != currentArea) {							
 			if (currentMap == 0) playMusic(2);
 			else if (currentMap == 1) playMusic(3);
-			else if (currentMap == 2) playMusic(5);
-			else if (currentMap == 3) playMusic(5);
+			else if (currentMap == 2) playMusic(4);
+			else if (currentMap == 3) playMusic(4);
 		}
 	}	
 	

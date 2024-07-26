@@ -14,6 +14,7 @@ public class ITM_Hookshot extends Entity {
 		type = type_item;
 		name = itmName;		
 		description = "[" + name + "]\nEquip to grab things!";
+		getDescription = "Use it to pull yourself towards certain\nobjects or grab far away items!";
 		
 		projectile = new PRJ_Hookshot(gp);
 	}	

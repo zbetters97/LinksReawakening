@@ -573,6 +573,7 @@ public class Projectile extends Entity {
 			if (enemy.capturable && !enemy.captured && !enemy.invincible) {
 				enemy.captured = true;
 				gp.player.capturedTarget = enemy;
+				enemy.speed = 2;
 			}
 			playSE();
 			alive = false;

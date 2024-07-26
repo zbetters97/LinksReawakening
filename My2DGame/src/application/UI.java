@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +25,7 @@ import entity.item.ITM_Bow;
 public class UI {
 	
 	private GamePanel gp;
-	private Graphics2D g2;
-	
+	private Graphics2D g2;	
 	public Font PK_DS;
 		
 	// TITLE SCREEN STATE
@@ -222,7 +222,6 @@ public class UI {
 			menu_loadGame();
 		}
 	}
-	
 	private void menu_main() {
 		
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
@@ -457,7 +456,7 @@ public class UI {
 		// DRAW ITEM BUTTON
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 25F));
 		g2.setColor(Color.BLACK);
-		g2.drawString("Q", x-2, y+10);
+		g2.drawString(KeyEvent.getKeyText(gp.button_item), x-2, y+10);
 		
 		if (gp.player.currentItem != null) {	
 						
@@ -697,7 +696,6 @@ public class UI {
 			case 5: options_loadGameSlot(frameX, frameY); break;
 			case 6: options_quitGameConfirm(frameX, frameY); break;
 		}
-		gp.keyH.actionPressed = false;
 	}
 	private void options_top(int frameX, int frameY) {
 		
@@ -724,7 +722,9 @@ public class UI {
 				else {
 					gp.fullScreenOn = true;
 				}
+				
 				subState = 1;
+				gp.keyH.actionPressed = false;
 			}
 		}
 		
@@ -746,6 +746,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				textSpeed++;
 				if (textSpeed > 2) textSpeed = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 		
@@ -757,6 +758,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				subState = 2;
 				commandNum = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 				
@@ -773,7 +775,7 @@ public class UI {
 				else {
 					gp.keyH.playErrorSE();
 				}
-						
+				gp.keyH.actionPressed = false;						
 			}
 		}
 		
@@ -790,7 +792,7 @@ public class UI {
 				else {
 					gp.keyH.playErrorSE();
 				}
-						
+				gp.keyH.actionPressed = false;						
 			}
 		}
 
@@ -802,6 +804,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				subState = 6;
 				commandNum = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 				
@@ -854,6 +857,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				commandNum = 0;
 				subState = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 	}
@@ -884,15 +888,15 @@ public class UI {
 		// VALUES
 		textX = frameX + gp.tileSize * 6;
 		textY = frameY + gp.tileSize * 2;
-		g2.drawString("SPACEBAR", textX, textY); textY += 35;
-		g2.drawString("E", textX, textY); textY += 35;
-		g2.drawString("M", textX, textY); textY += 35;
-		g2.drawString("Z", textX, textY); textY += 35;
-		g2.drawString("R", textX, textY); textY += 35;
-		g2.drawString("F", textX, textY); textY += 35;
-		g2.drawString("G", textX, textY); textY += 35;
-		g2.drawString("Q", textX, textY); textY += 35;
-		g2.drawString("T", textX, textY); textY += 35;		
+		g2.drawString(KeyEvent.getKeyText(gp.button_action), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_inventory), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_map), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_guard), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_roll), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_target), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_grab), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_item), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.button_tab), textX, textY); textY += 35;		
 		
 		// BACK		
 		text = "BACK";
@@ -905,6 +909,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				commandNum = 4;
 				subState = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 	}
@@ -931,6 +936,7 @@ public class UI {
 					commandNum = 0;
 					gp.saveLoad.save(i);
 					gp.fileSlot = i;
+					gp.keyH.actionPressed = false;
 				}
 			}		
 		}
@@ -945,6 +951,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				commandNum = 5;
 				subState = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 	}
@@ -967,6 +974,7 @@ public class UI {
 					g2.drawString(">", textX - 25, textY);
 					if (gp.keyH.actionPressed) {
 						gp.keyH.playErrorSE();
+						gp.keyH.actionPressed = false;
 					}
 				}		
 			}
@@ -984,7 +992,8 @@ public class UI {
 						gp.fileSlot = i;
 						gp.saveLoad.load(i);
 						gp.gameState = gp.playState;
-						gp.setupMusic(true);
+						gp.setupMusic(true);	
+						gp.keyH.actionPressed = false;
 					}
 				}		
 			}			
@@ -1000,6 +1009,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				commandNum = 6;
 				subState = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 	}
@@ -1029,6 +1039,7 @@ public class UI {
 				inventoryScreen = 0;
 				titleScreenState = 0;
 				gp.gameState = gp.playState;
+				gp.keyH.actionPressed = false;
 			}
 		}
 		
@@ -1048,6 +1059,7 @@ public class UI {
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
 				gp.setupMusic(true);
+				gp.keyH.actionPressed = false;
 			}
 		}
 	}
@@ -1076,6 +1088,7 @@ public class UI {
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
 				gp.setupMusic(true);
+				gp.keyH.actionPressed = false;
 			}
 		}
 		
@@ -1090,6 +1103,7 @@ public class UI {
 			if (gp.keyH.actionPressed) {
 				commandNum = 7;
 				subState = 0;
+				gp.keyH.actionPressed = false;
 			}
 		}
 	}
@@ -1112,11 +1126,11 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 34F));	
 		String text = null;		
 		if (inventoryScreen == 0) {
-			g2.drawString("T >", x, y);
+			g2.drawString(KeyEvent.getKeyText(gp.button_tab) + " >", x, y);
 			text = "COLLECTABLES";
 		}
 		else {
-			g2.drawString("< T", x - 20, y);
+			g2.drawString("< " + KeyEvent.getKeyText(gp.button_tab), x - 20, y);
 			text = "ITEMS";
 		}
 		
@@ -1517,7 +1531,7 @@ public class UI {
 		int x = gp.tileSize * 8;
 		int y = gp.tileSize * 4;
 		int width = gp.tileSize * 6;
-		int height = gp.tileSize * 4;
+		int height = gp.tileSize * 3;
 		drawSubWindow(x, y, width, height);
 				
 		x += gp.tileSize;	
@@ -1528,7 +1542,7 @@ public class UI {
 			
 			if (npc.responses[responseSet][i] != null) {
 				
-				y += gp.tileSize * 1.2;
+				y += gp.tileSize - 5;
 				g2.drawString(npc.responses[responseSet][i], x, y);
 				
 				// IF RESPONSE IS SELECTED, DRAW DIALOGUE ANSWER
@@ -1609,7 +1623,7 @@ public class UI {
 		int width = gp.tileSize * 6;
 		int height = gp.tileSize * 2;
 		drawSubWindow(x, y, width, height);
-		g2.drawString("[ESC] Back", x+24, y+60);
+		g2.drawString("[" + KeyEvent.getKeyText(gp.button_pause) +"] Back", x+24, y+60);
 		
 		// DRAW PLAYER RUPEE WINDOW
 		x = gp.tileSize * 9;
@@ -1647,7 +1661,13 @@ public class UI {
 					combinedText = "";
 					npc.startDialogue(npc, 1);
 				}
-				else {				
+				else {			
+					
+					subState = 0;
+					canSkip = false;
+					charIndex = 0;
+					combinedText = "";
+					
 					if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {
 						
 						gp.player.rupees -= npc.inventory.get(itemIndex).price;	
@@ -1663,9 +1683,6 @@ public class UI {
 						}									
 					}
 					else {
-						canSkip = false;
-						charIndex = 0;
-						combinedText = "";
 						npc.startDialogue(npc, 2);
 					}
 				}
@@ -1684,7 +1701,7 @@ public class UI {
 		int width = gp.tileSize * 6;
 		int height = gp.tileSize * 2;
 		drawSubWindow(x, y, width, height);
-		g2.drawString("[ESC] Back", x+24, y+60);
+		g2.drawString("[" + KeyEvent.getKeyText(gp.button_pause) +"] Back", x+24, y+60);
 		
 		// DRAW PLAYER RUPEE WINDOW
 		x = gp.tileSize * 9;
@@ -1761,6 +1778,10 @@ public class UI {
 			y += 40;
 		} 
 		
+		x = (gp.screenWidth / 2) - 24;
+		y = gp.tileSize * 10;
+	  	g2.drawImage(dialogue_finish, x, y + 30, null);
+  		
 		// DISPLAY ITEM ABOVE PLAYER
 		if (newItem != null) {			
 			gp.player.drawing = false;
@@ -1931,6 +1952,7 @@ public class UI {
 		gp.playSE(2, 0);
 	}
 	
+	// SUB WINDOW
 	private void drawSubWindow(int x, int y, int width, int height) {
 		
 		// BLACK COLOR (RGB, Transparency)
@@ -1956,6 +1978,9 @@ public class UI {
 		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
 		g2.setColor(Color.WHITE);
 	}	
+	
+	// MISC
+	// MISC
 	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
 		int itemIndex = slotCol + (slotRow * 5);
 		return itemIndex;

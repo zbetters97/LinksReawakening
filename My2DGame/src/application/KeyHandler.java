@@ -12,7 +12,7 @@ public class KeyHandler implements KeyListener {
 	private GamePanel gp;
 	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, selectPressed, rollPressed, guardPressed, grabPressed, lockPressed, itemPressed, tabPressed;
+	public boolean actionPressed, rollPressed, guardPressed, grabPressed, targetPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
@@ -88,7 +88,7 @@ public class KeyHandler implements KeyListener {
 	}
 	private void mainMenu(int code) {
 		
-		if (code == KeyEvent.VK_UP) {
+		if (code == gp.button_dirUP) {
 			if (gp.ui.commandNum > 0) {
 				playCursorSE();
 				gp.ui.commandNum--;
@@ -106,7 +106,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 2;
 			}
 		}
-		if (code == KeyEvent.VK_SPACE) { 
+		if (code == gp.button_action) { 
 			
 			// NEW GAME OPTION
 			if (gp.ui.commandNum == 0) {
@@ -141,7 +141,7 @@ public class KeyHandler implements KeyListener {
 			keyboard.put(i, String.valueOf(keyboardLetters.charAt(i)));
 						
 		// NAVIGATE THROUGH ON-SCREEN KEYBOARD
-		if (code == KeyEvent.VK_UP) {				
+		if (code == gp.button_dirUP) {				
 			if (gp.ui.commandNum >= 10) {
 				playCursorSE();
 				if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
@@ -169,7 +169,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 28;		
 			}
 		}
-		if (code == KeyEvent.VK_LEFT) {
+		if (code == gp.button_dirLEFT) {
 			if (gp.ui.commandNum > 0) {
 				playCursorSE();
 				gp.ui.commandNum--;
@@ -178,7 +178,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 			}
 		}
-		if (code == KeyEvent.VK_RIGHT) {		
+		if (code == gp.button_dirRIGHT) {		
 			if (gp.ui.commandNum <= 28) {
 				gp.ui.commandNum++;
 				
@@ -194,7 +194,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 29;
 			}
 		}				
-		if (code == KeyEvent.VK_SPACE) {
+		if (code == gp.button_action) {
 			
 			// DEL BUTTON
 			if (gp.ui.commandNum == 26) {
@@ -250,7 +250,7 @@ public class KeyHandler implements KeyListener {
 	}
 	private void loadGameMenu(int code) {
 		
-		if (code == KeyEvent.VK_UP) {
+		if (code == gp.button_dirUP) {
 			if (gp.ui.commandNum > 0) {
 				playCursorSE();
 				gp.ui.commandNum--;
@@ -268,7 +268,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 3;
 			}
 		}		
-		if (code == KeyEvent.VK_SPACE) { 
+		if (code == gp.button_action) { 
 									
 			// LOAD GAME OPTION 1
 			if (gp.ui.commandNum == 0) {
@@ -345,35 +345,35 @@ public class KeyHandler implements KeyListener {
 		 * SHIFT: DEBUG
 		 */		
 
-		if (code == KeyEvent.VK_UP) upPressed = true;
-		if (code == KeyEvent.VK_DOWN) downPressed = true;
-		if (code == KeyEvent.VK_LEFT) leftPressed = true;
-		if (code == KeyEvent.VK_RIGHT) rightPressed = true;
-		if (code == KeyEvent.VK_SPACE && lock) { actionPressed = true; lock = false; }
-		if (code == KeyEvent.VK_F && lock) { lockPressed = true; lock = false; }
-		if (code == KeyEvent.VK_G && lock) { grabPressed = true; lock = false; }
-		if (code == KeyEvent.VK_R && lock) { rollPressed = true; lock = false; }
-		if (code == KeyEvent.VK_Q && lock) { itemPressed = true; lock = false; }
-		if (code == KeyEvent.VK_T && lock) { tabPressed = true; lock = false; }			
-		if (code == KeyEvent.VK_Z && lock) { 
+		if (code == gp.button_dirUP) upPressed = true;
+		if (code == gp.button_dirDOWN) downPressed = true;
+		if (code == gp.button_dirLEFT) leftPressed = true;
+		if (code == gp.button_dirRIGHT) rightPressed = true;
+		if (code == gp.button_action && lock) { actionPressed = true; lock = false; }
+		if (code == gp.button_grab && lock) { grabPressed = true; lock = false; }
+		if (code == gp.button_target && lock) { targetPressed = true; lock = false; }
+		if (code == gp.button_roll && lock) { rollPressed = true; lock = false; }
+		if (code == gp.button_item && lock) { itemPressed = true; lock = false; }
+		if (code == gp.button_tab && lock) { tabPressed = true; lock = false; }			
+		if (code == gp.button_guard && lock) { 
 			guardPressed = true; 
 			lock = false; 
 			gp.player.playGuardSE(); 
 		}
 		
-		if (code == KeyEvent.VK_ESCAPE) {
+		if (code == gp.button_pause) {
 			playMenuOpenSE();
 			gp.gameState = gp.pauseState;
 		}	
-		else if (code == KeyEvent.VK_E) { 
+		else if (code == gp.button_inventory) { 
 			playMenuOpenSE();
 			gp.gameState = gp.inventoryState;
 		}			
-		else if (code == KeyEvent.VK_M) {
+		else if (code == gp.button_map) {
 			playMapOpenSE();
 			gp.gameState = gp.mapState;
 		}
-		else if (code == KeyEvent.VK_N) {
+		else if (code == gp.button_minimap) {
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
 		else if (code == KeyEvent.VK_1) {			
@@ -400,7 +400,7 @@ public class KeyHandler implements KeyListener {
 			case 6: maxCommandNum = 1; break;
 		}
 		
-		if (code == KeyEvent.VK_UP) { 
+		if (code == gp.button_dirUP) { 
 			if (gp.ui.commandNum != 0) {
 				playCursorSE(); 
 				gp.ui.commandNum--; 
@@ -412,7 +412,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.commandNum++; 
 			}
 		}
-		if (code == KeyEvent.VK_LEFT) {
+		if (code == gp.button_dirLEFT) {
 			
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
@@ -426,7 +426,7 @@ public class KeyHandler implements KeyListener {
 				}
 			}
 		}
-		if (code == KeyEvent.VK_RIGHT) {
+		if (code == gp.button_dirRIGHT) {
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
 					playCursorSE();
@@ -440,13 +440,13 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		
-		if (code == KeyEvent.VK_ESCAPE) {
+		if (code == gp.button_pause) {
 			playMenuCloseSE();
 			gp.ui.commandNum = 0;
 			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
 		}
-		if (code == KeyEvent.VK_SPACE && lock) {
+		if (code == gp.button_action && lock) {
 			playSelectSE();
 			actionPressed = true;
 			lock = false;
@@ -456,11 +456,11 @@ public class KeyHandler implements KeyListener {
 	// INVENTORY
 	private void inventoryState(int code) { 
 		
-		if (code == KeyEvent.VK_E) {
+		if (code == gp.button_inventory) {
 			playMenuCloseSE();
 			gp.gameState = gp.playState;
 		}
-		if (code == KeyEvent.VK_SPACE) {	
+		if (code == gp.button_action) {	
 			
 			if (gp.ui.inventoryScreen == 0) {
 				gp.player.selectInventory();
@@ -469,7 +469,7 @@ public class KeyHandler implements KeyListener {
 				gp.player.selectItem();	
 			}
 		}
-		if (code == KeyEvent.VK_T) {
+		if (code == gp.button_tab) {
 			playCursorSE();
 			
 			if (gp.ui.inventoryScreen == 0)
@@ -482,7 +482,7 @@ public class KeyHandler implements KeyListener {
 	
 	// PLAYER INVENTORY	
 	private void playerInventory(int code) {
-		if (code == KeyEvent.VK_UP) { 
+		if (code == gp.button_dirUP) { 
 			if (gp.ui.playerSlotRow != 0) {
 				playCursorSE(); 
 				gp.ui.playerSlotRow--; 
@@ -494,13 +494,13 @@ public class KeyHandler implements KeyListener {
 				gp.ui.playerSlotRow++; 
 			}
 		}
-		if (code == KeyEvent.VK_LEFT) { 
+		if (code == gp.button_dirLEFT) { 
 			if (gp.ui.playerSlotCol != 0) { 
 				playCursorSE();
 				gp.ui.playerSlotCol--; 
 			}
 		}
-		if (code == KeyEvent.VK_RIGHT) { 
+		if (code == gp.button_dirRIGHT) { 
 			if (gp.ui.playerSlotCol != 4) {
 				playCursorSE(); 
 				gp.ui.playerSlotCol++; 
@@ -510,14 +510,14 @@ public class KeyHandler implements KeyListener {
 	
 	// MAP
 	private void mapState(int code) {
-		if (code == KeyEvent.VK_M) {
+		if (code == gp.button_map) {
 			gp.gameState = gp.playState;
 		}
 	}
 	
 	// DIALOGUE
 	private void dialogueState(int code) { 
-		if (code == KeyEvent.VK_SPACE && lock) {						
+		if (code == gp.button_action && lock) {						
 			actionPressed = true;			
 			lock = false;
 		}
@@ -525,7 +525,7 @@ public class KeyHandler implements KeyListener {
 	
 	// ITEM GET	
 	private void itemGetState(int code) {
-		if (code == KeyEvent.VK_SPACE) {
+		if (code == gp.button_action) {
 						
 			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
 				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);				
@@ -542,7 +542,7 @@ public class KeyHandler implements KeyListener {
 	// TRADE
 	private void tradeState(int code) {
 						
-		if (code == KeyEvent.VK_SPACE && lock) {			
+		if (code == gp.button_action && lock) {			
 			playSelectSE();
 			actionPressed = true;
 			lock = false;
@@ -551,7 +551,7 @@ public class KeyHandler implements KeyListener {
 		}
 		
 		if (gp.ui.response) {
-			if (code == KeyEvent.VK_UP) { 				
+			if (code == gp.button_dirUP) { 				
 				gp.ui.commandNum--;
 				if (gp.ui.commandNum < 0)					
 					gp.ui.commandNum = 0;
@@ -568,7 +568,7 @@ public class KeyHandler implements KeyListener {
 		}		
 		else {		
 			if (gp.ui.subState == 0) {
-				if (code == KeyEvent.VK_UP) { 				
+				if (code == gp.button_dirUP) { 				
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0)					
 						gp.ui.commandNum = 0;
@@ -585,12 +585,12 @@ public class KeyHandler implements KeyListener {
 			}
 			if (gp.ui.subState == 1) {
 				npcInventory(code);
-				if (code == KeyEvent.VK_ESCAPE)
+				if (code == gp.button_pause)
 					gp.ui.subState = 0;						
 			}
 			if (gp.ui.subState == 2) {
 				playerInventory(code); 
-				if (code == KeyEvent.VK_ESCAPE)
+				if (code == gp.button_pause)
 					gp.ui.subState = 0;			
 			}
 		}
@@ -598,7 +598,7 @@ public class KeyHandler implements KeyListener {
 	
 	// NPC INVENTORY
 	private void npcInventory(int code) {
-		if (code == KeyEvent.VK_UP) { 
+		if (code == gp.button_dirUP) { 
 			if (gp.ui.npcSlotRow != 0) {
 				playCursorSE(); 
 				gp.ui.npcSlotRow--; 
@@ -610,13 +610,13 @@ public class KeyHandler implements KeyListener {
 				gp.ui.npcSlotRow++; 
 			}
 		}
-		if (code == KeyEvent.VK_LEFT) { 
+		if (code == gp.button_dirLEFT) { 
 			if (gp.ui.npcSlotCol != 0) { 
 				playCursorSE();
 				gp.ui.npcSlotCol--; 
 			}
 		}
-		if (code == KeyEvent.VK_RIGHT) { 
+		if (code == gp.button_dirRIGHT) { 
 			if (gp.ui.npcSlotCol != 4) {
 				playCursorSE(); 
 				gp.ui.npcSlotCol++; 
@@ -627,7 +627,7 @@ public class KeyHandler implements KeyListener {
 	// GAME OVER
 	private void gameOverState(int code) {
 		
-		if (code == KeyEvent.VK_UP) { 
+		if (code == gp.button_dirUP) { 
 			if (gp.ui.commandNum != 0) {
 				playCursorSE(); 
 				gp.ui.commandNum = 0;
@@ -639,7 +639,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.commandNum = 1;
 			}
 		}
-		if (code == KeyEvent.VK_SPACE && lock) {			
+		if (code == gp.button_action && lock) {			
 			playSelectSE();
 			actionPressed = true;
 			lock = false;
@@ -649,7 +649,7 @@ public class KeyHandler implements KeyListener {
 	// ENDING 
 	private void endingState(int code) {
 		
-		if (code == KeyEvent.VK_ESCAPE) {
+		if (code == gp.button_pause) {
 			gp.gameState = gp.titleState;
 			gp.ui.commandNum = 0;
 			gp.resetGame();
@@ -661,32 +661,32 @@ public class KeyHandler implements KeyListener {
 	public void keyReleased(KeyEvent e) {	
 		int code = e.getKeyCode();
 		
-		if (code == KeyEvent.VK_UP) upPressed = false; 
+		if (code == gp.button_dirUP) upPressed = false; 
 		if (code == KeyEvent.VK_DOWN) downPressed = false;
-		if (code == KeyEvent.VK_LEFT) leftPressed = false;
-		if (code == KeyEvent.VK_RIGHT) rightPressed = false;
-		if (code == KeyEvent.VK_SPACE) { actionPressed = false; lock = true; }
-		if (code == KeyEvent.VK_R) { rollPressed = false; lock = true; }
-		if (code == KeyEvent.VK_Z) { 
+		if (code == gp.button_dirLEFT) leftPressed = false;
+		if (code == gp.button_dirRIGHT) rightPressed = false;
+		if (code == gp.button_action) { actionPressed = false; lock = true; }
+		if (code == gp.button_roll) { rollPressed = false; lock = true; }
+		if (code == gp.button_guard) { 
 			guardPressed = false; 
 			lock = true;
 			if (gp.player.action == Action.GUARDING)
 				gp.player.action = Action.IDLE;
 		}
-		if (code == KeyEvent.VK_G) { 
+		if (code == gp.button_grab) { 
 			grabPressed = false; 
 			lock = true;
 			if (gp.player.action == Action.GRABBING)
 				gp.player.action = Action.IDLE;
 		}
-		if (code == KeyEvent.VK_F) { lockPressed = false; lock = true; }
-		if (code == KeyEvent.VK_Q) { 
+		if (code == gp.button_target) { targetPressed = false; lock = true; }
+		if (code == gp.button_item) { 
 			itemPressed = false; 
 			lock = true; 
 			if (gp.player.action == Action.RUNNING) 
 				gp.player.action = Action.IDLE;			
 		}	
-		if (code == KeyEvent.VK_T) { tabPressed = false; lock = true; }
+		if (code == gp.button_tab) { tabPressed = false; lock = true; }
 	}
 	
 	// SOUND EFFECTS

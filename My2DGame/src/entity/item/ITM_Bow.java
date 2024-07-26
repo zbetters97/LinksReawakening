@@ -1,5 +1,7 @@
 package entity.item;
 
+import java.awt.event.KeyEvent;
+
 import application.GamePanel;
 import entity.Entity;
 import entity.projectile.PRJ_Arrow;
@@ -14,6 +16,8 @@ public class ITM_Bow extends Entity {
 		type = type_item;
 		name = itmName;		
 		description = "[" + name + "]\nEquip to fire an arrow!";
+		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.button_item) + 
+				" to charge its power!\nRelease " + KeyEvent.getKeyText(gp.button_item) + " to fire an arrow!";
 		charge = 0;		
 		
 		projectile = new PRJ_Arrow(gp);

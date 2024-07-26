@@ -42,6 +42,7 @@ public class DataStorage implements Serializable {
 	int npcDialogueSet[][];
 	boolean npcHasCutscene[][];
 	boolean npcHasItem[][];
+	boolean npcDrawing[][];
 	Map<String, List<String>> npcInventory = new HashMap<>();
 	
 	// ENEMIES

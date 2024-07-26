@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -80,7 +81,7 @@ public class Map extends TileManager {
 		// TEXT HINT (BOTTOM CENTER)
 		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
 		g2.setColor(Color.WHITE);
-		String text = "[Press M to close]";
+		String text = "[Press " + KeyEvent.getKeyText(gp.button_map) + " to close]";
 		g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
 	}
 	

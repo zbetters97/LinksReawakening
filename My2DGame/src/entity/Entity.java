@@ -173,6 +173,7 @@ public class Entity {
 	
 	// ITEM ATTRIBUTES
 	public String description = "";
+	public String getDescription = "";
 	public int price, value;
 	public int attackValue;	
 	public int knockbackPower = 0;
@@ -1197,7 +1198,7 @@ public class Entity {
 		BufferedImage image = null;
 								
 		// DRAW TILES WITHIN SCREEN BOUNDARY
-		if (inFrame()) {
+		if (inFrame() && drawing) {
 			
 			if (hookGrabbed) {
 				switch (direction) {

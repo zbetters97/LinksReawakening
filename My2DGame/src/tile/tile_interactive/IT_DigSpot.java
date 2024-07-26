@@ -10,7 +10,6 @@ public class IT_DigSpot extends InteractiveTile {
 
 	public static final String itName = "Dig Spot";
 	int mapNum;
-	Entity item;
 	
 	public IT_DigSpot(GamePanel gp) {
 		super(gp);
@@ -20,11 +19,11 @@ public class IT_DigSpot extends InteractiveTile {
 		collision = false;
 		life = 1;
 	}	
-	public IT_DigSpot(GamePanel gp, int col, int row, Entity item) {
+	public IT_DigSpot(GamePanel gp, int col, int row, Entity loot) {
 		super(gp, col, row);
 		this.worldX = gp.tileSize * col;
 		this.worldY = gp.tileSize * row;
-		this.item = item;
+		this.loot = loot;
 		
 		name = itName;		
 		destructible = true;
@@ -47,11 +46,19 @@ public class IT_DigSpot extends InteractiveTile {
 	}
 	
 	public InteractiveTile getDestroyedForm() {
+		
 		InteractiveTile tile = new IT_Hole(gp, worldX / gp.tileSize, worldY / gp.tileSize);
-
-		gp.obj[mapNum][gp.obj.length + 1] = item;
-		gp.obj[mapNum][gp.obj.length + 1].worldX = worldX;
-		gp.obj[mapNum][gp.obj.length + 1].worldY = worldY;
+		
+		for (int i = 0; i < gp.obj[1].length; i++) {
+			if (gp.obj[gp.currentMap][i] == null) {
+				
+				gp.obj[mapNum][i] = loot;
+				gp.obj[mapNum][i].worldX = worldX;
+				gp.obj[mapNum][i].worldY = worldY;
+				
+				break;
+			}
+		}
 		
 		return tile;
 	}	

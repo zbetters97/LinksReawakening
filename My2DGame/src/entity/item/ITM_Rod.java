@@ -44,6 +44,7 @@ public class ITM_Rod extends Entity {
 		else if (gp.player.capturedTarget != null) {
 			projectile.playSE();
 			
+			gp.player.capturedTarget.speed = gp.player.capturedTarget.defaultSpeed; 
 			gp.player.capturedTarget.captured = false;
 			gp.player.capturedTarget = null;
 		}

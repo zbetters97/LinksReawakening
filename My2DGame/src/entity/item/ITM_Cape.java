@@ -13,6 +13,7 @@ public class ITM_Cape extends Entity {
 		type = type_item;
 		name = itmName;		
 		description = "[" + name + "]\nEquip to soar over things!";
+		getDescription = "Use it to soar through the air for a short time!";
 	}
 	
 	public void getImage() {

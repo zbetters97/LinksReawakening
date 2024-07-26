@@ -33,6 +33,10 @@ public class InteractiveTile extends Entity {
 		}
 	}
 	
+	public void setLoot(Entity loot) {
+		this.loot = loot;
+	}
+	
 	private void grabbed() {
 		worldX = gp.player.worldX;
 		worldY = gp.player.worldY - gp.tileSize + 5;

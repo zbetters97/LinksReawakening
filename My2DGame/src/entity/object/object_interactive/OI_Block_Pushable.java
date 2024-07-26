@@ -20,9 +20,9 @@ public class OI_Block_Pushable extends Entity {
 		type = type_obstacle;
 		name = obj_iName;
 		direction = "down";
+		collision = true;
+		hookGrabbable = true;		
 		speed = 1; defaultSpeed = speed;
-		
-		collision = true;		
 		
 		hitbox = new Rectangle(1, 1, 46, 46); 		
 		hitboxDefaultX = hitbox.x;

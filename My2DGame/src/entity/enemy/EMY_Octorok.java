@@ -2,7 +2,6 @@ package entity.enemy;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.collectable.COL_Heart;
 import entity.projectile.PRJ_Seed;
 
 public class EMY_Octorok extends Entity {
@@ -114,6 +113,5 @@ public class EMY_Octorok extends Entity {
 	// DROPPED ITEM
 	public void checkDrop() {
 		super.checkDrop();		
-		dropItem(new COL_Heart(gp));
 	}
 }

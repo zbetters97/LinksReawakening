@@ -149,7 +149,7 @@ public class Player extends Entity {
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
-/*	
+/*		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
@@ -157,12 +157,12 @@ public class Player extends Entity {
 */
 		worldX = gp.tileSize * 40;
 		worldY = gp.tileSize * 92;		
-		gp.currentMap = 2;
-		gp.currentArea = gp.dungeon;
-		
+		gp.currentArea = gp.dungeon;		
+		gp.currentMap = 2;		
 		direction = "up";
 	}
 	public void setDefaultItems() {		
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));				
@@ -172,6 +172,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));	
+*/
 	}
 	public void restoreStatus() {
 		alive = true;		
@@ -405,7 +406,7 @@ public class Player extends Entity {
 		if (action == Action.IDLE) { onGround = true; }
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return;	}
 		
-		if (keyH.lockPressed) { lockon = !lockon; keyH.lockPressed = false; }
+		if (keyH.targetPressed) { lockon = !lockon; keyH.targetPressed = false; }
 		if (lockon && action != Action.AIMING) { lockTarget(); }
 		else {
 			if (lockedTarget != null) {
@@ -522,7 +523,10 @@ public class Player extends Entity {
 			cycleSprites();	
 			
 			// ONLY ROLL WHILE MOVING
-			if (keyH.rollPressed && action == Action.IDLE) { action = Action.ROLLING; }	
+			if (keyH.rollPressed && action == Action.IDLE) { 
+				action = Action.ROLLING; 
+				keyH.rollPressed = false; 
+			}	
 		}
 	}
 	public void getDirection() {
@@ -730,7 +734,7 @@ public class Player extends Entity {
 			gp.player.inventory_item.add(item);	
 			
 			gp.ui.newItem = item;
-			gp.ui.currentDialogue = "You got the " + item.name + "!";
+			gp.ui.currentDialogue = "You got the " + item.name + "!\n" + item.getDescription;
 		}
 		else {
 			inventory.add(item);
@@ -819,7 +823,10 @@ public class Player extends Entity {
 		int ex = (target.worldX + (target.hitbox.width / 2)) / gp.tileSize;
 		int ey = (target.worldY + (target.hitbox.height / 2)) / gp.tileSize;	
 		
-		if (py > ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
+		if (py == ey && px == ex) {
+			eDirection = direction;
+		}
+		else if (py > ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
 			eDirection = "up";
 		else if (py > ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";

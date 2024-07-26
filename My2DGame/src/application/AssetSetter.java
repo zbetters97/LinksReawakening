@@ -24,6 +24,8 @@ public class AssetSetter {
 		int i = 0;
 						
 		gp.npc[mapNum][i] = new NPC_Traveler_1(gp, 20, 21); i++;		
+		gp.npc[mapNum][i] = new NPC_Traveler_2(gp, 24, 32); 
+		gp.npc[mapNum][i].drawing = false; i++;		
 		gp.npc[mapNum][i] = new NPC_OldMan(gp, 30, 30); i++;		
 		gp.npc[mapNum][i] = new NPC_Dialogue_Exchange(gp, 20, 10);
 		gp.npc[mapNum][i].direction = "up";
@@ -123,6 +125,10 @@ public class AssetSetter {
 		gp.obj[mapNum][i].worldX = gp.tileSize * 8;
 		gp.obj[mapNum][i].worldY = gp.tileSize * 9;
 		i++;	
+		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp);
+		gp.obj_i[mapNum][i].worldX = gp.tileSize * 12;
+		gp.obj_i[mapNum][i].worldY = gp.tileSize * 21;
+		i++;
 		
 		mapNum = 2;
 		i = 0;

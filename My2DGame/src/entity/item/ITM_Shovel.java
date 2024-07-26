@@ -13,6 +13,7 @@ public class ITM_Shovel extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to dig for treasure!";
+		getDescription = "Use it on dirt patches to dig up burried\ntreasure!";
 	}
 	
 	public void getImage() {

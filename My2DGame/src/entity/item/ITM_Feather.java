@@ -13,6 +13,7 @@ public class ITM_Feather extends Entity {
 		type = type_item;
 		name = itmName;		
 		description = "[" + name + "]\nEquip to jump over things!";
+		getDescription = "Use it to jump over things!";
 	}
 	
 	public void getImage() {
