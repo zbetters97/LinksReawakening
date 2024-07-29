@@ -12,7 +12,7 @@ public class KeyHandler implements KeyListener {
 	private GamePanel gp;
 	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, rollPressed, guardPressed, grabPressed, targetPressed, itemPressed, tabPressed;
+	public boolean actionPressed, rollPressed, guardPressed, grabPressed, ztargetPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
@@ -351,7 +351,7 @@ public class KeyHandler implements KeyListener {
 		if (code == gp.button_dirRIGHT) rightPressed = true;
 		if (code == gp.button_action && lock) { actionPressed = true; lock = false; }
 		if (code == gp.button_grab && lock) { grabPressed = true; lock = false; }
-		if (code == gp.button_target && lock) { targetPressed = true; lock = false; }
+		if (code == gp.button_target && lock) { ztargetPressed = true; lock = false; }
 		if (code == gp.button_roll && lock) { rollPressed = true; lock = false; }
 		if (code == gp.button_item && lock) { itemPressed = true; lock = false; }
 		if (code == gp.button_tab && lock) { tabPressed = true; lock = false; }			
@@ -679,7 +679,7 @@ public class KeyHandler implements KeyListener {
 			if (gp.player.action == Action.GRABBING)
 				gp.player.action = Action.IDLE;
 		}
-		if (code == gp.button_target) { targetPressed = false; lock = true; }
+		if (code == gp.button_target) { ztargetPressed = false; lock = true; }
 		if (code == gp.button_item) { 
 			itemPressed = false; 
 			lock = true; 

@@ -30,8 +30,6 @@ public class EMY_Zora extends Entity {
 		knockbackPower = 0;
 		
 		projectile = new PRJ_Fireball(gp);
-		
-		
 	}
 	
 	public void getImage() {

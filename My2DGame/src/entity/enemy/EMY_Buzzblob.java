@@ -20,7 +20,6 @@ public class EMY_Buzzblob extends Entity {
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
-		bounds = 6;
 		
 		type = type_enemy;
 		name = emyName;

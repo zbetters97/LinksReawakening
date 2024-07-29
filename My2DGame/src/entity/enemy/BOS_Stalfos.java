@@ -28,7 +28,7 @@ public class BOS_Stalfos extends Entity {
 		
 		speed = 2; defaultSpeed = speed; 
 		animationSpeed = 14;
-		maxLife = 32; life = maxLife;
+		maxLife = 50; life = maxLife;
 		attack = 8;
 		knockbackPower = 3;		
 		currentBossPhase = bossPhase_1;
@@ -44,8 +44,7 @@ public class BOS_Stalfos extends Entity {
 		
 		attackbox.width = 128;
 		attackbox.height = 100;
-		
-		
+				
 		setDialogue();
 	}
 	

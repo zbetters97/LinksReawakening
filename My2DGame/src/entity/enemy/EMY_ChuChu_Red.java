@@ -18,7 +18,6 @@ public class EMY_ChuChu_Red extends Entity {
 		this.worldY = worldY * gp.tileSize;	
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
-		bounds = 7;
 		
 		type = type_enemy;
 		name = emyName;

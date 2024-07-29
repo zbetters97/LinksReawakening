@@ -838,19 +838,20 @@ public class UI {
 	}
 	private void options_fullscreenNotif(int frameX, int frameY) {
 		
-		int textX = frameX + gp.tileSize;
-		int textY = frameX + gp.tileSize;
-		
 		currentDialogue = "The change will take effect\nafter restarting the game.";
-		
+		int textX;
+		int textY = frameX + gp.tileSize * 2;				
+				
 		for (String line : currentDialogue.split("\n")) {
+			textX = getXforCenteredText(line);
 			g2.drawString(line, textX, textY);
 			textY += 40;
 		}
 		
-		// BACK
-		textY = frameY + gp.tileSize * 8;
-		g2.drawString("Back", textX, textY);
+		String text = "BACK";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize * 2;
+		g2.drawString(text, textX, textY);
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			

@@ -19,7 +19,6 @@ public class EMY_Goblin_Combat extends Entity {
 		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
-		bounds = 6;
 		
 		type = type_enemy;
 		name = emyName;
@@ -42,8 +41,6 @@ public class EMY_Goblin_Combat extends Entity {
 		
 		attackbox.width = 36;
 		attackbox.height = 36;
-		
-		
 	}
 	
 	public void getImage() {

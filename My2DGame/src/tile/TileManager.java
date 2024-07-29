@@ -66,15 +66,15 @@ public class TileManager {
 		getTileImage(); 
 		
 		// IMPORT MAP SIZE
-		is = getClass().getResourceAsStream("/maps/worldmap.txt");	
+		is = getClass().getResourceAsStream("/maps/dungeon_01_01.txt");	
 		br = new BufferedReader(new InputStreamReader(is));
 
 		try {
 			String line = br.readLine();
 			String maxTile[] = line.split(" ");			
 			
-			gp.maxWorldCol = maxTile.length * 2;
-			gp.maxWorldRow = maxTile.length * 2;
+			gp.maxWorldCol = maxTile.length;
+			gp.maxWorldRow = maxTile.length;
 			mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 			
 			gp.worldWidth = gp.tileSize * gp.maxWorldCol;
@@ -88,7 +88,6 @@ public class TileManager {
 
 		loadMap("/maps/worldmap.txt", 50, 50, 0);
 		loadMap("/maps/indoor01.txt", 50, 50, 1);
-//		loadMap("/maps/dungeon01.txt", 2);
 		loadMap("/maps/dungeon_01_01.txt", 2);
 		loadMap("/maps/dungeon02.txt", 50, 50, 3);
 	}
@@ -124,8 +123,7 @@ public class TileManager {
 		}
 	}
 	
-	public void setup(int index, String imageName, 
-			boolean collision, boolean water, boolean pit) {
+	public void setup(int index, String imageName, boolean collision, boolean water, boolean pit) {
 		
 		UtilityTool utility = new UtilityTool();
 		

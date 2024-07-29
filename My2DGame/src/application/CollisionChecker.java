@@ -453,6 +453,7 @@ public class CollisionChecker {
 				}
 			}
 		}		
+		// GROUND
 		else {
 			if (entity.action == Action.SWIMMING)
 				entity.action = Action.IDLE;

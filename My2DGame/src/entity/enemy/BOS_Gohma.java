@@ -21,7 +21,6 @@ public class BOS_Gohma extends Entity {
 		worldYStart = this.worldY;
 		direction = "down";
 		lockonDirection = "right";	
-		bounds = 2;
 		
 		type = type_boss;
 		name = emyName;

@@ -149,20 +149,21 @@ public class Player extends Entity {
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
-/*		
+		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
-*/
-		worldX = gp.tileSize * 40;
+/*
+		worldX = gp.tileSize * 38;
 		worldY = gp.tileSize * 92;		
 		gp.currentArea = gp.dungeon;		
 		gp.currentMap = 2;		
 		direction = "up";
+		*/
 	}
 	public void setDefaultItems() {		
-/*
+
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Boots(gp));				
@@ -172,7 +173,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));	
-*/
+
 	}
 	public void restoreStatus() {
 		alive = true;		
@@ -210,6 +211,10 @@ public class Player extends Entity {
 		soarCounter = 0; 		
 		rodNum = 1;
 		rodCounter = 0;
+		
+		if (currentItem != null && currentItem.name.equals(ITM_Bow.itmName)) {
+			currentItem.charge = 0;
+		}
 		
 		if (grabbedObject != null) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
@@ -402,24 +407,23 @@ public class Player extends Entity {
 
 	public void update() {	
 				
-		if (!keyH.debug) checkCollision();
+		checkCollision();
+		
 		if (action == Action.IDLE) { onGround = true; }
+		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return;	}
 		
-		if (keyH.targetPressed) { lockon = !lockon; keyH.targetPressed = false; }
-		if (lockon && action != Action.AIMING) { lockTarget(); }
+		if (keyH.ztargetPressed) { keyH.ztargetPressed = false; lockon = !lockon; }		
+		if (lockon && action != Action.AIMING) { zTarget(); }
 		else {
 			if (lockedTarget != null) {
 				lockedTarget.locked = false;
 				lockedTarget = null;
 			}
-		}	
+		}		
 		
-		if (action == Action.DIGGING) { digging(); manageValues(); checkDeath(); return; }
-		else if (action == Action.SWINGING) { swinging(); manageValues(); checkDeath(); return; }
-		else if (action == Action.THROWING) { throwing(); manageValues(); checkDeath(); return; }		
-		else if (action == Action.AIMING) {
-			
+		if (action == Action.ROLLING) { rolling(); }
+		else if (action == Action.AIMING) {			
 			switch (direction) {			
 				case "up":
 				case "upleft":
@@ -444,11 +448,11 @@ public class Player extends Entity {
 				lockon = false;
 				currentItem.use(this);
 			}
-		}
-		else if (action == Action.GRABBING) { grabbing(); }		
+		}			
+		else if (action == Action.DIGGING) { digging(); manageValues(); checkDeath(); return; }
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.SOARING) { jumping(); }
-		else if (action == Action.ROLLING) { rolling(); }
+		else if (action == Action.GRABBING) { grabbing(); }		
 		else if (action == Action.CARRYING) {
 			if (keyH.grabPressed) {
 				playThrowSE();
@@ -480,8 +484,10 @@ public class Player extends Entity {
 				}
 			}
 		}
+		else if (action == Action.THROWING) { throwing(); manageValues(); checkDeath(); return; }
+		else if (action == Action.SWINGING) { swinging(); manageValues(); checkDeath(); return; }	
 		
-		// DISABLED ACTIONS WHILE SWIMMING, AIMING, OR CARRYING
+		// DISABLED ACTIONS DURING CERTAIN ACTIONS
 		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.JUMPING
 				&& action != Action.CARRYING && action != Action.SOARING && action != Action.ROLLING) {			
 			if (keyH.actionPressed) { action(); }
@@ -490,8 +496,8 @@ public class Player extends Entity {
 			if (keyH.grabPressed) { grabbing(); }			
 			if (keyH.itemPressed) { useItem(); }					
 			if (keyH.tabPressed) { cycleItems(); }
-		}		
-				
+		}	
+		
 		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
 				action != Action.AIMING && action != Action.GRABBING) { 
 			walking(); 					
@@ -605,8 +611,10 @@ public class Player extends Entity {
 		if (!attackCanceled) swingSword();
 	}
 	public void checkCollision() {
-		
+				
 		collisionOn = false;
+		
+		if (keyH.debug) return;
 		
 		// CHECK EVENTS
 		gp.eHandler.checkEvent();
@@ -765,7 +773,7 @@ public class Player extends Entity {
 	}
 	
 	// Z-TARGETING
-	public void lockTarget() {
+	public void zTarget() {
 		
 		// FIND TARGET IF NOT ALREADY
 		if (lockedTarget == null) {
@@ -1173,7 +1181,7 @@ public class Player extends Entity {
 				jumpNum = 1;
 				jumpCounter = 0;
 				attackCanceled = false;
-				action = Action.IDLE;				
+				action = Action.IDLE;	
 			}
 		}
 	}

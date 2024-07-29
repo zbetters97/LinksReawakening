@@ -18,7 +18,6 @@ public class EMY_Keese extends Entity {
 		this.worldY = worldY * gp.tileSize;
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
-		bounds = 5;
 		
 		type = type_enemy;
 		name = emyName;

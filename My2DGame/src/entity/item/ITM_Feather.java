@@ -22,12 +22,12 @@ public class ITM_Feather extends Entity {
 	
 	public void use() {
 		if (gp.player.action != Action.JUMPING) {
-			gp.player.onGround = false;
+			playSE();
+			gp.player.action = Action.JUMPING;
 			gp.player.safeWorldX = gp.player.worldX;
 			gp.player.safeWorldY = gp.player.worldY;
-			gp.player.action = Action.JUMPING;
-			gp.player.attackCanceled = true;
-			playSE();
+			gp.player.onGround = false;			
+			gp.player.attackCanceled = true;			
 		}
 	}	
 	

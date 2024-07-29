@@ -33,9 +33,7 @@ public class SaveLoad {
 			
 			// CURRENT DATE/TIME
 			ds.file_date =  new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date(System.currentTimeMillis()));
-			
-			
-			
+						
 			// DAY DATA
 			ds.dayState = gp.eManager.lighting.dayState;
 			ds.dayCounter = gp.eManager.lighting.dayCounter;
