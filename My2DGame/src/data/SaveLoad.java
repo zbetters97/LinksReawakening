@@ -276,6 +276,7 @@ public class SaveLoad {
 			gp.player.currentWeapon = gp.eGenerator.getObject(ds.sword);
 			gp.player.currentShield = gp.eGenerator.getObject(ds.shield);
 			gp.player.getAttack();
+			gp.player.getAttackImage();
 			gp.player.canSwim = ds.canSwim;		
 						
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {

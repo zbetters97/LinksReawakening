@@ -149,31 +149,29 @@ public class Player extends Entity {
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
-		
+/*		
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
-/*
-		worldX = gp.tileSize * 38;
+*/
+		worldX = gp.tileSize * 40;
 		worldY = gp.tileSize * 92;		
 		gp.currentArea = gp.dungeon;		
 		gp.currentMap = 2;		
-		direction = "up";
-		*/
+		direction = "up";		
 	}
 	public void setDefaultItems() {		
-
+/*
 		inventory_item.add(new ITM_Shovel(gp));
-		inventory_item.add(new ITM_Boomerang(gp));
-		inventory_item.add(new ITM_Boots(gp));				
+		inventory_item.add(new ITM_Boomerang(gp));		
 		inventory_item.add(new ITM_Bomb(gp));
 		inventory_item.add(new ITM_Feather(gp));
 		inventory_item.add(new ITM_Bow(gp));		
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));	
-
+		*/
 	}
 	public void restoreStatus() {
 		alive = true;		
@@ -234,7 +232,7 @@ public class Player extends Entity {
 		dialogues[2][0] = "\"I should equip an item first...\"";
 	}
 	
-	// ATTACK, DEFENSE
+	// ATTACK
 	public int getAttack() {
 		if (currentWeapon == null)
 			return 1;
@@ -717,7 +715,7 @@ public class Player extends Entity {
 			}
 			
 			gp.ui.newItem = item;
-			gp.ui.currentDialogue = "You got the " + item.name + "!";
+			gp.ui.currentDialogue = "You got the " + item.name + "!\n" + item.getDescription;
 		}
 		else if (item.type == type_collectable) {
 			item.use(this);

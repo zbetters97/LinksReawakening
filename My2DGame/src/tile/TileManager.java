@@ -2,10 +2,12 @@ package tile;
 
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
@@ -38,9 +40,46 @@ public class TileManager {
 	ArrayList<String> waterStatus = new ArrayList<>();
 	ArrayList<String> pitStatus = new ArrayList<>();
 	
-	public TileManager(GamePanel gp) {
-		
+	public TileManager(GamePanel gp) {		
 		this.gp = gp;
+		
+		loadTileData();
+		
+		gp.maxWorldCol = 100;
+		gp.maxWorldRow = 100;
+		gp.worldWidth = gp.tileSize * 100;
+		gp.worldHeight = gp.tileSize * 100;
+		
+		mapTileNum = new int[gp.maxMap][100][100];
+	}
+	
+	public void loadMap() {
+		
+		String currentMap = "res/maps/" + gp.mapFiles[gp.currentMap];
+		
+		try {			
+			
+			Scanner sc = new Scanner(new File(currentMap));
+			
+			for (int row = 0; sc.hasNextLine(); row++) {
+				
+				String line = sc.nextLine();
+				String numbers[] = line.split(" ");	
+
+				for (int col = 0; col < numbers.length; col++) {										
+					int tileNum = Integer.parseInt(numbers[col]);					
+					mapTileNum[gp.currentMap][col][row] = tileNum;
+				}								
+			}
+			
+			sc.close();
+		} 
+		catch(Exception e) {
+			e.printStackTrace();
+		}		
+	}	
+	
+	private void loadTileData() {
 		
 		// IMPORT TILE DATA		
 		InputStream is = getClass().getResourceAsStream("/maps/tiledata.txt");
@@ -64,32 +103,6 @@ public class TileManager {
 		// ASSIGN TILE COLLISION
 		tile = new Tile[fileNames.size()];
 		getTileImage(); 
-		
-		// IMPORT MAP SIZE
-		is = getClass().getResourceAsStream("/maps/dungeon_01_01.txt");	
-		br = new BufferedReader(new InputStreamReader(is));
-
-		try {
-			String line = br.readLine();
-			String maxTile[] = line.split(" ");			
-			
-			gp.maxWorldCol = maxTile.length;
-			gp.maxWorldRow = maxTile.length;
-			mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
-			
-			gp.worldWidth = gp.tileSize * gp.maxWorldCol;
-			gp.worldHeight = gp.tileSize * gp.maxWorldRow;
-			
-			br.close();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}		
-
-		loadMap("/maps/worldmap.txt", 50, 50, 0);
-		loadMap("/maps/indoor01.txt", 50, 50, 1);
-		loadMap("/maps/dungeon_01_01.txt", 2);
-		loadMap("/maps/dungeon02.txt", 50, 50, 3);
 	}
 	
 	public void getTileImage() {		
@@ -139,78 +152,6 @@ public class TileManager {
 			e.printStackTrace();
 		}
 	}
-	
-	public void loadMap(String filePath, int mapNum) {
-		
-		try {			
-			InputStream is = getClass().getResourceAsStream(filePath); // import map txt file
-			BufferedReader br = new BufferedReader(new InputStreamReader(is)); // read map
-			
-			int col = 0;
-			int row = 0;
-			
-			// loop until map boundaries are hit
-			while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
-								
-				String line = br.readLine(); // read entire row
-				
-				while (col < gp.maxWorldCol) {
-					
-					String numbers[] = line.split(" "); // space is separator
-					int num = Integer.parseInt(numbers[col]); // convert txt to int
-					
-					mapTileNum[mapNum][col][row] = num; // store tile # from map in array
-					col++; // advance to next column					
-				}
-				
-				if (col == gp.maxWorldCol) {
-					col = 0; // do not advance column
-					row++; // advance to next row
-				}
-			}
-			
-			br.close(); // flush from memory
-		} 
-		catch(Exception e) {
-			e.printStackTrace();
-		}		
-	}	
-	
-	public void loadMap(String filePath, int width, int height, int mapNum) {
-		
-		try {			
-			InputStream is = getClass().getResourceAsStream(filePath); // import map txt file
-			BufferedReader br = new BufferedReader(new InputStreamReader(is)); // read map
-			
-			int col = 0;
-			int row = 0;
-			
-			// loop until map boundaries are hit
-			while (col < width && row < height) {
-								
-				String line = br.readLine(); // read entire row
-				
-				while (col < width) {
-					
-					String numbers[] = line.split(" "); // space is separator
-					int num = Integer.parseInt(numbers[col]); // convert txt to int
-					
-					mapTileNum[mapNum][col][row] = num; // store tile # from map in array
-					col++; // advance to next column					
-				}
-				
-				if (col == width) {
-					col = 0; // do not advance column
-					row++; // advance to next row
-				}
-			}
-			
-			br.close(); // flush from memory
-		} 
-		catch(Exception e) {
-			e.printStackTrace();
-		}		
-	}	
 	
 	public void draw(Graphics2D g2) {				
 				

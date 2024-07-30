@@ -21,7 +21,6 @@ import entity.object.OBJ_Door_Closed;
 import entity.player.Player;
 import environment.EnvironmentManager;
 import event.EventHandler;
-import tile.Map;
 import tile.TileManager;
 import tile.tile_interactive.InteractiveTile;
 
@@ -73,8 +72,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public int worldWidth;
 	public int worldHeight;
 	
-	// AMOUNT OF TOTAL MAPS
-	public final int maxMap = 10;
+	// AMOUNT OF TOTAL MAPS	
+	public String[] mapFiles = { "worldmap.txt", "indoor01.txt", "dungeon_01_01.txt", "dungeon_01_02.txt" };
+	public final int maxMap = mapFiles.length;
 	public int currentMap = 0;
 	
 	// FULL SCREEN SETTINGS
@@ -84,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private BufferedImage tempScreen;	
 	
 	// MAP HANDLER
-	public Map map = new Map(this);
+	
 	
 	// VOLUME ADJUSTMENT
 	public int volumeSet = 0;
@@ -129,6 +129,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// HANDLERS
 	public TileManager tileM = new TileManager(this);
+	public Map map = new Map(this);
 	public EnvironmentManager eManager = new EnvironmentManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);	
 	public EventHandler eHandler = new EventHandler(this);	
@@ -162,6 +163,8 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = playState;
 		currentArea = dungeon;
 		currentMap = 2;
+		tileM.loadMap();
+		map.loadWorldMap();
 		
 		setupMusic(false);
 
@@ -344,6 +347,8 @@ public class GamePanel extends JPanel implements Runnable {
 		}		
 		
 		player.resetValues();
+		tileM.loadMap();
+		map.loadWorldMap();
 		currentArea = nextArea;
 		aSetter.setInteractiveObjects();				
 	}

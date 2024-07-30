@@ -8,7 +8,6 @@ import entity.Entity;
 import entity.collectable.COL_Arrow;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
-import entity.collectable.COL_Rupee_Red;
 import entity.item.ITM_Bow;
 
 public class EMY_Goblin_Archer extends Entity {
@@ -107,12 +106,12 @@ public class EMY_Goblin_Archer extends Entity {
 		if (gp.player.inventory.contains(new ITM_Bow(gp))) {
 			if (i < 50) dropItem(new COL_Heart(gp));
 			if (i >= 50 && i < 90) dropItem(new COL_Arrow(gp));
-			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));	
+			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Blue(gp));	
 		}
 		else {
 			if (i < 50) dropItem(new COL_Heart(gp));
 			if (i >= 50 && i < 90) dropItem(new COL_Rupee_Blue(gp));
-			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));
+			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Blue(gp));
 		}
 	}
 }

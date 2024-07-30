@@ -341,7 +341,6 @@ public class KeyHandler implements KeyListener {
 		 * E: INVENTORY
 		 * M: MAP
 		 * N: MINIMAP
-		 * 1: RELOAD MAP
 		 * SHIFT: DEBUG
 		 */		
 
@@ -374,14 +373,10 @@ public class KeyHandler implements KeyListener {
 			gp.gameState = gp.mapState;
 		}
 		else if (code == gp.button_minimap) {
+			
+			if (!gp.map.miniMapOn) playMapOpenSE();
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
-		else if (code == KeyEvent.VK_1) {			
-			switch(gp.currentMap) {
-				case 0: gp.tileM.loadMap("/maps/worldmap.txt", 0); break;
-				case 1: gp.tileM.loadMap("/maps/indoor01.txt", 1); break;
-			}			
-		}		
 		else if (code == KeyEvent.VK_SHIFT) {
 			if (debug) debug = false; 
 			else debug = true;

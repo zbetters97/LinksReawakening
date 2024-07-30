@@ -14,7 +14,7 @@ public class ITM_Boomerang extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to pull in far away\nitems!";
-		getDescription = "Use it to stun enemies or grab far away items!";
+		getDescription = "Use it to stun enemies or grab far away\nitems!";
 		price = 40;
 		
 		projectile = new PRJ_Boomerang(gp);

@@ -4,7 +4,6 @@ import java.util.Random;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.collectable.COL_Heart;
 import entity.projectile.PRJ_Fireball;
 
 public class EMY_Zora extends Entity {
@@ -80,7 +79,7 @@ public class EMY_Zora extends Entity {
 			spriteNum = 2;
 			
 			if (!attacking) {				
-				prepareAttack(120);
+				prepareAttack(100);
 			}
 			else {
 				spriteCounter++;
@@ -133,6 +132,5 @@ public class EMY_Zora extends Entity {
 	// DROPPED ITEM
 	public void checkDrop() {
 		super.checkDrop();		
-		dropItem(new COL_Heart(gp));
 	}
 }

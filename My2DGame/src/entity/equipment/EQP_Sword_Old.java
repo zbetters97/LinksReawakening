@@ -12,7 +12,8 @@ public class EQP_Sword_Old extends Entity {
 		
 		type = type_equipment;	
 		name = eqpName;
-		description = "[" + name + "]\nA humble starter sword.";				
+		description = "[" + name + "]\nA humble starter sword.";	
+		getDescription = "Not a mighty-looking weapon, but it will\nkeep you safe!";
 		attackValue = 4;
 		knockbackPower = 0;
 		

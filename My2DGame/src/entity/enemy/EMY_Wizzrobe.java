@@ -6,7 +6,6 @@ import java.util.Random;
 import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
-import entity.collectable.COL_Rupee_Blue;
 import entity.collectable.COL_Rupee_Green;
 import entity.projectile.PRJ_Magic;
 
@@ -188,7 +187,6 @@ public class EMY_Wizzrobe extends Entity {
 		int i = new Random().nextInt(100) + 1;
 
 		if (i < 50) dropItem(new COL_Heart(gp));
-		if (i >= 50 && i < 90) dropItem(new COL_Rupee_Green(gp));
-		if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Blue(gp));		
+		if (i >= 50) dropItem(new COL_Rupee_Green(gp));	
 	}
 }

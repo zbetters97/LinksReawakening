@@ -1,12 +1,10 @@
 package entity.enemy;
 
 import java.awt.Rectangle;
-import java.util.Random;
 
 import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
-import entity.collectable.COL_Rupee_Green;
 
 public class EMY_Keese extends Entity {
 
@@ -73,10 +71,6 @@ public class EMY_Keese extends Entity {
 	// DROPPED ITEM
 	public void checkDrop() {
 		super.checkDrop();
-		
-		int i = new Random().nextInt(100) + 1;
-		
-		if (i < 50) dropItem(new COL_Heart(gp));
-		else dropItem(new COL_Rupee_Green(gp));
+		dropItem(new COL_Heart(gp));
 	}
 }

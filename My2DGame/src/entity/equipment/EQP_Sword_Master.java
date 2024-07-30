@@ -13,6 +13,7 @@ public class EQP_Sword_Master extends Entity {
 		type = type_equipment;	
 		name = eqpName;
 		description = "[" + name + "]\nThe sword of the hero of legends.";
+		getDescription = "This legendary sword can deal some\nserious damage!";
 		attackValue = 6;
 		knockbackPower = 1;
 		

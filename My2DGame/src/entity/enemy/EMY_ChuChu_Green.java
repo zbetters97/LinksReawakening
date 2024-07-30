@@ -6,7 +6,7 @@ import java.util.Random;
 import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
-import entity.collectable.COL_Rupee_Blue;
+import entity.collectable.COL_Rupee_Green;
 
 public class EMY_ChuChu_Green extends Entity {
 
@@ -115,6 +115,6 @@ public class EMY_ChuChu_Green extends Entity {
 		int i = new Random().nextInt(100) + 1;
 		
 		if (i < 50) dropItem(new COL_Heart(gp));
-		else dropItem(new COL_Rupee_Blue(gp));
+		else dropItem(new COL_Rupee_Green(gp));
 	}
 }
