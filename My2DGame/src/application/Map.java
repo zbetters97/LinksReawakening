@@ -178,7 +178,9 @@ public class Map {
 		int cX;
 		int cY;
 		for (int i = 0; i < gp.obj[1].length; i++) {				
-			if (gp.obj[gp.currentMap][i] != null && gp.obj[gp.currentMap][i].name.equals(OBJ_Chest.objName)) {		
+			if (gp.obj[gp.currentMap][i] != null && 
+					gp.obj[gp.currentMap][i].name.equals(OBJ_Chest.objName) &&
+					!gp.obj[gp.currentMap][i].opened) {		
 				cX = (int)(x + (gp.obj[gp.currentMap][i].worldX / scale));
 				cY = (int)(y + (gp.obj[gp.currentMap][i].worldY / scale));
 				

@@ -84,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private BufferedImage tempScreen;	
 	
 	// MAP HANDLER
-	
+	public Map map = new Map(this);
 	
 	// VOLUME ADJUSTMENT
 	public int volumeSet = 0;
@@ -129,7 +129,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// HANDLERS
 	public TileManager tileM = new TileManager(this);
-	public Map map = new Map(this);
 	public EnvironmentManager eManager = new EnvironmentManager(this);
 	public CollisionChecker cChecker = new CollisionChecker(this);	
 	public EventHandler eHandler = new EventHandler(this);	
@@ -260,11 +259,11 @@ public class GamePanel extends JPanel implements Runnable {
 			updateObjects();
 			updateiTiles();
 			updateParticles();			
-		}
-		
+		}		
 		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
-		if (gameState == fallingState) { player.takingDamage(); }
-		if (gameState == drowningState) { player.takingDamage(); }
+		else if (gameState == fallingState || gameState == drowningState) { 
+			player.takingDamage(); 
+		}
 		
 		// GAME PAUSED
 		if (gameState == pauseState) { }

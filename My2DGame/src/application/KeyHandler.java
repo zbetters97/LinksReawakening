@@ -278,6 +278,7 @@ public class KeyHandler implements KeyListener {
 					gp.stopMusic();
 					gp.saveLoad.load(0);	
 					gp.fileSlot = 0;
+					gp.tileM.loadMap();
 					gp.gameState = gp.playState;
 					gp.setupMusic(true);						
 				}
@@ -294,6 +295,7 @@ public class KeyHandler implements KeyListener {
 					gp.stopMusic();
 					gp.saveLoad.load(1);	
 					gp.fileSlot = 1;
+					gp.tileM.loadMap();
 					gp.gameState = gp.playState;
 					gp.setupMusic(true);						
 				}
@@ -309,6 +311,7 @@ public class KeyHandler implements KeyListener {
 					gp.stopMusic();
 					gp.saveLoad.load(2);
 					gp.fileSlot = 2;
+					gp.tileM.loadMap();
 					gp.gameState = gp.playState;
 					gp.setupMusic(true);						
 				}

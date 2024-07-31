@@ -992,6 +992,7 @@ public class UI {
 						subState = 0;
 						gp.fileSlot = i;
 						gp.saveLoad.load(i);
+						gp.tileM.loadMap();
 						gp.gameState = gp.playState;
 						gp.setupMusic(true);	
 						gp.keyH.actionPressed = false;

@@ -44,15 +44,39 @@ public class SceneManager {
 		npc1 = null;
 		npc2 = null;
 		
-		credits = "Director/Programmer/Writer\n"
+		credits = "DIRECTOR / PRODUCOR\n"
 				+ "Zachary Betters"
-				+ "\n\n\n\n\n\n\n\n\n\n"
-				+ "Special thanks to...\n"
-				+ "RyiSnow\n"
-				+ "Vi_22\n"
+				
+				+ "\n\nPROGRAMMER / QA PROGRAMMER"
+				+ "\nZachary Betters"
+				
+				+ "\n\nWRITING / DIALOGUE"
+				+ "\nZachary Betters"
+				
+				+ "\n\nSPRITE ARTISTS / VISUALS"
+				+ "\nBruce Juice\nDrshnaps\nEternalLight\nMister Mike\nRed Mage Moogle\nSpikey Vi\nXfixium"
+				
+				+ "\n\nSFX / SOUND DESIGN"
+				+ "\nDayjo\nHTW\nViviVGM"
+												
+				+ "\n\nPLAY TESTERS"
+				+ "\nJenna Betters\nJosh Betters\nZachary Betters\nNicholas Carey"		
+				
+				+ "\n\nTECHNOLOGY"
+				+ "\nAudacity\nEclipse\nGimp\nGithub\nGoogle\nReddit\nStackOverflow\nYouTube"
+					
+				+ "\n\nMUSIC FROM"
+				+ "\nA Link to the Past"
+				
+				+ "\n\nINSPIRED BY"
+				+ "\nA Link to the Past\nLink's Awakening\nMinish Cap\nOracle of Ages"
+					+ "\nThe Legend of Zelda NES\nTwilight Princess"
+				
+				+ "\n\nSPECIAL THANKS TO...\n"
 				+ "Nintendo\n"
-				+ "Jenna Betters\n"
+				+ "RyiSnow\n"				
 				+ "You, the player!"
+				
 				+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 				+ "THE END?";
 	}
@@ -466,9 +490,8 @@ public class SceneManager {
 		}
 		else if (phase == 8) {
 			drawBlackScreen(1f);
-			
 			// SCROLL CREDITS			
-			if (y >= -900) {
+			if (y >= -2400) {
 				y--;
 			}	
 			else {

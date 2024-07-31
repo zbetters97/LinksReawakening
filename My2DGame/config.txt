@@ -5,6 +5,6 @@ False
 Music volume
 2
 Sound effects volume
-3
+2
 Text speed
 0

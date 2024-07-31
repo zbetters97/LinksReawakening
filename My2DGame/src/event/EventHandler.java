@@ -132,7 +132,8 @@ public class EventHandler {
 			// BOSS CUTSCENES
 			// QUEEN GOMA
 			if (!Progress.bossDefeated_1_1) { 
-				if (hit(2, 61, 89, true)) {					
+				if (hit(2, 61, 89, true)) {		
+					Progress.bossDefeated_1_1 = true;
 					miniBoss(
 							BOS_Gohma.emyName, 
 							new int[]{60}, new int[]{85}, new String[]{"right"}, new Boolean[]{true}
@@ -142,6 +143,7 @@ public class EventHandler {
 			// SKELETON KING
 			if (!Progress.bossDefeated_1_2) { 
 				if (hit(3, 25, 27, false)) {
+					Progress.bossDefeated_1_2 = true;
 					boss(1); 
 				}
 			}

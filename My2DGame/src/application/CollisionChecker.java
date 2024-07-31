@@ -238,7 +238,7 @@ public class CollisionChecker {
 			}
 		}
 	}
-	
+			
 	// DAMAGE PIT COLLISION
 	public void checkPit(Entity entity, boolean player) {
 		
@@ -264,7 +264,6 @@ public class CollisionChecker {
 		String direction = entity.direction;
 		if (entity.lockon) direction = entity.lockonDirection;		
 		if (entity.knockback) direction = entity.knockbackDirection;
-				
 		switch (direction) {
 			case "up":				
 				
@@ -272,13 +271,8 @@ public class CollisionChecker {
 					
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
-				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX;
-						gp.player.safeWorldY = gp.player.worldY + 35;
-					}
-				}
+
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;
 			case "upleft":
@@ -289,12 +283,7 @@ public class CollisionChecker {
 				entityLeftCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];	
 				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX + 35;
-						gp.player.safeWorldY = gp.player.worldY + 35;
-					}
-				}
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;
 			case "upright":
@@ -305,12 +294,7 @@ public class CollisionChecker {
 				entityRightCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];	
 				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX - 35;
-						gp.player.safeWorldY = gp.player.worldY + 35;
-					}
-				}
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;
 			case "down":
@@ -320,12 +304,7 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];				
 
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX;
-						gp.player.safeWorldY = gp.player.worldY - 35;
-					}
-				}
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;
 			case "downleft":
@@ -336,12 +315,7 @@ public class CollisionChecker {
 				entityLeftCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX + 35;
-						gp.player.safeWorldY = gp.player.worldY - 35;
-					}
-				}
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;
 			case "downright":
@@ -352,12 +326,8 @@ public class CollisionChecker {
 				entityRightCol = entityWorldX / gp.tileSize;
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
 				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX - 35;
-						gp.player.safeWorldY = gp.player.worldY - 35;
-					}
-				}
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
+				
 				break;	
 			case "left":
 				
@@ -366,12 +336,7 @@ public class CollisionChecker {
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX + 35;
-						gp.player.safeWorldY = gp.player.worldY;
-					}
-				}
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;				
 			case "right":
@@ -380,13 +345,8 @@ public class CollisionChecker {
 				
 				tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
 				tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
-				
-				if (player) {
-					if (gp.player.onGround) {
-						gp.player.safeWorldX = gp.player.worldX - 35;
-						gp.player.safeWorldY = gp.player.worldY;
-					}
-				}
+
+				if (player && gp.player.onGround) checkSafeworld(tileNum1, tileNum2);
 				
 				break;
 			default: 
@@ -401,7 +361,7 @@ public class CollisionChecker {
 				if (player) {
 					gp.player.playFallSE();		
 					gp.player.resetValues();
-					gp.player.invincible = true;										
+					gp.player.invincible = true;	
 					gp.gameState = gp.fallingState;
 				}
 				else {
@@ -459,6 +419,13 @@ public class CollisionChecker {
 				entity.action = Action.IDLE;
 		}
 	}	
+	private void checkSafeworld(int tile1, int tile2) {
+		if (!gp.tileM.tile[tile1].pit && !gp.tileM.tile[tile2].pit &&
+				!gp.tileM.tile[tile1].water && !gp.tileM.tile[tile2].water) {					
+			gp.player.safeWorldX = gp.player.worldX;
+			gp.player.safeWorldY = gp.player.worldY;						
+		}		
+	}
 	
 	// BOUNCE COLLISION
 	public void detectBounce(Entity entity) {

@@ -47,10 +47,10 @@ public class Player extends Entity {
 	
 	// COUNTERS
 	public int damageNum = 1, rollNum = 1, pullNum = 1, throwNum = 1, 
-			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
+			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1, gruntNum = 1;
 	
 	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, throwCounter = 0, 
-			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0;
+			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, gruntCounter = 0;
 	
 	// IMAGES
 	public BufferedImage 	
@@ -192,6 +192,7 @@ public class Player extends Entity {
 		transparent = false;	
 		attackCanceled = false;
 		
+		invincibleCounter = 0;
 		damageNum = 1;
 		damageCounter = 0;			
 		lowHPCounter = 0;
@@ -209,6 +210,8 @@ public class Player extends Entity {
 		soarCounter = 0; 		
 		rodNum = 1;
 		rodCounter = 0;
+		gruntNum = 1;
+		gruntCounter = 0;
 		
 		if (currentItem != null && currentItem.name.equals(ITM_Bow.itmName)) {
 			currentItem.charge = 0;
@@ -528,6 +531,7 @@ public class Player extends Entity {
 			
 			// ONLY ROLL WHILE MOVING
 			if (keyH.rollPressed && action == Action.IDLE) { 
+				grunting();				
 				action = Action.ROLLING; 
 				keyH.rollPressed = false; 
 			}	
@@ -602,6 +606,17 @@ public class Player extends Entity {
 			}					
 			spriteCounter = 0;
 		}	
+	}
+	public void grunting() {
+		if (gruntNum == 1) {
+			playGruntSE_1();
+			gruntNum = 2;
+		}
+		else {
+			playGruntSE_2();
+			gruntNum = 1;
+			gruntCounter = 0;
+		}
 	}
 	
 	// INTERACTIONS
@@ -750,6 +765,7 @@ public class Player extends Entity {
 		gp.ui.subState = 0;
 		gp.gameState = gp.itemGetState;
 	}
+
 	
 	// SWORD
 	public void swingSword() {
@@ -863,13 +879,13 @@ public class Player extends Entity {
 			
 			Entity enemy = enemyList[gp.currentMap][i];
 			
-			if (enemy.knockbackPower > 0) {
-				setKnockback(gp.player, enemy, enemy.knockbackPower);
-			}
+			if (enemy.knockbackPower > 0) setKnockback(gp.player, enemy, enemy.knockbackPower);			
 			
 			String guardDirection = getOppositeDirection(enemy.direction);
 			if (action == Action.GUARDING && direction.equals(guardDirection)) {
-				gp.playSE(4, 8);			
+				gp.playSE(4, 8);	
+				
+				if (enemy.knockbackPower == 0) setKnockback(enemy, this, 1);
 			}
 			else {					
 				playHurtSE();
@@ -1313,8 +1329,7 @@ public class Player extends Entity {
 					target.playDeathSE();
 					target.dying = true;
 				}
-			}
-			
+			}			
 		}
 	}
 	public void damageProjectile(int i) {
@@ -1371,9 +1386,9 @@ public class Player extends Entity {
 		else if (18 > damageCounter && 12 >= damageCounter) damageNum = 2;		
 		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
 		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
-		else if (damageCounter >= 60) {
+		else if (damageCounter >= 80) {
 			
-			life-= 2;
+			life -= 2;
 			damageNum = 1;
 			damageCounter = 0;			
 			attackCanceled = false;
@@ -1437,6 +1452,15 @@ public class Player extends Entity {
 				invincibleCounter = 0;
 			}
 		}	
+		
+		// PLAYER SECOND GRUNT 1 SEC AFTER FIRST GRUNT
+		if (gruntNum == 2) {
+			gruntCounter++;
+			if (gruntCounter == 60) {
+				gruntNum = 1;
+				gruntCounter = 0;
+			}
+		}
 	}
 	public void checkDeath() {
 		
@@ -1467,6 +1491,12 @@ public class Player extends Entity {
 	}
 	public void playGuardSE() {
 		gp.playSE(2, 1);
+	}
+	public void playGruntSE_1() {
+		gp.playSE(2, 8);
+	}
+	public void playGruntSE_2() {
+		gp.playSE(2, 9);
 	}
 	public void playBlockSE() {
 		gp.playSE(4, 8);

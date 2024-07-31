@@ -740,6 +740,9 @@ public class Entity {
 		if (!gp.player.invincible && gp.player.alive && !teleporting) {
 						
 			int damage = attack;
+			
+			if (knockbackPower > 0) setKnockback(gp.player, this, knockbackPower);
+			
 			String guardDirection = getOppositeDirection(direction);
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
 				gp.player.playBlockSE();
@@ -750,15 +753,14 @@ public class Entity {
 					user = gp.player;
 					life = maxLife;
 				}
-				else {				
-					if (knockbackPower > 0) setKnockback(gp.player, this, 1);
+				else {							
+					if (knockbackPower == 0) setKnockback(this, gp.player, 1);
 					damage = 0;
 				}
 			}
 			else {
 				gp.player.playHurtSE();
 				
-				if (knockbackPower > 0) setKnockback(gp.player, this, knockbackPower);
 				if (damage < 0) damage = 0;	
 				gp.player.life -= damage;
 				gp.player.transparent = true;

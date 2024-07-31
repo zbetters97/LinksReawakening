@@ -113,8 +113,7 @@ public class EMY_ChuChu_Green extends Entity {
 		super.checkDrop();
 		
 		int i = new Random().nextInt(100) + 1;
-		
-		if (i < 50) dropItem(new COL_Heart(gp));
+		if (i < 70) dropItem(new COL_Heart(gp));
 		else dropItem(new COL_Rupee_Green(gp));
 	}
 }

@@ -104,9 +104,7 @@ public class EMY_Goblin_Archer extends Entity {
 		int i = new Random().nextInt(100) + 1;
 		
 		if (gp.player.inventory.contains(new ITM_Bow(gp))) {
-			if (i < 50) dropItem(new COL_Heart(gp));
-			if (i >= 50 && i < 90) dropItem(new COL_Arrow(gp));
-			if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Blue(gp));	
+			dropItem(new COL_Arrow(gp));
 		}
 		else {
 			if (i < 50) dropItem(new COL_Heart(gp));
