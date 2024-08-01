@@ -81,6 +81,7 @@ public class AssetSetter {
 		
 		if (!Progress.bossDefeated_1_1) {
 			gp.enemy[mapNum][i] = new BOS_Gohma(gp, 64, 83); 
+			gp.enemy[mapNum][i].bounds = 3;
 		}		
 		i++;
 		

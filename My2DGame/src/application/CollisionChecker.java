@@ -204,7 +204,7 @@ public class CollisionChecker {
 			}				
 		}
 		// PLAYER
-		else if (entity == gp.player){
+		else if (entity == gp.player){			
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
 			}

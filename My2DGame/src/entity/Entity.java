@@ -34,7 +34,7 @@ public class Entity {
 	protected int worldYStart;	
 	protected int tempScreenX;
 	protected int tempScreenY;
-	protected int bounds = 999;	
+	public int bounds = 999;	
 	public String direction = "down";	
 	
 	public int type;
@@ -803,12 +803,13 @@ public class Entity {
 		
 		return playerDirection;
 	}
-	protected void hurtAnimation(Graphics2D g2) {		
-		invincibleCounter++;			
+	protected void hurtAnimation(Graphics2D g2) {	
 		if (invincibleCounter % 5 == 0) 
 			changeAlpha(g2, 0.2f);
 	}	
 	protected void dyingAnimation(Graphics2D g2) {
+		
+		transparent = false;
 		
 		dyingCounter++;			
 		if (dyingCounter % 5 == 0) 
@@ -1134,6 +1135,7 @@ public class Entity {
 			if (invincibleCounter > 60) {
 				invincibleCounter = 0;
 				invincible = false;
+				transparent = false;
 			}
 		}
 		
@@ -1279,16 +1281,8 @@ public class Entity {
 				offCenter();
 			}
 						
-			// ENEMY IS HIT
-			if (invincible) {
-				
-				// DISPLAY HP
-				hpBarOn = true;
-				hpBarCounter = 0;	
-				
-				// FLASH OPACITY
-				hurtAnimation(g2);
-			}		
+			// ENEMY HIT, FLASH OPACITY
+			if (transparent) hurtAnimation(g2);	
 			
 			if (action == Action.JUMPING) drawShadow(g2, 5, 50, tempScreenY + 40);
 			if (thrown) drawShadow(g2, 5, 70, tWorldY - gp.player.worldY + gp.player.screenY + 40);						

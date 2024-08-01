@@ -53,18 +53,15 @@ public class SceneManager {
 				+ "\n\nWRITING / DIALOGUE"
 				+ "\nZachary Betters"
 				
-				+ "\n\nSPRITE ARTISTS / VISUALS"
+				+ "\n\nSPRITE ARTISTS"
 				+ "\nBruce Juice\nDrshnaps\nEternalLight\nMister Mike\nRed Mage Moogle\nSpikey Vi\nXfixium"
 				
-				+ "\n\nSFX / SOUND DESIGN"
+				+ "\n\nSFX"
 				+ "\nDayjo\nHTW\nViviVGM"
 												
 				+ "\n\nPLAY TESTERS"
 				+ "\nJenna Betters\nJosh Betters\nZachary Betters\nNicholas Carey"		
 				
-				+ "\n\nTECHNOLOGY"
-				+ "\nAudacity\nEclipse\nGimp\nGithub\nGoogle\nReddit\nStackOverflow\nYouTube"
-					
 				+ "\n\nMUSIC FROM"
 				+ "\nA Link to the Past"
 				
@@ -441,11 +438,13 @@ public class SceneManager {
 				alpha = 1f;
 			}		
 			
-			String text = gp.player.name + "...\nYour long journey has finally come to an end.\n"
+			String endText = gp.player.name 
+					+ "...\nYour long journey has finally come to an end.\n"
 					+ "No evil spirit can ever retain this treasure.\n"
 					+ "Time to return home and rest well\n"
 					+ "knowing the world is at peace...";			
-			drawString(alpha, 38f, 150, text, 70);
+			
+			drawString(alpha, 38f, 150, endText, 70);
 			
 			// WAIT 10 SECONDS
 			if (counterReached(600)) {
@@ -490,14 +489,16 @@ public class SceneManager {
 		}
 		else if (phase == 8) {
 			drawBlackScreen(1f);
+			
+			drawString(1f, 38f, y, credits, 40);
+			
 			// SCROLL CREDITS			
-			if (y >= -2400) {
+			if (y >= -2025) {
 				y--;
 			}	
 			else {
-				// AFTER CREDITS STOP
-			}
-			drawString(1f, 38f, y, credits, 40);
+				// DO NOTHING AFTER CREDITS STOP
+			}			
 		}
 	}
 	

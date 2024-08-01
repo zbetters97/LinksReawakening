@@ -25,7 +25,6 @@ public class TileManager {
 	public int waterTile = 4;
 	public int oceanTile1 = 19;
 	public int oceanTile2 = 39;
-	
 	public int spikeTile = 77;
 	
 	private int waterCounter = 0;

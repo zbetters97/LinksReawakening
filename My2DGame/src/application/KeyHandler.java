@@ -660,9 +660,10 @@ public class KeyHandler implements KeyListener {
 		int code = e.getKeyCode();
 		
 		if (code == gp.button_dirUP) upPressed = false; 
-		if (code == KeyEvent.VK_DOWN) downPressed = false;
+		if (code == gp.button_dirDOWN) downPressed = false;
 		if (code == gp.button_dirLEFT) leftPressed = false;
 		if (code == gp.button_dirRIGHT) rightPressed = false;
+		
 		if (code == gp.button_action) { actionPressed = false; lock = true; }
 		if (code == gp.button_roll) { rollPressed = false; lock = true; }
 		if (code == gp.button_guard) { 
