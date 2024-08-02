@@ -13,8 +13,10 @@ public class OBJ_Door_Oneway extends Entity {
 	public static final String objName = "Oneway Door";
 	public BufferedImage turnUp1, turnUp2, turnUp3, turnDown1, turnDown2, turnDown3;
 	
-	public OBJ_Door_Oneway(GamePanel gp) {
+	public OBJ_Door_Oneway(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_obstacle;
 		name = objName;
@@ -24,13 +26,15 @@ public class OBJ_Door_Oneway extends Entity {
 		
 		getTurnImage();
 	}	
-	public OBJ_Door_Oneway(GamePanel gp, String direction, boolean switchedOn) {
+	public OBJ_Door_Oneway(GamePanel gp, int worldX, int worldY, String direction, boolean switchedOn) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
+		this.direction = direction;
+		this.switchedOn = switchedOn;		
 		
 		type = type_obstacle;
-		name = objName;
-		this.direction = direction;
-		this.switchedOn = switchedOn;
+		name = objName;		
 		collision = true;
 		
 		hitbox = new Rectangle(0, 16, 48, 40);

@@ -8,8 +8,10 @@ public class OBJ_Door_Locked extends Entity {
 	public static final String objName = "Locked Door";
 	private int openCounter = 0;
 	
-	public OBJ_Door_Locked(GamePanel gp) {
+	public OBJ_Door_Locked(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_obstacle;
 		name = objName;

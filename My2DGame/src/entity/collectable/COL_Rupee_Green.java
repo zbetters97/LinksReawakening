@@ -5,7 +5,7 @@ import entity.Entity;
 
 public class COL_Rupee_Green extends Entity {
 
-	public static final String colName = "COL Green Rupee";
+	public static final String colName = "Green Rupee";
 	
 	public COL_Rupee_Green(GamePanel gp) {
 		super(gp);
@@ -19,7 +19,7 @@ public class COL_Rupee_Green extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/COL_RUPEE_GREEN");
+		down1 = setup("/collectables/rupee_green");
 	}
 	
 	public boolean use(Entity user) {		

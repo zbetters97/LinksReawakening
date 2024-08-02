@@ -17,7 +17,7 @@ public class ITM_Shovel extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/ITEM_SHOVEL");
+		down1 = setup("/items/shovel");
 	}
 	
 	public void use() {

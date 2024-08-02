@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class PRJ_Bone extends Projectile {
 
-	public static final String prjName = "PRJ Bone";
+	public static final String prjName = "Bone";
 	
 	public PRJ_Bone(GamePanel gp) {
 		super(gp);
@@ -29,8 +29,8 @@ public class PRJ_Bone extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/bone_down_1");
-		up2 = setup("/projectile/bone_down_2");
+		up1 = setup("/projectiles/bone_down_1");
+		up2 = setup("/projectiles/bone_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

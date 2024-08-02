@@ -25,7 +25,7 @@ public class ITM_Rod extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/ITEM_ROD");
+		down1 = setup("/items/rod");
 	}
 	
 	public void use() {		

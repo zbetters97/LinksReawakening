@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class PRJ_Beam extends Projectile {
 
-	public static final String prjName = "PRJ Beam";
+	public static final String prjName = "Magic Beam";
 	
 	public PRJ_Beam(GamePanel gp) {
 		super(gp);
@@ -27,11 +27,11 @@ public class PRJ_Beam extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/beam_down_1");
+		up1 = setup("/projectiles/beam_down_1");
 		up2 = up1;
 		down1 = up1;
 		down2 = up1;
-		left1 = setup("/projectile/beam_left_1");
+		left1 = setup("/projectiles/beam_left_1");
 		left2 = left1;
 		right1 = left1;
 		right2 = left1;

@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class PRJ_Boomerang extends Projectile {
 
-	public static final String prjName = "PRJ Boomerang";
+	public static final String prjName = "Boomerang Projectile";
 	
 	public PRJ_Boomerang(GamePanel gp) {
 		super(gp);
@@ -29,8 +29,8 @@ public class PRJ_Boomerang extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/boomerang_down_1");
-		up2 = setup("/projectile/boomerang_down_2");
+		up1 = setup("/projectiles/boomerang_down_1");
+		up2 = setup("/projectiles/boomerang_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

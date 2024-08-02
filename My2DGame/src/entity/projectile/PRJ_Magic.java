@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class PRJ_Magic extends Projectile {
 
-	public static final String prjName = "PRJ Magic";
+	public static final String prjName = "Magic";
 	
 	public PRJ_Magic(GamePanel gp) {
 		super(gp);
@@ -26,13 +26,13 @@ public class PRJ_Magic extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/magic_up_1");
+		up1 = setup("/projectiles/magic_up_1");
 		up2 = up1;
-		down1 = setup("/projectile/magic_down_1");
+		down1 = setup("/projectiles/magic_down_1");
 		down2 = down1;
-		left1 = setup("/projectile/magic_left_1");
+		left1 = setup("/projectiles/magic_left_1");
 		left2 = left1;
-		right1 = setup("/projectile/magic_right_1");
+		right1 = setup("/projectiles/magic_right_1");
 		right2 = right1;
 	}
 	

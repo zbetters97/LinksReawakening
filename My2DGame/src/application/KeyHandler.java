@@ -97,7 +97,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 			}
 		}
-		if (code == KeyEvent.VK_DOWN) {
+		if (code == gp.button_dirDOWN) {
 			if (gp.ui.commandNum < 2) {
 				playCursorSE();
 				gp.ui.commandNum++;
@@ -156,7 +156,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 19;
 			}
 		}				
-		if (code == KeyEvent.VK_DOWN) {
+		if (code == gp.button_dirDOWN) {
 			if (gp.ui.commandNum <= 27) {
 				playCursorSE();
 				if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
@@ -259,7 +259,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 			}
 		}
-		if (code == KeyEvent.VK_DOWN) {
+		if (code == gp.button_dirDOWN) {
 			if (gp.ui.commandNum < 3) {
 				playCursorSE();
 				gp.ui.commandNum++;
@@ -380,7 +380,7 @@ public class KeyHandler implements KeyListener {
 			if (!gp.map.miniMapOn) playMapOpenSE();
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
-		else if (code == KeyEvent.VK_SHIFT) {
+		else if (code == gp.button_debug) {
 			if (debug) debug = false; 
 			else debug = true;
 		}
@@ -404,7 +404,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.commandNum--; 
 			}
 		}
-		if (code == KeyEvent.VK_DOWN) { 
+		if (code == gp.button_dirDOWN) { 
 			if (gp.ui.commandNum != maxCommandNum) { 
 				playCursorSE(); 
 				gp.ui.commandNum++; 
@@ -486,7 +486,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.playerSlotRow--; 
 			}
 		}
-		if (code == KeyEvent.VK_DOWN) { 
+		if (code == gp.button_dirDOWN) { 
 			if (gp.ui.playerSlotRow != 3) { 
 				playCursorSE(); 
 				gp.ui.playerSlotRow++; 
@@ -556,7 +556,7 @@ public class KeyHandler implements KeyListener {
 				else
 					playCursorSE(); 
 			}
-			if (code == KeyEvent.VK_DOWN) { 
+			if (code == gp.button_dirDOWN) { 
 				gp.ui.commandNum++;
 				if (gp.ui.commandNum > gp.ui.getLength(gp.ui.npc.responses, gp.ui.responseSet) - 1)					
 					gp.ui.commandNum = gp.ui.getLength(gp.ui.npc.responses, gp.ui.responseSet) - 1;
@@ -573,7 +573,7 @@ public class KeyHandler implements KeyListener {
 					else
 						playCursorSE(); 
 				}
-				if (code == KeyEvent.VK_DOWN) { 
+				if (code == gp.button_dirDOWN) { 
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 2)					
 						gp.ui.commandNum = 2;
@@ -602,7 +602,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.npcSlotRow--; 
 			}
 		}
-		if (code == KeyEvent.VK_DOWN) { 
+		if (code == gp.button_dirDOWN) { 
 			if (gp.ui.npcSlotRow != 3) { 
 				playCursorSE(); 
 				gp.ui.npcSlotRow++; 
@@ -631,7 +631,7 @@ public class KeyHandler implements KeyListener {
 				gp.ui.commandNum = 0;
 			}
 		}
-		if (code == KeyEvent.VK_DOWN) { 
+		if (code == gp.button_dirDOWN) { 
 			if (gp.ui.commandNum != 1) {
 				playCursorSE(); 
 				gp.ui.commandNum = 1;
@@ -706,5 +706,8 @@ public class KeyHandler implements KeyListener {
 	}
 	public void playMapOpenSE() {
 		gp.playSE(1, 7);
+	}
+	public void playMenuReturnSE() {
+		gp.playSE(1, 8);
 	}
 }

@@ -7,7 +7,7 @@ import entity.*;
 
 public class PRJ_Arrow extends Projectile {
 
-	public static final String prjName = "PRJ Arrow";
+	public static final String prjName = "Arrow Projectile";
 	
 	public PRJ_Arrow(GamePanel gp) {
 		super(gp);
@@ -29,13 +29,13 @@ public class PRJ_Arrow extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/arrow_up_1", 35, 35);
+		up1 = setup("/projectiles/arrow_up_1", 35, 35);
 		up2 = up1;
-		down1 = setup("/projectile/arrow_down_1", 35, 35);
+		down1 = setup("/projectiles/arrow_down_1", 35, 35);
 		down2 = down1;
-		left1 = setup("/projectile/arrow_left_1", 35, 35);
+		left1 = setup("/projectiles/arrow_left_1", 35, 35);
 		left2 = left1;
-		right1 = setup("/projectile/arrow_right_1", 35, 35);
+		right1 = setup("/projectiles/arrow_right_1", 35, 35);
 		right2 = right1;	
 	}
 	

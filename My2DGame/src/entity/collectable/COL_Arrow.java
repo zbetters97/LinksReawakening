@@ -5,7 +5,7 @@ import entity.Entity;
 
 public class COL_Arrow extends Entity {
 
-	public static final String colName = "COL Arrow";
+	public static final String colName = "Arrow Collectable";
 	
 	public COL_Arrow(GamePanel gp) {
 		super(gp);
@@ -19,8 +19,7 @@ public class COL_Arrow extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/objects/PRJ_ARROWS", gp.tileSize - 15, gp.tileSize - 15);
-		image1 = down1;
+		down1 = setup("/collectables/arrow", 35, 35);
 	}
 	
 	public boolean use(Entity user) {

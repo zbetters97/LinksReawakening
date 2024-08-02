@@ -9,8 +9,10 @@ public class OBJ_Chest extends Entity {
 	
 	public static final String objName = "Chest";
 	
-	public OBJ_Chest(GamePanel gp) {
+	public OBJ_Chest(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_obstacle_i;
 		name = objName;
@@ -24,10 +26,12 @@ public class OBJ_Chest extends Entity {
 		hitboxDefaultWidth = hitbox.width;
 		hitboxDefaultHeight = hitbox.height;
 	}	
-	public OBJ_Chest(GamePanel gp, Entity loot) {
+	public OBJ_Chest(GamePanel gp, int worldX, int worldY, Entity loot) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		this.loot = loot;
-		
+				
 		type = type_obstacle_i;
 		name = objName;
 		

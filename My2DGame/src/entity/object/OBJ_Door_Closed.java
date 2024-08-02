@@ -5,11 +5,13 @@ import entity.Entity;
 
 public class OBJ_Door_Closed extends Entity {
 	
-	public static final String objName = "Iron Door";
+	public static final String objName = "Closed Door";
 	private int openCounter = 0;
 	
-	public OBJ_Door_Closed(GamePanel gp) {
+	public OBJ_Door_Closed(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 					
 		type = type_obstacle;
 		name = objName;

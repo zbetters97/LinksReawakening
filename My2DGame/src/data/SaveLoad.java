@@ -262,19 +262,19 @@ public class SaveLoad {
 			// PLAYER COLLECTABLES
 			gp.player.inventory.clear();			
 			for (int i = 0; i < ds.colNames.size(); i++) {				
-				gp.player.inventory.add(gp.eGenerator.getObject(ds.colNames.get(i)));
+				gp.player.inventory.add(gp.eGenerator.getItem(ds.colNames.get(i)));
 				gp.player.inventory.get(i).amount = ds.colAmounts.get(i);
 			}
 			
 			// PLAYER ITEMS
 			gp.player.inventory_item.clear();			
 			for (int i = 0; i < ds.itemNames.size(); i++) {				
-				gp.player.inventory_item.add(gp.eGenerator.getObject(ds.itemNames.get(i)));
+				gp.player.inventory_item.add(gp.eGenerator.getItem(ds.itemNames.get(i)));
 			}
 			
 			// PLAYER EQUIPMENT
-			gp.player.currentWeapon = gp.eGenerator.getObject(ds.sword);
-			gp.player.currentShield = gp.eGenerator.getObject(ds.shield);
+			gp.player.currentWeapon = gp.eGenerator.getItem(ds.sword);
+			gp.player.currentShield = gp.eGenerator.getItem(ds.shield);
 			gp.player.getAttack();
 			gp.player.getAttackImage();
 			gp.player.canSwim = ds.canSwim;		
@@ -307,7 +307,7 @@ public class SaveLoad {
 								// GET ITEMS FROM KEY-VALUE AND ADD TO INVENTORY
 								List<String> items = ds.npcInventory.get(name);								
 								for (String item : items) {
-									gp.npc[mapNum][i].inventory.add(gp.eGenerator.getObject(item));
+									gp.npc[mapNum][i].inventory.add(gp.eGenerator.getItem(item));
 								}
 							}
 						}
@@ -333,15 +333,32 @@ public class SaveLoad {
 					if (ds.mapObjectNames[mapNum][i].equals("NULL")) {
 						gp.obj[mapNum][i] = null;
 					}
-					else if (gp.obj[mapNum][i] != null){						
-						gp.obj[mapNum][i] = gp.eGenerator.getObject(ds.mapObjectNames[mapNum][i]);
-						gp.obj[mapNum][i].worldX = ds.mapObjectWorldX[mapNum][i];
-						gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];						
+					else if (gp.obj[mapNum][i] != null){	
+						
+						// IF MAP OBJECT IS COLLECTABLE / EQUIPMENT / ITEM
+						if (gp.eGenerator.getObject(
+								ds.mapObjectNames[mapNum][i], 
+								ds.mapObjectWorldX[mapNum][i] * gp.tileSize, 
+								ds.mapObjectWorldY[mapNum][i] * gp.tileSize
+						) == null) {
+							gp.obj[mapNum][i] = gp.eGenerator.getItem(ds.mapObjectNames[mapNum][i]);
+							gp.obj[mapNum][i].worldX = ds.mapObjectWorldX[mapNum][i];
+							gp.obj[mapNum][i].worldY = ds.mapObjectWorldY[mapNum][i];
+						}
+						// MAP OBJECT IS REGULAR OBJECT
+						else {
+							gp.obj[mapNum][i] = gp.eGenerator.getObject(
+									ds.mapObjectNames[mapNum][i], 
+									ds.mapObjectWorldX[mapNum][i] / gp.tileSize, 
+									ds.mapObjectWorldY[mapNum][i] / gp.tileSize
+							);
+						}
+						
 						gp.obj[mapNum][i].direction = ds.mapObjectDirections[mapNum][i];
 						gp.obj[mapNum][i].switchedOn = ds.mapObjectSwitchedOn[mapNum][i];						
 					
 						if (ds.mapObjectLootNames[mapNum][i] != null) {
-							gp.obj[mapNum][i].setLoot(gp.eGenerator.getObject(ds.mapObjectLootNames[mapNum][i]));							
+							gp.obj[mapNum][i].setLoot(gp.eGenerator.getItem(ds.mapObjectLootNames[mapNum][i]));							
 						}
 						
 						gp.obj[mapNum][i].opened = ds.mapObjectOpened[mapNum][i];
@@ -366,7 +383,7 @@ public class SaveLoad {
 						gp.iTile[mapNum][i].switchedOn = ds.iTileSwitchedOn[mapNum][i];	
 						
 						if (ds.iTileLootNames[mapNum][i] != null) {
-							gp.iTile[mapNum][i].setLoot(gp.eGenerator.getObject(ds.iTileLootNames[mapNum][i]));
+							gp.iTile[mapNum][i].setLoot(gp.eGenerator.getItem(ds.iTileLootNames[mapNum][i]));
 						}						
 					}					
 				}			

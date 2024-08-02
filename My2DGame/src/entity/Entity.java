@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import application.GamePanel;
 import application.UtilityTool;
 import data.Progress;
+import entity.enemy.EMY_Beetle;
 import entity.enemy.EMY_Stalfos;
 import entity.enemy.EMY_Zora;
 import entity.projectile.PRJ_Seed;
@@ -51,7 +52,7 @@ public class Entity {
 	// SPRITE HANDLING
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
-	public BufferedImage image1, image2, image3,
+	public BufferedImage image, image1, image2, image3,
 							up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3,							
 							attackUp1, attackUp2, attackUp3, attackDown1, attackDown2, attackDown3,
 							attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3,							
@@ -746,12 +747,16 @@ public class Entity {
 			String guardDirection = getOppositeDirection(direction);
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
 				gp.player.playBlockSE();
-								
+				
 				if (name.equals(PRJ_Seed.prjName)) {
 					direction = gp.player.direction;
 					collisionOn = false;
 					user = gp.player;
 					life = maxLife;
+				}
+				else if (name.equals(EMY_Beetle.emyName)) {
+					attacking = true;
+					setKnockback(this, gp.player, 1);
 				}
 				else {							
 					if (knockbackPower == 0) setKnockback(this, gp.player, 1);
@@ -939,7 +944,7 @@ public class Entity {
 	// ITEM RETRIEVAL
 	public boolean canObtainItem(Entity item) {
 		
-		Entity newItem = gp.eGenerator.getObject(item.name);
+		Entity newItem = gp.eGenerator.getItem(item.name);
 		newItem.amount = 1;	
 		
 		// STACKABLE
@@ -952,13 +957,15 @@ public class Entity {
 				// NOT TOO MANY
 				if (inventory.get(index).amount != 999) {
 					inventory.get(index).amount++;
+					newItem.playSE();
 					return true;
 				}
 			}
 			// NEW ITEM
 			else {
 				if (inventory.size() != maxInventorySize) {						
-					inventory.add(newItem);					
+					inventory.add(newItem);	
+					newItem.playSE();
 					return true;
 				}
 			}	
@@ -1277,7 +1284,8 @@ public class Entity {
 			}
 			
 			// AVOIDS BUG WITH ATTACKING SPRITE
-			if (name.equals(EMY_Zora.emyName) || name.equals(EMY_Stalfos.emyName)) {
+			if (name.equals(EMY_Beetle.emyName) || name.equals(EMY_Stalfos.emyName) ||
+					name.equals(EMY_Zora.emyName)) {
 				offCenter();
 			}
 						

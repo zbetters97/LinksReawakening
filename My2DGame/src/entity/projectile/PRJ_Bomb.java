@@ -10,7 +10,7 @@ import tile.tile_interactive.IT_Switch;
 
 public class PRJ_Bomb extends Projectile {
 
-	public static final String prjName = "PRJ Bomb";
+	public static final String prjName = "Bomb Projectile";
 	
 	public PRJ_Bomb(GamePanel gp) {
 		super(gp);
@@ -24,7 +24,7 @@ public class PRJ_Bomb extends Projectile {
 		
 		animationSpeed = 30;
 		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 
-		attack = 5;
+		attack = 6;
 		useCost = 1;
 		maxLife = 240; life = maxLife;
 		alive = false;
@@ -37,8 +37,8 @@ public class PRJ_Bomb extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/bomb_down_1");
-		up2 = setup("/projectile/bomb_down_2");
+		up1 = setup("/projectiles/bomb_down_1");
+		up2 = setup("/projectiles/bomb_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

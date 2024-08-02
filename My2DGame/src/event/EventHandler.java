@@ -337,10 +337,8 @@ public class EventHandler {
 					// CREATE NEW DOOR
 					if (gp.obj[gp.currentMap][c] == null) {	
 						
-						gp.obj[gp.currentMap][c] = new OBJ_Door_Closed(gp);
+						gp.obj[gp.currentMap][c] = new OBJ_Door_Closed(gp, dX[i], dY[i]);
 						gp.obj[gp.currentMap][c].closing = true;
-						gp.obj[gp.currentMap][c].worldX = dX[i] * gp.tileSize;
-						gp.obj[gp.currentMap][c].worldY = dY[i] * gp.tileSize;
 						gp.obj[gp.currentMap][c].direction = dir[i];
 						gp.obj[gp.currentMap][c].temp = temp[i];
 						

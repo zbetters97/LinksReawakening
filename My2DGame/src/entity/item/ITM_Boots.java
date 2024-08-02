@@ -20,7 +20,7 @@ public class ITM_Boots extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/items/ITEM_BOOTS");
+		down1 = setup("/items/boots");
 	}
 	
 	public void use() {

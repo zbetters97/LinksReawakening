@@ -47,7 +47,7 @@ public class Sound {
 		menu[4] = getClass().getResource("/sound/MENU_CLOSE.wav");
 		menu[5] = getClass().getResource("/sound/MENU_DIALOGUE.wav");
 		menu[6] = getClass().getResource("/sound/MENU_DIALOGUE_FINISH.wav");
-		menu[7] = getClass().getResource("/sound/MENU_MAP.wav");		
+		menu[7] = getClass().getResource("/sound/MENU_MAP.wav");
 		
 		// 2
 		player[0] = getClass().getResource("/sound/PLAYER_WALLET.wav");		
@@ -69,6 +69,7 @@ public class Sound {
 		enemies[4] = getClass().getResource("/sound/BOSS_HIT.wav");
 		enemies[5] = getClass().getResource("/sound/BOSS_DIE.wav");
 		enemies[6] = getClass().getResource("/sound/ENEMY_SHOCK.wav");
+		enemies[7] = getClass().getResource("/sound/ENEMY_TELEPORT.wav");
 		
 		// 4
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");			

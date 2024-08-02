@@ -152,7 +152,7 @@ public class EMY_Wizzrobe extends Entity {
 				spriteNum = 2;
 				spriteCounter = 0;
 				teleporting = true;					
-				teleportCounter = 0;					
+				teleportCounter = 0;
 			}
 		}
 	}
@@ -168,9 +168,12 @@ public class EMY_Wizzrobe extends Entity {
 		spriteNum = 2;
 		spriteCounter = 0;
 		teleporting = true;					
-		teleportCounter = 0;		
+		teleportCounter = 0;	
 	}
 	
+	public void playTeleportSE() {
+		gp.playSE(3, 7);
+	}
 	public void playHurtSE() {
 		gp.playSE(3, 0);
 	}

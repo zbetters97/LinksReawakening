@@ -7,7 +7,7 @@ import application.GamePanel;
 
 public class PRJ_Fireball extends Projectile {
 
-	public static final String prjName = "PRJ Fireball";
+	public static final String prjName = "Fireball";
 	
 	public PRJ_Fireball(GamePanel gp) {
 		super(gp);
@@ -27,8 +27,8 @@ public class PRJ_Fireball extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/fireball_down_1");
-		up2 = setup("/projectile/fireball_down_2");
+		up1 = setup("/projectiles/fireball_down_1");
+		up2 = setup("/projectiles/fireball_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

@@ -7,8 +7,10 @@ public class OBJ_Tent extends Entity {
 	
 	public static final String objName = "Tent";
 	
-	public OBJ_Tent(GamePanel gp) {
+	public OBJ_Tent(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_obstacle_i;
 		name = objName;

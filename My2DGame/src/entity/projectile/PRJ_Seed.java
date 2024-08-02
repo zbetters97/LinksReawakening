@@ -6,7 +6,7 @@ import application.GamePanel;
 
 public class PRJ_Seed extends Projectile {
 
-	public static final String prjName = "PRJ Seed";
+	public static final String prjName = "Seed";
 	
 	public PRJ_Seed(GamePanel gp) {
 		super(gp);
@@ -26,7 +26,7 @@ public class PRJ_Seed extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/seed_down_1");
+		up1 = setup("/projectiles/seed_down_1");
 		up2 = up1;
 		down1 = up1;
 		down2 = up1;

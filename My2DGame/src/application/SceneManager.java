@@ -287,9 +287,7 @@ public class SceneManager {
 			for (int i = 0; i < gp.obj[1].length; i++) {
 				if (gp.obj[gp.currentMap][i] == null) {
 										
-					gp.obj[gp.currentMap][i] = new OBJ_Door_Closed(gp);
-					gp.obj[gp.currentMap][i].worldX = gp.tileSize * 25;
-					gp.obj[gp.currentMap][i].worldY = gp.tileSize * 28;
+					gp.obj[gp.currentMap][i] = new OBJ_Door_Closed(gp, 25, 28);
 					gp.obj[gp.currentMap][i].direction = "up";
 					gp.obj[gp.currentMap][i].temp = true;
 					gp.obj[gp.currentMap][i].playCloseSE();
@@ -396,7 +394,7 @@ public class SceneManager {
 		if (phase == 0) {
 			gp.stopMusic();
 			gp.player.resetValues();			
-			gp.ui.npc = new OBJ_BlueHeart(gp);
+			gp.ui.npc = new OBJ_BlueHeart(gp, 0, 0);
 			phase++;
 		}
 		else if (phase == 1) {

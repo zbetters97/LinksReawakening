@@ -8,7 +8,7 @@ import entity.projectile.PRJ_Bomb;
 
 public class ITM_Bomb extends Entity {
 	
-	public static final String itmName = "Bombs";
+	public static final String itmName = "Bomb Item";
 	
 	public ITM_Bomb(GamePanel gp) {
 		super(gp);
@@ -23,7 +23,7 @@ public class ITM_Bomb extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/items/ITEM_BOMB");
+		down1 = setup("/items/bomb");
 	}
 	
 	public boolean use(Entity user) {

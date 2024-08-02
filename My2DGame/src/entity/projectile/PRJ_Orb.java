@@ -7,7 +7,7 @@ import application.GamePanel;
 
 public class PRJ_Orb extends Projectile {
 
-	public static final String prjName = "PRJ Orb";
+	public static final String prjName = "Orb";
 	
 	public PRJ_Orb(GamePanel gp) {
 		super(gp);
@@ -28,8 +28,8 @@ public class PRJ_Orb extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/rod_down_1");
-		up2 = setup("/projectile/rod_down_2");
+		up1 = setup("/projectiles/rod_down_1");
+		up2 = setup("/projectiles/rod_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;

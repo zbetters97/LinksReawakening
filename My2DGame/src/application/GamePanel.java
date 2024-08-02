@@ -36,9 +36,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
+	public UI ui = new UI(this, keyH);
 	public Sound music = new Sound();
-	public Sound se = new Sound();	
-	public UI ui = new UI(this);
+	public Sound se = new Sound();		
 	
 	// BUTTON MAPPING
 	public int button_dirUP = KeyEvent.VK_UP;
@@ -56,6 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public int button_map = KeyEvent.VK_M;
 	public int button_minimap = KeyEvent.VK_N;
 	public int button_pause = KeyEvent.VK_ESCAPE;
+	public int button_debug = KeyEvent.VK_SHIFT;
 	
 	// SCREEN SETTINGS
 	private final int originalTileSize = 16; // 16x16 tile
@@ -429,6 +430,8 @@ public class GamePanel extends JPanel implements Runnable {
 		player.setDefaultValues();
 		player.setDefaultPosition();	
 		player.resetCounter();		
+		
+		ui.rupeeCount = 0;
 		
 		aSetter.setNPC();
 		aSetter.setEnemy();		

@@ -7,8 +7,10 @@ public class OBJ_Block_Locked extends Entity {
 	
 	public static final String objName = "Locked Block";
 	
-	public OBJ_Block_Locked(GamePanel gp) {
+	public OBJ_Block_Locked(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_obstacle;
 		name = objName;

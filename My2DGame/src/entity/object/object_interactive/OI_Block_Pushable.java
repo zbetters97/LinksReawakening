@@ -14,8 +14,10 @@ public class OI_Block_Pushable extends Entity {
 	public static final String obj_iName = "Pushable Block";
 	public int pushCounter = 0;
 	
-	public OI_Block_Pushable(GamePanel gp) {		
+	public OI_Block_Pushable(GamePanel gp, int worldX, int worldY) {		
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_obstacle;
 		name = obj_iName;

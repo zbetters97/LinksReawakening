@@ -5,7 +5,7 @@ import entity.Entity;
 
 public class COL_Bomb extends Entity {
 
-	public static final String colName = "COL Bomb";
+	public static final String colName = "Bomb Collectable";
 	
 	public COL_Bomb(GamePanel gp) {
 		super(gp);
@@ -19,7 +19,7 @@ public class COL_Bomb extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/projectile/bomb_down_1");
+		down1 = setup("/collectables/bomb");
 	}
 	
 	public boolean use(Entity user) {

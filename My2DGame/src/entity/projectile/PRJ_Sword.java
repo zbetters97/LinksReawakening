@@ -5,7 +5,7 @@ import entity.*;
 
 public class PRJ_Sword extends Projectile {
 	
-	public final static String prjName = "PRJ Sword Beam";
+	public final static String prjName = "Sword Beam";
 	
 	public PRJ_Sword(GamePanel gp) {
 		super(gp);
@@ -21,14 +21,14 @@ public class PRJ_Sword extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectile/sword_up_1");
-		up2 = setup("/projectile/sword_up_2");
-		down1 = setup("/projectile/sword_down_1");
-		down2 = setup("/projectile/sword_down_2");
-		left1 = setup("/projectile/sword_left_1");
-		left2 = setup("/projectile/sword_left_2");
-		right1 = setup("/projectile/sword_right_1");
-		right2 = setup("/projectile/sword_right_2");		
+		up1 = setup("/projectiles/sword_up_1");
+		up2 = setup("/projectiles/sword_up_2");
+		down1 = setup("/projectiles/sword_down_1");
+		down2 = setup("/projectiles/sword_down_2");
+		left1 = setup("/projectiles/sword_left_1");
+		left2 = setup("/projectiles/sword_left_2");
+		right1 = setup("/projectiles/sword_right_1");
+		right2 = setup("/projectiles/sword_right_2");		
 	}
 	
 	public boolean hasResource(Entity user) {		

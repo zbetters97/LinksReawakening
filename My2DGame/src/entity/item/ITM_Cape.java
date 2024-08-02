@@ -17,7 +17,7 @@ public class ITM_Cape extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/ITEM_CAPE");
+		down1 = setup("/items/cape");
 	}
 	
 	public void use() {

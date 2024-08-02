@@ -7,8 +7,10 @@ public class OBJ_BlueHeart extends Entity {
 	
 	public static final String objName = "Blue Heart";
 	
-	public OBJ_BlueHeart(GamePanel gp) {
+	public OBJ_BlueHeart(GamePanel gp, int worldX, int worldY) {
 		super(gp);
+		this.worldX = worldX *= gp.tileSize;
+		this.worldY = worldY *= gp.tileSize;
 		
 		type = type_pickupOnly;
 		name = objName;

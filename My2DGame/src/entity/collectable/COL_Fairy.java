@@ -5,19 +5,19 @@ import java.awt.Rectangle;
 import application.GamePanel;
 import entity.Entity;
 
-public class COL_Heart extends Entity {
+public class COL_Fairy extends Entity {
 	
-	public static final String colName = "Heart Collectable";
+	public static final String colName = "Fairy";
 	
-	public COL_Heart(GamePanel gp) {
+	public COL_Fairy(GamePanel gp) {
 		super(gp);
 		
 		collision = false;
 		
-		type = type_collectable;		
+		type = type_consumable;		
 		name = colName;
-		value = 4;
-		lifeDuration = 60 * 6; // REMOVE AFTER 6 SECONDS
+		description = "[Fairy]\nHeals all hearts.";
+		stackable = true;
 		
 		hitbox = new Rectangle(9, 9, 30, 30); 		
 		hitboxDefaultX = hitbox.x;
@@ -27,18 +27,19 @@ public class COL_Heart extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/heart");
+		down1 = setup("/collectables/fairy");
 	}
 	
 	public boolean use(Entity user) {
-		playSE();
-		user.life += value;
-		if (user.life > user.maxLife) {
-			user.life = user.maxLife;
-		}
+		playHealSE();
+		user.life = user.maxLife;
 		return true;
 	}
 	public void playSE() {
-		gp.playSE(6, 2);	
+		gp.playSE(6, 2);
 	}
+	public void playHealSE() {
+		gp.playSE(6, 3);
+	}
+	
 }

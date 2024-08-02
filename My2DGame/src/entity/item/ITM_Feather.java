@@ -17,7 +17,7 @@ public class ITM_Feather extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/ITEM_FEATHER");
+		down1 = setup("/items/feather");
 	}
 	
 	public void use() {
