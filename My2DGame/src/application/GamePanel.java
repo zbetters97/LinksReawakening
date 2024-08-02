@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// CONTROLS / SOUND / UI
 	public KeyHandler keyH = new KeyHandler(this);
-	public UI ui = new UI(this, keyH);
+	public UI ui = new UI(this);
 	public Sound music = new Sound();
 	public Sound se = new Sound();		
 	
@@ -118,7 +118,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public boolean bossBattleOn = false;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
-	public Player player = new Player(this, keyH);	
+	public Player player = new Player(this);	
 	public Entity npc[][] = new Entity[maxMap][10]; 
 	public Entity enemy[][] = new Entity[maxMap][50]; 
 	public Entity obj[][] = new Entity[maxMap][20];

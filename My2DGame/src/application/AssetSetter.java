@@ -55,8 +55,6 @@ public class AssetSetter {
 		mapNum = 2;
 		i = 0;		
 		
-		gp.enemy[mapNum][i] = new EMY_Beetle(gp, 40, 87); i++;
-		
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 28, 90); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 10, 89); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 12, 89); i++;

@@ -20,7 +20,7 @@ public class EMY_Octorok extends Entity {
 		name = emyName;
 		canSwim = true;
 		
-		maxLife = 8; life = maxLife;
+		maxLife = 6; life = maxLife;
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 15;		
 		attack = 2;

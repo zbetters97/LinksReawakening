@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import application.GamePanel;
-import application.KeyHandler;
 import data.Progress;
 import entity.Entity;
 import entity.collectable.COL_Fairy;
@@ -26,10 +25,7 @@ import tile.tile_interactive.IT_Switch;
 public class Player extends Entity {
 	
 /** PLAYER VARIABLES **/
-	
-	// KEY INPUT
-	private KeyHandler keyH;
-	
+		
 	// POSITIONING
 	public int screenX;
 	public int screenY;	
@@ -82,11 +78,8 @@ public class Player extends Entity {
 		
 /** PLAYER CONSTRUCTOR **/
 	
-	public Player(GamePanel gp, KeyHandler keyH) {
-		
-		// pass GamePanel to Entity abstract class
+	public Player(GamePanel gp) {
 		super(gp);		
-		this.keyH = keyH;
 		
 		// PLAYER POSITION LOCKED TO CENTER
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2); 
@@ -414,7 +407,7 @@ public class Player extends Entity {
 		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return;	}
 		
-		if (keyH.ztargetPressed) { keyH.ztargetPressed = false; lockon = !lockon; }		
+		if (gp.keyH.ztargetPressed) { gp.keyH.ztargetPressed = false; lockon = !lockon; }		
 		if (lockon && action != Action.AIMING) { zTarget(); }
 		else {
 			if (lockedTarget != null) {
@@ -432,17 +425,17 @@ public class Player extends Entity {
 				case "down":
 				case "downleft":
 				case "downright":
-					keyH.upPressed = false; keyH.downPressed = false;
-					if ((keyH.leftPressed || keyH.rightPressed)) { walking(); }
+					gp.keyH.upPressed = false; gp.keyH.downPressed = false;
+					if ((gp.keyH.leftPressed || gp.keyH.rightPressed)) { walking(); }
 					break;
 				case "left":
 				case "right":			
-					keyH.leftPressed = false; keyH.rightPressed = false;
-					if ((keyH.upPressed || keyH.downPressed)) { walking(); }
+					gp.keyH.leftPressed = false; gp.keyH.rightPressed = false;
+					if ((gp.keyH.upPressed || gp.keyH.downPressed)) { walking(); }
 					break;
 			}
 			
-			if (keyH.itemPressed) {
+			if (gp.keyH.itemPressed) {
 				currentItem.setCharge(this);
 			}
 			else {
@@ -455,7 +448,7 @@ public class Player extends Entity {
 		else if (action == Action.SOARING) { jumping(); }
 		else if (action == Action.GRABBING) { grabbing(); }		
 		else if (action == Action.CARRYING) {
-			if (keyH.grabPressed) {
+			if (gp.keyH.grabPressed) {
 				playThrowSE();
 				
 				action = Action.THROWING;
@@ -475,7 +468,7 @@ public class Player extends Entity {
 				
 				return;
 			}
-			if (keyH.itemPressed) {
+			if (gp.keyH.itemPressed) {
 				if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
 					
 					action = Action.THROWING;
@@ -491,15 +484,15 @@ public class Player extends Entity {
 		// DISABLED ACTIONS DURING CERTAIN ACTIONS
 		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.JUMPING
 				&& action != Action.CARRYING && action != Action.SOARING && action != Action.ROLLING) {			
-			if (keyH.actionPressed) { action(); }
+			if (gp.keyH.actionPressed) { action(); }
 			if (attacking) { attacking(); manageValues(); checkDeath(); return; }	
-			if (keyH.guardPressed) { action = Action.GUARDING; }	
-			if (keyH.grabPressed) { grabbing(); }			
-			if (keyH.itemPressed) { useItem(); }					
-			if (keyH.tabPressed) { cycleItems(); }
+			if (gp.keyH.guardPressed) { action = Action.GUARDING; }	
+			if (gp.keyH.grabPressed) { grabbing(); }			
+			if (gp.keyH.itemPressed) { useItem(); }					
+			if (gp.keyH.tabPressed) { cycleItems(); }
 		}	
 		
-		if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && 
+		if ((gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) && 
 				action != Action.AIMING && action != Action.GRABBING) { 
 			walking(); 					
 		}
@@ -516,14 +509,14 @@ public class Player extends Entity {
 	// MOVEMENT
 	public void walking() {
 		
-		if (keyH.guardPressed && action != Action.SWIMMING) {
+		if (gp.keyH.guardPressed && action != Action.SWIMMING) {
 			getDirection(); return;
 		}
 		
 		// DONT CHANGE DIRECTIONS WHILE ROLLING
 		if (action != Action.ROLLING) getDirection();
 		
-		if (!keyH.debug) checkCollision();
+		if (!gp.keyH.debug) checkCollision();
 		if (!collisionOn) { 
 			
 			if (lockon) move(lockonDirection);			
@@ -532,10 +525,10 @@ public class Player extends Entity {
 			cycleSprites();	
 			
 			// ONLY ROLL WHILE MOVING
-			if (keyH.rollPressed && action == Action.IDLE) { 
+			if (gp.keyH.rollPressed && action == Action.IDLE) { 
 				grunting();				
 				action = Action.ROLLING; 
-				keyH.rollPressed = false; 
+				gp.keyH.rollPressed = false; 
 			}	
 		}
 	}
@@ -543,26 +536,26 @@ public class Player extends Entity {
 		
 		// KEEP PLAYER FACING ENEMY
 		if (lockon) {
-			if (keyH.upPressed) lockonDirection = "up";
-			if (keyH.downPressed) lockonDirection = "down";
-			if (keyH.leftPressed) lockonDirection = "left";
-			if (keyH.rightPressed) lockonDirection = "right";			
+			if (gp.keyH.upPressed) lockonDirection = "up";
+			if (gp.keyH.downPressed) lockonDirection = "down";
+			if (gp.keyH.leftPressed) lockonDirection = "left";
+			if (gp.keyH.rightPressed) lockonDirection = "right";			
 			
-			if (keyH.upPressed && keyH.leftPressed) lockonDirection = "upleft";
-			if (keyH.upPressed && keyH.rightPressed) lockonDirection = "upright";
-			if (keyH.downPressed && keyH.leftPressed) lockonDirection = "downleft";
-			if (keyH.downPressed && keyH.rightPressed) lockonDirection = "downright";	
+			if (gp.keyH.upPressed && gp.keyH.leftPressed) lockonDirection = "upleft";
+			if (gp.keyH.upPressed && gp.keyH.rightPressed) lockonDirection = "upright";
+			if (gp.keyH.downPressed && gp.keyH.leftPressed) lockonDirection = "downleft";
+			if (gp.keyH.downPressed && gp.keyH.rightPressed) lockonDirection = "downright";	
 		}		
 		else {			
-			if (keyH.upPressed) direction = "up";
-			if (keyH.downPressed) direction = "down";
-			if (keyH.leftPressed) direction = "left";
-			if (keyH.rightPressed) direction = "right";			
+			if (gp.keyH.upPressed) direction = "up";
+			if (gp.keyH.downPressed) direction = "down";
+			if (gp.keyH.leftPressed) direction = "left";
+			if (gp.keyH.rightPressed) direction = "right";			
 			
-			if (keyH.upPressed && keyH.leftPressed) direction = "upleft";
-			if (keyH.upPressed && keyH.rightPressed) direction = "upright";
-			if (keyH.downPressed && keyH.leftPressed) direction = "downleft";
-			if (keyH.downPressed && keyH.rightPressed) direction = "downright";	
+			if (gp.keyH.upPressed && gp.keyH.leftPressed) direction = "upleft";
+			if (gp.keyH.upPressed && gp.keyH.rightPressed) direction = "upright";
+			if (gp.keyH.downPressed && gp.keyH.leftPressed) direction = "downleft";
+			if (gp.keyH.downPressed && gp.keyH.rightPressed) direction = "downright";	
 		}
 	}
 	public void move(String direction) {
@@ -629,7 +622,7 @@ public class Player extends Entity {
 				
 		collisionOn = false;
 		
-		if (keyH.debug) return;
+		if (gp.keyH.debug) return;
 		
 		// CHECK EVENTS
 		gp.eHandler.checkEvent();
@@ -666,8 +659,8 @@ public class Player extends Entity {
 	}
 	public void interactNPC(int i) {		
 		if (i != -1) {
-			if (keyH.actionPressed) {
-				keyH.actionPressed = false;
+			if (gp.keyH.actionPressed) {
+				gp.keyH.actionPressed = false;
 				attackCanceled = true;			
 				gp.npc[gp.currentMap][i].speak();
 			}			
@@ -695,7 +688,7 @@ public class Player extends Entity {
 				gp.obj[gp.currentMap][i].interact(); 
 			}
 			else if (gp.obj[gp.currentMap][i].type == type_obstacle_i) {
-				if (keyH.actionPressed) {
+				if (gp.keyH.actionPressed) {
 					gp.obj[gp.currentMap][i].interact();
 				}
 			}
@@ -771,7 +764,7 @@ public class Player extends Entity {
 	public void swingSword() {
 				
 		if (currentWeapon == null) {		
-			keyH.actionPressed = false;
+			gp.keyH.actionPressed = false;
 			gp.gameState = gp.dialogueState;
 			startDialogue(this, 0);
 			return;
@@ -946,7 +939,7 @@ public class Player extends Entity {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
 		if (inventoryIndex < inventory.size()) {			
-			keyH.playSelectSE();
+			gp.keyH.playSelectSE();
 			
 			if (action != Action.SWIMMING) 
 				action = Action.IDLE;
@@ -976,7 +969,7 @@ public class Player extends Entity {
 				return;
 			}
 			
-			keyH.playSelectSE();
+			gp.keyH.playSelectSE();
 			itemIndex = inventoryIndex;										
 									
 			Entity selectedItem = inventory_item.get(inventoryIndex);
@@ -998,11 +991,11 @@ public class Player extends Entity {
 				case ITM_Feather.itmName:
 				case ITM_Rod.itmName:
 				case ITM_Shovel.itmName:
-					keyH.itemPressed = false;
+					gp.keyH.itemPressed = false;
 					currentItem.use();
 					break;		
 				case ITM_Bomb.itmName:
-					keyH.itemPressed = false;
+					gp.keyH.itemPressed = false;
 					currentItem.use(this);
 					break;
 				case ITM_Bow.itmName:
@@ -1015,15 +1008,15 @@ public class Player extends Entity {
 				case ITM_Hookshot.itmName:	
 					
 					// STOP MOVEMENT
-					keyH.itemPressed = false;
-					keyH.upPressed = false; keyH.downPressed  = false;
-					keyH.leftPressed  = false; keyH.rightPressed  = false;	
+					gp.keyH.itemPressed = false;
+					gp.keyH.upPressed = false; gp.keyH.downPressed  = false;
+					gp.keyH.leftPressed  = false; gp.keyH.rightPressed  = false;	
 					currentItem.use(this);
 					break;	
 			}	
 		}
 		else if (currentItem == null) {
-			keyH.itemPressed = false;
+			gp.keyH.itemPressed = false;
 			gp.gameState = gp.dialogueState;
 			startDialogue(this, 2);
 		}			
@@ -1031,8 +1024,8 @@ public class Player extends Entity {
 	public void cycleItems() {
 		
 		if (currentItem != null) {
-			keyH.playCursorSE();
-			keyH.tabPressed = false;
+			gp.keyH.playCursorSE();
+			gp.keyH.tabPressed = false;
 								
 			itemIndex++;
 			if (itemIndex >= inventory_item.size())
@@ -1094,7 +1087,7 @@ public class Player extends Entity {
 			case "up":
 			case "upleft":
 			case "upright":
-				if (keyH.upPressed) {
+				if (gp.keyH.upPressed) {
 					pull(entity);
 				}
 				else {
@@ -1106,7 +1099,7 @@ public class Player extends Entity {
 			case "down":
 			case "downleft":
 			case "downright":
-				if (keyH.downPressed) {					
+				if (gp.keyH.downPressed) {					
 					pull(entity);
 				}
 				else {
@@ -1116,7 +1109,7 @@ public class Player extends Entity {
 				}
 				break;
 			case "left":
-				if (keyH.leftPressed) {
+				if (gp.keyH.leftPressed) {
 					pull(entity);
 				}
 				else {
@@ -1126,7 +1119,7 @@ public class Player extends Entity {
 				}
 				break;
 			case "right":
-				if (keyH.rightPressed) {
+				if (gp.keyH.rightPressed) {
 					pull(entity);
 				}
 				else {
@@ -1150,7 +1143,7 @@ public class Player extends Entity {
 			action = Action.CARRYING;
 			grabbedObject = entity;
 			entity.grabbed = true;
-			keyH.grabPressed = false;	
+			gp.keyH.grabPressed = false;	
 		}
 	}
 	public void throwing() {		
@@ -1424,7 +1417,7 @@ public class Player extends Entity {
 	// CHECKERS
 	public void manageValues() {
 		
-		if (keyH.debug) life = maxLife;
+		if (gp.keyH.debug) life = maxLife;
 		
 		if (life <= 4) {
 			lowHPCounter++;
