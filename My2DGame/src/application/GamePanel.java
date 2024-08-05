@@ -155,14 +155,16 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {		
 		
-/*		
- 		gameState = titleState;	
+		
+ 		gameState = playState;	
 		currentArea = outside;
 		currentMap = 0;
-*/		
+/*		
 		gameState = playState;
 		currentArea = dungeon;
 		currentMap = 2;
+	*/
+		
 		tileM.loadMap();
 		map.loadWorldMap();
 		
@@ -476,8 +478,11 @@ public class GamePanel extends JPanel implements Runnable {
 				}					
 			}
 						
+			// ALWAYS DRAW DIVING PLAYER FIRST
+			if (player.diving) player.draw(g2);			
+			else entityList.add(player);						
+			
 			// POPULATE ENTITY LIST
-			entityList.add(player);			
 			for (Entity t : iTile[currentMap]) { if (t != null && t.type == t.type_obstacle) entityList.add(t); }
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }

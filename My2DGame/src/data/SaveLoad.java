@@ -324,6 +324,11 @@ public class SaveLoad {
 						gp.enemy[mapNum][i].worldY = ds.enemyWorldY[mapNum][i];
 						gp.enemy[mapNum][i].life = ds.enemyLife[mapNum][i];
 						gp.enemy[mapNum][i].sleep = ds.enemyAsleep[mapNum][i];
+						gp.enemy[mapNum][i].attacking = false;
+						
+						if (gp.enemy[mapNum][i].type == gp.enemy[mapNum][i].type_boss) {
+							gp.enemy[mapNum][i].resetValues();
+						}
 					}
 				}
 				

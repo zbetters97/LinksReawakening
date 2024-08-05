@@ -18,14 +18,7 @@ public class BOS_Skeleton extends Entity {
 		
 		type = type_boss;
 		name = emyName;
-		sleep = true;		
-		
-		speed = 1; defaultSpeed = speed; 
-		animationSpeed = 10;
-		maxLife = 50; life = maxLife;
-		attack = 10;
-		knockbackPower = 5;		
-		currentBossPhase = bossPhase_1;
+		sleep = true;	
 						
 		int hbScale = gp.tileSize * 5;
 		hitbox = new Rectangle(gp.tileSize, gp.tileSize, hbScale - (gp.tileSize * 2), hbScale - gp.tileSize); 
@@ -40,15 +33,15 @@ public class BOS_Skeleton extends Entity {
 		attackbox.width = 170;
 		attackbox.height = 170;
 		
-		getImage();
-		setDialogue();
+		resetValues();
+		setDialogue();		
 	}
 	
 	public void getImage() {
 		
 		int scale = gp.tileSize * 5;
 		
-		if (currentBossPhase == bossPhase_1) {			
+		if (currentBossPhase == bossPhase_1) {		
 			up1 = setup("/boss/skeletonlord_up_1", scale, scale);
 			up2 = setup("/boss/skeletonlord_up_2", scale, scale);
 			down1 = setup("/boss/skeletonlord_down_1", scale, scale);
@@ -124,9 +117,9 @@ public class BOS_Skeleton extends Entity {
 			if (life < maxLife / 2) {
 				currentBossPhase = 2;
 				attack++; 
-				defaultSpeed++; speed = defaultSpeed;
-				getImage();
-				
+				defaultSpeed++; 
+				speed = defaultSpeed;
+				getImage();				
 			}
 		}
 		else if (currentBossPhase == 2) {
@@ -152,6 +145,21 @@ public class BOS_Skeleton extends Entity {
 	
 	public void damageReaction() {
 		actionLockCounter = 0;
+	}
+	
+	public void resetValues() {
+		direction = "down";		
+		maxLife = 50; life = maxLife;
+		attack = 10;
+		knockbackPower = 5;		
+		speed = 1; defaultSpeed = speed; 
+		animationSpeed = 10;
+		currentBossPhase = bossPhase_1;
+		sleep = true;
+		attacking = false;
+		attackCounter = 0;
+		getImage();
+		getAttackImage();
 	}
 	
 	public void playAttackSE() {

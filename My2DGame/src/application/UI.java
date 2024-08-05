@@ -1541,7 +1541,7 @@ public class UI {
 			
 			if (npc.responses[responseSet][i] != null) {
 				
-				y += gp.tileSize - 5;
+				y += gp.tileSize - 7;
 				g2.drawString(npc.responses[responseSet][i], x, y);
 				
 				// IF RESPONSE IS SELECTED, DRAW DIALOGUE ANSWER

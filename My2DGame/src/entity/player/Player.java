@@ -43,13 +43,14 @@ public class Player extends Entity {
 	// MISC
 	public String aimDirection;	
 	public Entity capturedTarget;
+	public boolean diving = false;
 	
 	// COUNTERS
 	public int damageNum = 1, rollNum = 1, pullNum = 1, throwNum = 1, 
 			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1, gruntNum = 1;
 	
 	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, throwCounter = 0, 
-			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, gruntCounter = 0;
+			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0, gruntCounter = 0;
 	
 	// IMAGES
 	public BufferedImage 	
@@ -143,17 +144,18 @@ public class Player extends Entity {
 		getMiscImage();
 	}	
 	public void setDefaultPosition() {	
-/*		
+
 		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;		
+		worldY = gp.tileSize * 12;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
-*/
+/*
 		worldX = gp.tileSize * 40;
 		worldY = gp.tileSize * 92;		
 		gp.currentArea = gp.dungeon;		
 		gp.currentMap = 2;		
-		direction = "up";		
+		direction = "up";	
+		*/
 	}
 	public void setDefaultItems() {		
 
@@ -405,7 +407,7 @@ public class Player extends Entity {
 				
 		if (action == Action.IDLE) { onGround = true; }
 		
-		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return;	}
+		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 		
 		if (gp.keyH.ztargetPressed) { gp.keyH.ztargetPressed = false; lockon = !lockon; }		
 		if (lockon && action != Action.AIMING) { zTarget(); }
@@ -442,11 +444,16 @@ public class Player extends Entity {
 				lockon = false;
 				currentItem.use(this);
 			}
-		}			
+		}	
+		else if (action == Action.SWIMMING) { 
+			if (gp.keyH.actionPressed) { 
+				diving = true; guarded = true;
+			} 
+		}
 		else if (action == Action.DIGGING) { digging(); manageValues(); checkDeath(); return; }
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.SOARING) { jumping(); }
-		else if (action == Action.GRABBING) { grabbing(); }		
+		else if (action == Action.GRABBING) { grabbing(); }	
 		else if (action == Action.CARRYING) {
 			if (gp.keyH.grabPressed) {
 				playThrowSE();
@@ -482,8 +489,9 @@ public class Player extends Entity {
 		else if (action == Action.SWINGING) { swinging(); manageValues(); checkDeath(); return; }	
 		
 		// DISABLED ACTIONS DURING CERTAIN ACTIONS
-		if (action != Action.SWIMMING && action != Action.AIMING && action != Action.JUMPING
-				&& action != Action.CARRYING && action != Action.SOARING && action != Action.ROLLING) {			
+		if (action != Action.SWIMMING && action != Action.AIMING && 
+				action != Action.JUMPING && action != Action.CARRYING && 
+				action != Action.SOARING && action != Action.ROLLING) {			
 			if (gp.keyH.actionPressed) { action(); }
 			if (attacking) { attacking(); manageValues(); checkDeath(); return; }	
 			if (gp.keyH.guardPressed) { action = Action.GUARDING; }	
@@ -582,7 +590,7 @@ public class Player extends Entity {
 							
 			// CYLCE WALKING/SWIMMING SPRITES
 			if (spriteNum == 1) {
-				if (action == Action.SWIMMING) playSwimSE();					
+				if (action == Action.SWIMMING && !diving) playSwimSE();					
 				spriteNum = 2;
 			}
 			else if (spriteNum == 2) { 
@@ -615,7 +623,7 @@ public class Player extends Entity {
 	}
 	
 	// INTERACTIONS
-	public void action() {		
+	public void action() {	
 		if (!attackCanceled) swingSword();
 	}
 	public void checkCollision() {
@@ -632,10 +640,19 @@ public class Player extends Entity {
 		
 		// CHECK INTERACTIVE TILE COLLISION
 		gp.cChecker.checkEntity(this, gp.iTile);
-		
+								
 		// DON'T CHECK PITS WHEN JUMPING
 		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkPit(this, true);
-					
+		
+		if (diving) {
+			if (collisionOn) {
+				diving = false;
+			}
+			else {
+				return;
+			}
+		}		
+		
 		// CHECK NPC COLLISION
 		gp.cChecker.checkEntity(this, gp.npc);		
 		int npcIndex = gp.cChecker.checkNPC();
@@ -865,11 +882,11 @@ public class Player extends Entity {
 	public void contactEnemy(int i, Entity enemyList[][]) {
 		
 		// PLAYER HURT BY ENEMY
-		if (i != -1 && !invincible && 
+		if (i != -1 && !invincible &&
 				enemyList[gp.currentMap][i].collision &&
 				!enemyList[gp.currentMap][i].dying && 		
 				!enemyList[gp.currentMap][i].captured) {
-			
+
 			Entity enemy = enemyList[gp.currentMap][i];
 			
 			if (enemy.knockbackPower > 0) setKnockback(this, enemy, enemy.knockbackPower);			
@@ -1458,6 +1475,15 @@ public class Player extends Entity {
 			}
 		}	
 		
+		// DIVE FOR 1.5 SECONDS
+		if (diving) {
+			diveCounter++;
+			if (diveCounter >= 90) {
+				diving = false;
+				diveCounter = 0;
+			}
+		}
+		
 		// PLAYER SECOND GRUNT 1 SEC AFTER FIRST GRUNT
 		if (gruntNum == 2) {
 			gruntCounter++;
@@ -1611,7 +1637,7 @@ public class Player extends Entity {
 							else if (jumpNum == 4) image = soarUp1; 
 							
 							g2.setColor(Color.BLACK);
-							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
 							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollUp1;
@@ -1676,7 +1702,7 @@ public class Player extends Entity {
 							else if (jumpNum == 4) image = soarDown1; 
 							
 							g2.setColor(Color.BLACK);
-							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
 							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollDown1;
@@ -1739,7 +1765,7 @@ public class Player extends Entity {
 							else if (jumpNum == 4) image = soarLeft1; 
 							
 							g2.setColor(Color.BLACK);
-							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
 							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollLeft1;
@@ -1805,7 +1831,7 @@ public class Player extends Entity {
 							else if (jumpNum == 4) image = soarRight1; 
 							
 							g2.setColor(Color.BLACK);
-							g2.fillOval(screenX + 10, screenY + 40, 30, 10);
+							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
 							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollRight1;
@@ -1851,7 +1877,7 @@ public class Player extends Entity {
 			else if (damageNum == 3) image = fall3;
 			else if (damageNum == 4) image = null;
 		}	
-		else if (gp.gameState == gp.drowningState) {
+		else if (gp.gameState == gp.drowningState || diving) {
 			image = drown;			
 		}				
 		

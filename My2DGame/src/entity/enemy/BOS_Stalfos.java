@@ -246,6 +246,17 @@ public class BOS_Stalfos extends Entity {
 		changeAlpha(g2, 1f);		
 	}
 	
+	public void resetValues() {
+		speed = 2; defaultSpeed = speed; 
+		animationSpeed = 14;
+		maxLife = 50; life = maxLife;
+		attack = 8;
+		knockbackPower = 3;		
+		currentBossPhase = bossPhase_1;
+		attacking = false;
+		attackCounter = 0;
+	}
+	
 	public void playAttackSE() {
 		gp.playSE(3, 3);
 	}

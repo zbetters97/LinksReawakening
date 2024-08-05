@@ -72,9 +72,9 @@ public class PRJ_Bomb extends Projectile {
 			tTime = 0;
 			collisionOn = false;
 			
-			if (alive) {				
-				int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);		
-				if (enemyIndex != -1) {	explode(); }	
+			if (alive) {	
+				Entity enemy = getEnemy(this);		
+				if (enemy != null) { explode(); }	
 			}
 		}
 	}
@@ -140,6 +140,11 @@ public class PRJ_Bomb extends Projectile {
 		resetValues();
 	}
 	
+	public void attacking() {
+		attacking = false;
+		explode();
+	}
+	
 	public void resetValues() {
 		spriteNum = 1;
 		speed = defaultSpeed;
@@ -148,6 +153,7 @@ public class PRJ_Bomb extends Projectile {
 		alive = false;	
 		grabbed = false;
 		thrown = false;
+		captured = false;
 		throwCounter = 0;
 		tTime = 0;
 	}

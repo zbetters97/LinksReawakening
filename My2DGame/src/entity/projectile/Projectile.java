@@ -319,7 +319,7 @@ public class Projectile extends Entity {
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		
-		Entity enemy = getEnemy(this);		
+		Entity enemy = getEnemy(this);	
 		if (enemy != null) {
 			gp.player.damageEnemy(enemy, this, attack, knockbackPower);
 		}

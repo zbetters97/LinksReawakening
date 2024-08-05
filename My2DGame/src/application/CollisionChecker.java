@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import entity.Entity;
 import entity.Entity.Action;
 import entity.enemy.EMY_Octorok;
+import entity.enemy.EMY_Tektite;
 import entity.projectile.PRJ_Bomb;
 
 public class CollisionChecker {
@@ -159,8 +160,8 @@ public class CollisionChecker {
 			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
 			}			
-			// OCTOROK
-			if (entity.name.equals(EMY_Octorok.emyName)) {
+			// WATER ENEMIES
+			if (entity.name.equals(EMY_Octorok.emyName) || entity.name.equals(EMY_Tektite.emyName)) {
 				if (tileNum1 != gp.tileM.waterTile || tileNum2 != gp.tileM.waterTile) {
 					entity.collisionOn = true;
 				}
@@ -204,9 +205,14 @@ public class CollisionChecker {
 			}				
 		}
 		// PLAYER
-		else if (entity == gp.player){			
+		else if (entity == gp.player){		
+									
 			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
 				entity.collisionOn = true;
+			}
+			if (!gp.tileM.tile[tileNum1].water && !gp.tileM.tile[tileNum2].water) {
+				gp.player.diving = false;
+				gp.player.diveCounter = 0;
 			}
 			// SPIKES
 			else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {	
@@ -388,8 +394,7 @@ public class CollisionChecker {
 					gp.player.invincible = true;
 					gp.gameState = gp.drowningState;
 				}		
-				else {
-					
+				else {					
 					gp.player.speed = 2;
 					
 					if (gp.player.grabbedObject != null) {
@@ -603,6 +608,8 @@ public class CollisionChecker {
 		
 		boolean contactPlayer = false;
 		
+		if (gp.player.diving) return false;
+		
 		entity.hitbox.x = entity.worldX + entity.hitbox.x;
 		entity.hitbox.y = entity.worldY + entity.hitbox.y;
 		
@@ -790,11 +797,25 @@ public class CollisionChecker {
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
 															
 					if (target[gp.currentMap][i] != entity) {		
-						index = i;	
+						
+						// THROWN OBJECTS ONLY STOP AT WALLS
+						if (entity.thrown) {
+							if (target[gp.currentMap][i].name.contains("Wall")) {
+								
+								index = i;	
+								
+								if (target[gp.currentMap][i].collision) {
+									entity.collisionOn = true;								
+								}	
+							}								
+						}
+						else {
+							index = i;	
 											
-						if (target[gp.currentMap][i].collision) {
-							entity.collisionOn = true;								
-						}												
+							if (target[gp.currentMap][i].collision) {
+								entity.collisionOn = true;								
+							}		
+						}						
 					}
 				}
 				

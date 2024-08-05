@@ -27,13 +27,6 @@ public class BOS_Gohma extends Entity {
 		lockon = true;
 		capturable = true;
 		
-		speed = 1; defaultSpeed = speed; 
-		animationSpeed = 10;
-		maxLife = 32; life = maxLife;
-		attack = 4;
-		knockbackPower = 1;		
-		currentBossPhase = bossPhase_1;
-								
 		hitbox = new Rectangle(51, 8, 42, 33); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
@@ -41,11 +34,14 @@ public class BOS_Gohma extends Entity {
 		hitboxDefaultHeight = hitbox.height;
 		
 		projectile = new PRJ_Fireball(gp);
+		
+		resetValues();
 	}
 	
 	public void getImage() {
 		
 		int scale = gp.tileSize * 3;
+		
 		up1 = setup("/boss/gohma_down_1", scale, gp.tileSize);
 		up2 = setup("/boss/gohma_down_2", scale, gp.tileSize);
 		up3 = setup("/boss/gohma_down_3", scale, gp.tileSize);
@@ -59,9 +55,9 @@ public class BOS_Gohma extends Entity {
 		right2 = up2;
 		right3 = up3;
 	}
-	public void getAttackImage() {		
+	public void getAttackImage() {	
 		
-		int scale = gp.tileSize * 3;
+		int scale = gp.tileSize * 3;	
 		
 		attackUp1 = setup("/boss/gohma_attack_down_1", scale, gp.tileSize); 
 		attackUp2 = setup("/boss/gohma_attack_down_2", scale, gp.tileSize);	
@@ -152,15 +148,17 @@ public class BOS_Gohma extends Entity {
 		int projectileRate = 60;
 		
 		if (currentBossPhase == bossPhase_1) {
+			
 			directionRate = 45;
 			projectileRate = 60;
+			speed = defaultSpeed;
 			
 			if (life <= maxLife / 2) {
 				currentBossPhase = 2;
 				speed++;
 			}
 		}
-		else if (currentBossPhase == bossPhase_2) {
+		if (currentBossPhase == bossPhase_2) {
 			directionRate = 30;
 			projectileRate = 45;
 		}
@@ -204,6 +202,17 @@ public class BOS_Gohma extends Entity {
 		attacking = false;
 		attackCounter = 0;
 	}	
+	
+	public void resetValues() {
+		speed = 1; defaultSpeed = speed; 
+		animationSpeed = 10;
+		maxLife = 32; life = maxLife;
+		attack = 4;
+		knockbackPower = 1;		
+		currentBossPhase = bossPhase_1;
+		sleep = true;
+		attacking = false;
+	}
 	
 	public void playHurtSE() {
 		gp.playSE(3, 4);

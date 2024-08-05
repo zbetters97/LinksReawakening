@@ -6,11 +6,12 @@ import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Heart;
 
-public class EMY_Keese extends Entity {
+public class EMY_Tektite extends Entity {
 
-	public static final String emyName = "Keese";
+	public static final String emyName = "Tektite";
+	private int sleepCounter = 0;
 		
-	public EMY_Keese(GamePanel gp, int worldX, int worldY) {
+	public EMY_Tektite(GamePanel gp, int worldX, int worldY) {
 		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;
@@ -19,13 +20,13 @@ public class EMY_Keese extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
-		onGround = false;
+		canSwim = true;
 		capturable = true;
 		
-		maxLife = 4; life = maxLife;		
+		maxLife = 8; life = maxLife;		
 		speed = 2; defaultSpeed = speed;
-		animationSpeed = 5;
-		attack = 1;
+		animationSpeed = 8;
+		attack = 3;
 		knockbackPower = 0;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);
@@ -36,8 +37,8 @@ public class EMY_Keese extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/keese_down_1");
-		up2 = setup("/enemy/keese_down_2");
+		up1 = setup("/enemy/tektite_down_1");
+		up2 = setup("/enemy/tektite_down_2");
 		down1 = up1;
 		down2 = up2;
 		left1 = up1;
@@ -47,8 +48,19 @@ public class EMY_Keese extends Entity {
 	}
 	
 	public void setAction() {	
-		if (!captured) {
-			getDirection(25);
+		
+		if (!captured) {			
+			
+			sleepCounter++;
+			if (sleepCounter >= 60) {
+				sleepCounter = 0;			
+				
+				if (speed == 0) speed = defaultSpeed;
+				else speed = 0;
+				
+				// STOP/START EVERY 1 SECOND
+				getDirection(1);
+			}
 		}
 	}
 	public void attacking() {
