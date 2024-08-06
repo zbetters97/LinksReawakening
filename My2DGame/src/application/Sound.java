@@ -59,7 +59,8 @@ public class Sound {
 		player[6] = getClass().getResource("/sound/PLAYER_DIE.wav");
 		player[7] = getClass().getResource("/sound/PLAYER_LOWHP.wav");
 		player[8] = getClass().getResource("/sound/PLAYER_GRUNT_1.wav");
-		player[9] = getClass().getResource("/sound/PLAYER_GRUNT_2.wav");		
+		player[9] = getClass().getResource("/sound/PLAYER_GRUNT_2.wav");	
+		player[10] = getClass().getResource("/sound/PLAYER_SPIN.wav");
 		
 		// 3
 		enemies[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");
@@ -84,6 +85,8 @@ public class Sound {
 		objects[9] = getClass().getResource("/sound/OBJ_POT.wav");	
 		objects[10] = getClass().getResource("/sound/OBJ_LIFT.wav");	
 		objects[11] = getClass().getResource("/sound/OBJ_THROW.wav");	
+		objects[12] = getClass().getResource("/sound/OBJ_SWORD_SPIN_CHARGE.wav");	
+		objects[13] = getClass().getResource("/sound/OBJ_SWORD_SPIN.wav");	
 		
 		// 5
 		items[0] = getClass().getResource("/sound/ITEM_GET.wav");	

@@ -598,14 +598,13 @@ public class UI {
 	}
 	private void drawChargeBar() {
 		
-		if (gp.player.currentItem != null && gp.player.currentItem.charge > 0 &&
-				gp.keyH.itemPressed) {
+		if (gp.player.charge > 0) {
 			
 			int x = gp.player.getScreenX() - 7;
 			int y = gp.player.getScreenY() - 20;			
 			int width = 62;
 			int height = 10;		
-			int charge = gp.player.currentItem.charge;						
+			int charge = gp.player.charge;						
 			
 			g2.setColor(new Color(0,0,0));
 			g2.fillRect(x, y, width, height);		

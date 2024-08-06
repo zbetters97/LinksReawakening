@@ -185,8 +185,16 @@ public class Player extends Entity {
 		knockback = false;
 		invincible = false;
 		transparent = false;	
+		attacking = false;
+		spinning = false;
+		lockon = false;
 		attackCanceled = false;
 		
+		attackNum = 1;
+		attackCounter = 0;
+		actionLockCounter = 0;	
+		charge = 0;
+		spinNum = 0;			
 		invincibleCounter = 0;
 		damageNum = 1;
 		damageCounter = 0;			
@@ -207,11 +215,7 @@ public class Player extends Entity {
 		rodCounter = 0;
 		gruntNum = 1;
 		gruntCounter = 0;
-		
-		if (currentItem != null && currentItem.name.equals(ITM_Bow.itmName)) {
-			currentItem.charge = 0;
-		}
-		
+				
 		if (grabbedObject != null) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
 				grabbedObject.resetValues();
@@ -405,12 +409,12 @@ public class Player extends Entity {
 		
 		checkCollision();
 				
-		if (action == Action.IDLE) { onGround = true; }
+		if (action == Action.IDLE) { onGround = true; guardCounter = 0; }
 		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 		
 		if (gp.keyH.ztargetPressed) { gp.keyH.ztargetPressed = false; lockon = !lockon; }		
-		if (lockon && action != Action.AIMING) { zTarget(); }
+		if (lockon && action != Action.AIMING && action != Action.CHARGING) { zTarget(); }
 		else {
 			if (lockedTarget != null) {
 				lockedTarget.locked = false;
@@ -419,6 +423,7 @@ public class Player extends Entity {
 		}		
 		
 		if (action == Action.ROLLING) { rolling(); }
+		else if (action == Action.CHARGING) { charging(); }
 		else if (action == Action.AIMING) {			
 			switch (direction) {			
 				case "up":
@@ -491,10 +496,15 @@ public class Player extends Entity {
 		// DISABLED ACTIONS DURING CERTAIN ACTIONS
 		if (action != Action.SWIMMING && action != Action.AIMING && 
 				action != Action.JUMPING && action != Action.CARRYING && 
-				action != Action.SOARING && action != Action.ROLLING) {			
-			if (gp.keyH.actionPressed) { action(); }
-			if (attacking) { attacking(); manageValues(); checkDeath(); return; }	
-			if (gp.keyH.guardPressed) { action = Action.GUARDING; }	
+				action != Action.SOARING && action != Action.ROLLING && action != Action.CHARGING) {		
+			
+			if (gp.keyH.actionPressed) { action(); }	
+			if (spinning) { spinAttacking(); manageValues(); checkDeath(); return; }	
+			if (attacking) { attacking(); manageValues(); checkDeath(); return; }					
+			if (gp.keyH.guardPressed) { 
+				action = Action.GUARDING; 
+				if (guardCounter < 12) guardCounter++; 
+			}	
 			if (gp.keyH.grabPressed) { grabbing(); }			
 			if (gp.keyH.itemPressed) { useItem(); }					
 			if (gp.keyH.tabPressed) { cycleItems(); }
@@ -776,10 +786,9 @@ public class Player extends Entity {
 		gp.ui.subState = 0;
 		gp.gameState = gp.itemGetState;
 	}
-	
+		
 	// SWORD
-	public void swingSword() {
-				
+	public void swingSword() {			
 		if (currentWeapon == null) {		
 			gp.keyH.actionPressed = false;
 			gp.gameState = gp.dialogueState;
@@ -793,7 +802,42 @@ public class Player extends Entity {
 			attacking = true;
 			attackCanceled = true;
 			spriteCounter = 0;
-		}			
+		}	
+	}
+	public void charging() {
+		if (gp.keyH.actionPressed) {
+			
+			if (charge < 119) charge += 2;
+			
+			lockon = true;
+			lockonDirection = direction;
+			speed = 2;
+		}
+		else if (charge >= 120) {
+			
+			// RELEASE SPIN ATTACK
+			if (charge >= 120) {
+				playSpinGruntSE();
+				playSpinSwordSE();
+				
+				charge = 0;
+				action = Action.IDLE;
+				spinning = true;
+				attackCounter = 0;
+				gp.keyH.actionPressed = false;
+				lockon = false;
+				speed = defaultSpeed;
+			}
+		}
+		else {		
+			charge = 0;
+			action = Action.IDLE;
+			attackNum = 1;
+			attackCounter = 0;				
+			attacking = false;			
+			attackCanceled = false;
+			lockon = false;						
+		}
 	}
 	
 	// Z-TARGETING
@@ -1272,8 +1316,6 @@ public class Player extends Entity {
 			// CHECK IF WEAPON HITS TARGET	
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
-			int hitBoxWidth = hitbox.width;
-			int hitBoxHeight = hitbox.height;
 			
 			// ADJUST PLAYER'S X/Y 
 			switch (direction) {
@@ -1294,8 +1336,8 @@ public class Player extends Entity {
 			// RESTORE PLAYER HITBOX
 			worldX = currentWorldX;
 			worldY = currentWorldY;
-			hitbox.width = hitBoxWidth;
-			hitbox.height = hitBoxHeight;
+			hitbox.width = hitboxDefaultWidth;
+			hitbox.height = hitboxDefaultHeight;
 		}
 
 		// RESET IMAGE
@@ -1529,6 +1571,12 @@ public class Player extends Entity {
 	}
 	public void playGuardSE() {
 		gp.playSE(2, 1);
+	}
+	public void playSpinSwordSE() {
+		gp.playSE(4, 13);
+	}
+	public void playSpinGruntSE() {
+		gp.playSE(2, 10);
 	}
 	public void playGruntSE_1() {
 		gp.playSE(2, 8);

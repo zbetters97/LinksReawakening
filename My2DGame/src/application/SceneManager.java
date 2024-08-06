@@ -103,6 +103,7 @@ public class SceneManager {
 			for (int i = 0; i < gp.npc[1].length; i++) {
 				if (gp.npc[gp.currentMap][i].name.equals(NPC_Traveler_2.npcName)) {
 					
+					gp.npc[gp.currentMap][i].worldX = 23 * gp.tileSize;					
 					gp.npc[gp.currentMap][i].drawing = true;
 					
 					npc2 = gp.npc[gp.currentMap][i];

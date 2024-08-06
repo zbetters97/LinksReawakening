@@ -17,8 +17,7 @@ public class ITM_Bow extends Entity {
 		name = itmName;		
 		description = "[" + name + "]\nEquip to fire an arrow!";
 		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.button_item) + 
-				" to charge its power!\nRelease " + KeyEvent.getKeyText(gp.button_item) + " to fire an arrow!";
-		charge = 0;		
+				" to charge its power!\nRelease " + KeyEvent.getKeyText(gp.button_item) + " to fire an arrow!";	
 		
 		projectile = new PRJ_Arrow(gp);
 	}
@@ -32,8 +31,8 @@ public class ITM_Bow extends Entity {
 		if (!projectile.alive && user.shotAvailableCounter == 30 && 
 				projectile.hasResource(user)) {	
 			
-			if (charge < 120) charge++;
-									
+			if (user.charge < 120) user.charge++;
+			
 			user.action = Action.AIMING; 
 			
 			return true;
@@ -53,25 +52,25 @@ public class ITM_Bow extends Entity {
 				
 				user.action = Action.IDLE; 	
 				
-				if (80 > charge && charge >= 40) {
+				if (80 > user.charge && user.charge >= 40) {
 					projectile.attack++;
 					projectile.speed += 2;
 				}
-				else if (120 > charge && charge >= 80) {
+				else if (120 > user.charge && user.charge >= 80) {
 					projectile.attack += 2;
 					projectile.speed += 4;
 				}
-				else if (charge >= 120) {
+				else if (user.charge >= 120) {
 					projectile.attack += 3;
 					projectile.speed += 6;
 				}				
 				
-				charge = 0;	
+				user.charge = 0;	
 			}
 			else {
 				projectile.attack = 2;
 				projectile.speed = 10;
-				charge = 0;	
+				user.charge = 0;	
 			}
 			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);		

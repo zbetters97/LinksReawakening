@@ -24,7 +24,7 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
+		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
 	}
 	
 	protected GamePanel gp;
@@ -136,6 +136,11 @@ public class Entity {
 	public int shotAvailableCounter;
 	public int swingSpeed1;
 	public int swingSpeed2;	
+	public boolean spinning = false;
+	public int spinNum = 0;
+	public int spinCounter = 0;
+	public int charge = 0;
+	public int guardCounter = 0;
 	
 	// BOSS VALUES
 	public int currentBossPhase = 0;
@@ -179,8 +184,7 @@ public class Entity {
 	public int attackValue;	
 	public int knockbackPower = 0;
 	public int amount = 1;
-	public int useCost;	
-	public int charge = 0;	
+	public int useCost;		
 	public int lifeDuration = -1;
 	public boolean stackable = false;	
 	
@@ -239,6 +243,7 @@ public class Entity {
 	public void playOpenSE() { }
 	public void playCloseSE() { }
 	public void playAttackSE() { }
+	public void playChargeSE() { }
 	public void playHurtSE() { }
 	public void playDeathSE() { }	
 	
@@ -673,12 +678,11 @@ public class Entity {
 			
 			attackNum = 2;
 			
+			// SAVE HITBOX
 			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			int hitBoxWidth = hitbox.width;
-			int hitBoxHeight = hitbox.height;
+			int currentWorldY = worldY;			
 			
-			// ADJUST PLAYER'S X/Y 
+			// ADJUST X/Y 
 			switch (direction) {
 				case "up":
 				case "upleft": 
@@ -717,25 +721,116 @@ public class Entity {
 				
 				// CHECK IF ATTACK LANDS ON PROJECTILE
 				int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-				gp.player.damageProjectile(projectileIndex);	
+				gp.player.damageProjectile(projectileIndex);				
 			}
 						
 			// RESTORE HITBOX
 			worldX = currentWorldX;
 			worldY = currentWorldY;
-			hitbox.width = hitBoxWidth;
-			hitbox.height = hitBoxHeight;
+			hitbox.width = hitboxDefaultWidth;
+			hitbox.height = hitboxDefaultHeight;
 		}
 		
-		// RESET IMAGE
 		if (attackCounter > swingSpeed2) {
-			attackNum = 1;
-			attackCounter = 0;
-			attacking = false;
-			attackCanceled = false;
-			gp.keyH.actionPressed = false;
+			
+			if (this == gp.player && currentWeapon != null) { 
+				
+				// CHARGE SPIN ATTACK
+				if (gp.keyH.actionPressed) {
+					currentWeapon.playChargeSE();
+					action = Action.CHARGING;
+				}
+				// RESET IMAGE/VALUES
+				else {
+					attackNum = 1;
+					attackCounter = 0;				
+					attacking = false;
+					attackCanceled = false;
+					gp.keyH.actionPressed = false;
+				}
+			}			
+			// RESET IMAGE/VALUES
+			else {
+				attackNum = 1;
+				attackCounter = 0;				
+				attacking = false;
+				attackCanceled = false;
+			}
 		}
 	}		
+	
+	protected void spinAttacking() {
+		
+		attackCounter++;
+		if (attackCounter >= 5) {
+			attackCounter = 0;
+			
+			// ROTATE PLAYER CLOCKWISE
+			if (spinNum != 4) {
+				switch (direction) {
+					case "up":
+					case "upleft": 
+					case "upright": direction = "right"; break;
+					case "right": direction = "down"; break;
+					case "down": 
+					case "downleft": 
+					case "downright": direction = "left"; break;
+					case "left": direction = "up"; break;
+				}		
+			}
+			
+			// SAVE HITBOX
+			int currentWorldX = worldX;
+			int currentWorldY = worldY;
+			
+			// ADJUST X/Y 
+			switch (direction) {
+				case "up":
+				case "upleft": 
+				case "upright":  worldY -= attackbox.height; break; 
+				case "down": 
+				case "downleft": 
+				case "downright": worldY += (attackbox.height / 2); break;					
+				case "left": worldX -= attackbox.width; break;
+				case "right": worldX += attackbox.width; break;
+			}
+			
+			// CHANGE SIZE OF HIT BOX 
+			hitbox.width = attackbox.width;
+			hitbox.height = attackbox.height;
+			
+			// CHECK IF ATTACK LANDS ON ENEMY
+			Entity enemy = getEnemy(this);		
+			if (enemy != null) {			
+				int damage = attack++;
+				gp.player.damageEnemy(enemy, this, damage, currentWeapon.knockbackPower);
+			}
+			
+			// CHECK INTERACTIVE TILE
+			int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
+			gp.player.damageInteractiveTile(iTileIndex, this);				
+			
+			// CHECK IF ATTACK LANDS ON PROJECTILE
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			gp.player.damageProjectile(projectileIndex);			
+						
+			// RESTORE HITBOX
+			worldX = currentWorldX;
+			worldY = currentWorldY;
+			hitbox.width = hitboxDefaultWidth;
+			hitbox.height = hitboxDefaultHeight;
+			
+			// REPEAT 5 TIMES
+			spinNum++;
+			if (spinNum == 5) {
+				spinNum = 0;
+				spinning = false;
+				attacking = false;
+				attackCanceled = false;				
+			}
+		}
+	}
+	
 	protected void damagePlayer(int attack) {
 		
 		if (!gp.player.invincible && gp.player.alive && !teleporting) {
@@ -747,7 +842,7 @@ public class Entity {
 			String guardDirection = getOppositeDirection(direction);
 			if (gp.player.action == Action.GUARDING && gp.player.direction.equals(guardDirection)) {
 				gp.player.playBlockSE();
-				
+												
 				if (name.equals(PRJ_Seed.prjName)) {
 					direction = gp.player.direction;
 					collisionOn = false;
@@ -758,7 +853,15 @@ public class Entity {
 					attacking = true;
 					setKnockback(this, gp.player, 1);
 				}
-				else {							
+				else {				
+					if (gp.player.guardCounter < 10) {
+						// PLAY PERRY SE
+						stunned = true;
+						attacking = false;
+						attackCounter = 0;
+						spriteCounter -= 60;
+					}
+					
 					if (knockbackPower == 0) setKnockback(this, gp.player, 1);
 					damage = 0;
 				}

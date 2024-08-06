@@ -144,8 +144,6 @@ public class BOS_Stalfos extends Entity {
 			// CHECK IF WEAPON HITS TARGET	
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
-			int hitBoxWidth = hitbox.width;
-			int hitBoxHeight = hitbox.height;
 			
 			// ADJUST X/Y 
 			worldY += attackbox.height; 			
@@ -160,8 +158,8 @@ public class BOS_Stalfos extends Entity {
 			// RESTORE HITBOX
 			worldX = currentWorldX;
 			worldY = currentWorldY;
-			hitbox.width = hitBoxWidth;
-			hitbox.height = hitBoxHeight;
+			hitbox.width = hitboxDefaultWidth;
+			hitbox.height = hitboxDefaultHeight;
 		}
 		
 		// RESET IMAGE
