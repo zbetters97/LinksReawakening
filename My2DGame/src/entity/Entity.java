@@ -89,28 +89,7 @@ public class Entity {
 	public int dialogueSet = 0;
 	public int dialogueIndex = 0;		
 	public String responses[][] = new String[10][3];
-		
-	// LOCKON
-	public boolean lockon = false;
-	public boolean locked = false;	
-	public Entity lockedTarget;	
-	public String lockonDirection = "";
-	
-	// KNOCKBACK
-	public boolean knockback = false;
-	public int knockbackCounter = 0;
-	public String knockbackDirection = "";
-	
-	// STUNNED
-	public boolean canStun = false;
-	public boolean stunned = false;
-	public int stunnedCounter = 0;
-	
-	// INVINCIBILITY
-	public boolean invincible = false;
-	public int invincibleCounter = 0;
-	public boolean transparent = false;
-	
+				
 	// LIFE	
 	public boolean alive = true;
 	public boolean dying = false;
@@ -128,7 +107,13 @@ public class Entity {
 	// WEAPON HITBOX
 	public Rectangle attackbox = new Rectangle(0, 0, 0, 0);
 	
-	// ATTACKING	
+	// LOCKON
+	public boolean lockon = false;
+	public boolean locked = false;	
+	public Entity lockedTarget;	
+	public String lockonDirection = "";
+	
+	// ATTACK	
 	public int attackNum = 1;
 	public int attackCounter = 0;
 	public int actionLockCounter = 0;	
@@ -136,11 +121,28 @@ public class Entity {
 	public int shotAvailableCounter;
 	public int swingSpeed1;
 	public int swingSpeed2;	
+	public int guardCounter = 0;
+	
+	// SPIN ATTACK
 	public boolean spinning = false;
 	public int spinNum = 0;
 	public int spinCounter = 0;
 	public int charge = 0;
-	public int guardCounter = 0;
+
+	// KNOCKBACK
+	public boolean knockback = false;
+	public int knockbackCounter = 0;
+	public String knockbackDirection = "";
+	
+	// STUNNED
+	public boolean canStun = false;
+	public boolean stunned = false;
+	public int stunnedCounter = 0;
+	
+	// INVINCIBILITY
+	public boolean invincible = false;
+	public int invincibleCounter = 0;
+	public boolean transparent = false;
 	
 	// BOSS VALUES
 	public int currentBossPhase = 0;
@@ -177,6 +179,10 @@ public class Entity {
 	public double tAnimationSpeed = 25;
 	public int tWorldY = 0;
 	
+	// PROJECTILE ATTRIBUTES
+	public Entity user;
+	public boolean canPickup = false;
+	
 	// ITEM ATTRIBUTES
 	public String description = "";
 	public String getDescription = "";
@@ -186,11 +192,7 @@ public class Entity {
 	public int amount = 1;
 	public int useCost;		
 	public int lifeDuration = -1;
-	public boolean stackable = false;	
-	
-	// PROJECTILE ATTRIBUTES
-	public Entity user;
-	public boolean canPickup = false;
+	public boolean stackable = false;		
 	
 	// INVENTORY
 	public ArrayList<Entity> inventory = new ArrayList<>();
@@ -460,7 +462,6 @@ public class Entity {
 		
 		return playerWithinBounds;		
 	}
-	
 	public boolean findPath(int goalCol, int goalRow) {
 		
 		boolean pathFound = false;
@@ -597,7 +598,7 @@ public class Entity {
 		return goalRow;
 	}
 	
-	// ATTACKING / DAMAGE
+	// ATTACKING
 	public Entity getEnemy(Entity entity) {
 		
 		Entity enemy = null;
@@ -758,7 +759,6 @@ public class Entity {
 			}
 		}
 	}		
-	
 	protected void spinAttacking() {
 		
 		attackCounter++;
@@ -831,6 +831,7 @@ public class Entity {
 		}
 	}
 	
+	// DAMAGE
 	protected void damagePlayer(int attack) {
 		
 		if (!gp.player.invincible && gp.player.alive && !teleporting) {
@@ -910,7 +911,7 @@ public class Entity {
 		}
 		
 		return playerDirection;
-	}
+	}	
 	protected void hurtAnimation(Graphics2D g2) {	
 		if (invincibleCounter % 5 == 0) 
 			changeAlpha(g2, 0.2f);
@@ -1195,7 +1196,7 @@ public class Entity {
 	}
 	
 	// PARTICLES
-	public void generateParticle(Entity generator, Entity target) {
+	public void generateParticle(Entity generator) {
 
 		Color color = generator.getParticleColor();
 		int size = generator.getParticleSize();

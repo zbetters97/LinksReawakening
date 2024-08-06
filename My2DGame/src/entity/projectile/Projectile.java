@@ -309,7 +309,7 @@ public class Projectile extends Entity {
 	}
 	
 	public void hookshot() {
-				
+		
 		// PAUSE PLAYER INPUT
 		gp.gameState = gp.objectState;
 						
@@ -340,33 +340,15 @@ public class Projectile extends Entity {
 
 			gp.player.onGround = false;
 			
+			// PREVENT COLLISION WITH PLAYER
 			gp.cChecker.checkObject(gp.player, true);
 			gp.cChecker.checkObject_I(gp.player, true);
 			gp.cChecker.checkEntity(gp.player, gp.iTile);			
-			if (gp.player.collisionOn) {
-				alive = false;	
-				gp.player.onGround = true;
-				gp.gameState = gp.playState;	
-				return;
-			}		
-			
-			// PREVENT COLLISION WITH PLAYER
 			int playeriTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-			if (playeriTileIndex != -1) {
-				alive = false;	
-				gp.player.onGround = true;
-				gp.gameState = gp.playState;	
-				return;
-			}			
 			int playerObjIndex = gp.cChecker.checkEntity(gp.player, gp.obj);
-			if (playerObjIndex != -1) {
-				alive = false;	
-				gp.player.onGround = true;
-				gp.gameState = gp.playState;	
-				return;
-			}
 			int playerObjiIndex = gp.cChecker.checkEntity(gp.player, gp.obj_i);
-			if (playerObjiIndex != -1) {
+			
+			if (gp.player.collisionOn || playeriTileIndex != -1 || playerObjIndex != -1 || playerObjiIndex != -1) {
 				alive = false;	
 				gp.player.onGround = true;
 				gp.gameState = gp.playState;	
@@ -377,15 +359,14 @@ public class Projectile extends Entity {
 				case "up": 
 				case "upleft": 
 				case "upright": 
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldY >= gp.player.worldY) 
-							gp.particleList.get(i).alive = false;
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(0).worldY >= gp.player.worldY) {
+							gp.particleList.get(0).alive = false;
+						}
 					}
 					if (gp.player.worldY >= worldY) 
 						gp.player.worldY -= 5;
 					else {
-						gp.player.worldX = worldX;
-						gp.player.worldY = worldY;
 						gp.player.onGround = true;
 						alive = false;
 						gp.gameState = gp.playState;
@@ -393,47 +374,44 @@ public class Projectile extends Entity {
 					break;			
 				case "down":
 				case "downleft": 
-				case "downright":
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldY <= gp.player.worldY) 
-							gp.particleList.get(i).alive = false;
-					}					
+				case "downright":				
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(0).worldY <= gp.player.worldY) {
+							gp.particleList.get(0).alive = false;
+						}
+					}
 					if (gp.player.worldY <= worldY) {		
 						 gp.player.worldY += 5;														
 					}
 					else {
-						gp.player.worldX = worldX;
-						gp.player.worldY = worldY;
 						gp.player.onGround = true;
 						alive = false; 
 						gp.gameState = gp.playState;
 					}					
 					break;			
-				case "left": 					
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldX >= gp.player.worldX) 
-							gp.particleList.get(i).alive = false;
+				case "left": 				
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(0).worldX >= gp.player.worldX) {
+							gp.particleList.get(0).alive = false;
+						}
 					}
 					if (gp.player.worldX >= worldX)			
 						gp.player.worldX -= 5;
 					else {
-						gp.player.worldX = worldX;
-						gp.player.worldY = worldY;
 						gp.player.onGround = true;
 						alive = false;
 						gp.gameState = gp.playState;
 					}						
 					break;
 				case "right": 
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldX <= gp.player.worldX) 
-							gp.particleList.get(i).alive = false;
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(0).worldX <= gp.player.worldX) {
+							gp.particleList.get(0).alive = false;
+						}
 					}
 					if (gp.player.worldX <= worldX) 			
 						gp.player.worldX += 5;						
 					else {
-						gp.player.worldX = worldX;
-						gp.player.worldY = worldY;
 						gp.player.onGround = true;
 						alive = false;							
 						gp.gameState = gp.playState;
@@ -466,11 +444,13 @@ public class Projectile extends Entity {
 			switch (direction) {
 				case "up":
 				case "upleft": 
-				case "upright":					
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldY <= worldY) 
-							gp.particleList.get(i).alive = false;
+				case "upright":		
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(gp.particleList.size() - 1).worldY <= worldY + gp.tileSize) {
+							gp.particleList.get(gp.particleList.size() - 1).alive = false;
+						}
 					}
+					
 					if (worldY + gp.tileSize / 2 <= gp.player.worldY) 				
 							worldY += 5;				
 					else {
@@ -482,10 +462,12 @@ public class Projectile extends Entity {
 				case "down": 
 				case "downleft": 
 				case "downright": 					
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldY >= worldY) 
-							gp.particleList.get(i).alive = false;
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(gp.particleList.size() - 1).worldY >= worldY) {
+							gp.particleList.get(gp.particleList.size() - 1).alive = false;
+						}
 					}
+					
 					if (worldY - gp.tileSize / 2 >= gp.player.worldY) 
 						worldY -= 5;						
 					else {
@@ -494,11 +476,13 @@ public class Projectile extends Entity {
 						gp.gameState = gp.playState;
 					}						
 					break;	
-				case "left": 										
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldX <= worldX) 
-							gp.particleList.get(i).alive = false;
+				case "left": 	
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(gp.particleList.size() - 1).worldX <= worldX + gp.tileSize) {
+							gp.particleList.get(gp.particleList.size() - 1).alive = false;
+						}
 					}
+					
 					if (worldX + gp.tileSize / 2 <= gp.player.worldX) 				
 						worldX += 5;			
 					else {						
@@ -507,11 +491,13 @@ public class Projectile extends Entity {
 						gp.gameState = gp.playState;
 					}						
 					break;	
-				case "right": 
-					for (int i = 0; i < gp.particleList.size(); i++) {
-						if (gp.particleList.get(i).worldX >= worldX)
-							gp.particleList.get(i).alive = false;
+				case "right": 					
+					if (gp.particleList.size() > 0) {
+						if (gp.particleList.get(gp.particleList.size() - 1).worldX >= worldX) {
+							gp.particleList.get(gp.particleList.size() - 1).alive = false;
+						}
 					}
+					
 					if (worldX - gp.tileSize / 2 >= gp.player.worldX) 				
 						worldX -= 5;				
 					else {
@@ -539,10 +525,10 @@ public class Projectile extends Entity {
 			
 			life--;
 			
-			// DRAW CHAIN AND PLAY SOUND
+			// PLAY SOUND AND DRAW CHAIN
 			if (life % 5 == 0) {
-				generateParticle(this, this);
 				playSE();
+				generateParticle(this);	
 			}
 		}
 	}

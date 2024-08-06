@@ -148,21 +148,23 @@ public class AssetSetter {
 		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp, 28, 54); i++;
 		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp, 52, 78); i++;	
 	}
-	protected void setInteractiveTiles() {
+	protected void setInteractiveTiles(boolean reset) {
 				
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.iTile[mapNum][i] = new IT_DigSpot(gp, 30, 36, new COL_Rupee_Red(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_DigSpot(gp, 27, 16, new COL_Rupee_Red(gp)); i++;
-		gp.iTile[mapNum][i] = new IT_DigSpot(gp, 8, 24, new EQP_Sword_Master(gp)); i++;
-		
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 20, 16); i++;
-		
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 35, 30); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 36, 30); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 37, 30); i++;
-		gp.iTile[mapNum][i] = new IT_Wall(gp, 38, 30); i++;
+		if (reset) {		
+			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 30, 36, new COL_Rupee_Red(gp)); i++;
+			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 27, 16, new COL_Rupee_Red(gp)); i++;
+			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 8, 24, new EQP_Sword_Master(gp)); i++;
+			
+			gp.iTile[mapNum][i] = new IT_Wall(gp, 20, 16); i++;
+			
+			gp.iTile[mapNum][i] = new IT_Wall(gp, 35, 30); i++;
+			gp.iTile[mapNum][i] = new IT_Wall(gp, 36, 30); i++;
+			gp.iTile[mapNum][i] = new IT_Wall(gp, 37, 30); i++;
+			gp.iTile[mapNum][i] = new IT_Wall(gp, 38, 30); i++;
+		}
 		
 		mapNum = 1;
 		i = 0;
@@ -197,22 +199,24 @@ public class AssetSetter {
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 69, 60, new COL_Heart(gp)); i++;
 		gp.iTile[mapNum][i] = new IT_Pot(gp, 71, 60, new COL_Heart(gp)); i++;
 		
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 27, 89); i++;	
-		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 34, 89); i++;
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 20, 89); i++;
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 15, 92); i++;			
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 75, "up"); i++;
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 76, "down"); i++;		
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 50, 87, "up"); i++;
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 50, 88, "down"); i++;		
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 38, 70); i++;
-		gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 35, 62); i++;		
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 58, "up"); i++;
-		gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 59, "down"); i++;		
-		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 44, 80); i++;					
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 29, 53); i++;		
-		gp.iTile[mapNum][i] = new IT_Switch(gp, 50, 60); i++;			
-		gp.iTile[mapNum][i] = new IT_Block_Red(gp, 64, 71); i++;		
-		gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 80); i++;
+		if (reset) {		
+			gp.iTile[mapNum][i] = new IT_Switch(gp, 27, 89); i++;	
+			gp.iTile[mapNum][i] = new IT_Block_Red(gp, 34, 89); i++;
+			gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 20, 89); i++;
+			gp.iTile[mapNum][i] = new IT_Switch(gp, 15, 92); i++;			
+			gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 75, "up"); i++;
+			gp.iTile[mapNum][i] = new IT_Wall_01(gp, 51, 76, "down"); i++;		
+			gp.iTile[mapNum][i] = new IT_Wall_01(gp, 50, 87, "up"); i++;
+			gp.iTile[mapNum][i] = new IT_Wall_01(gp, 50, 88, "down"); i++;		
+			gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 38, 70); i++;
+			gp.iTile[mapNum][i] = new IT_Plate_Metal(gp, 35, 62); i++;		
+			gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 58, "up"); i++;
+			gp.iTile[mapNum][i] = new IT_Wall_01(gp, 29, 59, "down"); i++;		
+			gp.iTile[mapNum][i] = new IT_Block_Red(gp, 44, 80); i++;					
+			gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 29, 53); i++;		
+			gp.iTile[mapNum][i] = new IT_Switch(gp, 50, 60); i++;			
+			gp.iTile[mapNum][i] = new IT_Block_Red(gp, 64, 71); i++;		
+			gp.iTile[mapNum][i] = new IT_Block_Blue(gp, 49, 80); i++;
+		}
 	}
 }

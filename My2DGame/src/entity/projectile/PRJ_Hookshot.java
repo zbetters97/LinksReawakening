@@ -49,14 +49,14 @@ public class PRJ_Hookshot extends Projectile {
 		grabRight1 = setup("/projectiles/hookshot_grab_right_1");
 	}
 	
-	public void generateParticle(Entity generator, Entity target) {
-
-		Color color = new Color(0,0,0); // BLACK CHAIN
+	public void generateParticle(Entity generator) {
+		
+		// BLACK CHAIN
+		Color color = new Color(0,0,0); 
 		int size = 8; // 8px
-		int speed = 0;
 		
 		// CHAIN (does not move)
-		Particle p1 = new Particle(gp, generator, color, size, speed, 90, 0, 0);
+		Particle p1 = new Particle(gp, generator, color, size, 0, 90, 0, 0);
 		gp.particleList.add(p1);
 	}
 	

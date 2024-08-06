@@ -176,9 +176,9 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		aSetter.setNPC();
 		aSetter.setEnemy();
-		aSetter.setInteractiveObjects();
-		aSetter.setInteractiveTiles();
 		aSetter.setObject();
+		aSetter.setInteractiveObjects();
+		aSetter.setInteractiveTiles(true);	
 		
 		// TEMP GAME WINDOW (before drawing to window)
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
@@ -352,7 +352,8 @@ public class GamePanel extends JPanel implements Runnable {
 		tileM.loadMap();
 		map.loadWorldMap();
 		currentArea = nextArea;
-		aSetter.setInteractiveObjects();				
+		aSetter.setInteractiveObjects();
+		aSetter.setInteractiveTiles(false);
 	}
 	
 	public void removeTempEntity(boolean reset) {		
@@ -439,7 +440,7 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setEnemy();		
 		aSetter.setObject();
 		aSetter.setInteractiveObjects();
-		aSetter.setInteractiveTiles();
+		aSetter.setInteractiveTiles(true);
 		
 		eManager.lighting.resetDay();	
 	}

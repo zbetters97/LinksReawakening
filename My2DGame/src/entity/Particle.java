@@ -54,6 +54,6 @@ public class Particle extends Entity {
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 		
 		g2.setColor(color);		
-		g2.fillRect(screenX, screenY, size, size); // DRAW SPRITE HERE
+		g2.fillRect(screenX, screenY, size, size);
 	}
 }
