@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,12 @@ public class Entity {
 	public enum Action {
 		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
 	}
+	
+	public List<Action> disabled_actions = Arrays.asList(
+			Action.AIMING, Action.CARRYING, Action.CHARGING,
+			Action.JUMPING, Action.ROLLING, Action.SOARING, 
+			Action.SWIMMING
+	);
 	
 	protected GamePanel gp;
 	
@@ -121,7 +128,6 @@ public class Entity {
 	public int shotAvailableCounter;
 	public int swingSpeed1;
 	public int swingSpeed2;	
-	public int guardCounter = 0;
 	
 	// SPIN ATTACK
 	public boolean spinning = false;
@@ -138,6 +144,8 @@ public class Entity {
 	public boolean canStun = false;
 	public boolean stunned = false;
 	public int stunnedCounter = 0;
+	public int guardCounter = 0;
+	public boolean critical = false;
 	
 	// INVINCIBILITY
 	public boolean invincible = false;
@@ -856,8 +864,8 @@ public class Entity {
 				}
 				else {				
 					if (gp.player.guardCounter < 10) {
-						// PLAY PERRY SE
 						stunned = true;
+						critical = true;
 						attacking = false;
 						attackCounter = 0;
 						spriteCounter -= 60;
@@ -1232,9 +1240,19 @@ public class Entity {
 		// STUNNED TIME (1 SECOND)
 		if (stunned) {
 			stunnedCounter++;
-			if (stunnedCounter > 60) {				
-				stunned = false;
-				stunnedCounter = 0;				
+			if (stunnedCounter > 60) {
+				
+				if (critical) {
+					if (stunnedCounter > 120) {
+						stunned = false;
+						critical = false;
+						stunnedCounter = 0;				
+					}
+				}
+				else {
+					stunned = false;
+					stunnedCounter = 0;			
+				}
 			}
 		}
 		

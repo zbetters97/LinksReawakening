@@ -6,7 +6,6 @@ import java.util.Random;
 import application.GamePanel;
 import entity.Entity;
 import entity.collectable.COL_Bomb;
-import entity.collectable.COL_Rupee_Green;
 import entity.projectile.PRJ_Bomb;
 
 public class IT_Wall extends InteractiveTile {
@@ -64,9 +63,7 @@ public class IT_Wall extends InteractiveTile {
 	// DROPPED ITEM
 	public void checkDrop() {
 		int i = new Random().nextInt(100) + 1;
-		
-		if (75 > i && i >= 50) dropItem(new COL_Rupee_Green(gp));
-		else if (i >= 75) dropItem(new COL_Bomb(gp));
+		if (i >= 75) dropItem(new COL_Bomb(gp));
 	}
 	
 	public void playSE() {

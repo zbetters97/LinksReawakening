@@ -213,7 +213,7 @@ public class GamePanel extends JPanel implements Runnable {
 		double drawInterval = 1000000000 / FPS; // 1/60th of a second
 		double delta = 0;
 		
-		// UPDATE AND REPAINT gameThread (60 FPS)
+		// UPDATE AND REPAINT gameThread
 		while (gameThread != null) {
 			
 			currentTime = System.nanoTime();			
@@ -312,19 +312,16 @@ public class GamePanel extends JPanel implements Runnable {
 		for (int i = 0; i < iTile[1].length; i++) {
 			if (iTile[currentMap][i] != null) {
 				iTile[currentMap][i].update();
-				if (!iTile[currentMap][i].alive) {
-					iTile[currentMap][i] = null;
-				}
+				if (!iTile[currentMap][i].alive) 
+					iTile[currentMap][i] = null;				
 			}
 		}
 	}
 	private void updateProjectiles() {
 		for (int i = 0; i < projectile[1].length; i++) {
 			if (projectile[currentMap][i] != null) {
-				if (projectile[currentMap][i].alive) 
-					projectile[currentMap][i].update();	
-			
-				if (!projectile[currentMap][i].alive)
+				projectile[currentMap][i].update();	
+				if (!projectile[currentMap][i].alive) 
 					projectile[currentMap][i] = null;
 			}
 		}
@@ -332,11 +329,9 @@ public class GamePanel extends JPanel implements Runnable {
 	private void updateParticles() {
 		for (int i = 0; i < particleList.size(); i++) {
 			if (particleList.get(i) != null) {
-				if (particleList.get(i).alive) 
-					particleList.get(i).update();	
-				
-				if (!particleList.get(i).alive)
-					particleList.remove(i);	
+				particleList.get(i).update();	
+				if (!particleList.get(i).alive) 
+					particleList.remove(i);						
 			}
 		}
 	}

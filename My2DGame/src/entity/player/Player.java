@@ -413,8 +413,8 @@ public class Player extends Entity {
 		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 		
-		if (gp.keyH.ztargetPressed) { gp.keyH.ztargetPressed = false; lockon = !lockon; }		
-		if (lockon && action != Action.AIMING && action != Action.CHARGING) { zTarget(); }
+		if (gp.keyH.ztargetPressed) { lockon = !lockon; gp.keyH.ztargetPressed = false; }		
+		if (lockon && action != Action.AIMING) { zTarget(); }
 		else {
 			if (lockedTarget != null) {
 				lockedTarget.locked = false;
@@ -422,92 +422,21 @@ public class Player extends Entity {
 			}
 		}		
 		
-		if (action == Action.ROLLING) { rolling(); }
-		else if (action == Action.CHARGING) { charging(); }
-		else if (action == Action.AIMING) {			
-			switch (direction) {			
-				case "up":
-				case "upleft":
-				case "upright":
-				case "down":
-				case "downleft":
-				case "downright":
-					gp.keyH.upPressed = false; gp.keyH.downPressed = false;
-					if ((gp.keyH.leftPressed || gp.keyH.rightPressed)) { walking(); }
-					break;
-				case "left":
-				case "right":			
-					gp.keyH.leftPressed = false; gp.keyH.rightPressed = false;
-					if ((gp.keyH.upPressed || gp.keyH.downPressed)) { walking(); }
-					break;
-			}
-			
-			if (gp.keyH.itemPressed) {
-				currentItem.setCharge(this);
-			}
-			else {
-				lockon = false;
-				currentItem.use(this);
-			}
-		}	
-		else if (action == Action.SWIMMING) { 
-			if (gp.keyH.actionPressed) { 
-				diving = true; guarded = true;
-			} 
-		}
-		else if (action == Action.DIGGING) { digging(); manageValues(); checkDeath(); return; }
-		else if (action == Action.JUMPING) { jumping(); }	
-		else if (action == Action.SOARING) { jumping(); }
-		else if (action == Action.GRABBING) { grabbing(); }	
-		else if (action == Action.CARRYING) {
-			if (gp.keyH.grabPressed) {
-				playThrowSE();
-				
-				action = Action.THROWING;
-				grabbedObject.thrown = true;
-				grabbedObject.grabbed = false;
-				grabbedObject.tWorldY = worldY;
-				
-				switch (direction) {
-					case "up":
-					case "upleft":
-					case "upright": grabbedObject.direction = "up"; break;
-					case "down":
-					case "downleft":
-					case "downright": grabbedObject.direction = "down"; break;
-					default: grabbedObject.direction = direction; break;
-				}
-				
-				return;
-			}
-			if (gp.keyH.itemPressed) {
-				if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
-					
-					action = Action.THROWING;
-					grabbedObject.grabbed = false;
-					grabbedObject.worldX = worldX;
-					grabbedObject.worldY = worldY;
-				}
-			}
-		}
-		else if (action == Action.THROWING) { throwing(); manageValues(); checkDeath(); return; }
-		else if (action == Action.SWINGING) { swinging(); manageValues(); checkDeath(); return; }	
-		
-		// DISABLED ACTIONS DURING CERTAIN ACTIONS
-		if (action != Action.SWIMMING && action != Action.AIMING && 
-				action != Action.JUMPING && action != Action.CARRYING && 
-				action != Action.SOARING && action != Action.ROLLING && action != Action.CHARGING) {		
-			
+		if (getAction()) { manageValues(); checkDeath(); return; }
+
+		// DISABLED BUTTONS DURING SPECIFIC ACTIONS
+		if (!disabled_actions.contains(action)) {			
 			if (gp.keyH.actionPressed) { action(); }	
 			if (spinning) { spinAttacking(); manageValues(); checkDeath(); return; }	
 			if (attacking) { attacking(); manageValues(); checkDeath(); return; }					
-			if (gp.keyH.guardPressed) { 
-				action = Action.GUARDING; 
-				if (guardCounter < 12) guardCounter++; 
-			}	
 			if (gp.keyH.grabPressed) { grabbing(); }			
 			if (gp.keyH.itemPressed) { useItem(); }					
 			if (gp.keyH.tabPressed) { cycleItems(); }
+			if (gp.keyH.guardPressed) { 
+				action = Action.GUARDING; 
+				if (guardCounter < 12) 
+					guardCounter++; 
+			}	
 		}	
 		
 		if ((gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) && 
@@ -517,6 +446,24 @@ public class Player extends Entity {
 				
 		manageValues();		
 		checkDeath();
+	}
+	public boolean getAction() {
+		
+		boolean stop = false;
+
+		if (action == Action.AIMING) { aiming(); }	
+		else if (action == Action.CARRYING) { if (carrying()) stop = true; }
+		else if (action == Action.CHARGING) { charging(); }
+		else if (action == Action.DIGGING) { digging(); stop = true; }
+		else if (action == Action.GRABBING) { grabbing(); }	
+		else if (action == Action.JUMPING) { jumping(); }	
+		else if (action == Action.ROLLING) { rolling(); }
+		else if (action == Action.SOARING) { jumping(); }
+		else if (action == Action.SWIMMING) { swimming(); }
+		else if (action == Action.SWINGING) { swinging(); stop = true; }	
+		else if (action == Action.THROWING) { throwing(); stop = true; }		
+		
+		return stop;
 	}
 
 /** END UPDATER **/
@@ -825,7 +772,11 @@ public class Player extends Entity {
 				spinning = true;
 				attackCounter = 0;
 				gp.keyH.actionPressed = false;
-				lockon = false;
+				
+				if (lockedTarget == null) {
+					lockon = false;
+				}				
+				
 				speed = defaultSpeed;
 			}
 		}
@@ -836,12 +787,17 @@ public class Player extends Entity {
 			attackCounter = 0;				
 			attacking = false;			
 			attackCanceled = false;
-			lockon = false;						
+
+			if (lockedTarget == null) {
+				lockon = false;
+			}				
 		}
 	}
 	
 	// Z-TARGETING
 	public void zTarget() {
+		
+		if (action == Action.CHARGING || spinning) return;
 		
 		// FIND TARGET IF NOT ALREADY
 		if (lockedTarget == null) {
@@ -1114,6 +1070,34 @@ public class Player extends Entity {
 			speed = defaultSpeed;
 		}
 	}
+	
+	public void aiming() {
+		
+		switch (direction) {			
+			case "up":
+			case "upleft":
+			case "upright":
+			case "down":
+			case "downleft":
+			case "downright":
+				gp.keyH.upPressed = false; gp.keyH.downPressed = false;
+				if ((gp.keyH.leftPressed || gp.keyH.rightPressed)) { walking(); }
+				break;
+			case "left":
+			case "right":			
+				gp.keyH.leftPressed = false; gp.keyH.rightPressed = false;
+				if ((gp.keyH.upPressed || gp.keyH.downPressed)) { walking(); }
+				break;
+		}
+		
+		if (gp.keyH.itemPressed) {
+			currentItem.setCharge(this);
+		}
+		else {
+			lockon = false;
+			currentItem.use(this);
+		}
+	}
 	public void grabbing() {
 		
 		int i = gp.cChecker.checkEntity(this, gp.iTile);
@@ -1206,6 +1190,39 @@ public class Player extends Entity {
 			entity.grabbed = true;
 			gp.keyH.grabPressed = false;	
 		}
+	}
+	public boolean carrying() {
+		if (gp.keyH.grabPressed) {
+			playThrowSE();
+			
+			action = Action.THROWING;
+			grabbedObject.thrown = true;
+			grabbedObject.grabbed = false;
+			grabbedObject.tWorldY = worldY;
+			
+			switch (direction) {
+				case "up":
+				case "upleft":
+				case "upright": grabbedObject.direction = "up"; break;
+				case "down":
+				case "downleft":
+				case "downright": grabbedObject.direction = "down"; break;
+				default: grabbedObject.direction = direction; break;
+			}
+			
+			return true;
+		}
+		else if (gp.keyH.itemPressed) {
+			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+				
+				action = Action.THROWING;
+				grabbedObject.grabbed = false;
+				grabbedObject.worldX = worldX;
+				grabbedObject.worldY = worldY;
+			}
+		}
+		
+		return false;
 	}
 	public void throwing() {		
 		throwCounter++;		
@@ -1301,6 +1318,11 @@ public class Player extends Entity {
 			gp.gameState = gp.playState;
 		}
 	}	
+	public void swimming() { 
+		if (gp.keyH.actionPressed) { 
+			diving = true; guarded = true;
+		} 
+	}
 	public void swinging() {
 
 		rodCounter++;
