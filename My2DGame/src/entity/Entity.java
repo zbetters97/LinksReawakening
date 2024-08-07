@@ -25,10 +25,11 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
+		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, 
+		JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
 	}
 	
-	public List<Action> disabled_actions = Arrays.asList(
+	protected List<Action> disabled_actions = Arrays.asList(
 			Action.AIMING, Action.CARRYING, Action.CHARGING,
 			Action.JUMPING, Action.ROLLING, Action.SOARING, 
 			Action.SWIMMING
@@ -66,7 +67,7 @@ public class Entity {
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,							
 							grabUp1, grabDown1, grabLeft1, grabRight1,							
-							buzzUp1, buzzUp2, die1, die2, die3, die4,
+							buzzUp1, buzzUp2,
 							lockedImage = setup("/enemy/lockon", 48 + 20, 48 + 20);
 		
 	// CHARACTER ATTRIBUTES	
@@ -667,7 +668,7 @@ public class Entity {
 		return false;
 	}
 	protected void attacking() {
-
+		
 		attackCounter++;
 		
 		// PREVENT SWING SPEED GLITCH

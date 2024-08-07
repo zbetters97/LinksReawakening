@@ -1,4 +1,4 @@
-package entity.player;
+package entity.npc;
 
 import application.GamePanel;
 import entity.Entity;

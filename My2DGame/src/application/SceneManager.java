@@ -9,9 +9,9 @@ import data.Progress;
 import entity.Entity;
 import entity.enemy.BOS_Skeleton;
 import entity.npc.NPC_Traveler_2;
+import entity.npc.PlayerDummy;
 import entity.object.OBJ_BlueHeart;
 import entity.object.OBJ_Door_Closed;
-import entity.player.PlayerDummy;
 
 public class SceneManager {
 

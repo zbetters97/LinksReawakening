@@ -1,4 +1,4 @@
-package entity.player;
+package entity;
 
 /** IMPORTS **/
 import java.awt.AlphaComposite;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import application.GamePanel;
 import data.Progress;
-import entity.Entity;
 import entity.collectable.COL_Fairy;
 import entity.enemy.EMY_Beetle;
 import entity.equipment.*;
@@ -47,10 +46,10 @@ public class Player extends Entity {
 	
 	// COUNTERS
 	public int damageNum = 1, rollNum = 1, pullNum = 1, throwNum = 1, 
-			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1, gruntNum = 1;
+			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
 	
 	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, throwCounter = 0, 
-			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0, gruntCounter = 0;
+			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0;
 	
 	// IMAGES
 	public BufferedImage 	
@@ -72,7 +71,7 @@ public class Player extends Entity {
 		soarUp1, soarDown1, soarLeft1, soarRight1,
 		rodUp1, rodUp2, rodDown1, rodDown2, rodLeft1, rodLeft2, rodRight1, rodRight2,
 								
-		titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3;	
+		titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3, die1, die2, die3, die4, die5;
 	
 /** END PLAYER VARIABLES **/		
 	
@@ -158,7 +157,6 @@ public class Player extends Entity {
 		*/
 	}
 	public void setDefaultItems() {		
-
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));		
 		inventory_item.add(new ITM_Bomb(gp));
@@ -180,6 +178,7 @@ public class Player extends Entity {
 	}	
 	public void resetValues() {	
 				
+		gp.keyH.actionPressed = false;
 		action = Action.IDLE;
 		onGround = true;
 		knockback = false;
@@ -188,7 +187,7 @@ public class Player extends Entity {
 		attacking = false;
 		spinning = false;
 		lockon = false;
-		attackCanceled = false;
+		attackCanceled = false;		
 		
 		attackNum = 1;
 		attackCounter = 0;
@@ -213,8 +212,6 @@ public class Player extends Entity {
 		soarCounter = 0; 		
 		rodNum = 1;
 		rodCounter = 0;
-		gruntNum = 1;
-		gruntCounter = 0;
 				
 		if (grabbedObject != null) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
@@ -398,7 +395,8 @@ public class Player extends Entity {
 		die1 = setup("/player/boy_die_1"); 
 		die2 = setup("/player/boy_die_2");
 		die3 = setup("/player/boy_die_3"); 
-		die4 = setup("/player/boy_die_4");		
+		die4 = setup("/player/boy_die_4");	
+		die5 = setup("/player/boy_die_5");	
 	}
 /** END DEFAULT HANDLERS **/
 	
@@ -426,7 +424,7 @@ public class Player extends Entity {
 
 		// DISABLED BUTTONS DURING SPECIFIC ACTIONS
 		if (!disabled_actions.contains(action)) {			
-			if (gp.keyH.actionPressed) { action(); }	
+			if (gp.keyH.actionPressed) { interact(); }	
 			if (spinning) { spinAttacking(); manageValues(); checkDeath(); return; }	
 			if (attacking) { attacking(); manageValues(); checkDeath(); return; }					
 			if (gp.keyH.grabPressed) { grabbing(); }			
@@ -567,20 +565,15 @@ public class Player extends Entity {
 			spriteCounter = 0;
 		}	
 	}
-	public void grunting() {
-		if (gruntNum == 1) {
-			playGruntSE_1();
-			gruntNum = 2;
-		}
-		else {
-			playGruntSE_2();
-			gruntNum = 1;
-			gruntCounter = 0;
-		}
+	public void grunting() {		
+		int grunt = 1 + (int)(Math.random() * 3);
+		if (grunt == 1) playGruntSE_1();
+		else if (grunt == 2) playGruntSE_2();
+		else if (grunt == 3) playGruntSE_3();
 	}
 	
 	// INTERACTIONS
-	public void action() {	
+	public void interact() {
 		if (!attackCanceled) swingSword();
 	}
 	public void checkCollision() {
@@ -745,6 +738,7 @@ public class Player extends Entity {
 		// SWING SWORD IF NOT ALREADY
 		else if (currentWeapon != null && !attackCanceled) {								
 			currentWeapon.playSE();
+			grunting();
 			
 			attacking = true;
 			attackCanceled = true;
@@ -764,7 +758,7 @@ public class Player extends Entity {
 			
 			// RELEASE SPIN ATTACK
 			if (charge >= 120) {
-				playSpinGruntSE();
+				playGruntSE_4();
 				playSpinSwordSE();
 				
 				charge = 0;
@@ -840,7 +834,7 @@ public class Player extends Entity {
 			}
 		}
 		if (target != null) {
-			playLockOnSE();
+			playZTargetSE();
 		}
 		
 		return target;
@@ -1547,15 +1541,6 @@ public class Player extends Entity {
 				diveCounter = 0;
 			}
 		}
-		
-		// PLAYER SECOND GRUNT 1 SEC AFTER FIRST GRUNT
-		if (gruntNum == 2) {
-			gruntCounter++;
-			if (gruntCounter == 60) {
-				gruntNum = 1;
-				gruntCounter = 0;
-			}
-		}
 	}
 	public void checkDeath() {
 		
@@ -1582,11 +1567,17 @@ public class Player extends Entity {
 	}
 	
 	// SOUND EFFECTS
-	private void playLiftSE() {
-		gp.playSE(4, 10);
+	public void playGruntSE_1() {
+		gp.playSE(2, 8);
 	}
-	public void playThrowSE() {
-		gp.playSE(4, 11);
+	public void playGruntSE_2() {
+		gp.playSE(2, 9);
+	}
+	public void playGruntSE_3() {
+		gp.playSE(2, 10);
+	}
+	public void playGruntSE_4() {
+		gp.playSE(2, 11);
 	}
 	public void playGetItemSE() {
 		gp.playSE(5, 0);
@@ -1594,24 +1585,21 @@ public class Player extends Entity {
 	public void playGuardSE() {
 		gp.playSE(2, 1);
 	}
-	public void playSpinSwordSE() {
-		gp.playSE(4, 13);
-	}
-	public void playSpinGruntSE() {
-		gp.playSE(2, 10);
-	}
-	public void playGruntSE_1() {
-		gp.playSE(2, 8);
-	}
-	public void playGruntSE_2() {
-		gp.playSE(2, 9);
-	}
 	public void playBlockSE() {
 		gp.playSE(4, 8);
 	}
-	public void playLockOnSE() {
+	public void playSpinSwordSE() {
+		gp.playSE(4, 13);
+	}
+	public void playZTargetSE() {
 		gp.playSE(2, 1);
 	}	
+	private void playLiftSE() {
+		gp.playSE(4, 10);
+	}
+	public void playThrowSE() {
+		gp.playSE(4, 11);
+	}
 	public void playSwimSE() {
 		gp.playSE(2, 2);
 	}
@@ -1946,9 +1934,15 @@ public class Player extends Entity {
 			else if (damageNum == 2) image = fall2;
 			else if (damageNum == 3) image = fall3;
 			else if (damageNum == 4) image = null;
+			
+			tempScreenX = screenX;
+			tempScreenY = screenY;
 		}	
 		else if (gp.gameState == gp.drowningState || diving) {
 			image = drown;			
+			
+			tempScreenX = screenX;
+			tempScreenY = screenY;
 		}				
 		
 		g2.drawImage(image, tempScreenX, tempScreenY, null);

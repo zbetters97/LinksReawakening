@@ -14,6 +14,7 @@ public class ITM_Rod extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to control enemies!";
+		getDescription = "Use it to soar through the air for a short time!";
 		
 		swingSpeed1 = 3;
 		swingSpeed2 = 15;
@@ -36,7 +37,22 @@ public class ITM_Rod extends Entity {
 				gp.player.capturedTarget == null) {					
 			playSE();
 			
-			projectile.set(gp.player.worldX, gp.player.worldY, gp.player.direction, true, gp.player);			
+			int worldX = gp.player.worldX;
+			int worldY = gp.player.worldY;
+			
+			// SHIFT ORB 
+			switch (gp.player.direction) {
+				case "up":
+				case "upleft":
+				case "upright": worldY -= 20; break;
+				case "down":
+				case "downleft":
+				case "downright": worldY += 20; break;
+				case "left": worldY += 8; worldX -= 20; break;
+				case "right": worldY += 8; worldX += 20; break;
+			}
+			
+			projectile.set(worldX, worldY, gp.player.direction, true, gp.player);			
 			addProjectile(projectile);	
 			
 			gp.player.shotAvailableCounter = 0;	

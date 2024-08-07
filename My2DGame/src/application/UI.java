@@ -1845,7 +1845,7 @@ public class UI {
 	// GAME OVER
 	private void drawGameOverScreen() {
 				
-		if (deathSprite < 18)
+		if (deathSprite < 16)
 			playerDeathAnimation();		
 		else {						
 			if (!gp.music.clip.isActive())
@@ -1924,15 +1924,17 @@ public class UI {
 		deathCounter++;
 		if (deathCounter > 6) {
 			
-			// SPIN PLAYER SPRITE 3 TIMES
-			if (deathSprite == 0 || deathSprite == 3 || deathSprite == 6) 
+			// SPIN PLAYER SPRITE 2 TIMES
+			if (deathSprite == 0 || deathSprite == 4) 
 				gp.player.image = gp.player.die1;		
-			else if (deathSprite == 1 || deathSprite == 4 || deathSprite == 7) 
+			else if (deathSprite == 1 || deathSprite == 5) 
 				gp.player.image = gp.player.die2;		
-			else if (deathSprite == 2 || deathSprite == 5 || deathSprite == 8) 
-				gp.player.image = gp.player.die3;		
-			else if (deathSprite == 9) 
+			else if (deathSprite == 2 || deathSprite == 6) 
+				gp.player.image = gp.player.die3;
+			else if (deathSprite == 3 || deathSprite == 7) 
 				gp.player.image = gp.player.die4;
+			else if (deathSprite == 8) 
+				gp.player.image = gp.player.die5;
 			
 			// RESET FRAME COUNTER
 			deathCounter = 0;

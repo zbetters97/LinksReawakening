@@ -23,6 +23,8 @@ public class ITM_Feather extends Entity {
 	public void use() {
 		if (gp.player.action != Action.JUMPING) {
 			playSE();
+			gp.player.playGruntSE_1();
+			
 			gp.player.action = Action.JUMPING;
 			gp.player.safeWorldX = gp.player.worldX;
 			gp.player.safeWorldY = gp.player.worldY;
