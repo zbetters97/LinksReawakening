@@ -840,16 +840,15 @@ public class Player extends Entity {
 		int ex = (target.worldX + (target.hitbox.width / 2)) / gp.tileSize;
 		int ey = (target.worldY + (target.hitbox.height / 2)) / gp.tileSize;	
 		
-		if (py == ey && px == ex) {
-			eDirection = direction;
-		}
-		else if (py > ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
+		if (py == ey && px == ex) 
+			eDirection = direction;		
+		else if (py > ey && Math.abs(px-ex) < Math.abs(py-ey)) 
 			eDirection = "up";
 		else if (py > ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";
 		else if (py > ey && px-ex < Math.abs(py-ey)) 
 			eDirection = "right";
-		else if (py < ey && Math.abs(px-ex) <= Math.abs(py-ey)) 
+		else if (py < ey && Math.abs(px-ex) < Math.abs(py-ey)) 
 			eDirection = "down";
 		else if (py < ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";

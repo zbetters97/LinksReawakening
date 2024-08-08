@@ -48,7 +48,7 @@ public class AssetSetter {
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 12, 46, "up"); i++;
 		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp, 36, 27); i++;
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 44, 21, "left"); i++;	
-		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp, 12, 29); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 12, 29); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 12, 31); i++;
 		
 		mapNum = 2;

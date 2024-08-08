@@ -184,7 +184,7 @@ public class Map {
 				cX = (int)(x + (gp.obj[gp.currentMap][i].worldX / scale));
 				cY = (int)(y + (gp.obj[gp.currentMap][i].worldY / scale));
 				
-				g2.setPaint(Color.YELLOW);
+				g2.setPaint(Color.GREEN);
 				if (minimap) g2.fillOval(cX + 1, cY, 3, 3);
 				else g2.fillOval(cX + 3, cY + 2, 4, 4);
 			}
