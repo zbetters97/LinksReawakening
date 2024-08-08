@@ -78,19 +78,6 @@ public class PRJ_Bomb extends Projectile {
 			}
 		}
 	}
-
-	public boolean hasResource(Entity user) {
-		
-		boolean hasResource = false;
-		
-		if (user.bombs >= useCost) 
-			hasResource = true;		
-		
-		return hasResource;
-	}	
-	public void subtractResource(Entity user) {
-		user.bombs -= useCost;
-	}
 	
 	public void explode() {
 		

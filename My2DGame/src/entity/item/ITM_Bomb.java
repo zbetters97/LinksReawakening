@@ -18,8 +18,6 @@ public class ITM_Bomb extends Entity {
 		description = "[" + name + "]\nEquip to blow things up!";
 		getDescription = "When equipped, press " + KeyEvent.getKeyText(gp.button_grab) + 
 				" to throw a bomb\nor " + KeyEvent.getKeyText(gp.button_item) + " to set it down!";
-		
-		projectile = new PRJ_Bomb(gp);
 	}	
 	
 	public void getImage() {
@@ -27,23 +25,17 @@ public class ITM_Bomb extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		
-		if (!projectile.alive && user.shotAvailableCounter == 30 && 
-				projectile.hasResource(user)) {
-			
+				
+		if (user.bombs > 0) {			
 			playSE();
 			
-			projectile.set(user.worldX, user.worldY, user.direction, true, user);
-			
-			if (user == gp.player) {
-				gp.player.grabEntity(projectile);
-			}
-			
+			projectile = new PRJ_Bomb(gp);				
+			projectile.set(user.worldX, user.worldY, user.direction, true, user);		
 			addProjectile(projectile);	
 			
-			projectile.subtractResource(user);
+			if (user == gp.player) gp.player.grabEntity(projectile);			
 			
-			user.shotAvailableCounter = 0;
+			if (user.bombs != -1) user.bombs--;
 		}
 		return true;
 	}

@@ -9,11 +9,11 @@ import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
 import entity.collectable.COL_Rupee_Red;
 
-public class EMY_Goblin_Combat extends Entity {
+public class EMY_Goblin_Combat_Shield extends Entity {
 
-	public static final String emyName = "Combat Goblin";
+	public static final String emyName = "Combat Shield Goblin";
 	
-	public EMY_Goblin_Combat(GamePanel gp, int worldX, int worldY) {
+	public EMY_Goblin_Combat_Shield(GamePanel gp, int worldX, int worldY) {
 		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;
@@ -44,25 +44,25 @@ public class EMY_Goblin_Combat extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/goblin_up_1");
-		up2 = setup("/enemy/goblin_up_2");
-		down1 = setup("/enemy/goblin_down_1");
-		down2 = setup("/enemy/goblin_down_2");
-		left1 = setup("/enemy/goblin_left_1");
-		left2 = setup("/enemy/goblin_left_2");
-		right1 = setup("/enemy/goblin_right_1");
-		right2 = setup("/enemy/goblin_right_2");
+		up1 = setup("/enemy/goblin_shield_up_1");
+		up2 = setup("/enemy/goblin_shield_up_2");
+		down1 = setup("/enemy/goblin_shield_down_1");
+		down2 = setup("/enemy/goblin_shield_down_2");
+		left1 = setup("/enemy/goblin_shield_left_1");
+		left2 = setup("/enemy/goblin_shield_left_2");
+		right1 = setup("/enemy/goblin_shield_right_1");
+		right2 = setup("/enemy/goblin_shield_right_2");
 	}	
 	public void getAttackImage() {		
-		attackUp1 = setup("/enemy/goblin_attack_up_1", gp.tileSize, gp.tileSize * 2); 
-		attackUp2 = setup("/enemy/goblin_attack_up_2", gp.tileSize, gp.tileSize * 2);		
-		attackDown1 = setup("/enemy/goblin_attack_down_1", gp.tileSize, gp.tileSize * 2); 
-		attackDown2 = setup("/enemy/goblin_attack_down_2", gp.tileSize, gp.tileSize * 2);
+		attackUp1 = setup("/enemy/goblin_shield_attack_up_1", gp.tileSize, gp.tileSize * 2); 
+		attackUp2 = setup("/enemy/goblin_shield_attack_up_2", gp.tileSize, gp.tileSize * 2);		
+		attackDown1 = setup("/enemy/goblin_shield_attack_down_1", gp.tileSize, gp.tileSize * 2); 
+		attackDown2 = setup("/enemy/goblin_shield_attack_down_2", gp.tileSize, gp.tileSize * 2);
 		
-		attackLeft1 = setup("/enemy/goblin_attack_left_1", gp.tileSize * 2, gp.tileSize); 
-		attackLeft2 = setup("/enemy/goblin_attack_left_2", gp.tileSize * 2, gp.tileSize);		
-		attackRight1 = setup("/enemy/goblin_attack_right_1", gp.tileSize * 2, gp.tileSize); 
-		attackRight2 = setup("/enemy/goblin_attack_right_2", gp.tileSize * 2, gp.tileSize);			
+		attackLeft1 = setup("/enemy/goblin_shield_attack_left_1", gp.tileSize * 2, gp.tileSize); 
+		attackLeft2 = setup("/enemy/goblin_shield_attack_left_2", gp.tileSize * 2, gp.tileSize);		
+		attackRight1 = setup("/enemy/goblin_shield_attack_right_1", gp.tileSize * 2, gp.tileSize); 
+		attackRight2 = setup("/enemy/goblin_shield_attack_right_2", gp.tileSize * 2, gp.tileSize);			
 	}
 	
 	public void setAction() {
@@ -111,7 +111,7 @@ public class EMY_Goblin_Combat extends Entity {
 		int i = new Random().nextInt(100) + 1;		
 		
 		if (i < 60) dropItem(new COL_Heart(gp));
-		if (i >= 60 && i < 90) dropItem(new COL_Rupee_Blue(gp));
-		if (i >= 90 && i <= 100) dropItem(new COL_Rupee_Red(gp));
+		if (i >= 60 && i < 80) dropItem(new COL_Rupee_Blue(gp));
+		if (i >= 80 && i <= 100) dropItem(new COL_Rupee_Red(gp));
 	}
 }

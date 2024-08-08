@@ -23,8 +23,9 @@ public class ITM_Boots extends Entity {
 		down1 = setup("/items/boots");
 	}
 	
-	public void use() {
-		gp.player.action = Action.RUNNING;
+	public boolean use(Entity user) {
+		user.action = Action.RUNNING;
+		return true;
 	}
 	
 	public void playSE() {

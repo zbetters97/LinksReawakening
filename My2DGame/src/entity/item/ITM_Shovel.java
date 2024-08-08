@@ -20,12 +20,14 @@ public class ITM_Shovel extends Entity {
 		down1 = setup("/items/shovel");
 	}
 	
-	public void use() {
-		if (gp.player.action != Action.DIGGING) {
-			gp.player.action = Action.DIGGING;
-			gp.player.attackCanceled = true;
+	public boolean use(Entity user) {
+		if (user.action != Action.DIGGING) {
 			playSE();
+			user.action = Action.DIGGING;
+			user.attackCanceled = true;
 		}
+		
+		return true;
 	}
 	
 	public void playSE() {

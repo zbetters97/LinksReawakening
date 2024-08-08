@@ -30,7 +30,7 @@ public class EMY_Stalfos extends Entity {
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
 		maxLife = 12; life = maxLife;
-		attack = 1;
+		attack = 2;
 		knockbackPower = 0;		
 		
 		projectile = new PRJ_Bone(gp);	
@@ -40,8 +40,6 @@ public class EMY_Stalfos extends Entity {
 		hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
 		hitboxDefaultHeight = hitbox.height;
-		
-		
 	}
 	
 	public void getImage() {

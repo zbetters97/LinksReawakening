@@ -1,5 +1,7 @@
 package entity.item;
 
+import java.awt.event.KeyEvent;
+
 import application.GamePanel;
 import entity.Entity;
 import entity.projectile.PRJ_Orb;
@@ -14,7 +16,9 @@ public class ITM_Rod extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to control enemies!";
-		getDescription = "Use it to soar through the air for a short time!";
+		getDescription = "Press " + KeyEvent.getKeyText(gp.button_item) + " to shoot a magical orb"
+				+ " at enemies!\nWhen an enemy is controlled, press " + KeyEvent.getKeyText(gp.button_item)
+				+ " again to release control!";
 		
 		swingSpeed1 = 3;
 		swingSpeed2 = 15;
@@ -29,19 +33,18 @@ public class ITM_Rod extends Entity {
 		down1 = setup("/items/rod");
 	}
 	
-	public void use() {		
+	public boolean use(Entity user) {		
 
-		gp.player.action = Action.SWINGING;
+		user.action = Action.SWINGING;
 				
-		if (!projectile.alive && gp.player.shotAvailableCounter == 30 && 
-				gp.player.capturedTarget == null) {					
+		if (!projectile.alive && user.capturedTarget == null) {					
 			playSE();
 			
-			int worldX = gp.player.worldX;
-			int worldY = gp.player.worldY;
+			int worldX = user.worldX;
+			int worldY = user.worldY;
 			
 			// SHIFT ORB 
-			switch (gp.player.direction) {
+			switch (user.direction) {
 				case "up":
 				case "upleft":
 				case "upright": worldY -= 20; break;
@@ -52,18 +55,18 @@ public class ITM_Rod extends Entity {
 				case "right": worldY += 8; worldX += 20; break;
 			}
 			
-			projectile.set(worldX, worldY, gp.player.direction, true, gp.player);			
+			projectile.set(worldX, worldY, user.direction, true, user);			
 			addProjectile(projectile);	
-			
-			gp.player.shotAvailableCounter = 0;	
 		}	
-		else if (gp.player.capturedTarget != null) {
+		else if (user.capturedTarget != null) {
 			projectile.playSE();
 			
-			gp.player.capturedTarget.speed = gp.player.capturedTarget.defaultSpeed; 
-			gp.player.capturedTarget.captured = false;
-			gp.player.capturedTarget = null;
+			user.capturedTarget.speed = user.capturedTarget.defaultSpeed; 
+			user.capturedTarget.captured = false;
+			user.capturedTarget = null;
 		}
+		
+		return true;
 	}	
 	
 	public void playSE() {

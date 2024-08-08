@@ -1431,7 +1431,7 @@ public class UI {
 		if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {	
 			if (dialogueCounter == textSpeed) {
 				char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
-
+							
 				if (charIndex < characters.length) {					
 					playDialogueSE();
 					
@@ -1501,7 +1501,7 @@ public class UI {
 			if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
 				npc.dialogueIndex++;
 				gp.keyH.actionPressed = false;
-			}				
+			}	
 		}
 	}
 			

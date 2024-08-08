@@ -9,6 +9,7 @@ import entity.collectable.COL_Arrow;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
 import entity.item.ITM_Bow;
+import entity.projectile.PRJ_Spear;
 
 public class EMY_Goblin_Archer extends Entity {
 
@@ -27,12 +28,11 @@ public class EMY_Goblin_Archer extends Entity {
 		
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		maxLife = 10; life = maxLife;
-		attack = 3;
-		knockbackPower = 0;				
-		arrows = -1;
+		maxLife = 8; life = maxLife;
+		attack = 2;
+		knockbackPower = 0;		
 		
-		currentItem = new ITM_Bow(gp);	
+		projectile = new PRJ_Spear(gp);
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;
@@ -61,10 +61,10 @@ public class EMY_Goblin_Archer extends Entity {
 				
 				if (onPath && playerWithinBounds()) {					
 					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));		
-					useItem(60);
+					useProjectile(150);
 				}
 				else if (onPath) {
-					useItem(60);
+					useProjectile(150);
 				}
 			}
 			else {					
@@ -82,7 +82,7 @@ public class EMY_Goblin_Archer extends Entity {
 	}
 	
 	public void attacking() {
-		currentItem.use(this);
+		useProjectile(1);
 		attacking = false;
 	}
 	

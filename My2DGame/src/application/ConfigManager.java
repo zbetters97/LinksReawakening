@@ -20,25 +20,20 @@ public class ConfigManager {
 			// IMPORT FILE
 			BufferedWriter bw = new BufferedWriter(new FileWriter("config.txt"));
 			
-			// PLAYER NAME
-			bw.write("Player name\n" + gp.player.name);
-			bw.newLine();
-			
 			// FULLSCREEN
-			if (gp.fullScreenOn) bw.write("Fullscreen\nTrue");
-			else bw.write("Fullscreen\nFalse");
+			bw.write("FULLSCREEN\n" + gp.fullScreenOn);
 			bw.newLine();
 			
 			// MUSIC VOLUME
-			bw.write("Music volume\n" + String.valueOf(gp.music.volumeScale));			
+			bw.write("MUSIC VOLUME\n" + String.valueOf(gp.music.volumeScale));			
 			bw.newLine();
 			
 			// SOUND EFFECTS VOLUME
-			bw.write("Sound effects volume\n" + String.valueOf(gp.se.volumeScale));			
+			bw.write("SE VOLUME\n" + String.valueOf(gp.se.volumeScale));			
 			bw.newLine();
 			
 			// SOUND EFFECTS VOLUME
-			bw.write("Text speed\n" + String.valueOf(gp.ui.textSpeed));			
+			bw.write("TEXT SPEED\n" + String.valueOf(gp.ui.textSpeed));			
 			bw.newLine();
 			
 			// CLOSE FILE
@@ -55,16 +50,10 @@ public class ConfigManager {
 			BufferedReader br = new BufferedReader(new FileReader("config.txt"));
 			
 			br.readLine(); 
-						
-			// PLAYER NAME
-			String s = br.readLine();
-			gp.player.name = s;
-			br.readLine();
 			
 			// FULL SCREEN
-			s = br.readLine();
-			if (s.equals("True")) gp.fullScreenOn = true;
-			else gp.fullScreenOn = false;
+			String s = br.readLine();
+			gp.fullScreenOn = Boolean.valueOf(s);
 			br.readLine();
 			
 			// MUSIC VOLUME

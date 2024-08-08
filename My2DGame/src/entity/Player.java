@@ -12,6 +12,7 @@ import application.GamePanel;
 import data.Progress;
 import entity.collectable.COL_Fairy;
 import entity.enemy.EMY_Beetle;
+import entity.enemy.EMY_Goblin_Combat_Shield;
 import entity.equipment.*;
 import entity.item.*;
 import entity.projectile.PRJ_Bomb;
@@ -28,8 +29,6 @@ public class Player extends Entity {
 	// POSITIONING
 	public int screenX;
 	public int screenY;	
-	public int safeWorldX = 0;
-	public int safeWorldY = 0;
 	
 	// INVENTORY
 	public final int maxItemInventorySize = 10;
@@ -41,8 +40,6 @@ public class Player extends Entity {
 	
 	// MISC
 	public String aimDirection;	
-	public Entity capturedTarget;
-	public boolean diving = false;
 	
 	// COUNTERS
 	public int damageNum = 1, rollNum = 1, pullNum = 1, throwNum = 1, 
@@ -94,6 +91,8 @@ public class Player extends Entity {
 		
 		attackbox.width = 32;
 		attackbox.height = 32;
+		
+		name = "LINK";
 	}
 
 /** END PLAYER CONSTRUCTOR **/
@@ -118,6 +117,7 @@ public class Player extends Entity {
 		
 		maxArrows = 10; arrows = maxArrows;
 		maxBombs = 10; bombs = maxBombs;
+		shotAvailableCounter = 30;
 		
 //		currentWeapon = null;
 		currentWeapon = new EQP_Sword_Old(gp);
@@ -627,9 +627,9 @@ public class Player extends Entity {
 	public void interactNPC(int i) {		
 		if (i != -1) {
 			if (gp.keyH.actionPressed) {
-				gp.keyH.actionPressed = false;
-				attackCanceled = true;			
-				gp.npc[gp.currentMap][i].speak();
+				resetValues();
+				attackCanceled = true;
+				gp.npc[gp.currentMap][i].speak();				
 			}			
 		}				
 	}	
@@ -995,17 +995,15 @@ public class Player extends Entity {
 	}
 	public void useItem() {
 		
+		// HAS ITEM EQUIPPED
 		if (currentItem != null) {							
 			switch (currentItem.name) {
+				case ITM_Bomb.itmName:
 				case ITM_Boots.itmName:
 				case ITM_Cape.itmName:
 				case ITM_Feather.itmName:
 				case ITM_Rod.itmName:
-				case ITM_Shovel.itmName:
-					gp.keyH.itemPressed = false;
-					currentItem.use();
-					break;		
-				case ITM_Bomb.itmName:
+				case ITM_Shovel.itmName:				
 					gp.keyH.itemPressed = false;
 					currentItem.use(this);
 					break;
@@ -1026,10 +1024,11 @@ public class Player extends Entity {
 					break;	
 			}	
 		}
-		else if (currentItem == null) {
-			gp.keyH.itemPressed = false;
+		// NO ITEM EQUIPPED
+		else {
+			gp.keyH.itemPressed = false;	
+			startDialogue(this, 2);					
 			gp.gameState = gp.dialogueState;
-			startDialogue(this, 2);
 		}			
 	}
 	public void cycleItems() {
@@ -1368,48 +1367,63 @@ public class Player extends Entity {
 	// DAMAGE
 	public void damageEnemy(Entity target, Entity attacker, int attack, int knockbackPower) {
 				
-		if (target != null && !target.guarded) {
+		if (target != null) {
 						
-			// BUZZING ENEMY
-			if (target.buzzing && attacker == this) {
-				if (!attacker.invincible) {
-					target.playShockSE();
-				}
-				damagePlayer(target.attack);
-			}			
-			else if (!target.invincible && !target.captured) {								
-				target.playHurtSE();
-				
-				if (knockbackPower > 0 && target.type != type_boss) {
-					setKnockback(target, attacker, knockbackPower);
-				}
-				
-				// HIT BY STUN WEAPON
-				if (attacker.canStun && !target.stunned) {
-					target.stunned = true;
-					target.spriteCounter = -30;
-				}
-								
-				int damage = attack;
-				if (damage < 0) damage = 1;		
-				
-				target.life -= damage;					
-				target.transparent = true;
-				target.invincible = true;
-				target.damageReaction();
-				
-				// KILL ENEMY
-				if (target.life <= 0) {
-					target.playDeathSE();
-					target.dying = true;
-				}
-			}			
-		}
-		else if (target != null && target.name.equals(EMY_Beetle.emyName) && 
-				(attacker.name.equals(PRJ_Boomerang.prjName) || 
-				attacker.name.equals(PRJ_Bomb.prjName))) {
-			setKnockback(target, attacker, 1);
-			target.attacking = true;			
+			if (!target.guarded) {				
+			
+				// BUZZING ENEMY
+				if (target.buzzing && attacker == this) {
+					if (!attacker.invincible) {
+						target.playShockSE();
+					}
+					damagePlayer(target.attack);
+				}			
+				else if (!target.invincible && !target.captured) {		
+					
+					// SHIELD GOBLIN BLOCKS ATTACK
+					if (target.name.equals(EMY_Goblin_Combat_Shield.emyName) &&
+							direction == getOppositeDirection(target.direction) && 
+							!target.stunned) {
+						playBlockSE();	
+						setKnockback(attacker, target, target.knockbackPower);
+					}
+					else {
+						target.playHurtSE();
+						
+						// HIT BY STUN WEAPON
+						if (attacker.canStun && !target.stunned) {
+							target.stunned = true;
+							target.spriteCounter = -30;
+						}
+										
+						int damage = attack;
+						if (damage < 0) damage = 1;
+						
+						target.life -= damage;					
+						target.transparent = true;
+					}
+					
+					target.invincible = true;
+					target.damageReaction();
+					
+					if (knockbackPower > 0 && target.type != type_boss) {
+						setKnockback(target, attacker, knockbackPower);
+					}				
+					
+					// ENEMY DEFEATED
+					if (target.life <= 0) {
+						target.playDeathSE();
+						target.dying = true;
+					}				
+				}		
+			}		
+			// BEETLE ENEMY PROJECTILE DAMAGE
+			else if (target.name.equals(EMY_Beetle.emyName) && 
+					(attacker.name.equals(PRJ_Boomerang.prjName) || 
+					attacker.name.equals(PRJ_Bomb.prjName))) {
+				setKnockback(target, attacker, 1);
+				target.attacking = true;			
+			}
 		}
 	}
 	public void damageProjectile(int i) {
@@ -1517,10 +1531,6 @@ public class Player extends Entity {
 		if (life > maxLife) 
 			life = maxLife;
 		
-		// PROJECTILE REFRESH TIME
-		if (shotAvailableCounter < 30) 
-			shotAvailableCounter++;	
-		
 		// PLAYER SHIELD AFTER DAMAGE
 		if (invincible) {
 			invincibleCounter++;
@@ -1537,6 +1547,7 @@ public class Player extends Entity {
 		if (diving) {
 			diveCounter++;
 			if (diveCounter >= 90) {
+				
 				diving = false;
 				diveCounter = 0;
 			}

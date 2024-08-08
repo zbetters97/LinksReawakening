@@ -22,10 +22,10 @@ public class EMY_Zora extends Entity {
 		name = emyName;
 		canSwim = true;		
 		
-		maxLife = 12; life = maxLife;
+		maxLife = 10; life = maxLife;
 		speed = 0; defaultSpeed = speed;
 		animationSpeed = 12;				
-		attack = 2; 
+		attack = 1; 
 		knockbackPower = 0;
 		
 		projectile = new PRJ_Fireball(gp);

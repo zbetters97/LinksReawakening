@@ -91,7 +91,7 @@ public class EventHandler {
 			else if (hit(1, 14, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
 			
 			// TELEPORT SPOTS
-			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.inside, 1, "up"); // SHOP ENTRANCE
+			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.shop, 1, "up"); // SHOP ENTRANCE
 			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside, 2, "down"); // SHOP EXIT
 			else if (hit(0, 12, 12, true)) teleport(2, 40, 93, gp.dungeon, 1, "up"); // DUNGEON ENTRANCE
 			else if (hit(2, 40, 93, true)) teleport(0, 12, 12, gp.outside, 2, "down"); // DUNGEON EXIT

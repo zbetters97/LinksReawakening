@@ -41,16 +41,14 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.enemy[mapNum][i] = new EMY_Tektite(gp, 23, 7); i++;
-		
 		gp.enemy[mapNum][i] = new EMY_Keese(gp, 23, 40); i++;
 		gp.enemy[mapNum][i] = new EMY_Keese(gp, 21, 37); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 38, 40); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 37, 41); i++;
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 12, 46, "up"); i++;
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 36, 27); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp, 36, 27); i++;
 		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 44, 21, "left"); i++;	
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 12, 29); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp, 12, 29); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 12, 31); i++;
 		
 		mapNum = 2;

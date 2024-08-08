@@ -25,7 +25,7 @@ public class EMY_Buzzblob extends Entity {
 		name = emyName;
 		capturable = true;
 		
-		maxLife = 8; life = maxLife;
+		maxLife = 6; life = maxLife;
 		speed = 1; defaultSpeed = speed;
 		animationSpeed = 10;
 		attack = 4; 

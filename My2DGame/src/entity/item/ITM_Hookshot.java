@@ -24,13 +24,11 @@ public class ITM_Hookshot extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		if (!projectile.alive && user.shotAvailableCounter == 30) { 			
+		if (!projectile.alive) { 			
 							
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);
-						
-			user.shotAvailableCounter = 0;	
-			
+									
 			user.action = Action.THROWING;
 		}		
 		return true;

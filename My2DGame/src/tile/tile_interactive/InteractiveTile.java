@@ -47,10 +47,12 @@ public class InteractiveTile extends Entity {
 	
 	private void thrown() { 
 		if (tossEntity()) {
-
-			gp.cChecker.checkPit(this, false);
+			
+			gp.cChecker.checkPit(this, false);			
 			
 			if (alive) {
+				playSE();				
+				thrown = false;
 				
 				Entity enemy = getEnemy(this);		
 				if (enemy != null) {
@@ -58,9 +60,8 @@ public class InteractiveTile extends Entity {
 				}
 				
 				int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-				gp.player.damageInteractiveTile(iTileIndex, this);						
+				gp.player.damageInteractiveTile(iTileIndex, this);	
 				
-				playSE();				
 				checkDrop();
 				generateParticle(this);
 				throwCounter = 0;

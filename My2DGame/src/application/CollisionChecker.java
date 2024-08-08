@@ -133,89 +133,52 @@ public class CollisionChecker {
 				entity.collisionOn = false; 
 				return;
 		}		
-
-		// NPC AND EMNEMIES
-		if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {
+		
+		// PIT
+		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 			
-			// PIT
-			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
-												
-				// ENEMY CAN FALL IN PIT IF HIT
-				if (!entity.knockback && entity.onGround) {
+			// NPC AND EMNEMIES
+			if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {	
+				
+				// ENEMY CAN FALL IN PIT IF HIT OR CAPTURED
+				if (entity.onGround && !entity.knockback && !entity.captured) {
 					entity.collisionOn = true;	
 				}
 			}
-			// WATER
-			else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
-				
+			// BOSSES
+			else if (entity.type == entity.type_boss) {
+				if (entity.onGround) {
+					entity.collisionOn = true;	
+				}
+			}
+			// PROJECTILES
+			else if (entity.type == entity.type_projectile) {
+				entity.collisionOn = false;
+			}
+		}
+		// WATER
+		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
+			
+			// NPC AND EMNEMIES
+			if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {	
+			
 				// ENEMY CAN FALL IN WATER IF HIT
 				if (!entity.canSwim && !entity.knockback) {
 					entity.collisionOn = true;
 				}
 			}
-			// SPIKES
-			else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {				
-				entity.collisionOn = true;
-			}
-			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-				entity.collisionOn = true;
-			}			
-			// WATER ENEMIES
-			if (entity.name.equals(EMY_Octorok.emyName) || entity.name.equals(EMY_Tektite.emyName)) {
-				if (tileNum1 != gp.tileM.waterTile || tileNum2 != gp.tileM.waterTile) {
-					entity.collisionOn = true;
-				}
-			}
-		}
-		// BOSSES
-		else if (entity.type == entity.type_boss) {
-			
-			// PIT
-			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
-												
-				if (entity.onGround) {
-					entity.collisionOn = true;	
-				}
-			}
-			// WATER
-			else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
-				
+			// BOSSES
+			else if (entity.type == entity.type_boss) {
 				if (!entity.canSwim) {
 					entity.collisionOn = true;
 				}
-			}
-			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-				entity.collisionOn = true;
-			}		
+			}			
 		}
-		// PROJECTILES
-		else if (entity.type == entity.type_projectile) {
+		// SPIKES
+		else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {	
 			
-			if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit ||
-					gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
-				entity.collisionOn = false;
-			}
-			// NO COLLISION FOR BOUNDARY WATER
-			else if (tileNum1 == gp.tileM.oceanTile1 || tileNum2 == gp.tileM.oceanTile1
-					|| tileNum1 == gp.tileM.oceanTile2 || tileNum2 == gp.tileM.oceanTile2) {
-				entity.collisionOn = false;
-			}
-			else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {				
-				entity.collisionOn = true;
-			}				
-		}
-		// PLAYER
-		else if (entity == gp.player){		
-									
-			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
-				entity.collisionOn = true;
-			}
-			if (!gp.tileM.tile[tileNum1].water && !gp.tileM.tile[tileNum2].water) {
-				gp.player.diving = false;
-				gp.player.diveCounter = 0;
-			}
-			// SPIKES
-			else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {	
+			// PLAYER
+			if (entity == gp.player) {		
 												
 				if (!gp.player.invincible) {
 					
@@ -235,13 +198,44 @@ public class CollisionChecker {
 							
 					gp.player.setKnockback(gp.player, kbDirection, 1);
 				}
-			}
-		}
-		// OTHER
-		else {			
-			if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+			}	
+			// NPC AND EMNEMIES
+			else if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {			
 				entity.collisionOn = true;
 			}
+		}
+		// OCEAN
+		else if (tileNum1 == gp.tileM.oceanTile1 || tileNum2 == gp.tileM.oceanTile1
+				|| tileNum1 == gp.tileM.oceanTile2 || tileNum2 == gp.tileM.oceanTile2) {
+			
+			// PROJECTILES
+			if (entity.type == entity.type_projectile) {
+				entity.collisionOn = false;
+			}
+			// OTHER
+			else {
+				entity.collisionOn = true;
+			}
+		}
+		// NORMAL COLLISION
+		else if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {			
+			entity.collisionOn = true;			
+		}
+		else {
+			// PLAYER
+			if (entity == gp.player) {		
+				gp.player.diving = false;
+				gp.player.diveCounter = 0;				
+			}
+		}
+		
+		if (entity.type == entity.type_enemy && 
+				(entity.name.equals(EMY_Octorok.emyName) || 
+				entity.name.equals(EMY_Tektite.emyName))) {
+			
+			if (tileNum1 != gp.tileM.waterTile || tileNum2 != gp.tileM.waterTile) {
+				entity.collisionOn = true;
+			}		
 		}
 	}
 			
@@ -263,13 +257,13 @@ public class CollisionChecker {
 		if (entityLeftCol <= 0) return;		
 		if (entityRightCol >= gp.maxWorldCol - 1) return;
 		
-		// detect the two tiles player is interacting with
 		int tileNum1 = 0, tileNum2 = 0;
 		
 		// KNOCKBACK DIRECTION
 		String direction = entity.direction;
 		if (entity.lockon) direction = entity.lockonDirection;		
 		if (entity.knockback) direction = entity.knockbackDirection;
+		
 		switch (direction) {
 			case "up":				
 				
@@ -361,40 +355,39 @@ public class CollisionChecker {
 		// PIT
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 			
-			if (entity.action != Action.JUMPING && entity.action != Action.SOARING &&
-					gp.gameState == gp.playState) {
+			// ENTITY NOT JUMPING OR SOARING
+			if (gp.gameState == gp.playState &&
+					entity.action != Action.JUMPING && 
+					entity.action != Action.SOARING	) {
 				
+				// PLAYER
 				if (player) {
 					gp.player.playFallSE();		
 					gp.player.resetValues();
 					gp.player.invincible = true;	
 					gp.gameState = gp.fallingState;
 				}
-				else {
-					if (entity.thrown) {
-						entity.resetValues();						
-						entity.alive = false;
-					}
-					if (entity.onGround) {
-						entity.alive = false;
-					}
+				// THROWN ENTITY
+				else if (entity.thrown) {
+					entity.resetValues();						
+					entity.alive = false;
+				}
+				// ON GROUND ENTITY
+				else if (entity.onGround) {						
+					if (entity.captured) gp.player.capturedTarget = null;
+					entity.alive = false;					
 				}				
 			}
 		}
 		// WATER
 		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {			
 			
+			// PLAYER
 			if (player) {
 				gp.player.action = Action.SWIMMING;
 				
-				if (!gp.player.canSwim && gp.gameState == gp.playState) {
-					gp.player.playDrownSE();
-					gp.player.playHurtSE();	
-					gp.player.resetValues();
-					gp.player.invincible = true;
-					gp.gameState = gp.drowningState;
-				}		
-				else {					
+				// PLAYER CAN SWIM
+				if (gp.player.canSwim) {
 					gp.player.speed = 2;
 					
 					if (gp.player.grabbedObject != null) {
@@ -406,22 +399,35 @@ public class CollisionChecker {
 						}									
 						gp.player.grabbedObject = null;
 					}
+				}		
+				// PLAYER CANNOT SWIM
+				else {					
+					gp.player.playDrownSE();
+					gp.player.playHurtSE();	
+					gp.player.resetValues();
+					gp.player.invincible = true;
+					gp.gameState = gp.drowningState;
 				}
 			}
+			// NON-PLAYER
 			else {
-				if (entity.name.equals(PRJ_Bomb.prjName)) {
-					entity.animationSpeed = 30;
-					entity.active = false;	
-				}
+				// ENTITY CANNOT SWIM
 				if (!entity.canSwim) {
 					entity.alive = false;
 				}
+				// RESET BOMB VALUES
+				if (entity.name.equals(PRJ_Bomb.prjName)) {
+					entity.animationSpeed = 30;
+					entity.active = false;	
+				}				
 			}
 		}		
-		// GROUND
+		// OTHER
 		else {
-			if (entity.action == Action.SWIMMING)
+			// NON-WATER TILE
+			if (entity.action == Action.SWIMMING) {
 				entity.action = Action.IDLE;
+			}
 		}
 	}	
 	private void checkSafeworld(int tile1, int tile2) {
@@ -795,11 +801,12 @@ public class CollisionChecker {
 				}
 				
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
-															
+																				
 					if (target[gp.currentMap][i] != entity) {		
 						
 						// THROWN OBJECTS ONLY STOP AT WALLS
 						if (entity.thrown) {
+							
 							if (target[gp.currentMap][i].name.contains("Wall")) {
 								
 								index = i;	

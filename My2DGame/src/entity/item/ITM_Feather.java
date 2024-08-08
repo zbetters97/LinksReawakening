@@ -20,17 +20,19 @@ public class ITM_Feather extends Entity {
 		down1 = setup("/items/feather");
 	}
 	
-	public void use() {
-		if (gp.player.action != Action.JUMPING) {
+	public boolean use(Entity user) {
+		if (user.action != Action.JUMPING) {
 			playSE();
 			gp.player.playGruntSE_1();
 			
-			gp.player.action = Action.JUMPING;
-			gp.player.safeWorldX = gp.player.worldX;
-			gp.player.safeWorldY = gp.player.worldY;
-			gp.player.onGround = false;			
-			gp.player.attackCanceled = true;			
+			user.safeWorldX = user.worldX;
+			user.safeWorldY = user.worldY;
+			user.onGround = false;			
+			user.action = Action.JUMPING;			
+			user.attackCanceled = true;			
 		}
+		
+		return true;
 	}	
 	
 	public void playSE() {

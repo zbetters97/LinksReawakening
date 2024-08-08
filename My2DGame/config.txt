@@ -1,10 +1,8 @@
-Player name
-LINK
-Fullscreen
-False
-Music volume
-2
-Sound effects volume
+FULLSCREEN
+false
+MUSIC VOLUME
 3
-Text speed
+SE VOLUME
+3
+TEXT SPEED
 0

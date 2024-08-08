@@ -112,9 +112,10 @@ public class GamePanel extends JPanel implements Runnable {
 	// AREA STATES
 	public int currentArea;
 	public int nextArea;
-	public final int outside = 50;
-	public final int inside = 51;
-	public final int dungeon = 52;
+	public final int outside = 1;
+	public final int house = 2;
+	public final int shop = 3;
+	public final int dungeon = 3;
 	public boolean bossBattleOn = false;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
@@ -253,10 +254,7 @@ public class GamePanel extends JPanel implements Runnable {
 			updateParticles();
 		}
 		// CUTSCENE
-		else if (gameState == cutsceneState) {
-			
-			player.resetValues();
-			
+		else if (gameState == cutsceneState) {			
 			updateNPC();			
 			updateObjects();
 			updateObjects();

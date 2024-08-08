@@ -45,8 +45,9 @@ public class NPC_Traveler_Template extends Entity {
 			direction = getOppositeDirection(gp.player.direction);
 			startDialogue(this, dialogueSet);	
 		}	
-		else
+		else {
 			gp.player.attackCanceled = false;
+		}			
 	}
 	
 	public void setPath(int goalCol, int goalRow) {

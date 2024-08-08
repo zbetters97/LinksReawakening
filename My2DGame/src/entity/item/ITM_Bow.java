@@ -18,8 +18,6 @@ public class ITM_Bow extends Entity {
 		description = "[" + name + "]\nEquip to fire an arrow!";
 		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.button_item) + 
 				" to charge its power!\nRelease " + KeyEvent.getKeyText(gp.button_item) + " to fire an arrow!";	
-		
-		projectile = new PRJ_Arrow(gp);
 	}
 	
 	public void getImage() {
@@ -28,8 +26,7 @@ public class ITM_Bow extends Entity {
 	
 	public boolean setCharge(Entity user) {
 		
-		if (!projectile.alive && user.shotAvailableCounter == 30 && 
-				projectile.hasResource(user)) {	
+		if (user.arrows > 0) {	
 			
 			if (user.charge < 120) user.charge++;
 			
@@ -44,41 +41,31 @@ public class ITM_Bow extends Entity {
 	
 	public boolean use(Entity user) {	
 
-		if (!projectile.alive && user.shotAvailableCounter == 30 && 
-				projectile.hasResource(user)) {			
+		if (user.arrows > 0) {			
 			playSE();
 			
-			if (user == gp.player) {	
-				
-				user.action = Action.IDLE; 	
-				
-				if (80 > user.charge && user.charge >= 40) {
-					projectile.attack++;
-					projectile.speed += 2;
-				}
-				else if (120 > user.charge && user.charge >= 80) {
-					projectile.attack += 2;
-					projectile.speed += 4;
-				}
-				else if (user.charge >= 120) {
-					projectile.attack += 3;
-					projectile.speed += 6;
-				}				
-				
-				user.charge = 0;	
+			projectile = new PRJ_Arrow(gp);
+			
+			user.action = Action.IDLE; 				
+			user.charge = 0;
+			
+			if (80 > user.charge && user.charge >= 40) {
+				projectile.attack++;
+				projectile.speed += 2;
 			}
-			else {
-				projectile.attack = 2;
-				projectile.speed = 10;
-				user.charge = 0;	
+			else if (120 > user.charge && user.charge >= 80) {
+				projectile.attack += 2;
+				projectile.speed += 4;
 			}
+			else if (user.charge >= 120) {
+				projectile.attack += 3;
+				projectile.speed += 6;
+			}				
 			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);		
 			addProjectile(projectile);	
 			
-			projectile.subtractResource(user);
-			
-			user.shotAvailableCounter = 0;					
+			if (user.arrows != -1) user.arrows--;	
 		}
 		
 		return true;

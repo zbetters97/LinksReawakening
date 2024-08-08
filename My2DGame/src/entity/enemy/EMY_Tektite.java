@@ -23,10 +23,10 @@ public class EMY_Tektite extends Entity {
 		canSwim = true;
 		capturable = true;
 		
-		maxLife = 8; life = maxLife;		
+		maxLife = 6; life = maxLife;		
 		speed = 2; defaultSpeed = speed;
 		animationSpeed = 8;
-		attack = 3;
+		attack = 2;
 		knockbackPower = 0;
 		
 		hitbox = new Rectangle(2, 18, 44, 30);

@@ -39,6 +39,7 @@ public class Entity {
 	
 	// GENERAL ATTRIBUTES
 	public int worldX, worldY;	
+	public int safeWorldX = 0, safeWorldY = 0;
 	protected int worldXStart;
 	protected int worldYStart;	
 	protected int tempScreenX;
@@ -82,6 +83,7 @@ public class Entity {
 	public boolean hasCutscene = false;	
 	public boolean canMove = true;
 	public boolean canSwim = false;	
+	public boolean diving = false;
 	public boolean moving = false;
 	public boolean onPath = false;
 	public boolean pathCompleted = false;		
@@ -91,6 +93,7 @@ public class Entity {
 	public boolean attacking = false;
 	public boolean teleporting = false;
 	public boolean buzzing = false;		
+	public Entity capturedTarget;
 		
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
@@ -126,7 +129,6 @@ public class Entity {
 	public int attackCounter = 0;
 	public int actionLockCounter = 0;	
 	public boolean attackCanceled = false;
-	public int shotAvailableCounter;
 	public int swingSpeed1;
 	public int swingSpeed2;	
 	
@@ -190,6 +192,7 @@ public class Entity {
 	
 	// PROJECTILE ATTRIBUTES
 	public Entity user;
+	public int shotAvailableCounter;
 	public boolean canPickup = false;
 	
 	// ITEM ATTRIBUTES
@@ -690,19 +693,7 @@ public class Entity {
 			
 			// SAVE HITBOX
 			int currentWorldX = worldX;
-			int currentWorldY = worldY;			
-			
-			// ADJUST X/Y 
-			switch (direction) {
-				case "up":
-				case "upleft": 
-				case "upright":  worldY -= attackbox.height; break; 
-				case "down": 
-				case "downleft": 
-				case "downright": worldY += (attackbox.height / 2); break;					
-				case "left": worldX -= attackbox.width; break;
-				case "right": worldX += attackbox.width; break;
-			}
+			int currentWorldY = worldY;	
 			
 			// CHANGE SIZE OF HIT BOX 
 			hitbox.width = attackbox.width;
@@ -710,11 +701,52 @@ public class Entity {
 			
 			// ENEMY ATTACKING
 			if ((type == type_enemy || type == type_boss) && !captured) {
+				
+				// ADJUST X/Y 
+				switch (direction) {
+					case "up":
+					case "upleft": 
+					case "upright":  worldY -= attackbox.height; break; 
+					case "down": 
+					case "downleft": 
+					case "downright": worldY += (attackbox.height / 2); break;					
+					case "left": worldX -= attackbox.width; break;
+					case "right": worldX += attackbox.width; break;
+				}
+				
 				if (gp.cChecker.checkPlayer(this)) 
 					damagePlayer(attack);				
 			}
 			// PLAYER ATTACKING
 			else {
+				
+				// ADJUST X/Y AND HITBOX
+				switch (direction) {
+					case "up":
+					case "upleft": 
+					case "upright": 						
+						worldX -= attackbox.width; 
+						worldY -= attackbox.height; 
+						hitbox.width *= 2; 
+						break; 
+					case "down": 
+					case "downleft": 
+					case "downright": 						
+						worldX += attackbox.width; 
+						worldY += attackbox.height; 
+						hitbox.width *= 2; 
+						break;					
+					case "left": 
+						worldX -= attackbox.width; 
+						worldY -= attackbox.height; 
+						hitbox.height *= 2; 
+						break;
+					case "right": 
+						worldX += attackbox.width; 
+						worldY -= attackbox.height; 
+						hitbox.height *= 2; 
+						break;
+				}	
 				
 				// CHECK IF ATTACK LANDS ON ENEMY
 				Entity enemy = getEnemy(this);		
@@ -792,21 +824,37 @@ public class Entity {
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
 			
-			// ADJUST X/Y 
-			switch (direction) {
-				case "up":
-				case "upleft": 
-				case "upright":  worldY -= attackbox.height; break; 
-				case "down": 
-				case "downleft": 
-				case "downright": worldY += (attackbox.height / 2); break;					
-				case "left": worldX -= attackbox.width; break;
-				case "right": worldX += attackbox.width; break;
-			}
-			
 			// CHANGE SIZE OF HIT BOX 
 			hitbox.width = attackbox.width;
 			hitbox.height = attackbox.height;
+			
+			// ADJUST X/Y AND HITBOX
+			switch (direction) {
+				case "up":
+				case "upleft": 
+				case "upright": 						
+					worldX -= attackbox.width; 
+					worldY -= attackbox.height; 
+					hitbox.width *= 2; 
+					break; 
+				case "down": 
+				case "downleft": 
+				case "downright": 						
+					worldX += attackbox.width; 
+					worldY += attackbox.height; 
+					hitbox.width *= 2; 
+					break;					
+				case "left": 
+					worldX -= attackbox.width; 
+					worldY -= attackbox.height; 
+					hitbox.height *= 2; 
+					break;
+				case "right": 
+					worldX += attackbox.width; 
+					worldY -= attackbox.height; 
+					hitbox.height *= 2; 
+					break;			
+			}						
 			
 			// CHECK IF ATTACK LANDS ON ENEMY
 			Entity enemy = getEnemy(this);		
@@ -823,7 +871,7 @@ public class Entity {
 			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 			gp.player.damageProjectile(projectileIndex);			
 						
-			// RESTORE HITBOX
+			// RESET X/Y AND HITBOX
 			worldX = currentWorldX;
 			worldY = currentWorldY;
 			hitbox.width = hitboxDefaultWidth;

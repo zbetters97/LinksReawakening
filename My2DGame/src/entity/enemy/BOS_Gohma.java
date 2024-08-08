@@ -91,7 +91,6 @@ public class BOS_Gohma extends Entity {
 	}
 	
 	public void move() {
-		System.out.println(withinBounds() + " " + bounds);
 		checkCollision();
 		if (!collisionOn && withinBounds()) { 						
 			switch (lockonDirection) {
@@ -223,7 +222,7 @@ public class BOS_Gohma extends Entity {
 	public void checkDrop() {	
 		super.checkDrop();
 		
-		gp.stopMusic();
-		gp.playMusic(5);	
+		gp.stopMusic();		
+		gp.setupMusic(true);
 	}
 }

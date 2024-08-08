@@ -94,7 +94,6 @@ public class SceneManager {
 	private void scene_npc_1() {
 		
 		if (phase == 0) {	
-			gp.player.resetValues();	
 			gp.ui.drawDialogueScreen(true);				
 			npc1 = gp.ui.npc;
 		}

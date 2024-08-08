@@ -3,7 +3,6 @@ package entity.projectile;
 import java.awt.Rectangle;
 
 import application.GamePanel;
-import entity.*;
 
 public class PRJ_Arrow extends Projectile {
 
@@ -37,20 +36,6 @@ public class PRJ_Arrow extends Projectile {
 		left2 = left1;
 		right1 = setup("/projectiles/arrow_right_1", 35, 35);
 		right2 = right1;	
-	}
-	
-	public boolean hasResource(Entity user) {
-		
-		boolean hasResource = false;
-		
-		if (user.arrows >= useCost || user.arrows == -1) 
-			hasResource = true;		
-		
-		return hasResource;
-	}	
-	public void subtractResource(Entity user) {
-		if (user.arrows != -1)
-			user.arrows -= useCost;
 	}
 	
 	// PICKUP ARROW IF NOT MOVING
