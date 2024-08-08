@@ -476,8 +476,8 @@ public class Player extends Entity {
 			getDirection(); return;
 		}
 		
-		// DONT CHANGE DIRECTIONS WHILE ROLLING
-		if (action != Action.ROLLING) getDirection();
+		// DONT CHANGE DIRECTIONS WHILE ROLLING AND NOT LOCKON
+		if (action != Action.ROLLING || lockon) getDirection();
 		
 		if (!gp.keyH.debug) checkCollision();
 		if (!collisionOn) { 
@@ -497,29 +497,20 @@ public class Player extends Entity {
 	}
 	public void getDirection() {
 		
-		// KEEP PLAYER FACING ENEMY
-		if (lockon) {
-			if (gp.keyH.upPressed) lockonDirection = "up";
-			if (gp.keyH.downPressed) lockonDirection = "down";
-			if (gp.keyH.leftPressed) lockonDirection = "left";
-			if (gp.keyH.rightPressed) lockonDirection = "right";			
-			
-			if (gp.keyH.upPressed && gp.keyH.leftPressed) lockonDirection = "upleft";
-			if (gp.keyH.upPressed && gp.keyH.rightPressed) lockonDirection = "upright";
-			if (gp.keyH.downPressed && gp.keyH.leftPressed) lockonDirection = "downleft";
-			if (gp.keyH.downPressed && gp.keyH.rightPressed) lockonDirection = "downright";	
-		}		
-		else {			
-			if (gp.keyH.upPressed) direction = "up";
-			if (gp.keyH.downPressed) direction = "down";
-			if (gp.keyH.leftPressed) direction = "left";
-			if (gp.keyH.rightPressed) direction = "right";			
-			
-			if (gp.keyH.upPressed && gp.keyH.leftPressed) direction = "upleft";
-			if (gp.keyH.upPressed && gp.keyH.rightPressed) direction = "upright";
-			if (gp.keyH.downPressed && gp.keyH.leftPressed) direction = "downleft";
-			if (gp.keyH.downPressed && gp.keyH.rightPressed) direction = "downright";	
-		}
+		String tempDirection = "";
+		
+		if (gp.keyH.upPressed) tempDirection = "up";
+		if (gp.keyH.downPressed) tempDirection = "down";
+		if (gp.keyH.leftPressed) tempDirection = "left";
+		if (gp.keyH.rightPressed) tempDirection = "right";			
+		
+		if (gp.keyH.upPressed && gp.keyH.leftPressed) tempDirection = "upleft";
+		if (gp.keyH.upPressed && gp.keyH.rightPressed) tempDirection = "upright";
+		if (gp.keyH.downPressed && gp.keyH.leftPressed) tempDirection = "downleft";
+		if (gp.keyH.downPressed && gp.keyH.rightPressed) tempDirection = "downright";	
+		
+		if (lockon) lockonDirection = tempDirection;
+		else direction = tempDirection;
 	}
 	public void move(String direction) {
 		
@@ -1063,7 +1054,6 @@ public class Player extends Entity {
 			speed = defaultSpeed;
 		}
 	}
-	
 	public void aiming() {
 		
 		switch (direction) {			

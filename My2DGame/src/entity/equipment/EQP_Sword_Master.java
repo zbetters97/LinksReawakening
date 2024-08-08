@@ -16,11 +16,11 @@ public class EQP_Sword_Master extends Entity {
 		attackValue = 6;
 		knockbackPower = 1;
 		
-		swingSpeed1 = 3;
-		swingSpeed2 = 12;
+		swingSpeed1 = 4;
+		swingSpeed2 = 13;
 		
 		attackbox.width = 40;
-		attackbox.height = 32;
+		attackbox.height = 50;
 	}
 	
 	public void getImage() {

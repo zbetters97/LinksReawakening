@@ -720,33 +720,29 @@ public class Entity {
 			// PLAYER ATTACKING
 			else {
 				
-				// ADJUST X/Y AND HITBOX
+				// ADJUST X/Y 
 				switch (direction) {
-					case "up":
+					case "up": 
+						worldY -= attackbox.height; break; 
 					case "upleft": 
-					case "upright": 						
+					case "upright": 
 						worldX -= attackbox.width; 
 						worldY -= attackbox.height; 
 						hitbox.width *= 2; 
 						break; 
 					case "down": 
+						worldY += (attackbox.height / 2); break;	
 					case "downleft": 
-					case "downright": 						
+					case "downright": 	
 						worldX += attackbox.width; 
 						worldY += attackbox.height; 
 						hitbox.width *= 2; 
-						break;					
+						break;	
 					case "left": 
-						worldX -= attackbox.width; 
-						worldY -= attackbox.height; 
-						hitbox.height *= 2; 
-						break;
+						worldX -= attackbox.width; break;
 					case "right": 
-						worldX += attackbox.width; 
-						worldY -= attackbox.height; 
-						hitbox.height *= 2; 
-						break;
-				}	
+						worldX += attackbox.width; break;
+				}
 				
 				// CHECK IF ATTACK LANDS ON ENEMY
 				Entity enemy = getEnemy(this);		

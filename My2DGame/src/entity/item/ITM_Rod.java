@@ -20,7 +20,7 @@ public class ITM_Rod extends Entity {
 				+ " at enemies!\nWhen an enemy is controlled, press " + KeyEvent.getKeyText(gp.button_item)
 				+ " again to release control!";
 		
-		swingSpeed1 = 3;
+		swingSpeed1 = 6;
 		swingSpeed2 = 15;
 		
 		attackbox.width = 36;
