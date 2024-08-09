@@ -62,6 +62,8 @@ public class OI_Block_Pushable extends Entity {
 							
 			if (isCorrectTile() && !collisionOn) {
 				playSE();
+//				gp.player.playPushSE();
+				gp.player.action = Action.PUSHING;
 				moving = true;
 				speed = 1;
 			}

@@ -27,7 +27,7 @@ public class EMY_Goblin_Combat extends Entity {
 		maxLife = 12; life = maxLife;
 		speed = 1; defaultSpeed = speed; 
 		animationSpeed = 10;
-		attack = 6; 
+		attack = 4; 
 		knockbackPower = 1;		
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
@@ -39,8 +39,8 @@ public class EMY_Goblin_Combat extends Entity {
 		swingSpeed1 = 30;
 		swingSpeed2 = 60;		
 		
-		attackbox.width = 42;
-		attackbox.height = 42;
+		attackbox.width = 48;
+		attackbox.height = 48;
 	}
 	
 	public void getImage() {
@@ -74,8 +74,9 @@ public class EMY_Goblin_Combat extends Entity {
 				if (onPath && playerWithinBounds()) {					
 					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
 					if (!attacking) {
-						if (isAttacking(60, gp.tileSize * 3, gp.tileSize))
+						if (isAttacking(60, gp.tileSize * 3, gp.tileSize)) {
 							attacking = true;
+						}
 					}	
 				}
 			}

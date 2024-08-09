@@ -182,7 +182,7 @@ public class CollisionChecker {
 												
 				if (!gp.player.invincible) {
 					
-					gp.player.playHurtSE();					
+					gp.player.playHurt();					
 					gp.player.life -= 2;
 					gp.player.transparent = true;
 					gp.player.invincible = true;	
@@ -384,29 +384,31 @@ public class CollisionChecker {
 			
 			// PLAYER
 			if (player) {
-				gp.player.action = Action.SWIMMING;
-				
-				// PLAYER CAN SWIM
-				if (gp.player.canSwim) {
-					gp.player.speed = 2;
+				if (gp.gameState == gp.playState) {
+					gp.player.action = Action.SWIMMING;
 					
-					if (gp.player.grabbedObject != null) {
-						if (gp.player.grabbedObject.name.equals(PRJ_Bomb.prjName)) {
-							gp.player.grabbedObject.resetValues();
+					// PLAYER CAN SWIM
+					if (gp.player.canSwim) {
+						gp.player.speed = 2;
+						
+						if (gp.player.grabbedObject != null) {
+							if (gp.player.grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+								gp.player.grabbedObject.resetValues();
+							}
+							else {
+								gp.player.grabbedObject.alive = false;	
+							}									
+							gp.player.grabbedObject = null;
 						}
-						else {
-							gp.player.grabbedObject.alive = false;	
-						}									
-						gp.player.grabbedObject = null;
+					}		
+					// PLAYER CANNOT SWIM
+					else {					
+						gp.player.playDrownSE();
+						gp.player.playHurt();	
+						gp.player.resetValues();
+						gp.player.invincible = true;
+						gp.gameState = gp.drowningState;
 					}
-				}		
-				// PLAYER CANNOT SWIM
-				else {					
-					gp.player.playDrownSE();
-					gp.player.playHurtSE();	
-					gp.player.resetValues();
-					gp.player.invincible = true;
-					gp.gameState = gp.drowningState;
 				}
 			}
 			// NON-PLAYER
@@ -611,35 +613,28 @@ public class CollisionChecker {
 	
 	// CONTACT PLAYER COLLISION
 	public boolean checkPlayer(Entity entity) {
-		
+				
 		boolean contactPlayer = false;
 		
 		if (gp.player.diving) return false;
 		
+		String direction = entity.direction;
+				
 		entity.hitbox.x = entity.worldX + entity.hitbox.x;
 		entity.hitbox.y = entity.worldY + entity.hitbox.y;
-		
+				
 		gp.player.hitbox.x = gp.player.worldX + gp.player.hitbox.x;
 		gp.player.hitbox.y = gp.player.worldY + gp.player.hitbox.y;
-		
-		switch (entity.direction) {
-			case "up":
-				entity.hitbox.y -= entity.speed;
-				break;
-			case "down":
-				entity.hitbox.y += entity.speed;
-				break;
-			case "left":
-				entity.hitbox.x -= entity.speed;
-				break;
-			case "right":
-				entity.hitbox.x += entity.speed;
-				break;
-			default:
-				return false;
+			
+		switch (direction) {
+			case "up": entity.hitbox.y -= entity.speed; break;		
+			case "down": entity.hitbox.y += entity.speed; break;
+			case "left": entity.hitbox.x -= entity.speed; break;
+			case "right": entity.hitbox.x += entity.speed; break;	
+			default: entity.collision = true; return false;
 		}
 		
-		if (entity.hitbox.intersects(gp.player.hitbox)) {						
+		if (entity.hitbox.intersects(gp.player.hitbox)) {																			
 			entity.collisionOn = true;
 			contactPlayer = true;
 		}

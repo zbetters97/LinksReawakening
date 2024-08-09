@@ -30,10 +30,6 @@ public class ITM_Boomerang extends Entity {
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);
 						
-			if (user != gp.player) {
-				user.shotAvailableCounter = 0;		
-			}			
-			
 			user.action = Action.THROWING;
 		}			
 		return true;

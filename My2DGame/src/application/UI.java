@@ -1,5 +1,6 @@
 package application;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -606,9 +607,13 @@ public class UI {
 			int height = 10;		
 			int charge = gp.player.charge;						
 			
-			g2.setColor(new Color(0,0,0));
-			g2.fillRect(x, y, width, height);		
-			g2.setColor(Color.WHITE);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8F));
+			
+			g2.fillRect(x, y, width, height);	
+			
+			if (gp.player.charge < 120) g2.setColor(Color.WHITE);
+			else g2.setColor(new Color(0,240,0));
+			
 			g2.setStroke(new BasicStroke(2));
 			g2.drawRect(x, y, width, height);	
 			
@@ -618,6 +623,8 @@ public class UI {
 			else if (charge >= 120) g2.setColor(new Color(0,240,0));
 			
 			g2.fillRect(x + 1, y + 1, (charge / 2), height - 2);
+			
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 	}
 	private void drawDebug() {

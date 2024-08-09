@@ -26,13 +26,13 @@ public class Entity {
 	
 	public enum Action {
 		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, 
-		JUMPING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
+		JUMPING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
 	}
 	
 	protected List<Action> disabled_actions = Arrays.asList(
 			Action.AIMING, Action.CARRYING, Action.CHARGING,
-			Action.JUMPING, Action.ROLLING, Action.SOARING, 
-			Action.SWIMMING
+			Action.JUMPING, Action.PUSHING, Action.ROLLING, 
+			Action.SOARING, Action.SWIMMING, Action.THROWING
 	);
 	
 	protected GamePanel gp;
@@ -691,58 +691,66 @@ public class Entity {
 			
 			attackNum = 2;
 			
-			// SAVE HITBOX
+			// SAVE X/Y
 			int currentWorldX = worldX;
-			int currentWorldY = worldY;	
-			
-			// CHANGE SIZE OF HIT BOX 
-			hitbox.width = attackbox.width;
-			hitbox.height = attackbox.height;
+			int currentWorldY = worldY;				
 			
 			// ENEMY ATTACKING
 			if ((type == type_enemy || type == type_boss) && !captured) {
-				
+								
 				// ADJUST X/Y 
 				switch (direction) {
-					case "up":
-					case "upleft": 
-					case "upright":  worldY -= attackbox.height; break; 
+					case "up": 						
+					case "upleft":				
+					case "upright":
+						worldY -= attackbox.height + hitbox.y; 
+						hitbox.height = attackbox.height;
+						break; 
 					case "down": 
-					case "downleft": 
-					case "downright": worldY += (attackbox.height / 2); break;					
-					case "left": worldX -= attackbox.width; break;
-					case "right": worldX += attackbox.width; break;
-				}
+					case "downleft":
+					case "downright": 
+						worldY += attackbox.height - hitbox.y; 
+						hitbox.height = attackbox.height;
+						break;				
+					case "left": 
+						worldX -= attackbox.width; 
+						hitbox.width = attackbox.width;
+						break;					
+					case "right": 
+						worldX += attackbox.width - hitbox.y; 
+						hitbox.width = attackbox.width;
+						break;
+				}	
 				
 				if (gp.cChecker.checkPlayer(this)) 
 					damagePlayer(attack);				
 			}
 			// PLAYER ATTACKING
-			else {
+			else {				
 				
 				// ADJUST X/Y 
 				switch (direction) {
-					case "up": 
-						worldY -= attackbox.height; break; 
-					case "upleft": 
-					case "upright": 
-						worldX -= attackbox.width; 
-						worldY -= attackbox.height; 
-						hitbox.width *= 2; 
+					case "up": 						
+					case "upleft":				
+					case "upright":
+						worldY -= attackbox.height + hitbox.y; 
+						hitbox.height = attackbox.height;
 						break; 
 					case "down": 
-						worldY += (attackbox.height / 2); break;	
-					case "downleft": 
-					case "downright": 	
-						worldX += attackbox.width; 
-						worldY += attackbox.height; 
-						hitbox.width *= 2; 
-						break;	
+					case "downleft":
+					case "downright": 
+						worldY += attackbox.height - hitbox.y; 
+						hitbox.height = attackbox.height;
+						break;				
 					case "left": 
-						worldX -= attackbox.width; break;
+						worldX -= attackbox.width; 
+						hitbox.width = attackbox.width;
+						break;					
 					case "right": 
-						worldX += attackbox.width; break;
-				}
+						worldX += attackbox.width - hitbox.y; 
+						hitbox.width = attackbox.width;
+						break;
+				}	
 				
 				// CHECK IF ATTACK LANDS ON ENEMY
 				Entity enemy = getEnemy(this);		
@@ -762,7 +770,7 @@ public class Entity {
 				gp.player.damageProjectile(projectileIndex);				
 			}
 						
-			// RESTORE HITBOX
+			// RESTORE HITBOX			
 			worldX = currentWorldX;
 			worldY = currentWorldY;
 			hitbox.width = hitboxDefaultWidth;
@@ -820,38 +828,40 @@ public class Entity {
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
 			
-			// CHANGE SIZE OF HIT BOX 
-			hitbox.width = attackbox.width;
-			hitbox.height = attackbox.height;
-			
 			// ADJUST X/Y AND HITBOX
+			// SWING DETECTION AS FOLLOWS (P = PLAYER):
+			/* L U U
+			 * L P R
+			 * D D R */
 			switch (direction) {
-				case "up":
-				case "upleft": 
-				case "upright": 						
-					worldX -= attackbox.width; 
-					worldY -= attackbox.height; 
+				case "up": 						
+				case "upleft":				
+				case "upright":
+					worldY -= attackbox.height + hitbox.y; 
+					hitbox.height = attackbox.height;
 					hitbox.width *= 2; 
 					break; 
 				case "down": 
-				case "downleft": 
-				case "downright": 						
-					worldX += attackbox.width; 
-					worldY += attackbox.height; 
+				case "downleft":
+				case "downright": 					
+					worldX -= attackbox.width; 
+					worldY += attackbox.height - hitbox.y; 
+					hitbox.height = attackbox.height;
 					hitbox.width *= 2; 
-					break;					
+					break;				
 				case "left": 
 					worldX -= attackbox.width; 
 					worldY -= attackbox.height; 
-					hitbox.height *= 2; 
-					break;
+					hitbox.width = attackbox.width;
+					hitbox.height *= 2;  
+					break;					
 				case "right": 
-					worldX += attackbox.width; 
-					worldY -= attackbox.height; 
-					hitbox.height *= 2; 
-					break;			
-			}						
-			
+					worldX += attackbox.width - hitbox.y; 
+					hitbox.width = attackbox.width;
+					hitbox.height *= 2;  
+					break;
+			}	
+							
 			// CHECK IF ATTACK LANDS ON ENEMY
 			Entity enemy = getEnemy(this);		
 			if (enemy != null) {			
@@ -913,7 +923,6 @@ public class Entity {
 						critical = true;
 						attacking = false;
 						attackCounter = 0;
-						spriteCounter -= 60;
 					}
 					
 					if (knockbackPower == 0) setKnockback(this, gp.player, 1);
@@ -921,7 +930,7 @@ public class Entity {
 				}
 			}
 			else {
-				gp.player.playHurtSE();
+				gp.player.playHurt();
 				
 				if (damage < 0) damage = 0;	
 				gp.player.life -= damage;
@@ -1284,9 +1293,9 @@ public class Entity {
 		 
 		// STUNNED TIME (1 SECOND)
 		if (stunned) {
+			attacking = false;
 			stunnedCounter++;
-			if (stunnedCounter > 60) {
-				
+			if (stunnedCounter > 60) {				
 				if (critical) {
 					if (stunnedCounter > 120) {
 						stunned = false;

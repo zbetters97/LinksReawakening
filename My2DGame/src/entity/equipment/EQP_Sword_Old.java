@@ -19,8 +19,8 @@ public class EQP_Sword_Old extends Entity {
 		swingSpeed1 = 4;
 		swingSpeed2 = 13;
 		
-		attackbox.width = 40;
-		attackbox.height = 50;
+		attackbox.width = 44;
+		attackbox.height = 42;
 	}
 	
 	public void getImage() {

@@ -295,15 +295,15 @@ public class SaveLoad {
 						gp.npc[mapNum][i].hasItemToGive = ds.npcHasItem[mapNum][i];
 						gp.npc[mapNum][i].drawing = ds.npcDrawing[mapNum][i];
 						
+						// RESET INVENTORY
+						gp.npc[mapNum][i].inventory.clear();
+						
 						// LOOP THROUGH NPC NAMES IN NPC INVENTORY
 						for (String name : ds.npcInventory.keySet()) {
 							
 							// IF NAME FOUND IN KEY-VALUE PAIR
 							if (gp.npc[mapNum][i].name.equals(name)) {
-								
-								// RESET INVENTORY
-								gp.npc[mapNum][i].inventory.clear();
-								
+																
 								// GET ITEMS FROM KEY-VALUE AND ADD TO INVENTORY
 								List<String> items = ds.npcInventory.get(name);								
 								for (String item : items) {

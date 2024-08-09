@@ -8,7 +8,7 @@ import entity.projectile.PRJ_Bomb;
 
 public class ITM_Bomb extends Entity {
 	
-	public static final String itmName = "Bomb Item";
+	public static final String itmName = "Bombs";
 	
 	public ITM_Bomb(GamePanel gp) {
 		super(gp);

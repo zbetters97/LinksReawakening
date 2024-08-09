@@ -79,9 +79,9 @@ public class PRJ_Bomb extends Projectile {
 		}
 	}
 	
-	public void explode() {
-		
+	public void explode() {		
 		gp.playSE(5, 5);
+		
 		generateParticle(this);
 		
 		// DAMAGE SURROUNDING ENEMIES
@@ -89,6 +89,15 @@ public class PRJ_Bomb extends Projectile {
 		if (enemyIndexes.size() > 0) {
 			for (Entity e : enemyIndexes) 
 				gp.player.damageEnemy(e, this, attack, knockbackPower);						
+		}
+		// DAMAGE SURROUNDING BOMBS
+		ArrayList<Entity> bombIndexes = gp.cChecker.checkExplosion(this, gp.projectile);
+		if (bombIndexes.size() > 0) {
+			for (Entity e : bombIndexes) {
+				if (e.name.equals(name) && e != this) {
+					e.life = 0;
+				}
+			}									
 		}
 		// DAMAGE SURROUNDING iTILES
 		ArrayList<Integer> iTileIndexes = gp.cChecker.checkiTileExplosion(this);

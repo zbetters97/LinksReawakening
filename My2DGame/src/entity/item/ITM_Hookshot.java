@@ -24,8 +24,8 @@ public class ITM_Hookshot extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		if (!projectile.alive) { 			
-							
+		if (!projectile.alive) { 	
+			
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);
 									

@@ -44,10 +44,7 @@ public class ITM_Bow extends Entity {
 		if (user.arrows > 0) {			
 			playSE();
 			
-			projectile = new PRJ_Arrow(gp);
-			
-			user.action = Action.IDLE; 				
-			user.charge = 0;
+			projectile = new PRJ_Arrow(gp);		
 			
 			if (80 > user.charge && user.charge >= 40) {
 				projectile.attack++;
@@ -66,6 +63,9 @@ public class ITM_Bow extends Entity {
 			addProjectile(projectile);	
 			
 			if (user.arrows != -1) user.arrows--;	
+			
+			user.action = Action.IDLE; 				
+			user.charge = 0;
 		}
 		
 		return true;

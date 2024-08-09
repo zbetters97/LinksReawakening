@@ -36,17 +36,17 @@ public class Player extends Entity {
 	public int itemIndex = 0;
 	public int walletSize;
 	public int keys = 0;
-	public int boss_key = 0;	
+	public int boss_key = 0;
 	
 	// MISC
 	public String aimDirection;	
 	
 	// COUNTERS
-	public int damageNum = 1, rollNum = 1, pullNum = 1, throwNum = 1, 
+	public int damageNum = 1, rollNum = 1, pullNum = 1, pushNum = 1, throwNum = 1, 
 			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
 	
-	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, throwCounter = 0, 
-			digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0;
+	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, pushCounter = 0,
+			throwCounter = 0, digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0;
 	
 	// IMAGES
 	public BufferedImage 	
@@ -83,7 +83,7 @@ public class Player extends Entity {
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 						
 		// HITBOX (x, y, width, height)
-		hitbox = new Rectangle(8, 16, 32, 28); 	
+		hitbox = new Rectangle(8, 12, 32, 34); 
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
@@ -189,29 +189,20 @@ public class Player extends Entity {
 		lockon = false;
 		attackCanceled = false;		
 		
-		attackNum = 1;
-		attackCounter = 0;
+		attackNum = 1; attackCounter = 0; 
 		actionLockCounter = 0;	
-		charge = 0;
-		spinNum = 0;			
+		charge = 0; spinNum = 0;			
 		invincibleCounter = 0;
-		damageNum = 1;
-		damageCounter = 0;			
+		damageNum = 1; damageCounter = 0;			
 		lowHPCounter = 0;
-		rollNum = 1;
-		rollCounter = 0;		
-		pullNum = 1;
-		pullCounter = 0;		
-		throwNum = 1;
-		throwCounter = 0;		
-		digNum = 1;
-		digCounter = 0;		
-		jumpNum = 1;
-		jumpCounter = 0;
-		soarNum = 1;
-		soarCounter = 0; 		
-		rodNum = 1;
-		rodCounter = 0;
+		rollNum = 1; rollCounter = 0;		
+		pullNum = 1; pullCounter = 0;	
+		pushNum = 1; pushCounter = 0;
+		throwNum = 1; throwCounter = 0;		
+		digNum = 1; digCounter = 0;		
+		jumpNum = 1; jumpCounter = 0;
+		soarNum = 1; soarCounter = 0; 		
+		rodNum = 1; rodCounter = 0;
 				
 		if (grabbedObject != null) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
@@ -235,7 +226,7 @@ public class Player extends Entity {
 	public int getAttack() {
 		if (currentWeapon == null)
 			return 1;
-		else {
+		else {			
 			attackbox = currentWeapon.attackbox;
 			swingSpeed1 = currentWeapon.swingSpeed1;
 			swingSpeed2 = currentWeapon.swingSpeed2;
@@ -455,6 +446,7 @@ public class Player extends Entity {
 		else if (action == Action.DIGGING) { digging(); stop = true; }
 		else if (action == Action.GRABBING) { grabbing(); }	
 		else if (action == Action.JUMPING) { jumping(); }	
+		else if (action == Action.PUSHING) { pushing(); }
 		else if (action == Action.ROLLING) { rolling(); }
 		else if (action == Action.SOARING) { jumping(); }
 		else if (action == Action.SWIMMING) { swimming(); }
@@ -489,7 +481,7 @@ public class Player extends Entity {
 			
 			// ONLY ROLL WHILE MOVING
 			if (gp.keyH.rollPressed && action == Action.IDLE) { 
-				grunting();				
+				playGrunt();				
 				action = Action.ROLLING; 
 				gp.keyH.rollPressed = false; 
 			}	
@@ -555,12 +547,6 @@ public class Player extends Entity {
 			}					
 			spriteCounter = 0;
 		}	
-	}
-	public void grunting() {		
-		int grunt = 1 + (int)(Math.random() * 3);
-		if (grunt == 1) playGruntSE_1();
-		else if (grunt == 2) playGruntSE_2();
-		else if (grunt == 3) playGruntSE_3();
 	}
 	
 	// INTERACTIONS
@@ -629,11 +615,11 @@ public class Player extends Entity {
 		// OBJECT INTERACTION
 		if (i != -1) {
 			
-			if (gp.obj_i[gp.currentMap][i].type == type_obstacle) {
-				if (!gp.obj_i[gp.currentMap][i].moving) {
+			if (gp.obj_i[gp.currentMap][i].type == type_obstacle) {				
+				if (!gp.obj_i[gp.currentMap][i].moving) {	
 					gp.obj_i[gp.currentMap][i].move(direction);	
-				}
-			}					
+				}				
+			}				
 		}
 	}	
 	public void pickUpObject(int i) {
@@ -729,7 +715,7 @@ public class Player extends Entity {
 		// SWING SWORD IF NOT ALREADY
 		else if (currentWeapon != null && !attackCanceled) {								
 			currentWeapon.playSE();
-			grunting();
+			playGrunt();
 			
 			attacking = true;
 			attackCanceled = true;
@@ -749,7 +735,7 @@ public class Player extends Entity {
 			
 			// RELEASE SPIN ATTACK
 			if (charge >= 120) {
-				playGruntSE_4();
+				playSpin();
 				playSpinSwordSE();
 				
 				charge = 0;
@@ -842,13 +828,13 @@ public class Player extends Entity {
 		
 		if (py == ey && px == ex) 
 			eDirection = direction;		
-		else if (py > ey && Math.abs(px-ex) < Math.abs(py-ey)) 
+		else if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey)) 
 			eDirection = "up";
 		else if (py > ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";
 		else if (py > ey && px-ex < Math.abs(py-ey)) 
 			eDirection = "right";
-		else if (py < ey && Math.abs(px-ex) < Math.abs(py-ey)) 
+		else if (py <= ey && Math.abs(px-ex) < Math.abs(py-ey)) 
 			eDirection = "down";
 		else if (py < ey && px-ex > Math.abs(py-ey)) 
 			eDirection = "left";
@@ -887,7 +873,7 @@ public class Player extends Entity {
 				if (enemy.knockbackPower == 0) setKnockback(enemy, this, 1);
 			}
 			else {					
-				playHurtSE();
+				playHurt();
 				
 				int damage = enemy.attack;								
 				if (damage < 0) damage = 0;				
@@ -1105,7 +1091,7 @@ public class Player extends Entity {
 		
 		// PLAYER AUTOMATICALLY GRABS BOMB
 		if (entity.name.equals(PRJ_Bomb.prjName)) {
-			pull(entity);
+			pulling(entity);
 			return;
 		}
 		
@@ -1115,7 +1101,7 @@ public class Player extends Entity {
 			case "upleft":
 			case "upright":
 				if (gp.keyH.upPressed) {
-					pull(entity);
+					pulling(entity);
 				}
 				else {
 					pullNum = 1;
@@ -1127,7 +1113,7 @@ public class Player extends Entity {
 			case "downleft":
 			case "downright":
 				if (gp.keyH.downPressed) {					
-					pull(entity);
+					pulling(entity);
 				}
 				else {
 					pullNum = 1;
@@ -1137,7 +1123,7 @@ public class Player extends Entity {
 				break;
 			case "left":
 				if (gp.keyH.leftPressed) {
-					pull(entity);
+					pulling(entity);
 				}
 				else {
 					pullNum = 1;
@@ -1147,7 +1133,7 @@ public class Player extends Entity {
 				break;
 			case "right":
 				if (gp.keyH.rightPressed) {
-					pull(entity);
+					pulling(entity);
 				}
 				else {
 					pullNum = 1;
@@ -1157,14 +1143,14 @@ public class Player extends Entity {
 				break;
 		}
 	}
-	public void pull(Entity entity) {
+	public void pulling(Entity entity) {
 		pullCounter++;
 		
-		if (6 >= pullCounter) pullNum = 1; 
-		else if (18 > pullCounter && 12 >= pullCounter) pullNum = 2;		
-		else if (27 > pullCounter && pullCounter > 12) pullNum = 3;	
-		else if (pullCounter >= 28) {	
-			playLiftSE();
+		if (12 >= pullCounter) pullNum = 1; 
+		else if (18 >= pullCounter && pullCounter > 12) pullNum = 2;		
+		else if (27 >= pullCounter && pullCounter > 18) pullNum = 3;	
+		else if (pullCounter > 27) {	
+			playPullSE();
 			pullNum = 1;
 			pullCounter = 0;
 			action = Action.CARRYING;
@@ -1173,9 +1159,24 @@ public class Player extends Entity {
 			gp.keyH.grabPressed = false;	
 		}
 	}
+	public void pushing() {
+		pushCounter++;
+		
+		if (6 >= pushCounter) pushNum = 1;
+		else if (18 >= pushCounter && pushCounter > 8) {
+			pushNum = 2;
+		}
+		else if (pushCounter > 18) {
+			playPushSE();
+			pushNum = 1;
+			pushCounter = 0;
+			action = Action.IDLE;
+		}
+	}
 	public boolean carrying() {
 		if (gp.keyH.grabPressed) {
 			playThrowSE();
+			playGruntSE_1();
 			
 			action = Action.THROWING;
 			grabbedObject.thrown = true;
@@ -1374,6 +1375,7 @@ public class Player extends Entity {
 							direction == getOppositeDirection(target.direction) && 
 							!target.stunned) {
 						playBlockSE();	
+						
 						setKnockback(attacker, target, target.knockbackPower);
 					}
 					else {
@@ -1382,7 +1384,11 @@ public class Player extends Entity {
 						// HIT BY STUN WEAPON
 						if (attacker.canStun && !target.stunned) {
 							target.stunned = true;
-							target.spriteCounter = -30;
+						}
+						else {
+							if (knockbackPower > 0 && target.type != type_boss) {
+								setKnockback(target, attacker, knockbackPower);
+							}	
 						}
 										
 						int damage = attack;
@@ -1394,11 +1400,7 @@ public class Player extends Entity {
 					
 					target.invincible = true;
 					target.damageReaction();
-					
-					if (knockbackPower > 0 && target.type != type_boss) {
-						setKnockback(target, attacker, knockbackPower);
-					}				
-					
+										
 					// ENEMY DEFEATED
 					if (target.life <= 0) {
 						target.playDeathSE();
@@ -1567,57 +1569,90 @@ public class Player extends Entity {
 	}
 	
 	// SOUND EFFECTS
-	public void playGruntSE_1() {
-		gp.playSE(2, 8);
+	public void playGrunt() {		
+		int grunt = 1 + (int)(Math.random() * 4);
+		if (grunt == 1) playGruntSE_1();
+		else if (grunt == 2) playGruntSE_2();
+		else if (grunt == 3) playGruntSE_3();
+		else if (grunt == 4) playGruntSE_4();
 	}
-	public void playGruntSE_2() {
-		gp.playSE(2, 9);
+	public void playHurt() {		
+		int grunt = 1 + (int)(Math.random() * 3);
+		if (grunt == 1) playHurtSE_1();
+		else if (grunt == 2) playHurtSE_2();
+		else if (grunt == 3) playHurtSE_3();
 	}
-	public void playGruntSE_3() {
-		gp.playSE(2, 10);
-	}
-	public void playGruntSE_4() {
-		gp.playSE(2, 11);
-	}
-	public void playGetItemSE() {
-		gp.playSE(5, 0);
+	public void playSpin() {
+		int grunt = 1 + (int)(Math.random() * 2);
+		if (grunt == 1) playSpinSE_1();
+		else if (grunt == 2) playSpinSE_2();
 	}
 	public void playGuardSE() {
 		gp.playSE(2, 1);
+	}	
+	public void playZTargetSE() {
+		gp.playSE(2, 1);
+	}	
+	public void playGruntSE_1() {
+		gp.playSE(2, 2);
+	}
+	public void playGruntSE_2() {
+		gp.playSE(2, 3);
+	}
+	public void playGruntSE_3() {
+		gp.playSE(2, 4);
+	}
+	public void playGruntSE_4() {
+		gp.playSE(2, 5);
+	}
+	public void playHurtSE_1() {
+		gp.playSE(2, 6);
+	}
+	public void playHurtSE_2() {
+		gp.playSE(2, 7);
+	}
+	public void playHurtSE_3() {
+		gp.playSE(2, 8);
+	}
+	public void playSpinSE_2() {
+		gp.playSE(2, 9);
+	}
+	public void playSpinSE_1() {
+		gp.playSE(2, 10);
+	}
+	public void playPullSE() {
+		gp.playSE(2, 11);
+	}
+	public void playPushSE() {
+		gp.playSE(2, 12);
+	}
+	public void playSwimSE() {
+		gp.playSE(2, 13);
+	}
+	public void playDrownSE() {
+		gp.playSE(2, 14);
+	}	
+	public void playFallSE() {
+		gp.playSE(2, 15);
+	}	
+	public void playLowHPSE() {
+		gp.playSE(2, 16);
+	}
+	public void playDeathSE() {
+		gp.playSE(2, 17);
 	}
 	public void playBlockSE() {
 		gp.playSE(4, 8);
 	}
-	public void playSpinSwordSE() {
-		gp.playSE(4, 13);
-	}
-	public void playZTargetSE() {
-		gp.playSE(2, 1);
-	}	
-	private void playLiftSE() {
-		gp.playSE(4, 10);
-	}
 	public void playThrowSE() {
 		gp.playSE(4, 11);
 	}
-	public void playSwimSE() {
-		gp.playSE(2, 2);
+	public void playSpinSwordSE() {
+		gp.playSE(4, 13);
 	}
-	public void playDrownSE() {
-		gp.playSE(2, 3);
+	public void playGetItemSE() {
+		gp.playSE(5, 0);
 	}	
-	public void playFallSE() {
-		gp.playSE(2, 4);
-	}
-	public void playHurtSE() {
-		gp.playSE(2, 5);
-	}
-	public void playLowHPSE() {
-		gp.playSE(2, 7);
-	}
-	public void playDeathSE() {
-		gp.playSE(2, 6);
-	}
 
 	// IMAGE MANAGER
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
@@ -1697,6 +1732,10 @@ public class Player extends Entity {
 							g2.setColor(Color.BLACK);
 							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
 							break;
+						case PUSHING:
+							if (pushNum == 1) image = grabUp1;
+							else if (pushNum == 2) image = grabUp2;
+							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollUp1;
 							else if (rollNum == 2) image = rollUp2; 
@@ -1762,6 +1801,10 @@ public class Player extends Entity {
 							g2.setColor(Color.BLACK);
 							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
 							break;
+						case PUSHING:
+							if (pushNum == 1) image = grabDown1;
+							else if (pushNum == 2) image = grabDown2;
+							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollDown1;
 							else if (rollNum == 2) image = rollDown2; 
@@ -1824,6 +1867,10 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
+							break;
+						case PUSHING:
+							if (pushNum == 1) image = grabLeft1;
+							else if (pushNum == 2) image = grabLeft2;
 							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollLeft1;
@@ -1890,6 +1937,10 @@ public class Player extends Entity {
 							
 							g2.setColor(Color.BLACK);
 							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
+							break;
+						case PUSHING:
+							if (pushNum == 1) image = grabRight1;
+							else if (pushNum == 2) image = grabRight2;
 							break;
 						case ROLLING:
 							if (rollNum == 1) image = rollRight1;

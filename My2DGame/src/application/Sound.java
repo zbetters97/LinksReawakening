@@ -50,18 +50,24 @@ public class Sound {
 		menu[7] = getClass().getResource("/sound/MENU_MAP.wav");
 		
 		// 2
-		player[0] = getClass().getResource("/sound/PLAYER_WALLET.wav");		
-		player[1] = getClass().getResource("/sound/PLAYER_LOCKON.wav");
-		player[2] = getClass().getResource("/sound/PLAYER_SWIM.wav");
-		player[3] = getClass().getResource("/sound/PLAYER_DROWN.wav");		
-		player[4] = getClass().getResource("/sound/PLAYER_FALL.wav");
-		player[5] = getClass().getResource("/sound/PLAYER_HURT.wav");
-		player[6] = getClass().getResource("/sound/PLAYER_DIE.wav");
-		player[7] = getClass().getResource("/sound/PLAYER_LOWHP.wav");
-		player[8] = getClass().getResource("/sound/PLAYER_GRUNT_1.wav");
-		player[9] = getClass().getResource("/sound/PLAYER_GRUNT_2.wav");	
-		player[10] = getClass().getResource("/sound/PLAYER_GRUNT_3.wav");	
-		player[11] = getClass().getResource("/sound/PLAYER_GRUNT_4.wav");
+		player[0] = getClass().getResource("/sound/PLAYER_WALLET.wav");	
+		player[1] = getClass().getResource("/sound/PLAYER_LOCKON.wav");	
+		player[2] = getClass().getResource("/sound/PLAYER_GRUNT_1.wav");
+		player[3] = getClass().getResource("/sound/PLAYER_GRUNT_2.wav");	
+		player[4] = getClass().getResource("/sound/PLAYER_GRUNT_3.wav");			
+		player[5] = getClass().getResource("/sound/PLAYER_GRUNT_4.wav");
+		player[6] = getClass().getResource("/sound/PLAYER_HURT_1.wav");
+		player[7] = getClass().getResource("/sound/PLAYER_HURT_2.wav");
+		player[8] = getClass().getResource("/sound/PLAYER_HURT_3.wav");
+		player[9] = getClass().getResource("/sound/PLAYER_SPIN_1.wav");		
+		player[10] = getClass().getResource("/sound/PLAYER_SPIN_2.wav");
+		player[11] = getClass().getResource("/sound/PLAYER_PULL.wav");
+		player[12] = getClass().getResource("/sound/PLAYER_PUSH.wav");
+		player[13] = getClass().getResource("/sound/PLAYER_SWIM.wav");
+		player[14] = getClass().getResource("/sound/PLAYER_DROWN.wav");		
+		player[15] = getClass().getResource("/sound/PLAYER_FALL.wav");		
+		player[16] = getClass().getResource("/sound/PLAYER_LOWHP.wav");
+		player[17] = getClass().getResource("/sound/PLAYER_DIE.wav");
 		
 		// 3
 		enemies[0] = getClass().getResource("/sound/ENEMY_SMALL_HIT.wav");

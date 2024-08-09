@@ -39,8 +39,8 @@ public class EMY_Goblin_Combat_Shield extends Entity {
 		swingSpeed1 = 30;
 		swingSpeed2 = 60;		
 		
-		attackbox.width = 42;
-		attackbox.height = 42;
+		attackbox.width = 48;
+		attackbox.height = 32;
 	}
 	
 	public void getImage() {
