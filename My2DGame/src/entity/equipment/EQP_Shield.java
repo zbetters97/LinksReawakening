@@ -16,6 +16,6 @@ public class EQP_Shield extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/equipment/shield");
+		image = down1 = setup("/equipment/shield");
 	}
 }

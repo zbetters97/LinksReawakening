@@ -18,6 +18,7 @@ import ai.PathFinder;
 import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
+import entity.collectable.COL_Fairy;
 import entity.object.OBJ_Door_Closed;
 import environment.EnvironmentManager;
 import event.EventHandler;
@@ -115,7 +116,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int outside = 1;
 	public final int house = 2;
 	public final int shop = 3;
-	public final int dungeon = 3;
+	public final int dungeon = 4;
 	public boolean bossBattleOn = false;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
@@ -154,8 +155,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setFocusable(true); // GamePanel in focus to receive input
 	}
 	
-	protected void setupGame() {		
-		
+	protected void setupGame() {			
 		
  		gameState = playState;	
 		currentArea = outside;
@@ -164,7 +164,7 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = playState;
 		currentArea = dungeon;
 		currentMap = 2;
-	*/
+*/
 		
 		tileM.loadMap();
 		map.loadWorldMap();
@@ -252,6 +252,7 @@ public class GamePanel extends JPanel implements Runnable {
 			updateiTiles();
 			updateProjectiles();
 			updateParticles();
+			updateFairies();
 		}
 		// CUTSCENE
 		else if (gameState == cutsceneState) {			
@@ -259,7 +260,8 @@ public class GamePanel extends JPanel implements Runnable {
 			updateObjects();
 			updateObjects();
 			updateiTiles();
-			updateParticles();			
+			updateParticles();	
+			updateFairies();
 		}		
 		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
 		else if (gameState == fallingState || gameState == drowningState) { 
@@ -333,6 +335,12 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 	}
+	private void updateFairies() {
+		for (int i = 0; i < obj[1].length; i++) {
+			if (obj[currentMap][i] != null && obj[currentMap][i].name.equals(COL_Fairy.colName))
+				obj[currentMap][i].update();
+		}
+	}	
 	
 	public void changeArea() {
 	
@@ -341,12 +349,25 @@ public class GamePanel extends JPanel implements Runnable {
 			setupMusic(false);
 		}		
 		
+		removeCollectables();
 		player.resetValues();
 		tileM.loadMap();
 		map.loadWorldMap();
 		currentArea = nextArea;
 		aSetter.setInteractiveObjects();
 		aSetter.setInteractiveTiles(false);
+	}
+	
+	private void removeCollectables() {		
+
+		for (int mapNum = 0; mapNum < maxMap; mapNum++) {
+			
+			for (int i = 0; i < obj[1].length; i++) {
+				if (obj[mapNum][i] != null && obj[mapNum][i].type == obj[mapNum][i].type_collectable) {
+					obj[mapNum][i] = null;
+				}
+			}				
+		}
 	}
 	
 	public void removeTempEntity(boolean reset) {		

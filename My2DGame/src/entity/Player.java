@@ -42,16 +42,19 @@ public class Player extends Entity {
 	public String aimDirection;	
 	
 	// COUNTERS
-	public int damageNum = 1, rollNum = 1, pullNum = 1, pushNum = 1, throwNum = 1, 
-			digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
+	public int damageNum = 1, guardNum = 1, aimNum = 1, rollNum = 1, pullNum = 1, pushNum = 1, 
+			throwNum = 1, digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
 	
-	public int damageCounter = 0, lowHPCounter = 0, rollCounter = 0, pullCounter = 0, pushCounter = 0,
-			throwCounter = 0, digCounter = 0, jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0;
+	public int damageCounter = 0, lowHPCounter = 0, guardCounter = 0, rollCounter = 0, 
+			pullCounter = 0, pushCounter = 0, throwCounter = 0, digCounter = 0, jumpCounter = 0, 
+			soarCounter = 0, rodCounter = 0, diveCounter = 0;
 	
 	// IMAGES
 	public BufferedImage 	
 		swimUp1, swimUp2, swimDown1, swimDown2, 
 		swimLeft1, swimLeft2, swimRight1, swimRight2,	
+		
+		aimUp1, aimUp2, aimDown1, aimDown2, aimLeft1, aimLeft2, aimRight1, aimRight2,
 		
 		rollUp1, rollUp2, rollUp3, rollUp4, rollDown1, rollDown2, rollDown3, rollDown4,
 		rollLeft1, rollLeft2, rollLeft3, rollLeft4, rollRight1, rollRight2, rollRight3, rollRight4,
@@ -68,7 +71,7 @@ public class Player extends Entity {
 		soarUp1, soarDown1, soarLeft1, soarRight1,
 		rodUp1, rodUp2, rodDown1, rodDown2, rodLeft1, rodLeft2, rodRight1, rodRight2,
 								
-		titleScreen, sit, sing, itemGet, drown, fall1, fall2, fall3, die1, die2, die3, die4, die5;
+		titleScreen, sit, sing, itemGet_1, itemGet_2, drown, fall1, fall2, fall3, die1, die2, die3, die4, die5;
 	
 /** END PLAYER VARIABLES **/		
 	
@@ -131,6 +134,7 @@ public class Player extends Entity {
 
 		getAttackImage();
 		getGuardImage();
+		getAimImage();
 		getRollImage();
 		getSwimImage();			
 		getGrabImage();
@@ -157,6 +161,7 @@ public class Player extends Entity {
 		*/
 	}
 	public void setDefaultItems() {		
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));		
 		inventory_item.add(new ITM_Bomb(gp));
@@ -165,6 +170,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
+*/
 	}
 	public void restoreStatus() {
 		alive = true;		
@@ -195,6 +201,8 @@ public class Player extends Entity {
 		invincibleCounter = 0;
 		damageNum = 1; damageCounter = 0;			
 		lowHPCounter = 0;
+		guardNum = 1; guardCounter = 0; 
+		aimNum = 1; 
 		rollNum = 1; rollCounter = 0;		
 		pullNum = 1; pullCounter = 0;	
 		pushNum = 1; pushCounter = 0;
@@ -269,13 +277,23 @@ public class Player extends Entity {
 	}
 	public void getGuardImage() {			
 		guardUp1 = setup("/player/boy_guard_up_1"); 
-		guardUp2 = guardUp1;
+		guardUp2 = setup("/player/boy_guard_up_2"); 
 		guardDown1 = setup("/player/boy_guard_down_1"); 
-		guardDown2 = guardDown1;
+		guardDown2 = setup("/player/boy_guard_down_2"); 
 		guardLeft1 = setup("/player/boy_guard_left_1"); 
-		guardLeft2 = guardLeft1;
+		guardLeft2 = setup("/player/boy_guard_left_2"); 
 		guardRight1 = setup("/player/boy_guard_right_1"); 
-		guardRight2 = guardRight1;
+		guardRight2 = setup("/player/boy_guard_right_2"); 
+	}
+	public void getAimImage() {
+		aimUp1 = setup("/player/boy_aim_up_1"); 
+		aimUp2 = setup("/player/boy_aim_up_2");			
+		aimDown1 = setup("/player/boy_aim_down_1"); 
+		aimDown2 = setup("/player/boy_aim_down_2");		
+		aimLeft1 = setup("/player/boy_aim_left_1"); 
+		aimLeft2 = setup("/player/boy_aim_left_2");		
+		aimRight1 = setup("/player/boy_aim_right_1"); 
+		aimRight2 = setup("/player/boy_aim_right_2");		
 	}
 	public void getRollImage() {
 		rollUp1 = setup("/player/boy_roll_up_1");
@@ -380,7 +398,8 @@ public class Player extends Entity {
 		fall1 = setup("/player/boy_fall_1");
 		fall2 = setup("/player/boy_fall_2");
 		fall3 = setup("/player/boy_fall_3");		
-		itemGet = setup("/player/boy_item_get");		
+		itemGet_1 = setup("/player/boy_item_get_1");
+		itemGet_2 = setup("/player/boy_item_get_2");
 		sit = setup("/player/boy_sit"); 
 		sing = setup("/npc/girl_sing_1");		
 		die1 = setup("/player/boy_die_1"); 
@@ -398,7 +417,7 @@ public class Player extends Entity {
 		
 		checkCollision();
 				
-		if (action == Action.IDLE) { onGround = true; guardCounter = 0; }
+		if (action == Action.IDLE) { onGround = true; }
 		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 		
@@ -423,8 +442,6 @@ public class Player extends Entity {
 			if (gp.keyH.tabPressed) { cycleItems(); }
 			if (gp.keyH.guardPressed) { 
 				action = Action.GUARDING; 
-				if (guardCounter < 12) 
-					guardCounter++; 
 			}	
 		}	
 		
@@ -445,6 +462,7 @@ public class Player extends Entity {
 		else if (action == Action.CHARGING) { charging(); }
 		else if (action == Action.DIGGING) { digging(); stop = true; }
 		else if (action == Action.GRABBING) { grabbing(); }	
+		else if (action == Action.GUARDING) { guarding(); }
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.PUSHING) { pushing(); }
 		else if (action == Action.ROLLING) { rolling(); }
@@ -631,6 +649,7 @@ public class Player extends Entity {
 			if (gp.obj[gp.currentMap][i].type == type_obstacle) {
 				gp.obj[gp.currentMap][i].interact(); 
 			}
+			// INTERACTIVE OBSTACLE ITEMS
 			else if (gp.obj[gp.currentMap][i].type == type_obstacle_i) {
 				if (gp.keyH.actionPressed) {
 					gp.obj[gp.currentMap][i].interact();
@@ -1039,7 +1058,18 @@ public class Player extends Entity {
 			speed = defaultSpeed;
 		}
 	}
+	public void guarding() {
+		
+		if (guardCounter < 15) 
+			guardCounter++; 
+		
+		if (6 >= guardCounter) guardNum = 1;		
+		else guardNum = 2;
+	}
 	public void aiming() {
+		
+		if (60 >= charge) aimNum = 1;
+		else aimNum = 2;
 		
 		switch (direction) {			
 			case "up":
@@ -1497,8 +1527,10 @@ public class Player extends Entity {
 	// CHECKERS
 	public void manageValues() {
 		
+		// ALWAYS MAX LIFE IN DEBUG
 		if (gp.keyH.debug) life = maxLife;
-		
+					
+		// MANAGE LOW LIFE SE
 		if (life <= 4) {
 			lowHPCounter++;
 			if (lowHPCounter == 90) {
@@ -1508,6 +1540,11 @@ public class Player extends Entity {
 		}
 		else {
 			lowHPCounter = 0;
+		}
+		
+		// RESET ANIMATIONS
+		if (action == Action.IDLE) { 
+			guardNum = 1; guardCounter = 0; 
 		}
 						
 		// KEEP ARROWS WITHIN MAX
@@ -1553,6 +1590,10 @@ public class Player extends Entity {
 					e.use(this);
 					if (e.amount > 1) e.amount--;
 					else inventory.remove(e);
+					
+					dropItem(e);
+					e.worldY -= gp.tileSize;
+					
 					return;
 				}
 			}
@@ -1567,7 +1608,7 @@ public class Player extends Entity {
 			gp.ui.commandNum = -1;							
 		}
 	}
-	
+  	
 	// SOUND EFFECTS
 	public void playGrunt() {		
 		int grunt = 1 + (int)(Math.random() * 4);
@@ -1587,6 +1628,7 @@ public class Player extends Entity {
 		if (grunt == 1) playSpinSE_1();
 		else if (grunt == 2) playSpinSE_2();
 	}
+	
 	public void playGuardSE() {
 		gp.playSE(2, 1);
 	}	
@@ -1667,12 +1709,8 @@ public class Player extends Entity {
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
 		
-		if (screenX > worldX) {
-			tempScreenX = worldX;
-		}
-		if (screenY > worldY) {
-			tempScreenY = worldY;
-		}
+		if (screenX > worldX) tempScreenX = worldX;		
+		if (screenY > worldY) tempScreenY = worldY;
 		
 		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
 		int rightOffset = gp.screenWidth - screenX;		
@@ -1705,63 +1743,67 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
-						case CARRYING:
-							if (spriteNum == 1) image = carryUp1;
-							else if (spriteNum == 2) image = carryUp2;
-							break;
-						case GUARDING:
-							image = guardUp1;
-							break;
-						case GRABBING:
-							if (pullNum == 1) image = grabUp1;
-							else if (pullNum == 2) image = grabUp2;
-							else if (pullNum == 3) image = grabUp3;
-							break;
-						case DIGGING:
-							if (digNum == 1) image = digUp1;
-							else if (digNum == 2) image = digUp2;
-							break;
-						case JUMPING:
-						case SOARING:
-							tempScreenY -= 30;
-							if (jumpNum == 1) image = jumpUp1;
-							else if (jumpNum == 2) image = jumpUp2; 
-							else if (jumpNum == 3) image = jumpUp3; 
-							else if (jumpNum == 4) image = soarUp1; 
-							
-							g2.setColor(Color.BLACK);
-							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
-							break;
-						case PUSHING:
-							if (pushNum == 1) image = grabUp1;
-							else if (pushNum == 2) image = grabUp2;
-							break;
-						case ROLLING:
-							if (rollNum == 1) image = rollUp1;
-							else if (rollNum == 2) image = rollUp2; 
-							else if (rollNum == 3) image = rollUp3; 
-							else if (rollNum == 4) image = rollUp4; 
-							break;
-						case SWINGING:
-							tempScreenY -= gp.tileSize;
-							if (rodNum == 1) {
-								tempScreenX -= gp.tileSize;
-								image = rodUp1;
-							}
-							else if (rodNum == 2) image = rodUp2;	
-							break;
-						case SWIMMING:
-							if (spriteNum == 1) image = swimUp1;
-							else if (spriteNum == 2) image = swimUp2;
-							break;
-						case AIMING:
-						case THROWING:
-							image = throwUp1;
-							break;
-						default:
-							if (spriteNum == 1) image = up1;
-							else if (spriteNum == 2) image = up2;	
-							break;
+							case AIMING:
+								if (aimNum == 1) image = aimUp1;
+								else if (aimNum == 2) image = aimUp2;
+								break;							
+							case CARRYING:
+								if (spriteNum == 1) image = carryUp1;
+								else if (spriteNum == 2) image = carryUp2;
+								break;
+							case GUARDING:
+								if (guardNum == 1) image = guardUp1;
+								else if (guardNum == 2) image = guardUp2;
+								break;
+							case GRABBING:
+								if (pullNum == 1) image = grabUp1;
+								else if (pullNum == 2) image = grabUp2;
+								else if (pullNum == 3) image = grabUp3;
+								break;
+							case DIGGING:
+								if (digNum == 1) image = digUp1;
+								else if (digNum == 2) image = digUp2;
+								break;
+							case JUMPING:
+							case SOARING:
+								tempScreenY -= 30;
+								if (jumpNum == 1) image = jumpUp1;
+								else if (jumpNum == 2) image = jumpUp2; 
+								else if (jumpNum == 3) image = jumpUp3; 
+								else if (jumpNum == 4) image = soarUp1; 
+								
+								g2.setColor(Color.BLACK);
+								g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
+								break;
+							case PUSHING:
+								if (pushNum == 1) image = grabUp1;
+								else if (pushNum == 2) image = grabUp2;
+								break;
+							case ROLLING:
+								if (rollNum == 1) image = rollUp1;
+								else if (rollNum == 2) image = rollUp2; 
+								else if (rollNum == 3) image = rollUp3; 
+								else if (rollNum == 4) image = rollUp4; 
+								break;
+							case SWINGING:
+								tempScreenY -= gp.tileSize;
+								if (rodNum == 1) {
+									tempScreenX -= gp.tileSize;
+									image = rodUp1;
+								}
+								else if (rodNum == 2) image = rodUp2;	
+								break;
+							case SWIMMING:
+								if (spriteNum == 1) image = swimUp1;
+								else if (spriteNum == 2) image = swimUp2;
+								break;
+							case THROWING:
+								image = throwUp1;
+								break;
+							default:
+								if (spriteNum == 1) image = up1;
+								else if (spriteNum == 2) image = up2;	
+								break;
 						}
 					}
 					break;
@@ -1774,59 +1816,63 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
-						case CARRYING:
-							if (spriteNum == 1) image = carryDown1;
-							else if (spriteNum == 2) image = carryDown2;
-							break;
-						case GUARDING:
-							image = guardDown1;
-							break;
-						case GRABBING:
-							if (pullNum == 1) image = grabDown1;
-							else if (pullNum == 2) image = grabDown2;
-							else if (pullNum == 3) image = grabDown3;
-							break;
-						case DIGGING:
-							if (digNum == 1) image = digDown1;
-							else if (digNum == 2) image = digDown2;
-							break;
-						case JUMPING:
-						case SOARING:
-							tempScreenY -= 30;
-							if (jumpNum == 1) image = jumpDown1;
-							else if (jumpNum == 2) image = jumpDown2; 
-							else if (jumpNum == 3) image = jumpDown3; 
-							else if (jumpNum == 4) image = soarDown1; 
-							
-							g2.setColor(Color.BLACK);
-							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
-							break;
-						case PUSHING:
-							if (pushNum == 1) image = grabDown1;
-							else if (pushNum == 2) image = grabDown2;
-							break;
-						case ROLLING:
-							if (rollNum == 1) image = rollDown1;
-							else if (rollNum == 2) image = rollDown2; 
-							else if (rollNum == 3) image = rollDown3; 
-							else if (rollNum == 4) image = rollDown4; 
-							break;
-						case SWINGING:
-							if (rodNum == 1) image = rodDown1;
-							else if (rodNum == 2) image = rodDown2;
-							break;
-						case SWIMMING:
-							if (spriteNum == 1) image = swimDown1;
-							else if (spriteNum == 2) image = swimDown2;
-							break;
-						case AIMING:
-						case THROWING:
-							image = throwDown1;
-							break;
-						default:
-							if (spriteNum == 1) image = down1;
-							else if (spriteNum == 2) image = down2;	
-							break;
+							case AIMING:
+								if (aimNum == 1) image = aimDown1;
+								else if (aimNum == 2) image = aimDown2;
+								break;										
+							case CARRYING:
+								if (spriteNum == 1) image = carryDown1;
+								else if (spriteNum == 2) image = carryDown2;
+								break;
+							case GUARDING:
+								if (guardNum == 1) image = guardDown1;
+								else if (guardNum == 2) image = guardDown2;
+								break;
+							case GRABBING:
+								if (pullNum == 1) image = grabDown1;
+								else if (pullNum == 2) image = grabDown2;
+								else if (pullNum == 3) image = grabDown3;
+								break;
+							case DIGGING:
+								if (digNum == 1) image = digDown1;
+								else if (digNum == 2) image = digDown2;
+								break;
+							case JUMPING:
+							case SOARING:
+								tempScreenY -= 30;
+								if (jumpNum == 1) image = jumpDown1;
+								else if (jumpNum == 2) image = jumpDown2; 
+								else if (jumpNum == 3) image = jumpDown3; 
+								else if (jumpNum == 4) image = soarDown1; 
+								
+								g2.setColor(Color.BLACK);
+								g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
+								break;
+							case PUSHING:
+								if (pushNum == 1) image = grabDown1;
+								else if (pushNum == 2) image = grabDown2;
+								break;
+							case ROLLING:
+								if (rollNum == 1) image = rollDown1;
+								else if (rollNum == 2) image = rollDown2; 
+								else if (rollNum == 3) image = rollDown3; 
+								else if (rollNum == 4) image = rollDown4; 
+								break;
+							case SWINGING:
+								if (rodNum == 1) image = rodDown1;
+								else if (rodNum == 2) image = rodDown2;
+								break;
+							case SWIMMING:
+								if (spriteNum == 1) image = swimDown1;
+								else if (spriteNum == 2) image = swimDown2;
+								break;		
+							case THROWING:
+								image = throwDown1;
+								break;
+							default:
+								if (spriteNum == 1) image = down1;
+								else if (spriteNum == 2) image = down2;	
+								break;
 						}
 					}
 					break;
@@ -1841,63 +1887,67 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
-						case CARRYING:
-							if (spriteNum == 1) image = carryLeft1;
-							else if (spriteNum == 2) image = carryLeft2;
-							break;
-						case GUARDING:
-							image = guardLeft1;
-							break;
-						case GRABBING:
-							if (pullNum == 1) image = grabLeft1;
-							else if (pullNum == 2) image = grabLeft2;
-							else if (pullNum == 3) image = grabLeft3;
-							break;
-						case DIGGING:
-							if (digNum == 1) image = digLeft1;
-							else if (digNum == 2) image = digLeft2;
-							break;
-						case JUMPING:
-						case SOARING:
-							tempScreenY -= 30;
-							if (jumpNum == 1) image = jumpLeft1;
-							else if (jumpNum == 2) image = jumpLeft2; 
-							else if (jumpNum == 3) image = jumpLeft3; 
-							else if (jumpNum == 4) image = soarLeft1; 
-							
-							g2.setColor(Color.BLACK);
-							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
-							break;
-						case PUSHING:
-							if (pushNum == 1) image = grabLeft1;
-							else if (pushNum == 2) image = grabLeft2;
-							break;
-						case ROLLING:
-							if (rollNum == 1) image = rollLeft1;
-							else if (rollNum == 2) image = rollLeft2; 
-							else if (rollNum == 3) image = rollLeft3; 
-							else if (rollNum == 4) image = rollLeft4; 
-							break;
-						case SWINGING:
-							tempScreenX -= gp.tileSize;
-							if (rodNum == 1) {
-								tempScreenY -= gp.tileSize;
-								image = rodLeft1;
-							}
-							else if (rodNum == 2) image = rodLeft2;	
-							break;
-						case SWIMMING:
-							if (spriteNum == 1) image = swimLeft1;
-							else if (spriteNum == 2) image = swimLeft2;
-							break;						
-						case AIMING:
-						case THROWING:						
-							image = throwLeft1;
-							break;
-						default:
-							if (spriteNum == 1) image = left1;
-							else if (spriteNum == 2) image = left2;	
-							break;
+							case AIMING:
+								if (aimNum == 1) image = aimLeft1;
+								else if (aimNum == 2) image = aimLeft2;		
+								break;
+							case CARRYING:
+								if (spriteNum == 1) image = carryLeft1;
+								else if (spriteNum == 2) image = carryLeft2;
+								break;
+							case GUARDING:
+								if (guardNum == 1) image = guardLeft1;
+								else if (guardNum == 2) image = guardLeft2;
+								break;
+							case GRABBING:
+								if (pullNum == 1) image = grabLeft1;
+								else if (pullNum == 2) image = grabLeft2;
+								else if (pullNum == 3) image = grabLeft3;
+								break;
+							case DIGGING:
+								if (digNum == 1) image = digLeft1;
+								else if (digNum == 2) image = digLeft2;
+								break;
+							case JUMPING:
+							case SOARING:
+								tempScreenY -= 30;
+								if (jumpNum == 1) image = jumpLeft1;
+								else if (jumpNum == 2) image = jumpLeft2; 
+								else if (jumpNum == 3) image = jumpLeft3; 
+								else if (jumpNum == 4) image = soarLeft1; 
+								
+								g2.setColor(Color.BLACK);
+								g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
+								break;
+							case PUSHING:
+								if (pushNum == 1) image = grabLeft1;
+								else if (pushNum == 2) image = grabLeft2;
+								break;
+							case ROLLING:
+								if (rollNum == 1) image = rollLeft1;
+								else if (rollNum == 2) image = rollLeft2; 
+								else if (rollNum == 3) image = rollLeft3; 
+								else if (rollNum == 4) image = rollLeft4; 
+								break;
+							case SWINGING:
+								tempScreenX -= gp.tileSize;
+								if (rodNum == 1) {
+									tempScreenY -= gp.tileSize;
+									image = rodLeft1;
+								}
+								else if (rodNum == 2) image = rodLeft2;	
+								break;
+							case SWIMMING:
+								if (spriteNum == 1) image = swimLeft1;
+								else if (spriteNum == 2) image = swimLeft2;
+								break;		
+							case THROWING:						
+								image = throwLeft1;
+								break;
+							default:
+								if (spriteNum == 1) image = left1;
+								else if (spriteNum == 2) image = left2;	
+								break;
 						}
 					}
 					break;
@@ -1911,62 +1961,66 @@ public class Player extends Entity {
 					}
 					else {
 						switch (action) {
-						case CARRYING:
-							if (spriteNum == 1) image = carryRight1;
-							else if (spriteNum == 2) image = carryRight2;
-							break;
-						case GUARDING:						
-							image = guardRight1;						
-							break;
-						case GRABBING:
-							if (pullNum == 1) image = grabRight1;
-							else if (pullNum == 2) image = grabRight2;
-							else if (pullNum == 3) image = grabRight3;
-							break;
-						case DIGGING:
-							if (digNum == 1) image = digRight1;
-							else if (digNum == 2) image = digRight2;
-							break;
-						case JUMPING:	
-						case SOARING:
-							tempScreenY -= 30;
-							if (jumpNum == 1) image = jumpRight1;
-							else if (jumpNum == 2) image = jumpRight2; 
-							else if (jumpNum == 3) image = jumpRight3; 
-							else if (jumpNum == 4) image = soarRight1; 
-							
-							g2.setColor(Color.BLACK);
-							g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
-							break;
-						case PUSHING:
-							if (pushNum == 1) image = grabRight1;
-							else if (pushNum == 2) image = grabRight2;
-							break;
-						case ROLLING:
-							if (rollNum == 1) image = rollRight1;
-							else if (rollNum == 2) image = rollRight2; 
-							else if (rollNum == 3) image = rollRight3; 
-							else if (rollNum == 4) image = rollRight4; 
-							break;
-						case SWINGING:			
-							if (rodNum == 1) {
-								tempScreenY -= gp.tileSize;
-								image = rodRight1;
-							}
-							else if (rodNum == 2) image = rodRight2;
-							break;
-						case SWIMMING:
-							if (spriteNum == 1) image = swimRight1;
-							else if (spriteNum == 2) image = swimRight2;
-							break;
-						case AIMING:
-						case THROWING:
-							image = throwRight1;
-							break;
-						default:
-							if (spriteNum == 1) image = right1;
-							else if (spriteNum == 2) image = right2;	
-							break;
+							case AIMING:
+								if (aimNum == 1) image = aimRight1;
+								else if (aimNum == 2) image = aimRight2;		
+								break;							
+							case CARRYING:
+								if (spriteNum == 1) image = carryRight1;
+								else if (spriteNum == 2) image = carryRight2;
+								break;
+							case GUARDING:
+								if (guardNum == 1) image = guardRight1;
+								else if (guardNum == 2) image = guardRight2;
+								break;
+							case GRABBING:
+								if (pullNum == 1) image = grabRight1;
+								else if (pullNum == 2) image = grabRight2;
+								else if (pullNum == 3) image = grabRight3;
+								break;
+							case DIGGING:
+								if (digNum == 1) image = digRight1;
+								else if (digNum == 2) image = digRight2;
+								break;
+							case JUMPING:	
+							case SOARING:
+								tempScreenY -= 30;
+								if (jumpNum == 1) image = jumpRight1;
+								else if (jumpNum == 2) image = jumpRight2; 
+								else if (jumpNum == 3) image = jumpRight3; 
+								else if (jumpNum == 4) image = soarRight1; 
+								
+								g2.setColor(Color.BLACK);
+								g2.fillOval(tempScreenX + 10, tempScreenY + 70, 30, 10);
+								break;
+							case PUSHING:
+								if (pushNum == 1) image = grabRight1;
+								else if (pushNum == 2) image = grabRight2;
+								break;
+							case ROLLING:
+								if (rollNum == 1) image = rollRight1;
+								else if (rollNum == 2) image = rollRight2; 
+								else if (rollNum == 3) image = rollRight3; 
+								else if (rollNum == 4) image = rollRight4; 
+								break;
+							case SWINGING:			
+								if (rodNum == 1) {
+									tempScreenY -= gp.tileSize;
+									image = rodRight1;
+								}
+								else if (rodNum == 2) image = rodRight2;
+								break;
+							case SWIMMING:
+								if (spriteNum == 1) image = swimRight1;
+								else if (spriteNum == 2) image = swimRight2;
+								break;		
+							case THROWING:
+								image = throwRight1;
+								break;
+							default:
+								if (spriteNum == 1) image = right1;
+								else if (spriteNum == 2) image = right2;	
+								break;
 						}							
 					}
 					break;

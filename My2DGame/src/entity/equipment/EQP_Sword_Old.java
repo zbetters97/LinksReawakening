@@ -24,8 +24,7 @@ public class EQP_Sword_Old extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/equipment/sword_old");
-		image1 = down1;
+		image = down1 = setup("/equipment/sword_old");
 	}
 	
 	public void playSE() {

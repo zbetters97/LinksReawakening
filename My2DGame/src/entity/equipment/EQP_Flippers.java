@@ -16,6 +16,6 @@ public class EQP_Flippers extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/equipment/flippers");
+		image = down1 = setup("/equipment/flippers");
 	}
 }

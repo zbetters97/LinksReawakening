@@ -21,7 +21,8 @@ public class ITM_Bomb extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/items/bomb");
+		
+		image = down1 = setup("/items/bomb");
 	}
 	
 	public boolean use(Entity user) {

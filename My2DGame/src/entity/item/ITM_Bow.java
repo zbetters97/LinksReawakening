@@ -21,7 +21,7 @@ public class ITM_Bow extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/bow");
+		image = down1 = setup("/items/bow");
 	}
 	
 	public boolean setCharge(Entity user) {

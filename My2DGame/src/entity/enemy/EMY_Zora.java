@@ -32,24 +32,12 @@ public class EMY_Zora extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/enemy/zora_down_1");
-		down2 = setup("/enemy/zora_down_2");
-		up1 = down1;
-		up2 = down2;
-		left1 = down1;
-		left2 = down2;
-		right1 = down1;
-		right2 = down2;
+		up1 = down1 = left1 = right1 = setup("/enemy/zora_down_1");
+		up2 = down2 = left2 = right2 = setup("/enemy/zora_down_2");
 	}
 	public void getAttackImage() {
-		attackDown1 = setup("/enemy/zora_attack_down_1");
-		attackDown2 = attackDown1;
-		attackUp1 = attackDown1;
-		attackUp2 = attackDown1;
-		attackLeft1 = attackDown1;
-		attackLeft2 = attackDown1;
-		attackRight1 = attackDown1;
-		attackRight2 = attackDown1;
+		attackUp1 = attackDown1 = attackLeft1 = attackRight1 = setup("/enemy/zora_attack_down_1");
+		attackUp2 = attackDown2 = attackLeft2 = attackRight2 = setup("/enemy/zora_attack_down_1");
 	}
 	
 	// UPDATER

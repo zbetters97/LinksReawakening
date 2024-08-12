@@ -30,7 +30,7 @@ public class ITM_Rod extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/rod");
+		image = down1 = setup("/items/rod");
 	}
 	
 	public boolean use(Entity user) {		

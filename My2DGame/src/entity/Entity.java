@@ -590,13 +590,11 @@ public class Entity {
 		actionLockCounter++;			
 		if (actionLockCounter >= rate) {		
 						
-			Random random = new Random();
-			int i = random.nextInt(100) + 1;
-						
-			if (i <= 25) direction = "up";
-			if (i > 25 && i <= 50) direction = "down";
-			if (i > 50 && i <= 75) direction = "left";
-			if (i > 75) direction = "right";
+			int dir = 1 + (int)(Math.random() * 4);
+			if (dir == 1) direction = "up";
+			else if (dir == 2) direction = "down";
+			else if (dir == 3) direction = "left";
+			else if (dir == 4) direction = "right";
 			
 			actionLockCounter = 0;
 		}
@@ -918,7 +916,7 @@ public class Entity {
 					setKnockback(this, gp.player, 1);
 				}
 				else {				
-					if (gp.player.guardCounter < 10) {
+					if (gp.player.guardCounter < 14) {
 						stunned = true;
 						critical = true;
 						attacking = false;
@@ -1295,9 +1293,9 @@ public class Entity {
 		if (stunned) {
 			attacking = false;
 			stunnedCounter++;
-			if (stunnedCounter > 60) {				
+			if (stunnedCounter > 45) {				
 				if (critical) {
-					if (stunnedCounter > 120) {
+					if (stunnedCounter > 90) {
 						stunned = false;
 						critical = false;
 						stunnedCounter = 0;				
@@ -1315,7 +1313,7 @@ public class Entity {
 			invincibleCounter++;
 			
 			// REFRESH TIME (1 SECOND)
-			if (invincibleCounter > 60) {
+			if (invincibleCounter > 45) {
 				invincibleCounter = 0;
 				invincible = false;
 				transparent = false;

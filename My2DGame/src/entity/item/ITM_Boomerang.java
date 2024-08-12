@@ -21,7 +21,7 @@ public class ITM_Boomerang extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/items/boomerang");
+		image = down1 = setup("/items/boomerang");
 	}
 	
 	public boolean use(Entity user) {

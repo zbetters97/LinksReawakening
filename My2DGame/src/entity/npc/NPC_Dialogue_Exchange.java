@@ -33,10 +33,14 @@ public class NPC_Dialogue_Exchange extends Entity {
 	}
 	
 	public void getImage() {		
-		up1 = setup("/npc/oldman_up_1"); up2 = setup("/npc/oldman_up_2");
-		down1 = setup("/npc/oldman_down_1"); down2 = setup("/npc/oldman_down_2");
-		left1 = setup("/npc/oldman_left_1"); left2 = setup("/npc/oldman_left_2");
-		right1 = setup("/npc/oldman_right_1"); right2 = setup("/npc/oldman_right_2");
+		up1 = setup("/npc/oldman_up_1"); 
+		up2 = setup("/npc/oldman_up_2");
+		down1 = setup("/npc/oldman_down_1"); 
+		down2 = setup("/npc/oldman_down_2");
+		left1 = setup("/npc/oldman_left_1"); 
+		left2 = setup("/npc/oldman_left_2");
+		right1 = setup("/npc/oldman_right_1"); 
+		right2 = setup("/npc/oldman_right_2");
 	}
 	
 	public void setDialogue() {

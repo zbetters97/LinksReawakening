@@ -21,7 +21,8 @@ public class COL_Potion_Red extends Entity implements Cloneable {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/potion_red");
+		image = setup("/collectables/potion_red");
+		down1 = setup("/collectables/potion_red", 35, 35);
 	}
 	
 	public void setDialogue() {

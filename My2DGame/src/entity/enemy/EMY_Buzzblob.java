@@ -41,18 +41,9 @@ public class EMY_Buzzblob extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/buzzblob_down_1");
-		up2 = setup("/enemy/buzzblob_down_2");
-		up3 = setup("/enemy/buzzblob_down_3");
-		down1 = up1;
-		down2 = up2;
-		down3 = up3;
-		left1 = up1;
-		left2 = up2;
-		left3 = up3;
-		right1 = up1;
-		right2 = up2;
-		right3 = up3;
+		up1 = down1 = left1 = right1 = setup("/enemy/buzzblob_down_1");
+		up2 = down2 = left2 = right2 = setup("/enemy/buzzblob_down_2");
+		up3 = down3 = left3 = right3 = setup("/enemy/buzzblob_down_3");
 		
 	}
 	public void getBuzzImage() {		

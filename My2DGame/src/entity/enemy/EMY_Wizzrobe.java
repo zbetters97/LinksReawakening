@@ -40,13 +40,10 @@ public class EMY_Wizzrobe extends Entity {
 	
 	public void getImage() {
 		up1 = setup("/enemy/wizzrobe_up_1");
-		up2 = setup("/enemy/wizzrobe_down_2");		
+		up2 = down2 = left2 = right2 = setup("/enemy/wizzrobe_down_2");		
 		down1 = setup("/enemy/wizzrobe_down_1");
-		down2 = up2;		
 		left1 = setup("/enemy/wizzrobe_left_1");
-		left2 = up2;
 		right1 = setup("/enemy/wizzrobe_right_1");
-		right2 = up2;
 	}	
 	
 	// OVERRIDE ENTITY UPDATE

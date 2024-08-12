@@ -63,8 +63,8 @@ public class Lighting {
 					// BLOOD MOON CYCLE
 					if (bloodMoonCounter == bloodMoonMax) {
 						bloodMoonCounter = 0;
-						gp.aSetter.setEnemy();					
-						eventMaster.startDialogue(eventMaster, 1);
+						gp.aSetter.setEnemy();		
+						eventMaster.startDialogue(eventMaster, 0);
 					}
 				}
 			}

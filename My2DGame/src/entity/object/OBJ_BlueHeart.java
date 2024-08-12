@@ -19,8 +19,7 @@ public class OBJ_BlueHeart extends Entity {
 	}	
 	
 	public void getImage() {
-		image1 = setup("/objects/OBJ_BLUEHEART");
-		down1 = image1;
+		image = down1 = setup("/objects/OBJ_BLUEHEART");
 	}
 	
 	public void setDialogue() {

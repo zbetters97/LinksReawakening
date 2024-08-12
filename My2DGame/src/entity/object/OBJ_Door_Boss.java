@@ -20,14 +20,8 @@ public class OBJ_Door_Boss extends Entity {
 	}	
 	
 	public void getImage() {
-		up1 = setup("/objects/door_boss_down_1");
-		up2 = setup("/objects/door_boss_down_2");
-		down1 = up1;
-		down2 = up2;
-		left1 = up1;
-		left2 = up2;
-		right1 = up1;
-		right2 = up2;
+		up1 = down1 = left1 = right1 = setup("/objects/door_boss_down_1");
+		up2 = down2 = left2 = right2 = setup("/objects/door_boss_down_2");
 	}
 	
 	public void update() {

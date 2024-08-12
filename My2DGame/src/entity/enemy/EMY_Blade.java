@@ -37,10 +37,7 @@ public class EMY_Blade extends Entity {
 	}
 	
 	public void getImage() {
-		up1 = setup("/enemy/blade_down_1");
-		down1 = up1;
-		left1 = up1;
-		right1 = up1;
+		up1 = down1 = left1 = right1 = setup("/enemy/blade_down_1");
 	}
 	
 	// UPDATER

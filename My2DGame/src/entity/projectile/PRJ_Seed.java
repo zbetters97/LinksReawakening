@@ -26,14 +26,8 @@ public class PRJ_Seed extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectiles/seed_down_1");
-		up2 = up1;
-		down1 = up1;
-		down2 = up1;
-		left1 = up1;
-		left2 = up1;
-		right1 = up1;
-		right2 = up1;
+		up1 = down1 = left1 = right1 = setup("/projectiles/seed_down_1");
+		up2 = down2 = left2 = right2 = setup("/projectiles/seed_down_1");
 	}
 	
 	public void playSE() {

@@ -56,7 +56,7 @@ public class PRJ_Bomb extends Projectile {
 	
 	private void grabbed() {
 		worldX = gp.player.worldX;
-		worldY = gp.player.worldY - gp.tileSize + 5;
+		worldY = gp.player.worldY - gp.tileSize + 10;
 		collision = false;
 		xT = worldX;
 		yT = worldY;

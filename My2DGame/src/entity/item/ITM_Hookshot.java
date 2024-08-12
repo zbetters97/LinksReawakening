@@ -20,7 +20,7 @@ public class ITM_Hookshot extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/items/hookshot");
+		image = down1 = setup("/items/hookshot");
 	}
 	
 	public boolean use(Entity user) {

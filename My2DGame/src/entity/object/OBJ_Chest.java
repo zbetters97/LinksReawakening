@@ -46,9 +46,8 @@ public class OBJ_Chest extends Entity {
 	}	
 	
 	public void getImage() {
-		image1 = setup("/objects/OBJ_CHEST");
+		image1 = down1 = setup("/objects/OBJ_CHEST");
 		image2 = setup("/objects/OBJ_CHEST_OPENED");
-		down1 = image1;
 	}
 	
 	public void setLoot(Entity loot) {

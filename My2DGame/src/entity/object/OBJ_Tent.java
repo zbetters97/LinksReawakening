@@ -18,7 +18,7 @@ public class OBJ_Tent extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/objects/OBJ_TENT");
+		image = down1 = setup("/objects/OBJ_TENT");
 	}
 	
 	public void interact() {

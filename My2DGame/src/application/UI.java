@@ -1190,19 +1190,19 @@ public class UI {
 		
 		// DRAW SWORD
 		if (sword != null) {
-			g2.drawImage(sword.down1, slotX, slotY, null);	
+			g2.drawImage(sword.image, slotX, slotY, null);	
 		}		
 		
 		// DRAW SHIELD
 		if (shield != null) {
 			slotY = frameY + (gp.tileSize + 15);	
-			g2.drawImage(shield.down1, slotX, slotY, null);
+			g2.drawImage(shield.image, slotX, slotY, null);
 		}				
 		
 		// DRAW CURRENT ITEM
 		if (item != null) {
 			slotY = (frameY + 15) + ((gp.tileSize + 5) * 2);	
-			g2.drawImage(item.down1, slotX, slotY, null);
+			g2.drawImage(item.image, slotX, slotY, null);
 			
 			// DRAW ARROW COUNT
 			if (item.name.equals(ITM_Bow.itmName)) {	
@@ -1264,7 +1264,7 @@ public class UI {
 		// DRAW ITEMS
 		for (int i = 0; i < entity.inventory.size(); i++) {
 						
-			g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
+			g2.drawImage(entity.inventory.get(i).image, slotX, slotY, null);
 			
 			// STACKABLE ITEMS
 			if (entity.inventory.get(i).amount > 1) {
@@ -1358,14 +1358,14 @@ public class UI {
 			g2.drawImage(gp.player.inventory_item.get(i).down1, slotX, slotY, null);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {	
-				String arrowCount = Integer.toString(gp.player.arrows);
-				drawItemCount(arrowCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
+			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {					
+				String arrowCount = Integer.toString(gp.player.arrows);				
+				drawItemCount(arrowCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);	
 			}
 			// DRAW BOMB COUNT
-			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {	
+			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {				
 				String bombCount = Integer.toString(gp.player.bombs);
-				drawItemCount(bombCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
+				drawItemCount(bombCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);	
 			}
 			
 			slotX += slotSize;			
@@ -1789,9 +1789,19 @@ public class UI {
   		
 		// DISPLAY ITEM ABOVE PLAYER
 		if (newItem != null) {			
+									
+			BufferedImage playerGet = null;
+			
+			if (newItem.type == newItem.type_item || newItem.type == newItem.type_equipment) {
+				playerGet = gp.player.itemGet_2;
+			}
+			else {
+				playerGet = gp.player.itemGet_1;
+			}
+			
 			gp.player.drawing = false;
 			g2.drawImage(newItem.down1, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
-			g2.drawImage(gp.player.itemGet, gp.player.screenX, gp.player.screenY, null);
+			g2.drawImage(playerGet, gp.player.screenX, gp.player.screenY, null);	
 		}			
 	}
 	

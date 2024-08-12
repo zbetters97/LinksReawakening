@@ -33,14 +33,10 @@ public class PRJ_Hookshot extends Projectile {
 	}
 	
 	public void getImage() {		
-		up1 = setup("/projectiles/hookshot_up_1");
-		up2 = up1;
-		down1 = setup("/projectiles/hookshot_down_1");
-		down2 = down1;
-		left1 = setup("/projectiles/hookshot_left_1");
-		left2 = left1;
-		right1 = setup("/projectiles/hookshot_right_1");
-		right2 = right1;
+		up1 = up2 = setup("/projectiles/hookshot_up_1");
+		down1 = down2 = setup("/projectiles/hookshot_down_1");
+		left1 = left2 = setup("/projectiles/hookshot_left_1");
+		right1 = right2 = setup("/projectiles/hookshot_right_1");
 	}
 	public void getGrabImage() {
 		grabUp1 = setup("/projectiles/hookshot_grab_up_1");

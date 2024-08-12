@@ -39,7 +39,7 @@ public class InteractiveTile extends Entity {
 	
 	private void grabbed() {
 		worldX = gp.player.worldX;
-		worldY = gp.player.worldY - gp.tileSize + 5;
+		worldY = gp.player.worldY - gp.tileSize + 8;
 		collision = false;
 		xT = worldX;
 		yT = worldY;

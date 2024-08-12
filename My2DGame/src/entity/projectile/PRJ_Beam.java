@@ -27,14 +27,8 @@ public class PRJ_Beam extends Projectile {
 	}
 	
 	public void getImage() {
-		up1 = setup("/projectiles/beam_down_1");
-		up2 = up1;
-		down1 = up1;
-		down2 = up1;
-		left1 = setup("/projectiles/beam_left_1");
-		left2 = left1;
-		right1 = left1;
-		right2 = left1;
+		up1 = up2 = down1 = down2 = setup("/projectiles/beam_down_1");
+		left1 = left2 = right1 = right2 = setup("/projectiles/beam_left_1");
 	}
 	
 	public void playSE() {
