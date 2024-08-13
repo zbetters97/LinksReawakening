@@ -86,7 +86,7 @@ public class Entity {
 	public boolean diving = false;
 	public boolean moving = false;
 	public boolean onPath = false;
-	public boolean pathCompleted = false;		
+	public boolean pathCompleted = false;
 	public boolean guarded = false;
 	public boolean captured = false;
 	public boolean capturable = false;	
@@ -783,6 +783,7 @@ public class Entity {
 				if (gp.keyH.actionPressed) {
 					currentWeapon.playChargeSE();
 					action = Action.CHARGING;
+					attackCounter = 0;	
 				}
 				// RESET IMAGE/VALUES
 				else {
@@ -805,23 +806,16 @@ public class Entity {
 	protected void spinAttacking() {
 		
 		attackCounter++;
-		if (attackCounter >= 5) {
-			attackCounter = 0;
-			
-			// ROTATE PLAYER CLOCKWISE
-			if (spinNum != 4) {
-				switch (direction) {
-					case "up":
-					case "upleft": 
-					case "upright": direction = "right"; break;
-					case "right": direction = "down"; break;
-					case "down": 
-					case "downleft": 
-					case "downright": direction = "left"; break;
-					case "left": direction = "up"; break;
-				}		
-			}
-			
+		
+		// ATTACK IMAGE 1
+		if (2 >= attackCounter) {			
+			attackNum = 1;
+		}		
+		
+		// ATTACK IMAGE 2
+		else if (5 >= attackCounter && attackCounter > 2) {
+			attackNum = 2;
+									
 			// SAVE HITBOX
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;
@@ -879,11 +873,30 @@ public class Entity {
 			worldX = currentWorldX;
 			worldY = currentWorldY;
 			hitbox.width = hitboxDefaultWidth;
-			hitbox.height = hitboxDefaultHeight;
+			hitbox.height = hitboxDefaultHeight;			
+		}
+		else if (attackCounter > 5) {
 			
-			// REPEAT 5 TIMES
+			attackNum = 1;
+			attackCounter = 0;
+			
+			// ROTATE PLAYER CLOCKWISE
+			if (spinNum != 3) {
+				switch (direction) {
+					case "up":
+					case "upleft": 
+					case "upright": direction = "left"; break;
+					case "right": direction = "up"; break;
+					case "down": 
+					case "downleft": 
+					case "downright": direction = "right"; break;
+					case "left": direction = "down"; break;
+				}		
+			}
+			
+			// REPEAT 4 TIMES
 			spinNum++;
-			if (spinNum == 5) {
+			if (spinNum == 4) {
 				spinNum = 0;
 				spinning = false;
 				attacking = false;
@@ -895,7 +908,7 @@ public class Entity {
 	// DAMAGE
 	protected void damagePlayer(int attack) {
 		
-		if (!gp.player.invincible && gp.player.alive && !teleporting) {
+		if (!gp.player.invincible && gp.player.alive && !teleporting && !captured) {
 						
 			int damage = attack;
 			
@@ -998,7 +1011,7 @@ public class Entity {
 			}
 		}		
 	}
-	protected void dropItem(Entity droppedItem) { 								
+	protected void dropItem(Entity droppedItem) { 	
 		for (int i = 0; i < gp.obj[1].length; i++) {			
 			if (gp.obj[gp.currentMap][i] == null) {
 				gp.obj[gp.currentMap][i] = droppedItem;
@@ -1006,7 +1019,7 @@ public class Entity {
 				gp.obj[gp.currentMap][i].worldY = worldY;
 				break;
 			}
-		}
+		}		
 	}
 	
 	// KNOCKBACK
@@ -1097,12 +1110,13 @@ public class Entity {
 		}
 	}
 	public void addProjectile(Projectile projectile) {
+		
 		for (int i = 0; i < gp.projectile[1].length; i++) {
 			if (gp.projectile[gp.currentMap][i] == null) {
 				gp.projectile[gp.currentMap][i] = projectile;
 				break;
 			}
-		}
+		}		
 	}
 	
 	// ITEM RETRIEVAL
@@ -1115,7 +1129,7 @@ public class Entity {
 		if (newItem.stackable) {	
 			
 			// ITEM FOUND IN INVENTORY
-			int index = searchInventory(newItem.name);
+			int index = searchInventory(newItem.name, inventory);
 			if (index != -1) {		
 				
 				// NOT TOO MANY
@@ -1145,22 +1159,11 @@ public class Entity {
 		
 		return false;
 	}
-	public int searchInventory(String item) {
+	public int searchInventory(String item, ArrayList<Entity> tInventory) {
 		
 		int itemIndex = -1;		
-		for (int i = 0; i < inventory.size(); i++) {
-			if (inventory.get(i).name.equals(item)) {
-				itemIndex = i;
-				break;
-			}
-		}		
-		return itemIndex;
-	}
-	public int searchItemInventory(String item) {
-		
-		int itemIndex = -1;		
-		for (int i = 0; i < gp.player.inventory_item.size(); i++) {
-			if (gp.player.inventory_item.get(i).name.equals(item)) {
+		for (int i = 0; i < tInventory.size(); i++) {
+			if (tInventory.get(i).name.equals(item)) {
 				itemIndex = i;
 				break;
 			}

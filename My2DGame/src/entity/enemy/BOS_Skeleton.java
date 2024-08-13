@@ -19,6 +19,7 @@ public class BOS_Skeleton extends Entity {
 		type = type_boss;
 		name = emyName;
 		sleep = true;	
+		capturable = true;
 						
 		int hbScale = gp.tileSize * 5;
 		hitbox = new Rectangle(gp.tileSize, gp.tileSize, hbScale - (gp.tileSize * 2), hbScale - gp.tileSize); 
@@ -95,52 +96,58 @@ public class BOS_Skeleton extends Entity {
 	
 	public void setAction() {
 		
-		if (currentBossPhase == 1) {
-			
-			// DON'T CHASE PLAYER WHEN ATTACKING
-			if (getTileDistance(gp.player) < 10 && !attacking) {			
-				approachPlayer(60);
+		if (!captured) {
+			if (currentBossPhase == 1) {
+				
+				// DON'T CHASE PLAYER WHEN ATTACKING
+				if (getTileDistance(gp.player) < 10 && !attacking) {			
+					approachPlayer(60);
+				}
+				else if (!attacking) {			
+					getDirection(60);
+				}						
+				
+				if (!attacking) {
+					if (isAttacking(60, gp.tileSize * 7, gp.tileSize * 5))
+						attacking = true;
+					speed = defaultSpeed;
+				}
+				// STOP MOVEMENT WHEN ATTACKING
+				else
+					speed = 0;
+				
+				if (life < maxLife / 2) {
+					currentBossPhase = 2;
+					attack++; 
+					defaultSpeed++; 
+					speed = defaultSpeed;
+					getImage();				
+				}
 			}
-			else if (!attacking) {			
-				getDirection(60);
-			}						
-			
-			if (!attacking) {
-				if (isAttacking(60, gp.tileSize * 7, gp.tileSize * 5))
-					attacking = true;
-				speed = defaultSpeed;
-			}
-			// STOP MOVEMENT WHEN ATTACKING
-			else
-				speed = 0;
-			
-			if (life < maxLife / 2) {
-				currentBossPhase = 2;
-				attack++; 
-				defaultSpeed++; 
-				speed = defaultSpeed;
-				getImage();				
-			}
+			else if (currentBossPhase == 2) {
+				
+				// DON'T CHASE PLAYER WHEN ATTACKING
+				if (getTileDistance(gp.player) < 10 && !attacking) {			
+					approachPlayer(45);
+				}
+				else if (!attacking) {			
+					getDirection(45);
+				}			
+				
+				if (!attacking) {
+					if (isAttacking(45, gp.tileSize * 7, gp.tileSize * 5)) 
+						attacking = true;
+					speed = defaultSpeed;
+				}
+				// STOP MOVEMENT WHEN ATTACKING
+				else
+					speed = 0;
+			}	
 		}
-		else if (currentBossPhase == 2) {
+		else {
 			
-			// DON'T CHASE PLAYER WHEN ATTACKING
-			if (getTileDistance(gp.player) < 10 && !attacking) {			
-				approachPlayer(45);
-			}
-			else if (!attacking) {			
-				getDirection(45);
-			}			
-			
-			if (!attacking) {
-				if (isAttacking(45, gp.tileSize * 7, gp.tileSize * 5)) 
-					attacking = true;
-				speed = defaultSpeed;
-			}
-			// STOP MOVEMENT WHEN ATTACKING
-			else
-				speed = 0;
-		}	
+		}
+				
 	}
 	
 	public void damageReaction() {

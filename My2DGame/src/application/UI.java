@@ -426,6 +426,9 @@ public class UI {
 				drawKeys();			
 			}
 		}		
+		else if (gp.gameState == gp.inventoryState) {
+			drawRupees();
+		}
 		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
@@ -1619,33 +1622,20 @@ public class UI {
 	}
 	private void trade_buy() {
 		
+		drawRupees();
+		
+		// DRAW PLAYER INVENTORY
 		inventory_collectables(gp.player, false);
 		inventory_collectables(npc, true);
-		
-		// DRAW PRICE WINDOW
-		int x = gp.tileSize * 2;
-		int y = gp.tileSize * 9;
-		int width = gp.tileSize * 6;
-		int height = gp.tileSize * 2;
-		drawSubWindow(x, y, width, height);
-		g2.drawString("[" + KeyEvent.getKeyText(gp.button_pause) +"] Back", x+24, y+60);
-		
-		// DRAW PLAYER RUPEE WINDOW
-		x = gp.tileSize * 9;
-		y = gp.tileSize * 9;
-		width = gp.tileSize * 6;
-		height = gp.tileSize * 2;
-		drawSubWindow(x, y, width, height);
-		g2.drawString("Rupees: " + gp.player.rupees, x+24, y+60);
-		
+				
 		// DRAW PRICE WINDOW
 		int itemIndex = getItemIndexOnSlot(npcSlotCol, npcSlotRow);
 		if (itemIndex < npc.inventory.size()) {
 
-			x = (int) (gp.tileSize * 5.7);
-			y = (int) (gp.tileSize * 5.5);
-			width = (int) (gp.tileSize * 2.3);
-			height = gp.tileSize;
+			int x = (int) (gp.tileSize * 5.7);
+			int y = (int) (gp.tileSize * 5.5);
+			int width = (int) (gp.tileSize * 2.3);
+			int height = gp.tileSize;
 			drawSubWindow(x, y, width, height);
 			g2.drawImage(rupee, x+5, y+8, 32, 32, null);
 			
@@ -1696,34 +1686,20 @@ public class UI {
 	}
 	private void trade_sell() {
 		
+		drawRupees();
+		
 		// DRAW PLAYER INVENTORY
 		inventory_collectables(gp.player, true);
 		inventory_collectables(npc, false);
-				
-		// DRAW PRICE WINDOW
-		int x = gp.tileSize * 2;
-		int y = gp.tileSize * 9;
-		int width = gp.tileSize * 6;
-		int height = gp.tileSize * 2;
-		drawSubWindow(x, y, width, height);
-		g2.drawString("[" + KeyEvent.getKeyText(gp.button_pause) +"] Back", x+24, y+60);
-		
-		// DRAW PLAYER RUPEE WINDOW
-		x = gp.tileSize * 9;
-		y = gp.tileSize * 9;
-		width = gp.tileSize * 6;
-		height = gp.tileSize * 2;
-		drawSubWindow(x, y, width, height);
-		g2.drawString("Rupees: " + gp.player.rupees, x+24, y+60);
-		
+						
 		// DRAW PRICE WINDOW
 		int itemIndex = getItemIndexOnSlot(playerSlotCol, playerSlotRow);
 		if (itemIndex < gp.player.inventory.size()) {
 
-			x = (int) (gp.tileSize * 12.7);
-			y = (int) (gp.tileSize * 5.5);
-			width = (int) (gp.tileSize * 2.3);
-			height = gp.tileSize;
+			int x = (int) (gp.tileSize * 12.7);
+			int y = (int) (gp.tileSize * 5.5);
+			int width = (int) (gp.tileSize * 2.3);
+			int height = gp.tileSize;
 			drawSubWindow(x, y, width, height);
 			g2.drawImage(rupee, x+5, y+8, 32, 32, null);
 			

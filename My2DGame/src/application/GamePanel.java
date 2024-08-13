@@ -412,23 +412,18 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 	}
-	public void openDoor(int worldX, int worldY, String objName) {
+	public void openDoor(int dWorldX, int dWorldY, String dName) {
 		
-		worldX *= tileSize;
-		worldY *= tileSize;
+		dWorldX *= tileSize;
+		dWorldY *= tileSize;
 		
-		for (int i = 0; i < obj[1].length; i++) {					
-			if (obj[currentMap][i] != null && 
-					obj[currentMap][i].name != null &&
-					obj[currentMap][i].name.equals(objName)) {
-								
-				if (obj[currentMap][i].worldX == worldX &&
-						obj[currentMap][i].worldY == worldY &&
-						!obj[currentMap][i].opening) {
-					obj[currentMap][i].playSE();
-					obj[currentMap][i].opening = true;
-				}						
-			}		
+		for (Entity d : obj[currentMap]) {
+			if (d != null && d.name != null && d.name.equals(dName) && !d.opening) {
+				if (d.worldX == dWorldX && d.worldY == dWorldY) {
+					d.playSE();
+					d.opening = true;
+				}
+			}
 		}
 	}
 	
@@ -463,7 +458,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		if (gameState == titleState) playMusic(0);
 		else if (reset || nextArea != currentArea) {							
-			if (currentMap == 0) playMusic(2);
+			if (currentMap == 0) playMusic(1);
 			else if (currentMap == 1) playMusic(3);
 			else if (currentMap == 2) playMusic(4);
 			else if (currentMap == 3) playMusic(4);
@@ -486,11 +481,8 @@ public class GamePanel extends JPanel implements Runnable {
 			tileM.draw(g2);	
 			
 			// DRAW iTILES (NOT GRABBED OR THROWN)
-			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null && 
-						(!iTile[currentMap][i].grabbed || !iTile[currentMap][i].thrown)) {
-					iTile[currentMap][i].draw(g2);						
-				}					
+			for (InteractiveTile t : iTile[currentMap]) {
+				if (t != null && (!t.grabbed || !t.thrown)) t.draw(g2);
 			}
 						
 			// ALWAYS DRAW DIVING PLAYER FIRST
@@ -502,12 +494,9 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity n : npc[currentMap]) { if (n != null) entityList.add(n); }
 			for (Entity e : enemy[currentMap]) { if (e != null) entityList.add(e); }
 			for (Entity o : obj[currentMap]) { if (o != null) entityList.add(o); }
-			for (Entity ot : obj_i[currentMap]) { if (ot != null) entityList.add(ot); }
-			for (Entity p : particleList) { if (p != null) entityList.add(p); }			
-			for (int i = 0; i < projectile[1].length; i++) {
-				if (projectile[currentMap][i] != null && !projectile[currentMap][i].grabbed)
-					entityList.add(projectile[currentMap][i]);
-			}
+			for (Entity oi : obj_i[currentMap]) { if (oi != null) entityList.add(oi); }
+			for (Entity pa : particleList) { if (pa != null) entityList.add(pa); }						
+			for (Entity pr : projectile[currentMap]) { if (pr != null && !pr.grabbed) entityList.add(pr); }
 			
 			// SORT DRAW ORDER BY Y COORD
 			Collections.sort(entityList, new Comparator<Entity>() {
@@ -521,19 +510,13 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity e : entityList) { e.draw(g2); }
 			
 			// DRAW GRABBED iTILES
-			for (int i = 0; i < iTile[1].length; i++) {
-				if (iTile[currentMap][i] != null) {
-					if (iTile[currentMap][i].grabbed) {
-						iTile[currentMap][i].draw(g2);	
-					}
-				}					
+			for (InteractiveTile i : iTile[currentMap]) {
+				if (i != null && i.grabbed) i.draw(g2);
 			}
 			
 			// DRAW GRABBED OR THROWN PROJECTILES
-			for (int i = 0; i < projectile[1].length; i++) {
-				if (projectile[currentMap][i] != null && 
-						(projectile[currentMap][i].grabbed || projectile[currentMap][i].thrown))
-					projectile[currentMap][i].draw(g2);
+			for (Entity p : projectile[currentMap]) {
+				if (p != null && (p.grabbed || p.thrown)) p.draw(g2);				
 			}
 			
 			// EMPTY ENTITY LIST

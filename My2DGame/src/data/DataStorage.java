@@ -16,6 +16,7 @@ public class DataStorage implements Serializable {
 	
 	// DAY STATE
 	int dayState, dayCounter, bloodMoonCounter;
+	float filterAlpha;
 	
 	// PROGRESS
 	boolean enemy_room_1_1, enemy_room_1_2, enemy_room_1_3, puzzle_1_1, bossDefeated_1_1, bossDefeated_1_2;

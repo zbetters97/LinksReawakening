@@ -37,7 +37,8 @@ public class SaveLoad {
 			// DAY DATA
 			ds.dayState = gp.eManager.lighting.dayState;
 			ds.dayCounter = gp.eManager.lighting.dayCounter;
-			ds.bloodMoonCounter = gp.eManager.lighting.bloodMoonCounter;
+			ds.filterAlpha = gp.eManager.lighting.filterAlpha;
+			ds.bloodMoonCounter = gp.eManager.lighting.bloodMoonCounter;			
 			
 			// PROGRESS DATA
 			ds.enemy_room_1_1 = Progress.enemy_room_1_1;
@@ -79,10 +80,8 @@ public class SaveLoad {
 			
 			// PLAYER EQUIPMENT			
 			ds.canSwim = gp.player.canSwim;
-			if (gp.player.currentWeapon != null) 
-				ds.sword = gp.player.currentWeapon.name;
-			if (gp.player.currentShield != null)
-				ds.shield = gp.player.currentShield.name;	
+			if (gp.player.currentWeapon != null) ds.sword = gp.player.currentWeapon.name;
+			if (gp.player.currentShield != null) ds.shield = gp.player.currentShield.name;	
 			
 			// NPCs
 			ds.npcNames = new String[gp.maxMap][gp.npc[1].length];
@@ -230,6 +229,7 @@ public class SaveLoad {
 			// DAY DATA
 			gp.eManager.lighting.dayState = ds.dayState;
 			gp.eManager.lighting.dayCounter = ds.dayCounter;
+			gp.eManager.lighting.filterAlpha = ds.filterAlpha;
 			gp.eManager.lighting.bloodMoonCounter = ds.bloodMoonCounter;
 			
 			// PROGRESS DATA
@@ -277,6 +277,7 @@ public class SaveLoad {
 			gp.player.currentShield = gp.eGenerator.getItem(ds.shield);
 			gp.player.getAttack();
 			gp.player.getAttackImage();
+			gp.player.getSpinImage();
 			gp.player.canSwim = ds.canSwim;		
 						
 			for (int mapNum = 0; mapNum < gp.maxMap; mapNum++) {
@@ -393,6 +394,7 @@ public class SaveLoad {
 					}					
 				}			
 			}
+			
 			ois.close();
 		}
 		catch(Exception e) { 
@@ -406,9 +408,11 @@ public class SaveLoad {
 			File f = new File(saveFiles[saveSlot]);
 			
 			if (f.exists()) { 
+				
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(saveFiles[saveSlot])));				
 				DataStorage ds = (DataStorage)ois.readObject();			
 				ois.close();
+				
 				return ds.toString();			
 			}
 		}

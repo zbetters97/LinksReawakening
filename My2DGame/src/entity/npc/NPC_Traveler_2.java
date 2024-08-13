@@ -34,7 +34,7 @@ public class NPC_Traveler_2 extends NPC_Traveler_Template {
 	
 	public void speak() {	
 		
-		if (gp.player.searchItemInventory(ITM_Shovel.itmName) != -1)
+		if (gp.player.searchInventory(ITM_Shovel.itmName, gp.player.inventory_item) != -1)
 			dialogueSet = 3;
 		
 		if (!onPath) {

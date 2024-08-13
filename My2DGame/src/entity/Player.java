@@ -55,6 +55,7 @@ public class Player extends Entity {
 		swimLeft1, swimLeft2, swimRight1, swimRight2,	
 		
 		aimUp1, aimUp2, aimDown1, aimDown2, aimLeft1, aimLeft2, aimRight1, aimRight2,
+		spinUp1, spinUp2, spinDown1, spinDown2, spinLeft1, spinLeft2, spinRight1, spinRight2,
 		
 		rollUp1, rollUp2, rollUp3, rollUp4, rollDown1, rollDown2, rollDown3, rollDown4,
 		rollLeft1, rollLeft2, rollLeft3, rollLeft4, rollRight1, rollRight2, rollRight3, rollRight4,
@@ -107,9 +108,11 @@ public class Player extends Entity {
 	public void setDefaultValues() {
 			
 		action = Action.IDLE;	
-		grabbedObject = null;
+		
 		onGround = true;		
 		canSwim = false;		
+		grabbedObject = null;
+		capturedTarget = null;
 		
 		speed = 3; defaultSpeed = speed;
 		runSpeed = 6; animationSpeed = 10;
@@ -133,6 +136,7 @@ public class Player extends Entity {
 		setDialogue();
 
 		getAttackImage();
+		getSpinImage();
 		getGuardImage();
 		getAimImage();
 		getRollImage();
@@ -148,8 +152,8 @@ public class Player extends Entity {
 	}	
 	public void setDefaultPosition() {	
 
-		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 12;		
+		worldX = gp.tileSize * 36;
+		worldY = gp.tileSize * 36;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
 /*
@@ -161,7 +165,7 @@ public class Player extends Entity {
 		*/
 	}
 	public void setDefaultItems() {		
-/*
+
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));		
 		inventory_item.add(new ITM_Bomb(gp));
@@ -170,7 +174,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));		
 		inventory_item.add(new ITM_Rod(gp));
-*/
+
 	}
 	public void restoreStatus() {
 		alive = true;		
@@ -193,7 +197,7 @@ public class Player extends Entity {
 		attacking = false;
 		spinning = false;
 		lockon = false;
-		attackCanceled = false;		
+		attackCanceled = false;	
 		
 		attackNum = 1; attackCounter = 0; 
 		actionLockCounter = 0;	
@@ -266,13 +270,35 @@ public class Player extends Entity {
 		}
 		else {
 			attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);		
+			attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);					
 			attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);		
+			attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);				
 			attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);		
+			attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);				
 			attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
 			attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
+		}
+	}
+	public void getSpinImage() {
+		if (currentWeapon != null && currentWeapon.name.equals(EQP_Sword_Old.eqpName)) {	
+			spinUp1 = setup("/player/boy_spin_old_up_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinUp2 = setup("/player/boy_spin_old_up_2", gp.tileSize, gp.tileSize * 2);		
+			spinDown1 = setup("/player/boy_spin_old_down_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinDown2 = setup("/player/boy_spin_old_down_2", gp.tileSize, gp.tileSize * 2);		
+			spinLeft1 = setup("/player/boy_spin_old_left_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinLeft2 = setup("/player/boy_spin_old_left_2", gp.tileSize * 2, gp.tileSize);		
+			spinRight1 = setup("/player/boy_spin_old_right_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinRight2 = setup("/player/boy_spin_old_right_2", gp.tileSize * 2, gp.tileSize);	
+		}
+		else {
+			spinUp1 = setup("/player/boy_spin_up_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinUp2 = setup("/player/boy_spin_up_2", gp.tileSize, gp.tileSize * 2);		
+			spinDown1 = setup("/player/boy_spin_down_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinDown2 = setup("/player/boy_spin_down_2", gp.tileSize, gp.tileSize * 2);		
+			spinLeft1 = setup("/player/boy_spin_left_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinLeft2 = setup("/player/boy_spin_left_2", gp.tileSize * 2, gp.tileSize);		
+			spinRight1 = setup("/player/boy_spin_right_1", gp.tileSize * 2, gp.tileSize * 2); 
+			spinRight2 = setup("/player/boy_spin_right_2", gp.tileSize * 2, gp.tileSize);	
 		}
 	}
 	public void getGuardImage() {			
@@ -385,23 +411,23 @@ public class Player extends Entity {
 	}
 	public void getRodImage() {		
 		rodUp1 = setup("/player/boy_rod_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodUp2 = setup("/player/boy_rod_up_2", gp.tileSize, gp.tileSize * 2);		
+		rodUp2 = setup("/player/boy_rod_up_2", gp.tileSize, gp.tileSize * 2);			
 		rodDown1 = setup("/player/boy_rod_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodDown2 = setup("/player/boy_rod_down_2", gp.tileSize, gp.tileSize * 2);		
+		rodDown2 = setup("/player/boy_rod_down_2", gp.tileSize, gp.tileSize * 2);			
 		rodLeft1 = setup("/player/boy_rod_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodLeft2 = setup("/player/boy_rod_left_2", gp.tileSize * 2, gp.tileSize);		
+		rodLeft2 = setup("/player/boy_rod_left_2", gp.tileSize * 2, gp.tileSize);			
 		rodRight1 = setup("/player/boy_rod_right_1", gp.tileSize * 2, gp.tileSize * 2); 
 		rodRight2 = setup("/player/boy_rod_right_2", gp.tileSize * 2, gp.tileSize);		
 	}	
 	public void getMiscImage() {		
+		sit = setup("/player/boy_sit"); 
+		sing = setup("/npc/girl_sing_1");		
+		itemGet_1 = setup("/player/boy_item_get_1");
+		itemGet_2 = setup("/player/boy_item_get_2");
 		drown = setup("/player/boy_drown");
 		fall1 = setup("/player/boy_fall_1");
 		fall2 = setup("/player/boy_fall_2");
 		fall3 = setup("/player/boy_fall_3");		
-		itemGet_1 = setup("/player/boy_item_get_1");
-		itemGet_2 = setup("/player/boy_item_get_2");
-		sit = setup("/player/boy_sit"); 
-		sing = setup("/npc/girl_sing_1");		
 		die1 = setup("/player/boy_die_1"); 
 		die2 = setup("/player/boy_die_2");
 		die3 = setup("/player/boy_die_3"); 
@@ -421,13 +447,11 @@ public class Player extends Entity {
 		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 		
-		if (gp.keyH.ztargetPressed) { lockon = !lockon; gp.keyH.ztargetPressed = false; }		
-		if (lockon && action != Action.AIMING) { zTarget(); }
-		else {
-			if (lockedTarget != null) {
-				lockedTarget.locked = false;
-				lockedTarget = null;
-			}
+		if (gp.keyH.ztargetPressed) { zTarget(); gp.keyH.ztargetPressed = false; }	
+		if (lockon) { lockedOn(); }
+		else if (lockedTarget != null) {
+			lockedTarget.locked = false;
+			lockedTarget = null;
 		}		
 		
 		if (getAction()) { manageValues(); checkDeath(); return; }
@@ -440,9 +464,7 @@ public class Player extends Entity {
 			if (gp.keyH.grabPressed) { grabbing(); }			
 			if (gp.keyH.itemPressed) { useItem(); }					
 			if (gp.keyH.tabPressed) { cycleItems(); }
-			if (gp.keyH.guardPressed) { 
-				action = Action.GUARDING; 
-			}	
+			if (gp.keyH.guardPressed) { action = Action.GUARDING; }	
 		}	
 		
 		if ((gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) && 
@@ -562,7 +584,8 @@ public class Player extends Entity {
 			else {
 				speed = defaultSpeed; 
 				animationSpeed = 10; 
-			}					
+			}		
+			
 			spriteCounter = 0;
 		}	
 	}
@@ -620,7 +643,7 @@ public class Player extends Entity {
 		pickUpProjectile(projectileIndex);
 	}
 	public void interactNPC(int i) {		
-		if (i != -1) {
+		if (i != -1 && action != Action.CHARGING) {
 			if (gp.keyH.actionPressed) {
 				resetValues();
 				attackCanceled = true;
@@ -631,7 +654,7 @@ public class Player extends Entity {
 	public void interactObject(int i) {
 		
 		// OBJECT INTERACTION
-		if (i != -1) {
+		if (i != -1 && action == Action.IDLE) {
 			
 			if (gp.obj_i[gp.currentMap][i].type == type_obstacle) {				
 				if (!gp.obj_i[gp.currentMap][i].moving) {	
@@ -692,6 +715,7 @@ public class Player extends Entity {
 				currentWeapon = item;
 				attack = getAttack();
 				getAttackImage();
+				getSpinImage();
 			}			
 			else if (item.name.equals(EQP_Flippers.eqpName)) {
 				canSwim = true;
@@ -757,10 +781,21 @@ public class Player extends Entity {
 				playSpin();
 				playSpinSwordSE();
 				
+				// ROTATE COUNTER CLOCKWISE
+				switch (direction) {
+					case "up":
+					case "upleft": 
+					case "upright": direction = "left"; break;
+					case "right": direction = "up"; break;
+					case "down": 
+					case "downleft": 
+					case "downright": direction = "right"; break;
+					case "left": direction = "down"; break;
+				}		
+				
 				charge = 0;
 				action = Action.IDLE;
 				spinning = true;
-				attackCounter = 0;
 				gp.keyH.actionPressed = false;
 				
 				if (lockedTarget == null) {
@@ -787,15 +822,75 @@ public class Player extends Entity {
 	// Z-TARGETING
 	public void zTarget() {
 		
-		if (action == Action.CHARGING || spinning) return;
+		// FIND NEW TARGET
+		Entity newTarget = findTarget();
 		
-		// FIND TARGET IF NOT ALREADY
-		if (lockedTarget == null) {
-			lockedTarget = findTarget();			
+		// NEW TARGET FOUND
+		if (newTarget != null) {
+			
+			// NO CURRENTLY LOCKED TARGET
+			if (lockedTarget == null) {
+				playZTargetSE();
+				
+				lockedTarget = newTarget;					
+				lockedTarget.locked = true;
+				lockon = true;			
+			}
+			// TARGET ALREADY LOCKED
+			else {				
+				
+				// MOVING BACKWARDS, TURN OFF LOCKON
+				if (direction == getOppositeDirection(lockonDirection)) {
+					lockedTarget.locked = false;
+					lockedTarget = null;
+					lockon = false;
+				}
+				// SWITCH TARGETS
+				else {
+					playZTargetSE();
+					
+					lockedTarget.locked = false;
+					lockedTarget = newTarget;
+					lockon = true;
+				}
+			}		
+		}
+		// NEW TARGET NOT FOUND
+		else if (lockedTarget != null){
+			lockedTarget.locked = false;
+			lockedTarget = null;
+			lockon = false;
+		}
+	}	
+	public Entity findTarget() {
+		
+		Entity target = null;			
+		int currentDistance = 6;		
+				
+		for (Entity e : gp.enemy[gp.currentMap]) {
+			
+			if (e != null && e != lockedTarget && e.type != type_boss && !e.teleporting) {
+				
+				// ENEMY WITHIN 6 TILES
+				int enemyDistance = getTileDistance(e);
+				if (enemyDistance < currentDistance) {
+					currentDistance = enemyDistance;
+					target = e;	
+				}
+			}
 		}
 		
-		// TARGET FOUND WITHIN 10 TILES
-		if (lockedTarget != null && getTileDistance(lockedTarget) < 10) {
+		return target;
+	}
+	public void lockedOn() {
+		
+		// DOES NOT APPLY DURING SPECIFIC ACTIONS
+		if (spinning || action == Action.AIMING || action == Action.CHARGING) return;
+		
+		// TARGET FOUND WITHIN 8 TILES
+		if (lockedTarget != null && getTileDistance(lockedTarget) <= 8) {
+			
+			// TARGET ALIVE
 			if (lockedTarget.alive) {
 				lockedTarget.locked = true;
 				direction = findTargetDirection(lockedTarget);
@@ -808,63 +903,51 @@ public class Player extends Entity {
 				lockon = false;
 			}
 		}
-		// NO TARGET FOUND, TURN OFF LOCKON
-		else 
-			lockon = false;				
-	}	
-	public Entity findTarget() {
-		
-		Entity target = null;
-		
-		int currentDistance = 6;
-		
-		for (int i = 0; i < gp.enemy[1].length; i++) {
-			
-			if (gp.enemy[gp.currentMap][i] != null && gp.enemy[gp.currentMap][i].type != type_boss &&
-					!gp.enemy[gp.currentMap][i].teleporting) {
-				int enemyDistance = getTileDistance(gp.enemy[gp.currentMap][i]);
-				if (enemyDistance < currentDistance) {
-					currentDistance = enemyDistance;
-					target = gp.enemy[gp.currentMap][i];
-				}
-			}
+		// NO TARGET FOUND WITHIN 8 TILES, TURN OFF LOCKON
+		else {
+			lockon = false;		
 		}
-		if (target != null) {
-			playZTargetSE();
-		}
-		
-		return target;
-	}	
+	}
 	public String findTargetDirection(Entity target) {
 		
-		String eDirection = direction;
+		String zDirection = direction;
 		
+		// PLAYER X/Y
 		int px = (worldX + (hitbox.width / 2)) / gp.tileSize;
 		int py = (worldY + (hitbox.width / 2)) / gp.tileSize;
 		
+		// TARGET X/Y
 		int ex = (target.worldX + (target.hitbox.width / 2)) / gp.tileSize;
 		int ey = (target.worldY + (target.hitbox.height / 2)) / gp.tileSize;	
 		
-		if (py == ey && px == ex) 
-			eDirection = direction;		
-		else if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey)) 
-			eDirection = "up";
-		else if (py > ey && px-ex > Math.abs(py-ey)) 
-			eDirection = "left";
-		else if (py > ey && px-ex < Math.abs(py-ey)) 
-			eDirection = "right";
-		else if (py <= ey && Math.abs(px-ex) < Math.abs(py-ey)) 
-			eDirection = "down";
-		else if (py < ey && px-ex > Math.abs(py-ey)) 
-			eDirection = "left";
-		else if (py < ey && px-ex < Math.abs(py-ey)) 
-			eDirection = "right";		
-		else if (py == ey && px > ex) 
-			eDirection = "left";
-		else if (py == ey && px < ex) 
-			eDirection = "right";
+		// P ON SAME TILE AS E
+		if (py == ey && px == ex) zDirection = direction;		
+				
+		// P SOUTH OF E
+		else if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey)) zDirection = "up";		
+		
+		// P SOUTHEAST OF E
+		else if (py > ey && px-ex > Math.abs(py-ey)) zDirection = "left";
+		
+		// P SOUTHWEST OF E
+		else if (py > ey && px-ex < Math.abs(py-ey)) zDirection = "right";
+		
+		// P NORTH OF E
+		else if (py <= ey && Math.abs(px-ex) < Math.abs(py-ey)) zDirection = "down";
+		
+		// P NORTHEAST OF E
+		else if (py < ey && px-ex > Math.abs(py-ey)) zDirection = "left";		
+		
+		// P NORTHWEST OF E
+		else if (py < ey && px-ex < Math.abs(py-ey)) zDirection = "right";				
+		
+		// P EAST OF E
+		else if (py == ey && px > ex) zDirection = "left";		
+		
+		// P WEST OF E
+		else if (py == ey && px < ex) zDirection = "right";
 						
-		return eDirection;
+		return zDirection;
 	}
 	
 	// ENEMY DAMAGE
@@ -1733,13 +1816,15 @@ public class Player extends Entity {
 				case "up":
 				case "upleft":
 				case "upright":	
-					if (attacking) {
+					if (attacking && !spinning) {
 						tempScreenY -= gp.tileSize;
-						if (attackNum == 1) {
-							tempScreenX -= gp.tileSize;
-							image = attackUp1;
-						}
+						if (attackNum == 1) image = attackUp1;
 						else if (attackNum == 2) image = attackUp2;
+					}
+					else if (spinning) {						
+						tempScreenY -= gp.tileSize;
+						if (attackNum == 1) image = spinUp1;
+						else if (attackNum == 2) image = spinUp2;
 					}
 					else {
 						switch (action) {
@@ -1787,10 +1872,7 @@ public class Player extends Entity {
 								break;
 							case SWINGING:
 								tempScreenY -= gp.tileSize;
-								if (rodNum == 1) {
-									tempScreenX -= gp.tileSize;
-									image = rodUp1;
-								}
+								if (rodNum == 1) image = rodUp1;								
 								else if (rodNum == 2) image = rodUp2;	
 								break;
 							case SWIMMING:
@@ -1810,9 +1892,19 @@ public class Player extends Entity {
 				case "down":
 				case "downleft":
 				case "downright":
-					if (attacking) {
-						if (attackNum == 1) image = attackDown1;
+					if (attacking && !spinning) {
+						if (attackNum == 1) {
+							tempScreenX -= gp.tileSize;
+							image = attackDown1;
+						}
 						else if (attackNum == 2) image = attackDown2;	
+					}
+					else if (spinning) {						
+						if (attackNum == 1) {
+							tempScreenX -= gp.tileSize;
+							image = spinDown1;						
+						}
+						else if (attackNum == 2) image = spinDown2;						
 					}
 					else {
 						switch (action) {
@@ -1859,7 +1951,10 @@ public class Player extends Entity {
 								else if (rollNum == 4) image = rollDown4; 
 								break;
 							case SWINGING:
-								if (rodNum == 1) image = rodDown1;
+								if (rodNum == 1) {
+									tempScreenX -= gp.tileSize;
+									image = rodDown1;
+								}
 								else if (rodNum == 2) image = rodDown2;
 								break;
 							case SWIMMING:
@@ -1877,13 +1972,21 @@ public class Player extends Entity {
 					}
 					break;
 				case "left":
-					if (attacking) {
+					if (attacking && !spinning) {
 						tempScreenX -= gp.tileSize;
 						if (attackNum == 1) {
 							tempScreenY -= gp.tileSize;
 							image = attackLeft1;
 						}
 						else if (attackNum == 2) image = attackLeft2;	
+					}
+					else if (spinning) {
+						tempScreenX -= gp.tileSize;
+						if (attackNum == 1) {
+							tempScreenY -= gp.tileSize;
+							image = spinLeft1;						
+						}
+						else if (attackNum == 2) image = spinLeft2;							
 					}
 					else {
 						switch (action) {
@@ -1952,12 +2055,16 @@ public class Player extends Entity {
 					}
 					break;
 				case "right":
-					if (attacking) {
+					if (attacking && !spinning) {
 						if (attackNum == 1) {
 							tempScreenY -= gp.tileSize;
 							image = attackRight1;
 						}
 						else if (attackNum == 2) image = attackRight2;
+					}
+					else if (spinning) {
+						if (attackNum == 1) image = spinRight1;						
+						else if (attackNum == 2) image = spinRight2;
 					}
 					else {
 						switch (action) {

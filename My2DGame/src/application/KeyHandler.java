@@ -12,7 +12,8 @@ public class KeyHandler implements KeyListener {
 	private GamePanel gp;
 	private boolean lock = true;
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, rollPressed, guardPressed, grabPressed, ztargetPressed, itemPressed, tabPressed;
+	public boolean actionPressed, rollPressed, guardPressed, grabPressed, 
+					ztargetPressed, itemPressed, tabPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
