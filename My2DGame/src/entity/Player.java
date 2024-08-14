@@ -40,6 +40,9 @@ public class Player extends Entity {
 	
 	// MISC
 	public String aimDirection;	
+	private int previousGrunt = 0;
+	private int previousHurt = 0;
+	private int previousSwing = 2;
 	
 	// COUNTERS
 	public int damageNum = 1, guardNum = 1, aimNum = 1, rollNum = 1, pullNum = 1, pushNum = 1, 
@@ -62,8 +65,8 @@ public class Player extends Entity {
 		
 		grabUp1, grabUp2, grabUp3, grabDown1, grabDown2, grabDown3, 
 		grabLeft1, grabLeft2, grabLeft3, grabRight1, grabRight2, grabRight3,
-		carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,
-		throwUp1, throwDown1, throwLeft1, throwRight1,
+		carryUp1, carryUp2, carryDown1, carryDown2, carryLeft1, carryLeft2, carryRight1, carryRight2,		
+		throwUp1, throwUp2, throwDown1, throwDown2, throwLeft1, throwLeft2, throwRight1, throwRight2,
 		
 		digUp1, digUp2, digDown1, digDown2, digLeft1, digLeft2, digRight1, digRight2,
 		
@@ -152,8 +155,8 @@ public class Player extends Entity {
 	}	
 	public void setDefaultPosition() {	
 
-		worldX = gp.tileSize * 36;
-		worldY = gp.tileSize * 36;		
+		worldX = gp.tileSize * 37;
+		worldY = gp.tileSize * 24;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
 /*
@@ -374,10 +377,14 @@ public class Player extends Entity {
 		carryRight2 = setup("/player/boy_carry_right_2");		
 	}
 	public void getThrowImage() {
-		throwUp1 = setup("/player/boy_throw_up_1"); 		
-		throwDown1 = setup("/player/boy_throw_down_1"); 	
-		throwLeft1 = setup("/player/boy_throw_left_1"); 	
-		throwRight1 = setup("/player/boy_throw_right_1"); 	
+		throwUp1 = setup("/player/boy_throw_up_1"); 
+		throwUp2 = setup("/player/boy_throw_up_2");			
+		throwDown1 = setup("/player/boy_throw_down_1"); 
+		throwDown2 = setup("/player/boy_throw_down_2");		
+		throwLeft1 = setup("/player/boy_throw_left_1"); 
+		throwLeft2 = setup("/player/boy_throw_left_2");		
+		throwRight1 = setup("/player/boy_throw_right_1"); 
+		throwRight2 = setup("/player/boy_throw_right_2");		
 	}
 	public void getDigImage() {
 		digUp1 = setup("/player/boy_dig_up_1"); 
@@ -613,12 +620,8 @@ public class Player extends Entity {
 		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkPit(this, true);
 		
 		if (diving) {
-			if (collisionOn) {
-				diving = false;
-			}
-			else {
-				return;
-			}
+			if (collisionOn) diving = false;			
+			else return;			
 		}		
 		
 		// CHECK NPC COLLISION
@@ -643,8 +646,8 @@ public class Player extends Entity {
 		pickUpProjectile(projectileIndex);
 	}
 	public void interactNPC(int i) {		
-		if (i != -1 && action != Action.CHARGING) {
-			if (gp.keyH.actionPressed) {
+		if (i != -1) {
+			if (gp.keyH.actionPressed && action != Action.CHARGING) {
 				resetValues();
 				attackCanceled = true;
 				gp.npc[gp.currentMap][i].speak();				
@@ -656,7 +659,7 @@ public class Player extends Entity {
 		// OBJECT INTERACTION
 		if (i != -1 && action == Action.IDLE) {
 			
-			if (gp.obj_i[gp.currentMap][i].type == type_obstacle) {				
+			if (gp.obj_i[gp.currentMap][i].type == type_obstacle_i) {				
 				if (!gp.obj_i[gp.currentMap][i].moving) {	
 					gp.obj_i[gp.currentMap][i].move(direction);	
 				}				
@@ -674,7 +677,8 @@ public class Player extends Entity {
 			}
 			// INTERACTIVE OBSTACLE ITEMS
 			else if (gp.obj[gp.currentMap][i].type == type_obstacle_i) {
-				if (gp.keyH.actionPressed) {
+				if (gp.keyH.actionPressed && action != Action.CHARGING) {
+					attackCanceled = true;
 					gp.obj[gp.currentMap][i].interact();
 				}
 			}
@@ -756,9 +760,9 @@ public class Player extends Entity {
 			return;
 		}			
 		// SWING SWORD IF NOT ALREADY
-		else if (currentWeapon != null && !attackCanceled) {								
-			currentWeapon.playSE();
+		else if (currentWeapon != null && !attacking) {								
 			playGrunt();
+			currentWeapon.playSE();
 			
 			attacking = true;
 			attackCanceled = true;
@@ -811,7 +815,6 @@ public class Player extends Entity {
 			attackNum = 1;
 			attackCounter = 0;				
 			attacking = false;			
-			attackCanceled = false;
 
 			if (lockedTarget == null) {
 				lockon = false;
@@ -910,42 +913,31 @@ public class Player extends Entity {
 	}
 	public String findTargetDirection(Entity target) {
 		
+		// FIND DIRECTION RELATIVE TO TARGET
 		String zDirection = direction;
 		
 		// PLAYER X/Y
-		int px = (worldX + (hitbox.width / 2)) / gp.tileSize;
-		int py = (worldY + (hitbox.width / 2)) / gp.tileSize;
+		int px = (worldX + (gp.tileSize / 2));
+		int py = (worldY + (gp.tileSize / 2));
 		
 		// TARGET X/Y
-		int ex = (target.worldX + (target.hitbox.width / 2)) / gp.tileSize;
-		int ey = (target.worldY + (target.hitbox.height / 2)) / gp.tileSize;	
+		int ex = (target.worldX + (gp.tileSize / 2));
+		int ey = (target.worldY + (gp.tileSize / 2));	
 		
-		// P ON SAME TILE AS E
-		if (py == ey && px == ex) zDirection = direction;		
-				
-		// P SOUTH OF E
-		else if (py >= ey && Math.abs(px-ex) < Math.abs(py-ey)) zDirection = "up";		
-		
-		// P SOUTHEAST OF E
-		else if (py > ey && px-ex > Math.abs(py-ey)) zDirection = "left";
-		
-		// P SOUTHWEST OF E
-		else if (py > ey && px-ex < Math.abs(py-ey)) zDirection = "right";
-		
-		// P NORTH OF E
-		else if (py <= ey && Math.abs(px-ex) < Math.abs(py-ey)) zDirection = "down";
-		
-		// P NORTHEAST OF E
-		else if (py < ey && px-ex > Math.abs(py-ey)) zDirection = "left";		
-		
-		// P NORTHWEST OF E
-		else if (py < ey && px-ex < Math.abs(py-ey)) zDirection = "right";				
-		
-		// P EAST OF E
-		else if (py == ey && px > ex) zDirection = "left";		
-		
-		// P WEST OF E
-		else if (py == ey && px < ex) zDirection = "right";
+		if (py == ey && px == ex) // SAME TILE
+			zDirection = direction;		
+		else if (py > ey && py-ey >= Math.abs(px-ex)) // SOUTH
+			zDirection = "up";		
+		else if (py >= ey && px > ex) // EAST / SOUTHEAST
+			zDirection = "left";
+		else if (py >= ey && ex > px) // WEST / SOUTHWEST
+			zDirection = "right";			
+		else if (ey > py && ey-py >= Math.abs(px-ex)) // NORTH
+			zDirection = "down";				
+		else if (ey > py && px > ex) // EAST / NORTHEAST
+			zDirection = "left";	
+		else if (ey > py && ex > px) // WEST / NORTHWEST
+			zDirection = "right";	
 						
 		return zDirection;
 	}
@@ -1136,7 +1128,6 @@ public class Player extends Entity {
 		else if (rollCounter > 20) {
 			rollNum = 1;
 			rollCounter = 0;
-			attackCanceled = false;
 			action = Action.IDLE;	
 			speed = defaultSpeed;
 		}
@@ -1276,9 +1267,7 @@ public class Player extends Entity {
 		pushCounter++;
 		
 		if (6 >= pushCounter) pushNum = 1;
-		else if (18 >= pushCounter && pushCounter > 8) {
-			pushNum = 2;
-		}
+		else if (18 >= pushCounter && pushCounter > 8) pushNum = 2;
 		else if (pushCounter > 18) {
 			playPushSE();
 			pushNum = 1;
@@ -1322,8 +1311,13 @@ public class Player extends Entity {
 	}
 	public void throwing() {		
 		throwCounter++;		
+		
+		if (6 >= throwCounter) throwNum = 1;
+		else if (throwCounter > 6) throwNum = 2;		
+		
 		if (throwCounter > 30 && gp.gameState == gp.playState) {
 			action = Action.IDLE;
+			throwNum = 1;
 			throwCounter = 0;
 		}
 	}
@@ -1341,7 +1335,6 @@ public class Player extends Entity {
 
 			digNum = 1;
 			digCounter = 0;
-			attackCanceled = false;
 			action = Action.IDLE;			
 		}
 	}
@@ -1366,7 +1359,6 @@ public class Player extends Entity {
 			else {			
 				jumpNum = 1;
 				jumpCounter = 0;
-				attackCanceled = false;
 				action = Action.IDLE;	
 			}
 		}
@@ -1409,7 +1401,6 @@ public class Player extends Entity {
 		else if (jumpCounter >= 70) {
 			jumpNum = 1;
 			jumpCounter = 0;			
-			attackCanceled = false;
 			action = Action.IDLE;
 			gp.gameState = gp.playState;
 		}
@@ -1462,7 +1453,6 @@ public class Player extends Entity {
 		if (rodCounter > currentItem.swingSpeed2) {
 			rodNum = 1;
 			rodCounter = 0;
-			attackCanceled = false;
 			action = Action.IDLE;
 		}
 	}			
@@ -1546,7 +1536,7 @@ public class Player extends Entity {
 			else {
 				gp.projectile[gp.currentMap][i].playSE();
 				projectile.alive = false;
-				generateParticle(projectile);
+				generateRectParticle(projectile);
 			}
 		}
 	}		
@@ -1567,7 +1557,7 @@ public class Player extends Entity {
 				gp.iTile[gp.currentMap][i].life--;
 				gp.iTile[gp.currentMap][i].invincible = true;
 						
-				generateParticle(gp.iTile[gp.currentMap][i]);
+				generateRectParticle(gp.iTile[gp.currentMap][i]);
 				
 				if (gp.iTile[gp.currentMap][i].life == 0) {				
 					gp.iTile[gp.currentMap][i].checkDrop();
@@ -1589,7 +1579,6 @@ public class Player extends Entity {
 			life -= 2;
 			damageNum = 1;
 			damageCounter = 0;			
-			attackCanceled = false;
 			transparent = true;
 			
 			if (action == Action.CARRYING) {
@@ -1609,6 +1598,8 @@ public class Player extends Entity {
 	
 	// CHECKERS
 	public void manageValues() {
+		
+		attackCanceled = false;
 		
 		// ALWAYS MAX LIFE IN DEBUG
 		if (gp.keyH.debug) life = maxLife;
@@ -1693,23 +1684,44 @@ public class Player extends Entity {
 	}
   	
 	// SOUND EFFECTS
-	public void playGrunt() {		
-		int grunt = 1 + (int)(Math.random() * 4);
+	public void playGrunt() {	
+		
+		// CHOOSE NEW GRUNT SE
+		int grunt;		
+		do { grunt = 1 + (int)(Math.random() * 4); }  		
+		while (grunt == previousGrunt);
+		
 		if (grunt == 1) playGruntSE_1();
 		else if (grunt == 2) playGruntSE_2();
 		else if (grunt == 3) playGruntSE_3();
 		else if (grunt == 4) playGruntSE_4();
+		
+		// STORE PLAYED SE
+		previousGrunt = grunt;
 	}
-	public void playHurt() {		
-		int grunt = 1 + (int)(Math.random() * 3);
-		if (grunt == 1) playHurtSE_1();
-		else if (grunt == 2) playHurtSE_2();
-		else if (grunt == 3) playHurtSE_3();
+	public void playHurt() {
+		
+		// CHOOSE NEW HURT SE
+		int hurt;		
+		do { hurt = 1 + (int)(Math.random() * 3); }  		
+		while (hurt == previousHurt);
+		
+		if (hurt == 1) playHurtSE_1();
+		else if (hurt == 2) playHurtSE_2();
+		else if (hurt == 3) playHurtSE_3();
+		
+		// STORE PLAYED SE
+		previousHurt = hurt;
 	}
-	public void playSpin() {
-		int grunt = 1 + (int)(Math.random() * 2);
-		if (grunt == 1) playSpinSE_1();
-		else if (grunt == 2) playSpinSE_2();
+	public void playSpin() {		
+		if (previousSwing == 2) {
+			playSpinSE_1();
+			previousSwing = 1;
+		}
+		else {
+			playSpinSE_2();
+			previousSwing = 2;
+		}
 	}
 	
 	public void playGuardSE() {
@@ -1880,7 +1892,8 @@ public class Player extends Entity {
 								else if (spriteNum == 2) image = swimUp2;
 								break;
 							case THROWING:
-								image = throwUp1;
+								if (throwNum == 1) image = throwUp1;
+								else if (throwNum == 2) image = throwUp2;
 								break;
 							default:
 								if (spriteNum == 1) image = up1;
@@ -1962,7 +1975,8 @@ public class Player extends Entity {
 								else if (spriteNum == 2) image = swimDown2;
 								break;		
 							case THROWING:
-								image = throwDown1;
+								if (throwNum == 1) image = throwDown1;
+								else if (throwNum == 2) image = throwDown2;
 								break;
 							default:
 								if (spriteNum == 1) image = down1;
@@ -2045,7 +2059,8 @@ public class Player extends Entity {
 								else if (spriteNum == 2) image = swimLeft2;
 								break;		
 							case THROWING:						
-								image = throwLeft1;
+								if (throwNum == 1) image = throwLeft1;
+								else if (throwNum == 2) image = throwLeft2;
 								break;
 							default:
 								if (spriteNum == 1) image = left1;
@@ -2122,7 +2137,8 @@ public class Player extends Entity {
 								else if (spriteNum == 2) image = swimRight2;
 								break;		
 							case THROWING:
-								image = throwRight1;
+								if (throwNum == 1) image = throwRight1;
+								else if (throwNum == 2) image = throwRight2;
 								break;
 							default:
 								if (spriteNum == 1) image = right1;

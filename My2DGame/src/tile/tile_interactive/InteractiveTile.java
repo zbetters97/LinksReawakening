@@ -63,7 +63,7 @@ public class InteractiveTile extends Entity {
 				gp.player.damageInteractiveTile(iTileIndex, this);	
 				
 				checkDrop();
-				generateParticle(this);
+				generateRectParticle(this);
 				throwCounter = 0;
 				tTime = 0;
 				alive = false;					

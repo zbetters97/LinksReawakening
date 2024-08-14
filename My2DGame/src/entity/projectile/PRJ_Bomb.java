@@ -71,6 +71,9 @@ public class PRJ_Bomb extends Projectile {
 			throwCounter = 0;
 			tTime = 0;
 			collisionOn = false;
+
+			gp.player.action = Action.IDLE;
+			gp.player.grabbedObject = null;
 			
 			if (alive) {	
 				Entity enemy = getEnemy(this);		
@@ -82,7 +85,7 @@ public class PRJ_Bomb extends Projectile {
 	public void explode() {		
 		gp.playSE(5, 5);
 		
-		generateParticle(this);
+		generateRectParticle(this);
 		
 		// DAMAGE SURROUNDING ENEMIES
 		ArrayList<Entity> enemyIndexes = gp.cChecker.checkExplosion(this, gp.enemy);
@@ -104,7 +107,7 @@ public class PRJ_Bomb extends Projectile {
 		if (iTileIndexes.size() > 0) {
 			for (Integer i : iTileIndexes) {
 				
-				generateParticle(gp.iTile[gp.currentMap][i]);
+				generateRectParticle(gp.iTile[gp.currentMap][i]);
 				
 				if (gp.iTile[gp.currentMap][i].name.equals(IT_Switch.itName) && !gp.iTile[gp.currentMap][i].invincible) {
 					gp.iTile[gp.currentMap][i].invincible = true;

@@ -19,7 +19,7 @@ public class OI_Block_Pushable extends Entity {
 		this.worldX = worldX *= gp.tileSize;
 		this.worldY = worldY *= gp.tileSize;
 		
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = obj_iName;
 		direction = "down";
 		collision = true;

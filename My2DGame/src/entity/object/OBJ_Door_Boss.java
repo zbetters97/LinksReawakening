@@ -13,7 +13,7 @@ public class OBJ_Door_Boss extends Entity {
 		this.worldX = worldX *= gp.tileSize;
 		this.worldY = worldY *= gp.tileSize;
 		
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = objName;
 		direction = "down";
 		collision = true;
@@ -41,7 +41,7 @@ public class OBJ_Door_Boss extends Entity {
 		}
 	}
 	
-	public void interact() {		
+	public void interact() {
 		if (gp.player.boss_key > 0) {
 			playSE();
 			gp.player.boss_key--;

@@ -13,7 +13,7 @@ public class OBJ_Door_Locked extends Entity {
 		this.worldX = worldX *= gp.tileSize;
 		this.worldY = worldY *= gp.tileSize;
 		
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = objName;
 		direction = "down";
 		collision = true;
@@ -72,7 +72,7 @@ public class OBJ_Door_Locked extends Entity {
 				break;
 		}
 		
-		if (respond) {		
+		if (respond) {	
 			if (gp.player.keys > 0) {
 				playSE();
 				gp.player.keys--;

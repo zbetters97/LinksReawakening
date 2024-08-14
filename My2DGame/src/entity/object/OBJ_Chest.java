@@ -54,13 +54,15 @@ public class OBJ_Chest extends Entity {
 		this.loot = loot;
 	}
 	
-	public void interact() {		
+	public void interact() {	
 		if (!opened && gp.player.direction.equals("up")) {	
-			gp.player.attackCanceled = true;
 			playOpenSE();
 			opened = true;	
 			down1 = image2;
 			gp.player.getObject(loot);	
+		}
+		else {
+			gp.player.attackCanceled = false;
 		}
 	}
 	

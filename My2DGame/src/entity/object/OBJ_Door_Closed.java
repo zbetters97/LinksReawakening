@@ -13,7 +13,7 @@ public class OBJ_Door_Closed extends Entity {
 		this.worldX = worldX *= gp.tileSize;
 		this.worldY = worldY *= gp.tileSize;
 					
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = objName;
 		direction = "down";
 		collision = true;

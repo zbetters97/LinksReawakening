@@ -405,7 +405,7 @@ public class Projectile extends Entity {
 					break;
 				case "right": 
 					if (gp.particleList.size() > 0) {
-						if (gp.particleList.get(0).worldX <= gp.player.worldX) {
+						if (gp.particleList.get(0).worldX - gp.tileSize <= gp.player.worldX) {
 							gp.particleList.get(0).alive = false;
 						}
 					}
@@ -525,11 +525,11 @@ public class Projectile extends Entity {
 			
 			life--;
 			
-			// PLAY SOUND AND DRAW CHAIN
-			if (life % 5 == 0) {
-				playSE();
-				generateParticle(this);	
-			}
+			// PLAY SOUND
+			if (life % 10 == 0) playSE();
+			
+			// DRAW CHAIN
+			if (life % 3 == 0) generateRoundParticle(this);			
 		}
 	}
 	

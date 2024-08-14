@@ -466,14 +466,12 @@ public class UI {
 			g2.drawImage(gp.player.currentItem.down1, x, y, gp.tileSize, gp.tileSize, null);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {	
-				String arrowCount = Integer.toString(gp.player.arrows);	
-				drawItemCount(arrowCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
+			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {					
+				drawItemCount(1, x + 35, y + gp.tileSize, Color.BLACK, 27F);					
 			}
 			// DRAW BOMB COUNT
-			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {	
-				String bombCount = Integer.toString(gp.player.bombs);
-				drawItemCount(bombCount, x + 35, y + gp.tileSize, Color.BLACK, 27F);
+			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {					
+				drawItemCount(2, x + 35, y + gp.tileSize, Color.BLACK, 27F);
 			}
 		}	
 	}
@@ -1174,7 +1172,6 @@ public class UI {
 		Entity sword = gp.player.currentWeapon;
 		Entity shield = gp.player.currentShield;	
 		Entity item = gp.player.currentItem;
-		String count = "";
 		
 		// DRAW WINDOW
 		g2.setColor(Color.WHITE);
@@ -1209,14 +1206,12 @@ public class UI {
 			
 			// DRAW ARROW COUNT
 			if (item.name.equals(ITM_Bow.itmName)) {	
-				count = Integer.toString(gp.player.arrows);
-				drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
+				drawItemCount(1, itemX, slotY + gp.tileSize, Color.BLACK, 28F);
 			}
 			// DRAW BOMB COUNT
 			else if (item.name.equals(ITM_Bomb.itmName)) {	
-				count = Integer.toString(gp.player.bombs);
-				drawItemCount(count, itemX, slotY + gp.tileSize, Color.BLACK, 27F);
-			}
+				drawItemCount(2, itemX, slotY + gp.tileSize, Color.BLACK, 28F);
+			}		
 		}
 		
 		// DRAW ZORA FLIPPERS
@@ -1361,14 +1356,12 @@ public class UI {
 			g2.drawImage(gp.player.inventory_item.get(i).down1, slotX, slotY, null);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {					
-				String arrowCount = Integer.toString(gp.player.arrows);				
-				drawItemCount(arrowCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);	
+			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {						
+				drawItemCount(1, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);					
 			}
 			// DRAW BOMB COUNT
-			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {				
-				String bombCount = Integer.toString(gp.player.bombs);
-				drawItemCount(bombCount, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);	
+			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {					
+				drawItemCount(2, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
 			}
 			
 			slotX += slotSize;			
@@ -1411,11 +1404,6 @@ public class UI {
 			}
 		}
 	}
-	private void drawItemCount(String count, int x, int y, Color color, float fontSize) {
-		g2.setColor(color);
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, fontSize));
-		g2.drawString(count, x, y);	
-	}
 	
 	// DIALOGUE	
 	public void drawDialogueScreen(boolean skip) {
@@ -1424,8 +1412,6 @@ public class UI {
 			gp.csManager.scene = gp.csManager.npc;
 			gp.gameState = gp.cutsceneState;
 		}
-		
-		gp.player.attackCanceled = false;
 		
 		int x = gp.tileSize * 2;
 		int y = (gp.screenWidth / 2 ) - gp.tileSize;
@@ -1829,7 +1815,6 @@ public class UI {
 				if (gp.eManager.lighting.bloodMoonCounter < gp.eManager.lighting.bloodMoonMax)
 					gp.eManager.lighting.bloodMoonCounter++;
 				
-				gp.player.attackCanceled = false;
 				gp.gameState = gp.playState;
 			}
 		}
@@ -1974,7 +1959,23 @@ public class UI {
 	}	
 	
 	// MISC
-	// MISC
+	private void drawItemCount(int item, int x, int y, Color color, float fontSize) {
+		
+		String itemCount = "";
+		
+		if (item == 1) {
+			itemCount = Integer.toString(gp.player.arrows);				
+			if (gp.player.arrows == gp.player.maxArrows) color = Color.GREEN;			
+		}
+		else if (item == 2) {
+			itemCount = Integer.toString(gp.player.bombs);				
+			if (gp.player.bombs == gp.player.maxBombs) color = Color.GREEN;		
+		}
+		
+		g2.setColor(color);
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, fontSize));
+		g2.drawString(itemCount, x, y);	
+	}
 	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
 		int itemIndex = slotCol + (slotRow * 5);
 		return itemIndex;

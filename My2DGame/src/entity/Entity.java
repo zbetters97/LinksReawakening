@@ -1259,17 +1259,30 @@ public class Entity {
 	}
 	
 	// PARTICLES
-	public void generateParticle(Entity generator) {
+	public void generateRectParticle(Entity generator) {
 
 		Color color = generator.getParticleColor();
 		int size = generator.getParticleSize();
 		int speed = generator.getParticleSpeed();
 		int maxLife = generator.getParticleMaxLife();
 		
-		Particle p1 = new Particle(gp, generator, color, size, speed, maxLife, -2, -1);
-		Particle p2 = new Particle(gp, generator, color, size, speed, maxLife, -2, 1);
-		Particle p3 = new Particle(gp, generator, color, size, speed, maxLife, 2, -1);
-		Particle p4 = new Particle(gp, generator, color, size, speed, maxLife, 2, 1);
+		Particle_Rect p1 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle_Rect p2 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle_Rect p3 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle_Rect p4 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, 1);
+		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
+	}
+	public void generateRoundParticle(Entity generator) {
+
+		Color color = generator.getParticleColor();
+		int size = generator.getParticleSize();
+		int speed = generator.getParticleSpeed();
+		int maxLife = generator.getParticleMaxLife();
+		
+		Particle_Round p1 = new Particle_Round(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle_Round p2 = new Particle_Round(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle_Round p3 = new Particle_Round(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle_Round p4 = new Particle_Round(gp, generator, color, size, speed, maxLife, 2, 1);
 		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
 	}
 	public Color getParticleColor() {
