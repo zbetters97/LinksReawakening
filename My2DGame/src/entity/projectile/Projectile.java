@@ -69,8 +69,12 @@ public class Projectile extends Entity {
 			int objectIIndex = gp.cChecker.checkObject_I(this, false);		
 			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
 			
-			if (iTileIndex != -1 && gp.iTile[gp.currentMap][iTileIndex].collision) resetValues();
-			gp.player.damageInteractiveTile(iTileIndex, this);			
+			if (iTileIndex != -1 && !gp.iTile[gp.currentMap][iTileIndex].name.contains("Wall")) {								
+				if (gp.iTile[gp.currentMap][iTileIndex].name.contains("Pot")) 
+					resetValues();
+				
+				gp.player.damageInteractiveTile(iTileIndex, this);
+			}			
 			
 			if (objectIIndex != -1) resetValues();		
 			

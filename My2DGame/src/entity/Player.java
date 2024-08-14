@@ -488,7 +488,7 @@ public class Player extends Entity {
 
 		if (action == Action.AIMING) { aiming(); }	
 		else if (action == Action.CARRYING) { if (carrying()) stop = true; }
-		else if (action == Action.CHARGING) { charging(); }
+		else if (action == Action.CHARGING) { chargeSpin(); }
 		else if (action == Action.DIGGING) { digging(); stop = true; }
 		else if (action == Action.GRABBING) { grabbing(); }	
 		else if (action == Action.GUARDING) { guarding(); }
@@ -769,7 +769,9 @@ public class Player extends Entity {
 			spriteCounter = 0;
 		}	
 	}
-	public void charging() {
+	public void chargeSpin() {
+		
+		// CHARGE SWORD WHILE ACTION PRESSED
 		if (gp.keyH.actionPressed) {
 			
 			if (charge < 119) charge += 2;
@@ -778,6 +780,7 @@ public class Player extends Entity {
 			lockonDirection = direction;
 			speed = 2;
 		}
+		// CHARGE RELEASED, MAX POWER
 		else if (charge >= 120) {
 			
 			// RELEASE SPIN ATTACK
@@ -809,13 +812,14 @@ public class Player extends Entity {
 				speed = defaultSpeed;
 			}
 		}
+		// CHARGE RELEASED BEFORE MAX POWER
 		else {		
-			charge = 0;
-			action = Action.IDLE;
+			charge = 0;			
 			attackNum = 1;
 			attackCounter = 0;				
 			attacking = false;			
-
+			action = Action.IDLE;
+			
 			if (lockedTarget == null) {
 				lockon = false;
 			}				
@@ -1116,33 +1120,9 @@ public class Player extends Entity {
 	}	
 
 	// ANIMATIONS	
-	public void rolling() {
-		
-		speed = 5;		
-		
-		rollCounter++;				
-		if (5 >= rollCounter) rollNum = 1;		
-		else if (10 > rollCounter && rollCounter > 5) rollNum = 2;		
-		else if (15 > rollCounter && rollCounter > 10) rollNum = 3;		
-		else if (20 > rollCounter && rollCounter > 15) rollNum = 4;		
-		else if (rollCounter > 20) {
-			rollNum = 1;
-			rollCounter = 0;
-			action = Action.IDLE;	
-			speed = defaultSpeed;
-		}
-	}
-	public void guarding() {
-		
-		if (guardCounter < 15) 
-			guardCounter++; 
-		
-		if (6 >= guardCounter) guardNum = 1;		
-		else guardNum = 2;
-	}
 	public void aiming() {
 		
-		if (60 >= charge) aimNum = 1;
+		if (5 >= charge) aimNum = 1;
 		else aimNum = 2;
 		
 		switch (direction) {			
@@ -1166,8 +1146,61 @@ public class Player extends Entity {
 			currentItem.setCharge(this);
 		}
 		else {
-			lockon = false;
 			currentItem.use(this);
+			if (lockedTarget == null) {
+				lockon = false;	
+			}
+		}
+	}
+	public boolean carrying() {
+		if (gp.keyH.grabPressed) {
+			playThrowSE();
+			playGruntSE_1();
+			
+			action = Action.THROWING;
+			grabbedObject.thrown = true;
+			grabbedObject.grabbed = false;
+			grabbedObject.tWorldY = worldY;
+			
+			switch (direction) {
+				case "up":
+				case "upleft":
+				case "upright": grabbedObject.direction = "up"; break;
+				case "down":
+				case "downleft":
+				case "downright": grabbedObject.direction = "down"; break;
+				default: grabbedObject.direction = direction; break;
+			}
+			
+			return true;
+		}
+		else if (gp.keyH.itemPressed) {
+			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+				
+				action = Action.THROWING;
+				grabbedObject.grabbed = false;
+				grabbedObject.worldX = worldX;
+				grabbedObject.worldY = worldY;
+			}
+		}
+		
+		return false;
+	}
+	public void digging() {
+		
+		digCounter++;
+				
+		if (12 >= digCounter) digNum = 1;		
+		else if (24 > digCounter && digCounter > 12) digNum = 2;		
+		else if (digCounter > 24) {
+			
+			// CHECK INTERACTIVE TILE
+			int iTileIndex = gp.cChecker.checkDigging();
+			damageInteractiveTile(iTileIndex, currentItem);
+
+			digNum = 1;
+			digCounter = 0;
+			action = Action.IDLE;			
 		}
 	}
 	public void grabbing() {
@@ -1188,7 +1221,7 @@ public class Player extends Entity {
 		}
 		
 		action = Action.IDLE;
-	}
+	}	
 	public void grabEntity(Entity entity) {
 		
 		action = Action.GRABBING;
@@ -1247,6 +1280,39 @@ public class Player extends Entity {
 				break;
 		}
 	}
+	public void guarding() {
+		
+		if (guardCounter < 15) 
+			guardCounter++; 
+		
+		if (6 >= guardCounter) guardNum = 1;		
+		else guardNum = 2;
+	}
+	public void jumping() {
+		
+		jumpCounter++;
+				
+		if (6 >= jumpCounter) jumpNum = 1; 
+		else if (18 > jumpCounter && 12 >= jumpCounter) jumpNum = 2;		
+		else if (27 > jumpCounter && jumpCounter > 12) jumpNum = 3;	
+		else if (jumpCounter >= 28) {	
+			
+			if (action == Action.SOARING) {		
+				
+				if (jumpCounter == 30) {
+					currentItem.playSE();
+				}
+				
+				jumpNum = 4;
+				soaring();
+			}
+			else {			
+				jumpNum = 1;
+				jumpCounter = 0;
+				action = Action.IDLE;	
+			}
+		}
+	}
 	public void pulling(Entity entity) {
 		pullCounter++;
 		
@@ -1275,39 +1341,21 @@ public class Player extends Entity {
 			action = Action.IDLE;
 		}
 	}
-	public boolean carrying() {
-		if (gp.keyH.grabPressed) {
-			playThrowSE();
-			playGruntSE_1();
-			
-			action = Action.THROWING;
-			grabbedObject.thrown = true;
-			grabbedObject.grabbed = false;
-			grabbedObject.tWorldY = worldY;
-			
-			switch (direction) {
-				case "up":
-				case "upleft":
-				case "upright": grabbedObject.direction = "up"; break;
-				case "down":
-				case "downleft":
-				case "downright": grabbedObject.direction = "down"; break;
-				default: grabbedObject.direction = direction; break;
-			}
-			
-			return true;
-		}
-		else if (gp.keyH.itemPressed) {
-			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
-				
-				action = Action.THROWING;
-				grabbedObject.grabbed = false;
-				grabbedObject.worldX = worldX;
-				grabbedObject.worldY = worldY;
-			}
-		}
+	public void rolling() {
 		
-		return false;
+		speed = 5;		
+		
+		rollCounter++;				
+		if (5 >= rollCounter) rollNum = 1;		
+		else if (10 > rollCounter && rollCounter > 5) rollNum = 2;		
+		else if (15 > rollCounter && rollCounter > 10) rollNum = 3;		
+		else if (20 > rollCounter && rollCounter > 15) rollNum = 4;		
+		else if (rollCounter > 20) {
+			rollNum = 1;
+			rollCounter = 0;
+			action = Action.IDLE;	
+			speed = defaultSpeed;
+		}
 	}
 	public void throwing() {		
 		throwCounter++;		
@@ -1319,48 +1367,6 @@ public class Player extends Entity {
 			action = Action.IDLE;
 			throwNum = 1;
 			throwCounter = 0;
-		}
-	}
-	public void digging() {
-		
-		digCounter++;
-				
-		if (12 >= digCounter) digNum = 1;		
-		else if (24 > digCounter && digCounter > 12) digNum = 2;		
-		else if (digCounter > 24) {
-			
-			// CHECK INTERACTIVE TILE
-			int iTileIndex = gp.cChecker.checkDigging();
-			damageInteractiveTile(iTileIndex, currentItem);
-
-			digNum = 1;
-			digCounter = 0;
-			action = Action.IDLE;			
-		}
-	}
-	public void jumping() {
-		
-		jumpCounter++;
-				
-		if (6 >= jumpCounter) jumpNum = 1; 
-		else if (18 > jumpCounter && 12 >= jumpCounter) jumpNum = 2;		
-		else if (27 > jumpCounter && jumpCounter > 12) jumpNum = 3;	
-		else if (jumpCounter >= 28) {	
-			
-			if (action == Action.SOARING) {		
-				
-				if (jumpCounter == 30) {
-					currentItem.playSE();
-				}
-				
-				jumpNum = 4;
-				soaring();
-			}
-			else {			
-				jumpNum = 1;
-				jumpCounter = 0;
-				action = Action.IDLE;	
-			}
 		}
 	}
 	public void soaring() {
@@ -1458,6 +1464,35 @@ public class Player extends Entity {
 	}			
 	
 	// DAMAGE
+	public void takingDamage() {
+		
+		damageCounter++;
+				
+		if (6 >= damageCounter) damageNum = 1; 
+		else if (18 > damageCounter && 12 >= damageCounter) damageNum = 2;		
+		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
+		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
+		else if (damageCounter >= 80) {
+			
+			life -= 2;
+			damageNum = 1;
+			damageCounter = 0;			
+			transparent = true;
+			
+			if (action == Action.CARRYING) {
+				grabbedObject.alive = false;				
+			}
+			action = Action.IDLE;
+			
+			// MOVE PLAYER TO SAFE SPOT
+			worldX = safeWorldX;
+			worldY = safeWorldY;
+			safeWorldX = 0;
+			safeWorldY = 0;
+			
+			gp.gameState = gp.playState;
+		}		
+	}		
 	public void damageEnemy(Entity target, Entity attacker, int attack, int knockbackPower) {
 				
 		if (target != null) {
@@ -1566,35 +1601,6 @@ public class Player extends Entity {
 			}
 		}
 	}
-	public void takingDamage() {
-		
-		damageCounter++;
-				
-		if (6 >= damageCounter) damageNum = 1; 
-		else if (18 > damageCounter && 12 >= damageCounter) damageNum = 2;		
-		else if (24 > damageCounter && damageCounter > 12) damageNum = 3;	
-		else if (60 > damageCounter && damageCounter >= 24) damageNum = 4;		
-		else if (damageCounter >= 80) {
-			
-			life -= 2;
-			damageNum = 1;
-			damageCounter = 0;			
-			transparent = true;
-			
-			if (action == Action.CARRYING) {
-				grabbedObject.alive = false;				
-			}
-			action = Action.IDLE;
-			
-			// MOVE PLAYER TO SAFE SPOT
-			worldX = safeWorldX;
-			worldY = safeWorldY;
-			safeWorldX = 0;
-			safeWorldY = 0;
-			
-			gp.gameState = gp.playState;
-		}		
-	}		
 	
 	// CHECKERS
 	public void manageValues() {
