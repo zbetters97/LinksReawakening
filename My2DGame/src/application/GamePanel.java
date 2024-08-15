@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 
@@ -78,6 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public String[] mapFiles = { "worldmap.txt", "indoor01.txt", "dungeon_01_01.txt", "dungeon_01_02.txt" };
 	public final int maxMap = mapFiles.length;
 	public int currentMap = 0;
+	private HashMap<Integer, String> mapNames;
 	
 	// FULL SCREEN SETTINGS
 	public boolean fullScreenOn = false;
@@ -112,11 +114,12 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// AREA STATES
 	public int currentArea;
-	public int nextArea;
+	public int nextArea;	
 	public final int outside = 1;
 	public final int house = 2;
 	public final int shop = 3;
 	public final int dungeon = 4;
+	
 	public boolean bossBattleOn = false;
 	
 	// PLAYER / ENTITY / ENEMY / OBJECT
@@ -155,8 +158,8 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setFocusable(true); // GamePanel in focus to receive input
 	}
 	
-	protected void setupGame() {			
-		
+	protected void setupGame() {	
+						
  		gameState = playState;	
 		currentArea = outside;
 		currentMap = 0;
@@ -170,6 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
 		map.loadWorldMap();
 		
 		setupMusic(false);
+		setupAreaNames();
 
 		eManager.setup();
 		
@@ -185,8 +189,7 @@ public class GamePanel extends JPanel implements Runnable {
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		g2 = (Graphics2D)tempScreen.getGraphics();
 		
-		if (fullScreenOn)
-			setFullScreen();
+		if (fullScreenOn) setFullScreen();
 	}
 		
 	private void setFullScreen() {
@@ -343,17 +346,26 @@ public class GamePanel extends JPanel implements Runnable {
 	}	
 	
 	public void changeArea() {
-	
+					
 		if (nextArea != currentArea) {
 			stopMusic();			
 			setupMusic(false);
 		}		
-		
-		removeCollectables();
+				
+		removeCollectables();		
 		player.resetValues();
+		
 		tileM.loadMap();
-		map.loadWorldMap();
+		map.loadWorldMap();		
+		
+		if (nextArea != currentArea) {
+			stopMusic();			
+			setupMusic(false);
+			setAreaTitle();
+		}	
+		
 		currentArea = nextArea;
+		
 		aSetter.setInteractiveObjects();
 		aSetter.setInteractiveTiles(false);
 	}
@@ -464,6 +476,25 @@ public class GamePanel extends JPanel implements Runnable {
 			else if (currentMap == 3) playMusic(4);
 		}
 	}	
+	public void setupAreaNames() {
+		
+		// GIVE EACH MAP A NAME
+		mapNames = new HashMap<Integer, String>();		
+		mapNames.put(0,"Hyrule Field");
+		mapNames.put(1, "NULL");
+		mapNames.put(2, "Dungeon 1");		
+		mapNames.put(3, "NULL");
+	}
+	
+	public void setAreaTitle() {
+		
+		// MAP HAS NAME
+		if (!mapNames.get(currentMap).equals("NULL")) {
+			ui.mapName = mapNames.get(currentMap);
+			ui.mapNameCounter = 240;		
+			ui.mapNameAlpha = 0;
+		}
+	}
 	
 	private void drawToTempScreen() {
 		

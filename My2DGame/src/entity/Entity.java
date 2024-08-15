@@ -131,6 +131,7 @@ public class Entity {
 	public boolean attackCanceled = false;
 	public int swingSpeed1;
 	public int swingSpeed2;	
+	public int swingSpeed3;
 	
 	// SPIN ATTACK
 	public boolean spinning = false;
@@ -693,8 +694,8 @@ public class Entity {
 			int currentWorldX = worldX;
 			int currentWorldY = worldY;				
 			
-			// ENEMY ATTACKING
-			if ((type == type_enemy || type == type_boss) && !captured) {
+			// ENEMY NOT CAPTURED
+			if (!captured) {
 								
 				// ADJUST X/Y 
 				switch (direction) {
@@ -723,50 +724,6 @@ public class Entity {
 				if (gp.cChecker.checkPlayer(this)) 
 					damagePlayer(attack);				
 			}
-			// PLAYER ATTACKING
-			else {				
-				
-				// ADJUST X/Y 
-				switch (direction) {
-					case "up": 						
-					case "upleft":				
-					case "upright":
-						worldY -= attackbox.height + hitbox.y; 
-						hitbox.height = attackbox.height;
-						break; 
-					case "down": 
-					case "downleft":
-					case "downright": 
-						worldY += attackbox.height - hitbox.y; 
-						hitbox.height = attackbox.height;
-						break;				
-					case "left": 
-						worldX -= attackbox.width; 
-						hitbox.width = attackbox.width;
-						break;					
-					case "right": 
-						worldX += attackbox.width - hitbox.y; 
-						hitbox.width = attackbox.width;
-						break;
-				}	
-				
-				// CHECK IF ATTACK LANDS ON ENEMY
-				Entity enemy = getEnemy(this);		
-				if (enemy != null) {				
-					if (currentWeapon == null) 			
-						gp.player.damageEnemy(enemy, this, attack, 0);
-					else
-						gp.player.damageEnemy(enemy, this, attack, currentWeapon.knockbackPower);
-				}
-				
-				// CHECK INTERACTIVE TILE
-				int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-				gp.player.damageInteractiveTile(iTileIndex, this);				
-				
-				// CHECK IF ATTACK LANDS ON PROJECTILE
-				int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-				gp.player.damageProjectile(projectileIndex);				
-			}
 						
 			// RESTORE HITBOX			
 			worldX = currentWorldX;
@@ -775,135 +732,15 @@ public class Entity {
 			hitbox.height = hitboxDefaultHeight;
 		}
 		
-		if (attackCounter > swingSpeed2) {
+		if (attackCounter > swingSpeed2) {			
 			
-			if (this == gp.player && currentWeapon != null) { 
-				
-				// CHARGE SPIN ATTACK
-				if (gp.keyH.actionPressed) {
-					currentWeapon.playChargeSE();
-					action = Action.CHARGING;
-					attackCounter = 0;	
-				}
-				// RESET IMAGE/VALUES
-				else {
-					attackNum = 1;
-					attackCounter = 0;				
-					attacking = false;
-					attackCanceled = false;
-					gp.keyH.actionPressed = false;
-				}
-			}			
 			// RESET IMAGE/VALUES
-			else {
-				attackNum = 1;
-				attackCounter = 0;				
-				attacking = false;
-				attackCanceled = false;
-			}
+			attackNum = 1;
+			attackCounter = 0;				
+			attacking = false;
+			attackCanceled = false;
 		}
 	}		
-	protected void spinAttacking() {
-		
-		attackCounter++;
-		
-		// ATTACK IMAGE 1
-		if (2 >= attackCounter) {			
-			attackNum = 1;
-		}		
-		
-		// ATTACK IMAGE 2
-		else if (5 >= attackCounter && attackCounter > 2) {
-			attackNum = 2;
-									
-			// SAVE HITBOX
-			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			
-			// ADJUST X/Y AND HITBOX
-			// SWING DETECTION AS FOLLOWS (P = PLAYER):
-			/* L U U
-			 * L P R
-			 * D D R */
-			switch (direction) {
-				case "up": 						
-				case "upleft":				
-				case "upright":
-					worldY -= attackbox.height + hitbox.y; 
-					hitbox.height = attackbox.height;
-					hitbox.width *= 2; 
-					break; 
-				case "down": 
-				case "downleft":
-				case "downright": 					
-					worldX -= attackbox.width; 
-					worldY += attackbox.height - hitbox.y; 
-					hitbox.height = attackbox.height;
-					hitbox.width *= 2; 
-					break;				
-				case "left": 
-					worldX -= attackbox.width; 
-					worldY -= attackbox.height; 
-					hitbox.width = attackbox.width;
-					hitbox.height *= 2;  
-					break;					
-				case "right": 
-					worldX += attackbox.width - hitbox.y; 
-					hitbox.width = attackbox.width;
-					hitbox.height *= 2;  
-					break;
-			}	
-							
-			// CHECK IF ATTACK LANDS ON ENEMY
-			Entity enemy = getEnemy(this);		
-			if (enemy != null) {			
-				int damage = attack++;
-				gp.player.damageEnemy(enemy, this, damage, currentWeapon.knockbackPower);
-			}
-			
-			// CHECK INTERACTIVE TILE
-			int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
-			gp.player.damageInteractiveTile(iTileIndex, this);				
-			
-			// CHECK IF ATTACK LANDS ON PROJECTILE
-			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-			gp.player.damageProjectile(projectileIndex);			
-						
-			// RESET X/Y AND HITBOX
-			worldX = currentWorldX;
-			worldY = currentWorldY;
-			hitbox.width = hitboxDefaultWidth;
-			hitbox.height = hitboxDefaultHeight;			
-		}
-		else if (attackCounter > 5) {
-			
-			attackNum = 1;
-			attackCounter = 0;
-			
-			// ROTATE PLAYER CLOCKWISE
-			if (spinNum != 3) {
-				switch (direction) {
-					case "up":
-					case "upleft": 
-					case "upright": direction = "left"; break;
-					case "right": direction = "up"; break;
-					case "down": 
-					case "downleft": 
-					case "downright": direction = "right"; break;
-					case "left": direction = "down"; break;
-				}		
-			}
-			
-			// REPEAT 4 TIMES
-			spinNum++;
-			if (spinNum == 4) {
-				spinNum = 0;
-				spinning = false;
-				attacking = false;
-				attackCanceled = false;				
-			}
-		}
-	}
 	
 	// DAMAGE
 	protected void damagePlayer(int attack) {

@@ -17,7 +17,8 @@ public class EQP_Sword_Old extends Entity {
 		knockbackPower = 0;
 		
 		swingSpeed1 = 4;
-		swingSpeed2 = 13;
+		swingSpeed2 = 7;
+		swingSpeed3 = 15;
 		
 		attackbox.width = 44;
 		attackbox.height = 42;

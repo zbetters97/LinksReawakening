@@ -20,11 +20,12 @@ public class ITM_Rod extends Entity {
 				+ " at enemies!\nWhen an enemy is controlled, press " + KeyEvent.getKeyText(gp.button_item)
 				+ " again to release control!";
 		
-		swingSpeed1 = 6;
-		swingSpeed2 = 15;
+		swingSpeed1 = 4;
+		swingSpeed2 = 8;
+		swingSpeed3 = 16;
 		
-		attackbox.width = 36;
-		attackbox.height = 36;
+		attackbox.width = 44;
+		attackbox.height = 42;
 		
 		projectile = new PRJ_Orb(gp);
 	}

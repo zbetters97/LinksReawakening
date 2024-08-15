@@ -42,6 +42,11 @@ public class UI {
 	public int rupeeCount = 0;
 	private int rCounter = 0;
 	
+	// AREA TITLE
+	public String mapName = "";
+	public int mapNameAlpha = 0;
+	public int mapNameCounter = 0;
+	
 	// OPTIONS MEU
 	public int subState = 0;
 		
@@ -430,6 +435,12 @@ public class UI {
 			drawRupees();
 		}
 		
+		// DRAW NEXT AREA TITLE
+		if (mapNameCounter > 0) {
+			drawMapName();
+			mapNameCounter--;
+		}
+		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
 			g2.setColor(Color.WHITE);
@@ -438,7 +449,7 @@ public class UI {
 			y = gp.tileSize * 11;						
 			g2.drawString(hint, x, y);
 		}
-		
+						
 		// DEBUG HUD
 		if (gp.keyH.debug) {				
 			drawDebug();
@@ -449,17 +460,18 @@ public class UI {
 		int x = gp.tileSize * 14;
 		int y = gp.tileSize / 2;
 		
-		// DRAW ITEM BOX
-		g2.setColor(new Color(240,190,90));
-		g2.fillRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);		
-		g2.setColor(Color.WHITE);
+		// DRAW ITEM CIRCLE
+		g2.setColor(new Color(240,190,90,235));
+		g2.fillOval(x - 15, y - 15, gp.tileSize + 30, gp.tileSize + 30);	
+		
+		g2.setColor(new Color(217,217,217,235));
 		g2.setStroke(new BasicStroke(3));
-		g2.drawRoundRect(x - 10, y - 10, gp.tileSize + 20, gp.tileSize + 20, 35, 35);	
+		g2.drawOval(x - 15, y - 15, gp.tileSize + 30, gp.tileSize + 30);	
 		
 		// DRAW ITEM BUTTON
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 25F));
 		g2.setColor(Color.BLACK);
-		g2.drawString(KeyEvent.getKeyText(gp.button_item), x-2, y+10);
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
+		g2.drawString(KeyEvent.getKeyText(gp.button_item), x-2, y+13);
 		
 		if (gp.player.currentItem != null) {	
 						
@@ -467,11 +479,11 @@ public class UI {
 			
 			// DRAW ARROW COUNT
 			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {					
-				drawItemCount(1, x + 35, y + gp.tileSize, Color.BLACK, 27F);					
+				drawItemCount(1, x + 35, y, Color.BLACK, 27F);					
 			}
 			// DRAW BOMB COUNT
 			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {					
-				drawItemCount(2, x + 35, y + gp.tileSize, Color.BLACK, 27F);
+				drawItemCount(2, x + 35, y, Color.BLACK, 27F);
 			}
 		}	
 	}
@@ -627,6 +639,28 @@ public class UI {
 			
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
+	}
+	private void drawMapName() {		
+		
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 75F));
+		
+		int x = getXforCenteredText(mapName);
+		int y = gp.tileSize * 5;
+		
+		g2.setColor(new Color(0,0,0,mapNameAlpha));
+		g2.drawString(mapName, x, y+5);
+		
+		g2.setColor(new Color(255,255,255,mapNameAlpha));
+		g2.drawString(mapName, x, y);
+		
+	    if (mapNameCounter >= 60) {
+	    	mapNameAlpha += 5; 
+			if (mapNameAlpha > 255) mapNameAlpha = 255;	
+	    } 
+	    else {
+	    	mapNameAlpha -= 5; 
+			if (0 > mapNameAlpha) mapNameAlpha = 0;	
+	    }
 	}
 	private void drawDebug() {
 		
@@ -1206,11 +1240,11 @@ public class UI {
 			
 			// DRAW ARROW COUNT
 			if (item.name.equals(ITM_Bow.itmName)) {	
-				drawItemCount(1, itemX, slotY + gp.tileSize, Color.BLACK, 28F);
+				drawItemCount(1, itemX, slotY, Color.BLACK, 28F);
 			}
 			// DRAW BOMB COUNT
 			else if (item.name.equals(ITM_Bomb.itmName)) {	
-				drawItemCount(2, itemX, slotY + gp.tileSize, Color.BLACK, 28F);
+				drawItemCount(2, itemX, slotY, Color.BLACK, 28F);
 			}		
 		}
 		
@@ -1349,7 +1383,7 @@ public class UI {
 			
 			// EQUIPPED CURSOR
 			if (gp.player.inventory_item.get(i) == gp.player.currentItem) {				
-				g2.setColor(new Color(240,190,90));
+				g2.setColor(new Color(217,217,217));
 				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
 			}	
 			
@@ -1357,11 +1391,11 @@ public class UI {
 			
 			// DRAW ARROW COUNT
 			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {						
-				drawItemCount(1, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);					
+				drawItemCount(1, slotX + 25, slotY, Color.WHITE, 24F);					
 			}
 			// DRAW BOMB COUNT
 			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {					
-				drawItemCount(2, slotX + 25, slotY + gp.tileSize, Color.WHITE, 24F);
+				drawItemCount(2, slotX + 25, slotY, Color.WHITE, 24F);
 			}
 			
 			slotX += slotSize;			
@@ -1963,18 +1997,24 @@ public class UI {
 		
 		String itemCount = "";
 		
+		y += gp.tileSize - 2;
+		
 		if (item == 1) {
 			itemCount = Integer.toString(gp.player.arrows);				
-			if (gp.player.arrows == gp.player.maxArrows) color = Color.GREEN;			
+			if (gp.player.arrows == gp.player.maxArrows) color = new Color(20,190,10);			
 		}
 		else if (item == 2) {
 			itemCount = Integer.toString(gp.player.bombs);				
-			if (gp.player.bombs == gp.player.maxBombs) color = Color.GREEN;		
+			if (gp.player.bombs == gp.player.maxBombs) color = new Color(20,190,10);		
 		}
 		
-		g2.setColor(color);
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, fontSize));
-		g2.drawString(itemCount, x, y);	
+		
+		g2.setColor(Color.BLACK);
+		g2.drawString(itemCount, x, y+1);
+		
+		g2.setColor(color);
+		g2.drawString(itemCount, x, y);
 	}
 	public int getItemIndexOnSlot(int slotCol, int slotRow) {		
 		int itemIndex = slotCol + (slotRow * 5);

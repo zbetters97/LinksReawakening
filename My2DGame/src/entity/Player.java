@@ -73,9 +73,12 @@ public class Player extends Entity {
 		jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
 		jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3,
 		soarUp1, soarDown1, soarLeft1, soarRight1,
-		rodUp1, rodUp2, rodDown1, rodDown2, rodLeft1, rodLeft2, rodRight1, rodRight2,
+		
+		rodUp1, rodUp2, rodUp3, rodDown1, rodDown2, rodDown3, 
+		rodLeft1, rodLeft2, rodLeft3, rodRight1, rodRight2, rodRight3,
 								
-		titleScreen, sit, sing, itemGet_1, itemGet_2, drown, fall1, fall2, fall3, die1, die2, die3, die4, die5;
+		titleScreen, sit, sing, itemGet_1, itemGet_2, drown, 
+		fall1, fall2, fall3, die1, die2, die3, die4, die5;
 	
 /** END PLAYER VARIABLES **/		
 	
@@ -155,8 +158,8 @@ public class Player extends Entity {
 	}	
 	public void setDefaultPosition() {	
 
-		worldX = gp.tileSize * 37;
-		worldY = gp.tileSize * 24;		
+		worldX = gp.tileSize * 12;
+		worldY = gp.tileSize * 13;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
 /*
@@ -245,6 +248,7 @@ public class Player extends Entity {
 			attackbox = currentWeapon.attackbox;
 			swingSpeed1 = currentWeapon.swingSpeed1;
 			swingSpeed2 = currentWeapon.swingSpeed2;
+			swingSpeed3 = currentWeapon.swingSpeed3;
 			return currentWeapon.attackValue;
 		}
 	}
@@ -262,24 +266,32 @@ public class Player extends Entity {
 	}		
 	public void getAttackImage() {				
 		if (currentWeapon != null && currentWeapon.name.equals(EQP_Sword_Old.eqpName)) {	
-			attackUp1 = setup("/player/boy_attack_old_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackUp2 = setup("/player/boy_attack_old_up_2", gp.tileSize, gp.tileSize * 2);		
-			attackDown1 = setup("/player/boy_attack_old_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackDown2 = setup("/player/boy_attack_old_down_2", gp.tileSize, gp.tileSize * 2);		
-			attackLeft1 = setup("/player/boy_attack_old_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackLeft2 = setup("/player/boy_attack_old_left_2", gp.tileSize * 2, gp.tileSize);		
-			attackRight1 = setup("/player/boy_attack_old_right_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackRight2 = setup("/player/boy_attack_old_right_2", gp.tileSize * 2, gp.tileSize);		
+			attackUp1 = setup("/player/boy_attack_kokiri_up_1", gp.tileSize * 2, gp.tileSize); 
+			attackUp2 = setup("/player/boy_attack_kokiri_up_2", gp.tileSize * 2, gp.tileSize * 2);
+			attackUp3 = setup("/player/boy_attack_kokiri_up_3", gp.tileSize, gp.tileSize * 2);
+			attackDown1 = setup("/player/boy_attack_kokiri_down_1", gp.tileSize * 2, gp.tileSize); 
+			attackDown2 = setup("/player/boy_attack_kokiri_down_2", gp.tileSize * 2, gp.tileSize * 2);
+			attackDown3 = setup("/player/boy_attack_kokiri_down_3", gp.tileSize, gp.tileSize * 2);
+			attackLeft1 = setup("/player/boy_attack_kokiri_left_1", gp.tileSize, gp.tileSize * 2); 
+			attackLeft2 = setup("/player/boy_attack_kokiri_left_2", gp.tileSize * 2, gp.tileSize * 2);		
+			attackLeft3 = setup("/player/boy_attack_kokiri_left_3", gp.tileSize * 2, gp.tileSize);		
+			attackRight1 = setup("/player/boy_attack_kokiri_right_1", gp.tileSize, gp.tileSize * 2); 
+			attackRight2 = setup("/player/boy_attack_kokiri_right_2", gp.tileSize * 2, gp.tileSize * 2);	
+			attackRight3 = setup("/player/boy_attack_kokiri_right_3", gp.tileSize * 2, gp.tileSize);	
 		}
 		else {
-			attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);					
-			attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);				
-			attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);				
-			attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize * 2); 
-			attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);		
+			attackUp1 = setup("/player/boy_attack_master_up_1", gp.tileSize * 2, gp.tileSize); 
+			attackUp2 = setup("/player/boy_attack_master_up_2", gp.tileSize * 2, gp.tileSize * 2);
+			attackUp3 = setup("/player/boy_attack_master_up_3", gp.tileSize, gp.tileSize * 2);
+			attackDown1 = setup("/player/boy_attack_master_down_1", gp.tileSize * 2, gp.tileSize); 
+			attackDown2 = setup("/player/boy_attack_master_down_2", gp.tileSize * 2, gp.tileSize * 2);
+			attackDown3 = setup("/player/boy_attack_master_down_3", gp.tileSize, gp.tileSize * 2);
+			attackLeft1 = setup("/player/boy_attack_master_left_1", gp.tileSize, gp.tileSize * 2); 
+			attackLeft2 = setup("/player/boy_attack_master_left_2", gp.tileSize * 2, gp.tileSize * 2);		
+			attackLeft3 = setup("/player/boy_attack_master_left_3", gp.tileSize * 2, gp.tileSize);		
+			attackRight1 = setup("/player/boy_attack_master_right_1", gp.tileSize, gp.tileSize * 2); 
+			attackRight2 = setup("/player/boy_attack_master_right_2", gp.tileSize * 2, gp.tileSize * 2);	
+			attackRight3 = setup("/player/boy_attack_master_right_3", gp.tileSize * 2, gp.tileSize);	
 		}
 	}
 	public void getSpinImage() {
@@ -417,14 +429,18 @@ public class Player extends Entity {
 		soarRight1 = setup("/player/boy_soar_right_1");		
 	}
 	public void getRodImage() {		
-		rodUp1 = setup("/player/boy_rod_up_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodUp2 = setup("/player/boy_rod_up_2", gp.tileSize, gp.tileSize * 2);			
-		rodDown1 = setup("/player/boy_rod_down_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodDown2 = setup("/player/boy_rod_down_2", gp.tileSize, gp.tileSize * 2);			
-		rodLeft1 = setup("/player/boy_rod_left_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodLeft2 = setup("/player/boy_rod_left_2", gp.tileSize * 2, gp.tileSize);			
-		rodRight1 = setup("/player/boy_rod_right_1", gp.tileSize * 2, gp.tileSize * 2); 
-		rodRight2 = setup("/player/boy_rod_right_2", gp.tileSize * 2, gp.tileSize);		
+		rodUp1 = setup("/player/boy_rod_up_1", gp.tileSize * 2, gp.tileSize); 
+		rodUp2 = setup("/player/boy_rod_up_2", gp.tileSize * 2, gp.tileSize * 2); 
+		rodUp3 = setup("/player/boy_rod_up_3", gp.tileSize, gp.tileSize * 2);			
+		rodDown1 = setup("/player/boy_rod_down_1", gp.tileSize * 2, gp.tileSize); 
+		rodDown2 = setup("/player/boy_rod_down_2", gp.tileSize * 2, gp.tileSize * 2); 
+		rodDown3 = setup("/player/boy_rod_down_3", gp.tileSize, gp.tileSize * 2);			
+		rodLeft1 = setup("/player/boy_rod_left_1", gp.tileSize, gp.tileSize * 2); 
+		rodLeft2 = setup("/player/boy_rod_left_2", gp.tileSize * 2, gp.tileSize * 2); 
+		rodLeft3 = setup("/player/boy_rod_left_3", gp.tileSize * 2, gp.tileSize);			
+		rodRight1 = setup("/player/boy_rod_right_1", gp.tileSize, gp.tileSize * 2); 
+		rodRight2 = setup("/player/boy_rod_right_2", gp.tileSize * 2, gp.tileSize * 2); 
+		rodRight3 = setup("/player/boy_rod_right_3", gp.tileSize * 2, gp.tileSize);		
 	}	
 	public void getMiscImage() {		
 		sit = setup("/player/boy_sit"); 
@@ -769,6 +785,95 @@ public class Player extends Entity {
 			spriteCounter = 0;
 		}	
 	}
+	public void attacking() {
+		
+		attackCounter++;
+				
+		// ATTACK IMAGE 1
+		if (swingSpeed1 >= attackCounter) {			
+			attackNum = 1;
+			if (swingSpeed1 == attackCounter)
+				playAttackSE();
+		}		
+		// ATTACK IMAGE 2
+		else if (swingSpeed2 >= attackCounter && attackCounter > swingSpeed1) {
+			attackNum = 2;
+		}
+		// ATTACK IMAGE 3
+		else if (swingSpeed3 >= attackCounter && attackCounter > swingSpeed2) {
+			
+			attackNum = 3;
+			
+			// SAVE X/Y
+			int currentWorldX = worldX;
+			int currentWorldY = worldY;				
+							
+			// ADJUST X/Y 
+			switch (direction) {
+				case "up": 						
+				case "upleft":				
+				case "upright":
+					worldY -= attackbox.height + hitbox.y; 
+					hitbox.height = attackbox.height;
+					break; 
+				case "down": 
+				case "downleft":
+				case "downright": 
+					worldY += attackbox.height - hitbox.y; 
+					hitbox.height = attackbox.height;
+					break;				
+				case "left": 
+					worldX -= attackbox.width; 
+					hitbox.width = attackbox.width;
+					break;					
+				case "right": 
+					worldX += attackbox.width - hitbox.y; 
+					hitbox.width = attackbox.width;
+					break;
+			}	
+			
+			// CHECK IF ATTACK LANDS ON ENEMY
+			Entity enemy = getEnemy(this);		
+			if (enemy != null) {				
+				if (currentWeapon == null) 			
+					gp.player.damageEnemy(enemy, this, attack, 0);
+				else
+					gp.player.damageEnemy(enemy, this, attack, currentWeapon.knockbackPower);
+			}
+			
+			// CHECK INTERACTIVE TILE
+			int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
+			gp.player.damageInteractiveTile(iTileIndex, this);				
+			
+			// CHECK IF ATTACK LANDS ON PROJECTILE
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			gp.player.damageProjectile(projectileIndex);				
+			
+						
+			// RESTORE HITBOX			
+			worldX = currentWorldX;
+			worldY = currentWorldY;
+			hitbox.width = hitboxDefaultWidth;
+			hitbox.height = hitboxDefaultHeight;
+		}
+		else if (attackCounter > swingSpeed3) {
+			
+			// CHARGE SPIN ATTACK
+			if (gp.keyH.actionPressed) {
+				currentWeapon.playChargeSE();
+				action = Action.CHARGING;
+				attackCounter = 0;	
+			}
+			// RESET IMAGE/VALUES
+			else {
+				attackNum = 1;
+				attackCounter = 0;				
+				attacking = false;
+				attackCanceled = false;
+				gp.keyH.actionPressed = false;
+			}
+		}				
+	}		
 	public void chargeSpin() {
 		
 		// CHARGE SWORD WHILE ACTION PRESSED
@@ -823,6 +928,107 @@ public class Player extends Entity {
 			if (lockedTarget == null) {
 				lockon = false;
 			}				
+		}
+	}
+	public void spinAttacking() {
+		
+		attackCounter++;
+		
+		// ATTACK IMAGE 1
+		if (2 >= attackCounter) {			
+			attackNum = 1;
+		}		
+		
+		// ATTACK IMAGE 2
+		else if (5 >= attackCounter && attackCounter > 2) {
+			attackNum = 2;
+									
+			// SAVE HITBOX
+			int currentWorldX = worldX;
+			int currentWorldY = worldY;
+			
+			// ADJUST X/Y AND HITBOX
+			// SWING DETECTION AS FOLLOWS (P = PLAYER):
+			/* L U U
+			 * L P R
+			 * D D R */
+			switch (direction) {
+				case "up": 						
+				case "upleft":				
+				case "upright":
+					worldY -= attackbox.height + hitbox.y; 
+					hitbox.height = attackbox.height;
+					hitbox.width *= 2; 
+					break; 
+				case "down": 
+				case "downleft":
+				case "downright": 					
+					worldX -= attackbox.width; 
+					worldY += attackbox.height - hitbox.y; 
+					hitbox.height = attackbox.height;
+					hitbox.width *= 2; 
+					break;				
+				case "left": 
+					worldX -= attackbox.width; 
+					worldY -= attackbox.height; 
+					hitbox.width = attackbox.width;
+					hitbox.height *= 2;  
+					break;					
+				case "right": 
+					worldX += attackbox.width - hitbox.y; 
+					hitbox.width = attackbox.width;
+					hitbox.height *= 2;  
+					break;
+			}	
+							
+			// CHECK IF ATTACK LANDS ON ENEMY
+			Entity enemy = getEnemy(this);		
+			if (enemy != null) {			
+				int damage = attack++;
+				gp.player.damageEnemy(enemy, this, damage, currentWeapon.knockbackPower);
+			}
+			
+			// CHECK INTERACTIVE TILE
+			int iTileIndex = gp.cChecker.checkEntity(gp.player, gp.iTile);
+			gp.player.damageInteractiveTile(iTileIndex, this);				
+			
+			// CHECK IF ATTACK LANDS ON PROJECTILE
+			int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+			gp.player.damageProjectile(projectileIndex);			
+						
+			// RESET X/Y AND HITBOX
+			worldX = currentWorldX;
+			worldY = currentWorldY;
+			hitbox.width = hitboxDefaultWidth;
+			hitbox.height = hitboxDefaultHeight;			
+		}
+		else if (attackCounter > 5) {
+			
+			attackNum = 1;
+			attackCounter = 0;
+			
+			// ROTATE PLAYER CLOCKWISE
+			if (spinNum != 3) {
+				switch (direction) {
+					case "up":
+					case "upleft": 
+					case "upright": direction = "left"; break;
+					case "right": direction = "up"; break;
+					case "down": 
+					case "downleft": 
+					case "downright": direction = "right"; break;
+					case "left": direction = "down"; break;
+				}		
+			}
+			
+			// REPEAT 4 TIMES
+			spinNum++;
+			if (spinNum == 4) {
+				spinNum = 0;
+				spinning = false;
+				attacking = false;
+				attackCanceled = false;				
+			}
 		}
 	}
 	
@@ -1419,14 +1625,19 @@ public class Player extends Entity {
 	public void swinging() {
 
 		rodCounter++;
-				
+		
 		// ATTACK IMAGE 1
 		if (currentItem.swingSpeed1 >= rodCounter) {			
 			rodNum = 1;
 		}		
 		// ATTACK IMAGE 2
-		if (currentItem.swingSpeed2 >= rodCounter && rodCounter > currentItem.swingSpeed1) {
+		else if (currentItem.swingSpeed2 >= rodCounter && rodCounter > currentItem.swingSpeed1) {
 			rodNum = 2;
+		}
+		// ATTACK IMAGE 3
+		else if (currentItem.swingSpeed3 >= rodCounter && rodCounter > currentItem.swingSpeed2) {
+
+			rodNum = 3;
 			
 			// CHECK IF WEAPON HITS TARGET	
 			int currentWorldX = worldX;
@@ -1456,7 +1667,7 @@ public class Player extends Entity {
 		}
 
 		// RESET IMAGE
-		if (rodCounter > currentItem.swingSpeed2) {
+		else if (rodCounter > currentItem.swingSpeed3) {
 			rodNum = 1;
 			rodCounter = 0;
 			action = Action.IDLE;
@@ -1834,10 +2045,18 @@ public class Player extends Entity {
 				case "up":
 				case "upleft":
 				case "upright":	
-					if (attacking && !spinning) {
-						tempScreenY -= gp.tileSize;
-						if (attackNum == 1) image = attackUp1;
-						else if (attackNum == 2) image = attackUp2;
+					if (attacking && !spinning) {						
+						if (attackNum == 1) {							
+							image = attackUp1;
+						}
+						else if (attackNum == 2) {
+							tempScreenY -= gp.tileSize;
+							image = attackUp2;
+						}
+						else if (attackNum == 3) {
+							tempScreenY -= gp.tileSize;
+							image = attackUp3;
+						}
 					}
 					else if (spinning) {						
 						tempScreenY -= gp.tileSize;
@@ -1889,9 +2108,17 @@ public class Player extends Entity {
 								else if (rollNum == 4) image = rollUp4; 
 								break;
 							case SWINGING:
-								tempScreenY -= gp.tileSize;
-								if (rodNum == 1) image = rodUp1;								
-								else if (rodNum == 2) image = rodUp2;	
+								if (rodNum == 1) {							
+									image = rodUp1;
+								}
+								else if (rodNum == 2) {
+									tempScreenY -= gp.tileSize;
+									image = rodUp2;
+								}
+								else if (rodNum == 3) {
+									tempScreenY -= gp.tileSize;
+									image = rodUp3;
+								}
 								break;
 							case SWIMMING:
 								if (spriteNum == 1) image = swimUp1;
@@ -1912,11 +2139,17 @@ public class Player extends Entity {
 				case "downleft":
 				case "downright":
 					if (attacking && !spinning) {
-						if (attackNum == 1) {
+						if (attackNum == 1) {		
 							tempScreenX -= gp.tileSize;
 							image = attackDown1;
 						}
-						else if (attackNum == 2) image = attackDown2;	
+						else if (attackNum == 2) {		
+							tempScreenX -= gp.tileSize;
+							image = attackDown2;
+						}
+						else if (attackNum == 3) {
+							image = attackDown3;	
+						}
 					}
 					else if (spinning) {						
 						if (attackNum == 1) {
@@ -1969,12 +2202,18 @@ public class Player extends Entity {
 								else if (rollNum == 3) image = rollDown3; 
 								else if (rollNum == 4) image = rollDown4; 
 								break;
-							case SWINGING:
+							case SWINGING:								
 								if (rodNum == 1) {
 									tempScreenX -= gp.tileSize;
 									image = rodDown1;
 								}
-								else if (rodNum == 2) image = rodDown2;
+								else if (rodNum == 2) {
+									tempScreenX -= gp.tileSize;
+									image = rodDown2;
+								}
+								else if (rodNum == 3) {
+									image = rodDown3;
+								}
 								break;
 							case SWIMMING:
 								if (spriteNum == 1) image = swimDown1;
@@ -1992,13 +2231,20 @@ public class Player extends Entity {
 					}
 					break;
 				case "left":
-					if (attacking && !spinning) {
-						tempScreenX -= gp.tileSize;
+					if (attacking && !spinning) {						
 						if (attackNum == 1) {
 							tempScreenY -= gp.tileSize;
 							image = attackLeft1;
 						}
-						else if (attackNum == 2) image = attackLeft2;	
+						else if (attackNum == 2) {
+							tempScreenX -= gp.tileSize;
+							tempScreenY -= gp.tileSize;
+							image = attackLeft2;	
+						}
+						else if (attackNum == 3) {
+							tempScreenX -= gp.tileSize;
+							image = attackLeft3;
+						}
 					}
 					else if (spinning) {
 						tempScreenX -= gp.tileSize;
@@ -2052,13 +2298,20 @@ public class Player extends Entity {
 								else if (rollNum == 3) image = rollLeft3; 
 								else if (rollNum == 4) image = rollLeft4; 
 								break;
-							case SWINGING:
-								tempScreenX -= gp.tileSize;
+							case SWINGING:								
 								if (rodNum == 1) {
 									tempScreenY -= gp.tileSize;
 									image = rodLeft1;
 								}
-								else if (rodNum == 2) image = rodLeft2;	
+								else if (rodNum == 2) {
+									tempScreenX -= gp.tileSize;
+									tempScreenY -= gp.tileSize;
+									image = rodLeft2;	
+								}
+								else if (rodNum == 3) {
+									tempScreenX -= gp.tileSize;
+									image = rodLeft3;
+								}
 								break;
 							case SWIMMING:
 								if (spriteNum == 1) image = swimLeft1;
@@ -2077,11 +2330,17 @@ public class Player extends Entity {
 					break;
 				case "right":
 					if (attacking && !spinning) {
-						if (attackNum == 1) {
+						if (attackNum == 1) {		
 							tempScreenY -= gp.tileSize;
 							image = attackRight1;
 						}
-						else if (attackNum == 2) image = attackRight2;
+						else if (attackNum == 2) {
+							tempScreenY -= gp.tileSize;
+							image = attackRight2;
+						}
+						else if (attackNum == 3) {
+							image = attackRight3;						
+						}
 					}
 					else if (spinning) {
 						if (attackNum == 1) image = spinRight1;						
@@ -2131,12 +2390,18 @@ public class Player extends Entity {
 								else if (rollNum == 3) image = rollRight3; 
 								else if (rollNum == 4) image = rollRight4; 
 								break;
-							case SWINGING:			
+							case SWINGING:										
 								if (rodNum == 1) {
 									tempScreenY -= gp.tileSize;
 									image = rodRight1;
 								}
-								else if (rodNum == 2) image = rodRight2;
+								else if (rodNum == 2) {
+									tempScreenY -= gp.tileSize;
+									image = rodRight2;
+								}
+								else if (rodNum == 3) {
+									image = rodRight3;
+								}
 								break;
 							case SWIMMING:
 								if (spriteNum == 1) image = swimRight1;
