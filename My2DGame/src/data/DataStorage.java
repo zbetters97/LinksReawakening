@@ -27,7 +27,7 @@ public class DataStorage implements Serializable {
 	int level, maxLife, life, strength, dexterity, attack, defense;
 	int rupees, maxArrows, arrows, maxBombs, bombs;
 	boolean canSwim;	
-	String sword, shield;
+	String sword, shield, item;
 	
 	// PLAYER COLLECTABLES
 	ArrayList<String> colNames = new ArrayList<>();

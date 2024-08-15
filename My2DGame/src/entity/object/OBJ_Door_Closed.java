@@ -60,10 +60,10 @@ public class OBJ_Door_Closed extends Entity {
 		}
 	}
 		
-	public void playSE() {
-		gp.playSE(4, 4);
+	public void playOpenSE() {
+		gp.playSE(4, 11);
 	}
 	public void playCloseSE() {
-		gp.playSE(4, 5);
+		gp.playSE(4, 12);
 	}
 }

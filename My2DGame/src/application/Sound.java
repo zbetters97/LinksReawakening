@@ -12,14 +12,14 @@ public class Sound {
 	// CLIP HOLDERS
 	public Clip clip;
 	private URL sounds[][] = new URL[8][];
-	public URL music[] = new URL[30];
-	public URL menu[] = new URL[30];
-	private URL player[] = new URL[30];
-	private URL enemies[] = new URL[30];	
-	private URL objects[] = new URL[30];	
-	private URL items[] = new URL[30];
-	private URL misc[] = new URL[30];
-	private URL voice[] = new URL[30];
+	public URL music[] = new URL[20];
+	public URL menu[] = new URL[20];
+	private URL player[] = new URL[20];
+	private URL enemies[] = new URL[20];	
+	private URL objects[] = new URL[20];	
+	private URL items[] = new URL[20];
+	private URL misc[] = new URL[20];
+	private URL voice[] = new URL[20];
 	
 	// VOLUME SLIDER
 	private FloatControl fc;
@@ -81,20 +81,20 @@ public class Sound {
 		
 		// 4
 		objects[0] = getClass().getResource("/sound/OBJ_SWORD_SWING.wav");			
-		objects[1] = getClass().getResource("/sound/OBJ_SWORD_BEAM.wav");
-		objects[2] = getClass().getResource("/sound/OBJ_FIREBALL.wav");				
-		objects[3] = getClass().getResource("/sound/OBJ_CHEST_OPEN.wav");
-		objects[4] = getClass().getResource("/sound/OBJ_DOOR_OPEN.wav");		
-		objects[5] = getClass().getResource("/sound/OBJ_DOOR_CLOSE.wav");
-		objects[6] = getClass().getResource("/sound/OBJ_DOOR_UNLOCK.wav");
-		objects[7] = getClass().getResource("/sound/OBJ_MOVE.wav");
-		objects[8] = getClass().getResource("/sound/OBJ_TINK.wav");		
+		objects[1] = getClass().getResource("/sound/OBJ_SWORD_SPIN_CHARGE.wav");	
+		objects[2] = getClass().getResource("/sound/OBJ_SWORD_SPIN.wav");	
+		objects[3] = getClass().getResource("/sound/OBJ_SWORD_BEAM.wav");		
+		objects[4] = getClass().getResource("/sound/OBJ_TINK.wav");	
+		objects[5] = getClass().getResource("/sound/OBJ_MOVE.wav");					
+		objects[6] = getClass().getResource("/sound/OBJ_LIFT.wav");	
+		objects[7] = getClass().getResource("/sound/OBJ_THROW.wav");	
+		objects[8] = getClass().getResource("/sound/OBJ_FIREBALL.wav");	
 		objects[9] = getClass().getResource("/sound/OBJ_POT.wav");	
-		objects[10] = getClass().getResource("/sound/OBJ_LIFT.wav");	
-		objects[11] = getClass().getResource("/sound/OBJ_THROW.wav");	
-		objects[12] = getClass().getResource("/sound/OBJ_SWORD_SPIN_CHARGE.wav");	
-		objects[13] = getClass().getResource("/sound/OBJ_SWORD_SPIN.wav");	
-		
+		objects[10] = getClass().getResource("/sound/OBJ_CHEST_OPEN.wav");
+		objects[11] = getClass().getResource("/sound/OBJ_DOOR_OPEN.wav");		
+		objects[12] = getClass().getResource("/sound/OBJ_DOOR_CLOSE.wav");
+		objects[13] = getClass().getResource("/sound/OBJ_DOOR_UNLOCK.wav");				
+								
 		// 5
 		items[0] = getClass().getResource("/sound/ITEM_GET.wav");	
 		items[1] = getClass().getResource("/sound/ITEM_SHOVEL.wav");		
@@ -116,8 +116,7 @@ public class Sound {
 		misc[3] = getClass().getResource("/sound/MISC_FAIRY.wav");
 		misc[4] = getClass().getResource("/sound/MISC_STAIRS_UP.wav");		
 		misc[5] = getClass().getResource("/sound/MISC_STAIRS_DOWN.wav");
-		misc[6] = getClass().getResource("/sound/MISC_TREE_CUT.wav");
-		misc[7] = getClass().getResource("/sound/MISC_SOLVE.wav");
+		misc[6] = getClass().getResource("/sound/MISC_SOLVE.wav");
 		
 		// 7
 		voice[0] = getClass().getResource("/sound/VOICE_SLASH1.wav");

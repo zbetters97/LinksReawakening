@@ -32,6 +32,9 @@ public class EQP_Sword_Master extends Entity {
 		gp.playSE(4, 0);
 	}
 	public void playChargeSE() {
-		gp.playSE(4, 12);
+		gp.playSE(4, 1);
+	}
+	public void playSpinSE() {
+		gp.playSE(4, 2);
 	}
 }

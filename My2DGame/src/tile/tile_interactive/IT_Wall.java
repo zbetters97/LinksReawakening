@@ -65,8 +65,4 @@ public class IT_Wall extends InteractiveTile {
 		int i = new Random().nextInt(100) + 1;
 		if (i >= 75) dropItem(new COL_Bomb(gp));
 	}
-	
-	public void playSE() {
-		gp.playSE(6, 6);
-	}
 }

@@ -539,10 +539,10 @@ public class SceneManager {
 	}
 	
 	private void playDoorCloseSE() {
-		gp.playSE(4, 5);
+		gp.playSE(4, 12);
 	}
 	private void playSolveSE() {
-		gp.playSE(6, 7);
+		gp.playSE(6, 6);
 	}
 	private void playBossMusic() {
 		gp.playMusic(6);

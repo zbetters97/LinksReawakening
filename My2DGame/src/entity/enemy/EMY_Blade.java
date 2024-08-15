@@ -135,6 +135,6 @@ public class EMY_Blade extends Entity {
 	}
 	
 	public void playSE() {
-		gp.playSE(4, 8);
+		gp.playSE(4, 4);
 	}
 }

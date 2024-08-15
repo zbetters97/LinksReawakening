@@ -259,6 +259,7 @@ public class Entity {
 	public void playCloseSE() { }
 	public void playAttackSE() { }
 	public void playChargeSE() { }
+	public void playSpinSE() { }
 	public void playHurtSE() { }
 	public void playDeathSE() { }	
 	
@@ -1446,7 +1447,7 @@ public class Entity {
 	
 	// SOUND EFFECTS
 	public void playMoveObjectSE() {
-		gp.playSE(4, 7);
+		gp.playSE(4, 5);
 	}
 	public void playShockSE() {
 		gp.playSE(3, 6);

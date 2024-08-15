@@ -82,6 +82,7 @@ public class SaveLoad {
 			ds.canSwim = gp.player.canSwim;
 			if (gp.player.currentWeapon != null) ds.sword = gp.player.currentWeapon.name;
 			if (gp.player.currentShield != null) ds.shield = gp.player.currentShield.name;	
+			if (gp.player.currentItem != null) ds.item = gp.player.currentItem.name;
 			
 			// NPCs
 			ds.npcNames = new String[gp.maxMap][gp.npc[1].length];
@@ -272,9 +273,19 @@ public class SaveLoad {
 				gp.player.inventory_item.add(gp.eGenerator.getItem(ds.itemNames.get(i)));
 			}
 			
+			// FIND AND ASSIGN CURRENT ITEM IN INVENTORY
+			if (ds.item != null) {
+				for (int i = 0; i < gp.player.inventory_item.size(); i++) {
+					if (gp.player.inventory_item.get(i).name.equals(ds.item)) {
+						gp.player.currentItem = gp.player.inventory_item.get(i);
+					}
+				}	
+			}
+						
 			// PLAYER EQUIPMENT
 			gp.player.currentWeapon = gp.eGenerator.getItem(ds.sword);
 			gp.player.currentShield = gp.eGenerator.getItem(ds.shield);
+			
 			gp.player.getAttack();
 			gp.player.getAttackImage();
 			gp.player.getSpinImage();

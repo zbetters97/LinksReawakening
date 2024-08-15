@@ -31,6 +31,6 @@ public class PRJ_Seed extends Projectile {
 	}
 	
 	public void playSE() {
-		gp.playSE(4, 2);
+		gp.playSE(4, 8);
 	}
 }

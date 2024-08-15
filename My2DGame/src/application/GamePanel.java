@@ -361,7 +361,7 @@ public class GamePanel extends JPanel implements Runnable {
 		if (nextArea != currentArea) {
 			stopMusic();			
 			setupMusic(false);
-			setAreaTitle();
+			getAreaTitle();
 		}	
 		
 		currentArea = nextArea;
@@ -400,7 +400,7 @@ public class GamePanel extends JPanel implements Runnable {
 				if (obj[mapNum][i] != null && obj[mapNum][i].temp) {
 					
 					if (obj[mapNum][i].name.equals(OBJ_Door_Closed.objName)) {
-						if (!reset) obj[mapNum][i].playSE();
+						if (!reset) obj[mapNum][i].playOpenSE();
 						obj[mapNum][i].opening = true;
 					}
 					else {
@@ -432,7 +432,7 @@ public class GamePanel extends JPanel implements Runnable {
 		for (Entity d : obj[currentMap]) {
 			if (d != null && d.name != null && d.name.equals(dName) && !d.opening) {
 				if (d.worldX == dWorldX && d.worldY == dWorldY) {
-					d.playSE();
+					d.playOpenSE();
 					d.opening = true;
 				}
 			}
@@ -443,6 +443,7 @@ public class GamePanel extends JPanel implements Runnable {
 		stopMusic();
 		
 		removeTempEntity(true);
+				
 		bossBattleOn = false;
 		csManager.scene = csManager.NA;
 		csManager.phase = 0;
@@ -456,6 +457,9 @@ public class GamePanel extends JPanel implements Runnable {
 		player.resetCounter();		
 		
 		ui.rupeeCount = 0;
+		ui.mapName = "";
+		ui.mapNameAlpha = 0;
+		ui.mapNameCounter = 0;
 		
 		aSetter.setNPC();
 		aSetter.setEnemy();		
@@ -486,13 +490,16 @@ public class GamePanel extends JPanel implements Runnable {
 		mapNames.put(3, "NULL");
 	}
 	
-	public void setAreaTitle() {
+	public void getAreaTitle() {
 		
 		// MAP HAS NAME
 		if (!mapNames.get(currentMap).equals("NULL")) {
 			ui.mapName = mapNames.get(currentMap);
 			ui.mapNameCounter = 240;		
 			ui.mapNameAlpha = 0;
+		}
+		else {
+			ui.mapNameCounter = 0;
 		}
 	}
 	

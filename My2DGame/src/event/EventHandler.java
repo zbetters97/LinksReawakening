@@ -61,7 +61,6 @@ public class EventHandler {
 	
 	private void setDialogue() {
 		dekuTree.dialogues[0][0] = "Ah... The water is pure and heals you.";
-		dekuTree.dialogues[1][0] = "YOU ARE WINNER";
 	}
 	
 	public void checkEvent() {
@@ -93,7 +92,10 @@ public class EventHandler {
 			// TELEPORT SPOTS
 			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.shop, 1, "up"); // SHOP ENTRANCE
 			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside, 2, "down"); // SHOP EXIT
-			else if (hit(0, 12, 12, true)) teleport(2, 40, 93, gp.dungeon, 1, "up"); // DUNGEON ENTRANCE
+			else if (hit(0, 12, 12, true)) { 
+				gp.player.inventory_item.clear(); 
+				teleport(2, 40, 93, gp.dungeon, 1, "up"); // DUNGEON ENTRANCE 
+			}
 			else if (hit(2, 40, 93, true)) teleport(0, 12, 12, gp.outside, 2, "down"); // DUNGEON EXIT
 			else if (hit(2, 70, 49, true)) teleport(3, 18, 40, gp.dungeon, 3, "right"); // DUNGEON F2
 			else if (hit(3, 18, 40, true)) teleport(2, 70, 49, gp.dungeon, 2, "down"); // DUNEGOEN F1

@@ -37,7 +37,7 @@ public class Driver {
 	}
 	
 	private void setIcon() {
-		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon/triforce.png")); 
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("misc/triforce.png")); 
 		window.setIconImage(icon.getImage());
 	}
 }

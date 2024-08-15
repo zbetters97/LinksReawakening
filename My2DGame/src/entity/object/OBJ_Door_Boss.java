@@ -43,16 +43,16 @@ public class OBJ_Door_Boss extends Entity {
 	
 	public void interact() {
 		if (gp.player.boss_key > 0) {
-			playSE();
+			playOpenSE();
 			gp.player.boss_key--;
 			opening = true;
 		}		
 	}
 	
-	public void playSE() {
-		gp.playSE(4, 4);
+	public void playOpenSE() {
+		gp.playSE(4, 11);
 	}
 	public void playCloseSE() {
-		gp.playSE(4, 5);
+		gp.playSE(4, 12);
 	}
 }

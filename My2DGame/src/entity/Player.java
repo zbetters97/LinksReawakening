@@ -158,8 +158,8 @@ public class Player extends Entity {
 	}	
 	public void setDefaultPosition() {	
 
-		worldX = gp.tileSize * 12;
-		worldY = gp.tileSize * 13;		
+		worldX = gp.tileSize * 23;
+		worldY = gp.tileSize * 21;		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
 /*
@@ -891,7 +891,7 @@ public class Player extends Entity {
 			// RELEASE SPIN ATTACK
 			if (charge >= 120) {
 				playSpin();
-				playSpinSwordSE();
+				currentWeapon.playSpinSE();
 				
 				// ROTATE COUNTER CLOCKWISE
 				switch (direction) {
@@ -1167,7 +1167,7 @@ public class Player extends Entity {
 			
 			String guardDirection = getOppositeDirection(enemy.direction);
 			if (action == Action.GUARDING && direction.equals(guardDirection)) {
-				gp.playSE(4, 8);	
+				playBlockSE();
 				
 				if (enemy.name.equals(EMY_Beetle.emyName)) {
 					enemy.attacking = true;
@@ -1999,10 +1999,7 @@ public class Player extends Entity {
 		gp.playSE(4, 8);
 	}
 	public void playThrowSE() {
-		gp.playSE(4, 11);
-	}
-	public void playSpinSwordSE() {
-		gp.playSE(4, 13);
+		gp.playSE(4, 7);
 	}
 	public void playGetItemSE() {
 		gp.playSE(5, 0);
@@ -2438,10 +2435,13 @@ public class Player extends Entity {
 			tempScreenY = screenY;
 		}	
 		else if (gp.gameState == gp.drowningState || diving) {
-			image = drown;			
+			image = drown;	
 			
 			tempScreenX = screenX;
 			tempScreenY = screenY;
+			
+			if (screenX > worldX) tempScreenX = worldX;		
+			if (screenY > worldY) tempScreenY = worldY;
 		}				
 		
 		g2.drawImage(image, tempScreenX, tempScreenY, null);

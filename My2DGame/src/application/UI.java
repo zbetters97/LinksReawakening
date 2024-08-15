@@ -187,7 +187,7 @@ public class UI {
 		
 		// BACKGROUND IMAGE
 		BufferedImage image = null;		
-		try { image = ImageIO.read(getClass().getResourceAsStream("/objects/MENU_TITLE.png")); }
+		try { image = ImageIO.read(getClass().getResourceAsStream("/misc/MENU_TITLE.png")); }
 		catch (IOException e) { }
 		g2.drawImage(image, 0, 0, gp.screenWidth, gp.screenHeight, null);
 		
@@ -1382,10 +1382,12 @@ public class UI {
 		for (int i = 0; i < gp.player.inventory_item.size(); i++) {
 			
 			// EQUIPPED CURSOR
-			if (gp.player.inventory_item.get(i) == gp.player.currentItem) {				
-				g2.setColor(new Color(217,217,217));
-				g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
-			}	
+			if (gp.player.currentItem != null) {
+				if (gp.player.inventory_item.get(i).name.equals(gp.player.currentItem.name)) {				
+					g2.setColor(new Color(217,217,217));
+					g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+				}	
+			}
 			
 			g2.drawImage(gp.player.inventory_item.get(i).down1, slotX, slotY, null);
 			

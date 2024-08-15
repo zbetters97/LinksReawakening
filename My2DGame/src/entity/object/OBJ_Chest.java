@@ -67,6 +67,6 @@ public class OBJ_Chest extends Entity {
 	}
 	
 	public void playOpenSE() {
-		gp.playSE(4, 3);
+		gp.playSE(4, 10);
 	}
 }

@@ -49,42 +49,17 @@ public class OBJ_Door_Locked extends Entity {
 	}
 	
 	public void interact() {	
-				
-		boolean respond = false;
-		
-		// PLAYER MUST BE FACING DOOR
-		switch (direction) {
-			case "up": 
-				if (gp.player.direction.equals("down") || 
-						gp.player.direction.equals("downleft") ||
-						gp.player.direction.equals("downright")) respond = true;
-				break;
-			case "down": 
-				if (gp.player.direction.equals("up") ||
-						gp.player.direction.equals("upleft") ||
-						gp.player.direction.equals("upright")) respond = true;			
-				break;
-			case "left": 
-				if (gp.player.direction.equals("right")) respond = true;			
-				break;
-			case "right": 
-				if (gp.player.direction.equals("left")) respond = true;			
-				break;
-		}
-		
-		if (respond) {	
-			if (gp.player.keys > 0) {
-				playSE();
-				gp.player.keys--;
-				opening = true;				
-			}
-		}
+		if (gp.player.keys > 0) {
+			playOpenSE();
+			gp.player.keys--;
+			opening = true;				
+		}		
 	}
 	
-	public void playSE() {
-		gp.playSE(4, 4);
+	public void playOpenSE() {
+		gp.playSE(4, 11);
 	}
 	public void playCloseSE() {
-		gp.playSE(4, 5);
+		gp.playSE(4, 12);
 	}
 }

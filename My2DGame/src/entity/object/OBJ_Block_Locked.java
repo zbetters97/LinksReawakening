@@ -12,7 +12,7 @@ public class OBJ_Block_Locked extends Entity {
 		this.worldX = worldX *= gp.tileSize;
 		this.worldY = worldY *= gp.tileSize;
 		
-		type = type_obstacle;
+		type = type_obstacle_i;
 		name = objName;
 		direction = "down";
 		collision = true;		
@@ -31,6 +31,6 @@ public class OBJ_Block_Locked extends Entity {
 	}
 	
 	public void playOpenSE() {
-		gp.playSE(4, 4);
+		gp.playSE(4, 11);
 	}
 }

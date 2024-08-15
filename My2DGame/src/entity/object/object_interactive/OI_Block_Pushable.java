@@ -185,6 +185,6 @@ public class OI_Block_Pushable extends Entity {
 	}
 		
 	public void playSE() {
-		gp.playSE(4, 7);
+		gp.playSE(4, 5);
 	}
 }
