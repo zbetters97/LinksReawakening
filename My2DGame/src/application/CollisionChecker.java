@@ -403,7 +403,7 @@ public class CollisionChecker {
 					}		
 					// PLAYER CANNOT SWIM
 					else {					
-						gp.player.playDrownSE();
+						playDrownSE();
 						gp.player.playHurt();	
 						gp.player.resetValues();
 						gp.player.invincible = true;
@@ -415,10 +415,11 @@ public class CollisionChecker {
 			else {
 				// ENTITY CANNOT SWIM
 				if (!entity.canSwim) {
+					playDrownSE();
 					entity.alive = false;
 				}
 				// RESET THROWN ENTITY VALUES
-				if (entity.thrown) {
+				if (entity.thrown) {					
 					entity.alive = false;
 					entity.resetValues();		
 				}				
@@ -1147,5 +1148,9 @@ public class CollisionChecker {
 			}
 		}		
 		return index;
+	}
+	
+	public void playDrownSE() {
+		gp.playSE(2, 14);
 	}
 }

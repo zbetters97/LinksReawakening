@@ -131,10 +131,11 @@ public class Player extends Entity {
 		maxBombs = 10; bombs = maxBombs;
 		shotAvailableCounter = 30;
 		
-//		currentWeapon = null;
-		currentWeapon = new EQP_Sword_Old(gp);
+		currentWeapon = null;
+//		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		
+/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Bomb(gp));
@@ -143,7 +144,8 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Bow(gp));
 		inventory_item.add(new ITM_Feather(gp));
 		inventory_item.add(new ITM_Cape(gp));
-		inventory_item.add(new ITM_Rod(gp));		
+		inventory_item.add(new ITM_Rod(gp));	
+*/
 		
 		attack = getAttack();
 		
@@ -1583,7 +1585,13 @@ public class Player extends Entity {
 	public void throwing() {		
 		throwCounter++;			
 		if (6 >= throwCounter) throwNum = 1;
-		else if (throwCounter > 6) throwNum = 2;		
+		else if (throwCounter > 6) throwNum = 2;	
+		
+		if (throwCounter > 28 && gp.gameState == gp.playState) {
+			action = Action.IDLE;
+			throwNum = 1;
+			throwCounter = 0;
+		}
 	}
 	public void soaring() {
 
@@ -1986,9 +1994,6 @@ public class Player extends Entity {
 	}
 	public void playSwimSE() {
 		gp.playSE(2, 13);
-	}
-	public void playDrownSE() {
-		gp.playSE(2, 14);
 	}	
 	public void playFallSE() {
 		gp.playSE(2, 15);

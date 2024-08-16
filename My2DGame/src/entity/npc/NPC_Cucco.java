@@ -117,6 +117,7 @@ public class NPC_Cucco extends Entity {
 		worldX = worldXStart;
 		worldY = worldYStart;
 		
+		thrown = false;		
 		gp.player.action = Action.IDLE;
 		gp.player.grabbedObject = null;			
 		gp.player.throwCounter = 0;

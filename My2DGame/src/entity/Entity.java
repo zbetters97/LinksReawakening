@@ -289,7 +289,8 @@ public class Entity {
 	public void move() {
 		
 		if (!grabbed || thrown) checkCollision();
-		if (!collisionOn && withinBounds()) { 						
+		
+		if (!collisionOn && withinBounds() && !thrown) { 						
 			switch (direction) {
 				case "up": worldY -= speed; break;
 				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
