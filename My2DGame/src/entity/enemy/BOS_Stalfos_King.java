@@ -9,11 +9,11 @@ import java.util.Random;
 import application.GamePanel;
 import entity.Entity;
 
-public class BOS_Stalfos extends Entity {
+public class BOS_Stalfos_King extends Entity {
 
 	public static final String emyName = "Stalfos King";
 	
-	public BOS_Stalfos(GamePanel gp, int worldX, int worldY) {
+	public BOS_Stalfos_King(GamePanel gp, int worldX, int worldY) {
 		super(gp);				
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	

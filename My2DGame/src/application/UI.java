@@ -36,7 +36,7 @@ public class UI {
 	public int commandNum = 0;
 	
 	// HUD
-	private BufferedImage dialogue_next, dialogue_finish;
+	private BufferedImage dialogue_next, dialogue_finish, zTargetLock;
 	private BufferedImage flippers, heart_4, heart_3, heart_2, heart_1, heart_0, rupee, key, boss_key;
 	private String rupee_count = "0";
 	public int rupeeCount = 0;
@@ -119,6 +119,7 @@ public class UI {
 		
 		dialogue_next = setup("/font/dialogue_next"); 
 		dialogue_finish = setup("/font/dialogue_finish"); 
+		zTargetLock = setup("/enemy/lockon_target", 48 + 20, 48 + 20);
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -421,26 +422,25 @@ public class UI {
 			}
 		}
 		
-		if (gp.gameState == gp.playState || gp.gameState == gp.objectState) {
+		if (gp.gameState == gp.playState || gp.gameState == gp.dialogueState || 
+				gp.gameState == gp.objectState) {
 			
-			drawItemSlot();
-			drawRupees();			
-			drawChargeBar();
-			
-			if (gp.currentArea == gp.dungeon) {		
-				drawKeys();			
+			if (mapNameCounter > 0) {
+				drawMapName();
+				mapNameCounter--;
 			}
+			
+			drawItemSlot();			
+			if (gp.currentArea == gp.dungeon) drawKeys();
+			drawRupees();								
+			
+			drawZTarget();
+			drawChargeBar();
 		}		
 		else if (gp.gameState == gp.inventoryState) {
 			drawRupees();
 		}
-		
-		// DRAW NEXT AREA TITLE
-		if (mapNameCounter > 0) {
-			drawMapName();
-			mapNameCounter--;
-		}
-		
+						
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
 			g2.setColor(Color.WHITE);
@@ -455,16 +455,43 @@ public class UI {
 			drawDebug();
 		}
 	}
+	private void drawMapName() {		
+		
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 75F));
+		
+		int x = getXforCenteredText(mapName);
+		int y = gp.tileSize * 5;
+		
+		g2.setColor(new Color(0,0,0,mapNameAlpha));
+		g2.drawString(mapName, x, y+5);
+		
+		g2.setColor(new Color(255,255,255,mapNameAlpha));
+		g2.drawString(mapName, x, y);
+		
+	    if (mapNameCounter >= 60) {
+	    	mapNameAlpha += 5; 
+			if (mapNameAlpha > 255) mapNameAlpha = 255;	
+	    } 
+	    else {
+	    	mapNameAlpha -= 5; 
+			if (0 > mapNameAlpha) mapNameAlpha = 0;	
+	    }
+	}
 	private void drawItemSlot() {
+		
+		// ITEM SLOT DISABLED
+		if (gp.player.disabled_actions.contains(gp.player.action)) {
+			changeAlpha(g2, 0.6f);
+		}
 		
 		int x = gp.tileSize * 14;
 		int y = gp.tileSize / 2;
 		
 		// DRAW ITEM CIRCLE
-		g2.setColor(new Color(240,190,90,235));
+		g2.setColor(new Color(240,190,90,240));
 		g2.fillOval(x - 15, y - 15, gp.tileSize + 30, gp.tileSize + 30);	
 		
-		g2.setColor(new Color(217,217,217,235));
+		g2.setColor(new Color(217,217,217,240));
 		g2.setStroke(new BasicStroke(3));
 		g2.drawOval(x - 15, y - 15, gp.tileSize + 30, gp.tileSize + 30);	
 		
@@ -486,6 +513,8 @@ public class UI {
 				drawItemCount(2, x + 35, y, Color.BLACK, 27F);
 			}
 		}	
+		
+		gp.player.changeAlpha(g2, 1f);
 	}
 	private void drawKeys() {
 		
@@ -550,6 +579,109 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 45F));
 		g2.drawString(rupee_count, x, y);			
 	}
+	private void drawZTarget() {
+		
+		if (gp.player.lockedTarget == null) {
+			
+			Entity target = null;			
+			int currentDistance = 6;	
+			
+			for (Entity e : gp.enemy[gp.currentMap]) {
+				
+				if (e != null && e != gp.player.lockedTarget && e.canTarget && !e.dying) {
+
+					// ENEMY WITHIN 6 TILES
+					int enemyDistance = e.getTileDistance(gp.player);
+					if (enemyDistance < currentDistance) {
+						currentDistance = enemyDistance;
+						target = e;							
+					}
+				}
+			}
+			
+			if (target != null) {
+				g2.drawImage(zTargetLock, target.getScreenX() - 10, target.getScreenY() - 10, null);	
+			}	
+		}
+	}
+	private void drawChargeBar() {
+		
+		if (gp.player.charge > 0) {
+			
+			int x = gp.player.getScreenX() - 7;
+			int y = gp.player.getScreenY() - 20;			
+			int width = 62;
+			int height = 10;		
+			int charge = gp.player.charge;						
+			
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8F));
+			
+			g2.fillRect(x, y, width, height);	
+			
+			if (gp.player.charge < 120) g2.setColor(Color.WHITE);
+			else g2.setColor(new Color(0,240,0));
+			
+			g2.setStroke(new BasicStroke(2));
+			g2.drawRect(x, y, width, height);	
+			
+			if (40 > charge) g2.setColor(new Color(0,105,0)); 	
+			if (80 > charge && charge >= 40) g2.setColor(new Color(0,155,0)); 	
+			else if (120 > charge && charge >= 80) g2.setColor(new Color(0,205,0)); 	
+			else if (charge >= 120) g2.setColor(new Color(0,240,0));
+			
+			g2.fillRect(x + 1, y + 1, (charge / 2), height - 2);
+			
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
+		}
+	}
+	private void drawDebug() {
+		
+		int x = 10; 
+		int y = gp.tileSize * 6; 
+		int lineHeight = 20;
+		
+		String timeOfDay = "";
+		switch (gp.eManager.lighting.dayState) {
+			case 0: timeOfDay = "DAY"; break;
+			case 1: timeOfDay = "DUSK"; break;
+			case 2: timeOfDay = "NIGHT"; break;
+			case 3: timeOfDay = "DAWN"; break;
+		}
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(new Font("Arial", Font.BOLD, 50));
+		g2.drawString(timeOfDay, x, y - gp.tileSize);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20f));						
+		
+		g2.drawString("WorldX: " + gp.player.worldX, x , y); 
+		y += lineHeight;
+		g2.drawString("WorldY: " + gp.player.worldY, x , y); 
+		y += lineHeight;
+		g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
+		y += lineHeight;
+		g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
+		y += lineHeight;
+		g2.drawString("Time Counter: " + gp.eManager.lighting.dayCounter, x, y);
+		
+		g2.setColor(Color.RED);
+		g2.drawRect(gp.player.screenX + gp.player.hitbox.x, gp.player.screenY + gp.player.hitbox.y, 
+				gp.player.hitbox.width, gp.player.hitbox.height);
+			
+		g2.setColor(new Color(255,0,0,100));
+		for (int i = 0; i < gp.pFinder.pathList.size(); i++) {
+			
+			int worldX = gp.pFinder.pathList.get(i).col * gp.tileSize;
+			int worldY = gp.pFinder.pathList.get(i).row * gp.tileSize;
+			int screenX = worldX - gp.player.worldX + gp.player.screenX;
+			int screenY = worldY - gp.player.worldY + gp.player.screenY;
+			
+			g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);			
+		}
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(PK_DS);
+	}	
 	private void drawEnemyHPBar(Entity[][] enemies) {
 		
 		for (int i = 0; i < enemies[1].length; i++) {
@@ -610,106 +742,6 @@ public class UI {
 			}			
 		}				
 	}
-	private void drawChargeBar() {
-		
-		if (gp.player.charge > 0) {
-			
-			int x = gp.player.getScreenX() - 7;
-			int y = gp.player.getScreenY() - 20;			
-			int width = 62;
-			int height = 10;		
-			int charge = gp.player.charge;						
-			
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8F));
-			
-			g2.fillRect(x, y, width, height);	
-			
-			if (gp.player.charge < 120) g2.setColor(Color.WHITE);
-			else g2.setColor(new Color(0,240,0));
-			
-			g2.setStroke(new BasicStroke(2));
-			g2.drawRect(x, y, width, height);	
-			
-			if (40 > charge) g2.setColor(new Color(0,105,0)); 	
-			if (80 > charge && charge >= 40) g2.setColor(new Color(0,155,0)); 	
-			else if (120 > charge && charge >= 80) g2.setColor(new Color(0,205,0)); 	
-			else if (charge >= 120) g2.setColor(new Color(0,240,0));
-			
-			g2.fillRect(x + 1, y + 1, (charge / 2), height - 2);
-			
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
-		}
-	}
-	private void drawMapName() {		
-		
-		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 75F));
-		
-		int x = getXforCenteredText(mapName);
-		int y = gp.tileSize * 5;
-		
-		g2.setColor(new Color(0,0,0,mapNameAlpha));
-		g2.drawString(mapName, x, y+5);
-		
-		g2.setColor(new Color(255,255,255,mapNameAlpha));
-		g2.drawString(mapName, x, y);
-		
-	    if (mapNameCounter >= 60) {
-	    	mapNameAlpha += 5; 
-			if (mapNameAlpha > 255) mapNameAlpha = 255;	
-	    } 
-	    else {
-	    	mapNameAlpha -= 5; 
-			if (0 > mapNameAlpha) mapNameAlpha = 0;	
-	    }
-	}
-	private void drawDebug() {
-		
-		int x = 10; 
-		int y = gp.tileSize * 6; 
-		int lineHeight = 20;
-		
-		String timeOfDay = "";
-		switch (gp.eManager.lighting.dayState) {
-			case 0: timeOfDay = "DAY"; break;
-			case 1: timeOfDay = "DUSK"; break;
-			case 2: timeOfDay = "NIGHT"; break;
-			case 3: timeOfDay = "DAWN"; break;
-		}
-		
-		g2.setColor(Color.WHITE);
-		g2.setFont(new Font("Arial", Font.BOLD, 50));
-		g2.drawString(timeOfDay, x, y - gp.tileSize);
-		
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20f));						
-		
-		g2.drawString("WorldX: " + gp.player.worldX, x , y); 
-		y += lineHeight;
-		g2.drawString("WorldY: " + gp.player.worldY, x , y); 
-		y += lineHeight;
-		g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
-		y += lineHeight;
-		g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
-		y += lineHeight;
-		g2.drawString("Time Counter: " + gp.eManager.lighting.dayCounter, x, y);
-		
-		g2.setColor(Color.RED);
-		g2.drawRect(gp.player.screenX + gp.player.hitbox.x, gp.player.screenY + gp.player.hitbox.y, 
-				gp.player.hitbox.width, gp.player.hitbox.height);
-			
-		g2.setColor(new Color(255,0,0,100));
-		for (int i = 0; i < gp.pFinder.pathList.size(); i++) {
-			
-			int worldX = gp.pFinder.pathList.get(i).col * gp.tileSize;
-			int worldY = gp.pFinder.pathList.get(i).row * gp.tileSize;
-			int screenX = worldX - gp.player.worldX + gp.player.screenX;
-			int screenY = worldY - gp.player.worldY + gp.player.screenY;
-			
-			g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);			
-		}
-		
-		g2.setColor(Color.WHITE);
-		g2.setFont(PK_DS);
-	}	
 	
 	// PAUSE
 	private void drawPauseScreen() {
@@ -2071,4 +2103,7 @@ public class UI {
 		
 		return image;
 	}	
+	public void changeAlpha(Graphics2D g2, float alphaValue) {		
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
+	}
 }

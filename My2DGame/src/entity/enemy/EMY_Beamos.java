@@ -18,6 +18,7 @@ public class EMY_Beamos extends Entity {
 		
 		type = type_enemy;
 		name = emyName;
+		canTarget = false;
 		
 		maxLife = 12; life = maxLife;
 		speed = 0; defaultSpeed = speed;

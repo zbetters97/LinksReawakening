@@ -85,6 +85,7 @@ public class EMY_Wizzrobe extends Entity {
 		if (spriteNum == 4) {	
 			
 			invincible = true;
+			canTarget = false;
 			
 			if (locked) {
 				gp.player.lockon = false;
@@ -109,7 +110,7 @@ public class EMY_Wizzrobe extends Entity {
 			if (teleportCounter > 120) {
 				spriteNum = 4;
 				spriteCounter = 0;
-				teleporting = false;				
+				teleporting = false;	
 				teleportCounter = 0;
 			}
 		}	
@@ -125,6 +126,7 @@ public class EMY_Wizzrobe extends Entity {
 		if (spriteNum == 1) {
 			
 			invincible = false;
+			canTarget = true;
 			
 			// FIND PLAYER AND SHOOT PROJECTILE
 			if (onPath) {

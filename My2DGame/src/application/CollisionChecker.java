@@ -139,9 +139,9 @@ public class CollisionChecker {
 			
 			// NPC AND EMNEMIES
 			if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {	
-				
+
 				// ENEMY CAN FALL IN PIT IF HIT OR CAPTURED
-				if (entity.onGround && !entity.knockback && !entity.captured) {
+				if (entity.onGround && !entity.knockback && !entity.captured && !entity.thrown) {
 					entity.collisionOn = true;	
 				}
 			}
@@ -163,7 +163,7 @@ public class CollisionChecker {
 			if (entity.type == entity.type_npc || entity.type == entity.type_enemy) {	
 			
 				// ENEMY CAN FALL IN WATER IF HIT
-				if (!entity.canSwim && !entity.knockback) {
+				if (!entity.canSwim && !entity.knockback && !entity.thrown) {
 					entity.collisionOn = true;
 				}
 			}
@@ -229,7 +229,7 @@ public class CollisionChecker {
 			}
 		}
 		
-		if (entity.type == entity.type_enemy && 
+		if (entity.type == entity.type_enemy && !entity.captured &&
 				(entity.name.equals(EMY_Octorok.emyName) || 
 				entity.name.equals(EMY_Tektite.emyName))) {
 			
@@ -369,8 +369,8 @@ public class CollisionChecker {
 				}
 				// THROWN ENTITY
 				else if (entity.thrown) {
-					entity.resetValues();						
 					entity.alive = false;
+					entity.resetValues();						
 				}
 				// ON GROUND ENTITY
 				else if (entity.onGround) {						
@@ -417,10 +417,10 @@ public class CollisionChecker {
 				if (!entity.canSwim) {
 					entity.alive = false;
 				}
-				// RESET BOMB VALUES
-				if (entity.name.equals(PRJ_Bomb.prjName)) {
-					entity.animationSpeed = 30;
-					entity.active = false;	
+				// RESET THROWN ENTITY VALUES
+				if (entity.thrown) {
+					entity.alive = false;
+					entity.resetValues();		
 				}				
 			}
 		}		
@@ -895,7 +895,7 @@ public class CollisionChecker {
 					if (gp.obj[gp.currentMap][i].collision) {
 						entity.collisionOn = true;	
 					}
-					if (player) {
+					if (player && gp.obj[gp.currentMap][i].canPickup) {
 						index = i;
 					}
 					else if (gp.obj[gp.currentMap][i].type == gp.obj[gp.currentMap][i].type_collectable) {

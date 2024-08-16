@@ -121,7 +121,7 @@ public class Player extends Entity {
 		capturedTarget = null;
 		
 		speed = 3; defaultSpeed = speed;
-		runSpeed = 6; animationSpeed = 10;
+		animationSpeed = 10;
 		
 		// PLAYER ATTRIBUTES
 		maxLife = 20; life = maxLife;
@@ -135,10 +135,19 @@ public class Player extends Entity {
 		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		
+		inventory_item.add(new ITM_Shovel(gp));
+		inventory_item.add(new ITM_Boomerang(gp));
+		inventory_item.add(new ITM_Bomb(gp));
+		inventory_item.add(new ITM_Boots(gp));
+		inventory_item.add(new ITM_Hookshot(gp));
+		inventory_item.add(new ITM_Bow(gp));
+		inventory_item.add(new ITM_Feather(gp));
+		inventory_item.add(new ITM_Cape(gp));
+		inventory_item.add(new ITM_Rod(gp));		
+		
 		attack = getAttack();
 		
 		setDefaultPosition();
-		setDefaultItems();	
 		setDialogue();
 
 		getAttackImage();
@@ -170,18 +179,6 @@ public class Player extends Entity {
 		direction = "up";	
 		*/
 	}
-	public void setDefaultItems() {		
-
-		inventory_item.add(new ITM_Shovel(gp));
-		inventory_item.add(new ITM_Boomerang(gp));		
-		inventory_item.add(new ITM_Bomb(gp));
-		inventory_item.add(new ITM_Feather(gp));
-		inventory_item.add(new ITM_Bow(gp));		
-		inventory_item.add(new ITM_Hookshot(gp));
-		inventory_item.add(new ITM_Cape(gp));		
-		inventory_item.add(new ITM_Rod(gp));
-
-	}
 	public void restoreStatus() {
 		alive = true;		
 		canMove = true;
@@ -207,7 +204,7 @@ public class Player extends Entity {
 		
 		attackNum = 1; attackCounter = 0; 
 		actionLockCounter = 0;	
-		charge = 0; spinNum = 0;			
+		charge = 0; spinCharge = 0; spinNum = 0;			
 		invincibleCounter = 0;
 		damageNum = 1; damageCounter = 0;			
 		lowHPCounter = 0;
@@ -230,6 +227,11 @@ public class Player extends Entity {
 				grabbedObject.alive = false;	
 			}									
 			grabbedObject = null;
+		}
+		
+		if (capturedTarget != null) {
+			capturedTarget.captured = false;
+			capturedTarget = null;
 		}
 	}
 
@@ -481,7 +483,7 @@ public class Player extends Entity {
 
 		// DISABLED BUTTONS DURING SPECIFIC ACTIONS
 		if (!disabled_actions.contains(action)) {			
-			if (gp.keyH.actionPressed) { interact(); }	
+			if (gp.keyH.actionPressed) { action(); }	
 			if (spinning) { spinAttacking(); manageValues(); checkDeath(); return; }	
 			if (attacking) { attacking(); manageValues(); checkDeath(); return; }					
 			if (gp.keyH.grabPressed) { grabbing(); }			
@@ -514,7 +516,7 @@ public class Player extends Entity {
 		else if (action == Action.SOARING) { jumping(); }
 		else if (action == Action.SWIMMING) { swimming(); }
 		else if (action == Action.SWINGING) { swinging(); stop = true; }	
-		else if (action == Action.THROWING) { throwing(); stop = true; }		
+		else if (action == Action.THROWING || action == Action.TOSSING) { throwing(); stop = true; }		
 		
 		return stop;
 	}
@@ -601,7 +603,7 @@ public class Player extends Entity {
 			// RUNNING ANIMATION
 			if (action == Action.RUNNING) {
 				currentItem.playSE();
-				speed = runSpeed;
+				speed = 6;
 				animationSpeed = 6;
 			}
 			else {
@@ -614,8 +616,8 @@ public class Player extends Entity {
 	}
 	
 	// INTERACTIONS
-	public void interact() {
-		if (!attackCanceled) swingSword();
+	public void action() {
+		if (!attackCanceled) swingSword();		
 	}
 	public void checkCollision() {
 				
@@ -769,7 +771,7 @@ public class Player extends Entity {
 		
 	// SWORD
 	public void swingSword() {			
-		if (currentWeapon == null) {		
+		if (currentWeapon == null) {					
 			gp.keyH.actionPressed = false;
 			gp.gameState = gp.dialogueState;
 			startDialogue(this, 0);
@@ -786,6 +788,10 @@ public class Player extends Entity {
 		}	
 	}
 	public void attacking() {
+		
+		// HOLD ACTION BUTTON TO CHARGE SPIN ATTACK
+		if (gp.keyH.actionPressed) spinCharge++;
+		else spinCharge = 0;		
 		
 		attackCounter++;
 				
@@ -857,17 +863,19 @@ public class Player extends Entity {
 			hitbox.height = hitboxDefaultHeight;
 		}
 		else if (attackCounter > swingSpeed3) {
-			
+						
 			// CHARGE SPIN ATTACK
-			if (gp.keyH.actionPressed) {
+			if (spinCharge > swingSpeed3 && gp.keyH.actionPressed) {
 				currentWeapon.playChargeSE();
 				action = Action.CHARGING;
 				attackCounter = 0;	
+				spinCharge = 0;
 			}
 			// RESET IMAGE/VALUES
 			else {
 				attackNum = 1;
-				attackCounter = 0;				
+				attackCounter = 0;		
+				spinCharge = 0;
 				attacking = false;
 				attackCanceled = false;
 				gp.keyH.actionPressed = false;
@@ -1082,7 +1090,7 @@ public class Player extends Entity {
 				
 		for (Entity e : gp.enemy[gp.currentMap]) {
 			
-			if (e != null && e != lockedTarget && e.type != type_boss && !e.teleporting) {
+			if (e != null && e != lockedTarget && e.canTarget && !e.dying) {
 				
 				// ENEMY WITHIN 6 TILES
 				int enemyDistance = getTileDistance(e);
@@ -1113,7 +1121,9 @@ public class Player extends Entity {
 			else {				
 				lockedTarget.locked = false;
 				lockedTarget = null;
-				lockon = false;
+				
+				// FIND NEW TARGET
+				zTarget();
 			}
 		}
 		// NO TARGET FOUND WITHIN 8 TILES, TURN OFF LOCKON
@@ -1363,7 +1373,7 @@ public class Player extends Entity {
 			playThrowSE();
 			playGruntSE_1();
 			
-			action = Action.THROWING;
+			action = Action.TOSSING;
 			grabbedObject.thrown = true;
 			grabbedObject.grabbed = false;
 			grabbedObject.tWorldY = worldY;
@@ -1383,7 +1393,7 @@ public class Player extends Entity {
 		else if (gp.keyH.itemPressed) {
 			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
 				
-				action = Action.THROWING;
+				action = Action.TOSSING;
 				grabbedObject.grabbed = false;
 				grabbedObject.worldX = worldX;
 				grabbedObject.worldY = worldY;
@@ -1423,6 +1433,13 @@ public class Player extends Entity {
 			if (i != -1 && gp.projectile[gp.currentMap][i].grabbable) {
 				grabEntity(gp.projectile[gp.currentMap][i]);	
 				return;
+			}
+			else {
+				i = gp.cChecker.checkNPC();
+				if (i != -1 && gp.npc[gp.currentMap][i].grabbable) {
+					grabEntity(gp.npc[gp.currentMap][i]);
+					return;
+				}
 			}
 		}
 		
@@ -1564,16 +1581,9 @@ public class Player extends Entity {
 		}
 	}
 	public void throwing() {		
-		throwCounter++;		
-		
+		throwCounter++;			
 		if (6 >= throwCounter) throwNum = 1;
 		else if (throwCounter > 6) throwNum = 2;		
-		
-		if (throwCounter > 30 && gp.gameState == gp.playState) {
-			action = Action.IDLE;
-			throwNum = 1;
-			throwCounter = 0;
-		}
 	}
 	public void soaring() {
 
@@ -1877,14 +1887,8 @@ public class Player extends Entity {
 		if (life <= 0 && alive) {
 			
 			for (Entity e : inventory) {
-				if (e.name.equals(COL_Fairy.colName)) {
-					e.use(this);
-					if (e.amount > 1) e.amount--;
-					else inventory.remove(e);
-					
-					dropItem(e);
-					e.worldY -= gp.tileSize;
-					
+				if (e.name.equals(COL_Fairy.colName)) {					
+					e.use(this);					
 					return;
 				}
 			}
@@ -2121,6 +2125,9 @@ public class Player extends Entity {
 								if (spriteNum == 1) image = swimUp1;
 								else if (spriteNum == 2) image = swimUp2;
 								break;
+							case TOSSING:
+								image = throwUp2;
+								break;
 							case THROWING:
 								if (throwNum == 1) image = throwUp1;
 								else if (throwNum == 2) image = throwUp2;
@@ -2215,7 +2222,10 @@ public class Player extends Entity {
 							case SWIMMING:
 								if (spriteNum == 1) image = swimDown1;
 								else if (spriteNum == 2) image = swimDown2;
-								break;		
+								break;	
+							case TOSSING:
+								image = throwDown2;
+								break;
 							case THROWING:
 								if (throwNum == 1) image = throwDown1;
 								else if (throwNum == 2) image = throwDown2;
@@ -2314,6 +2324,9 @@ public class Player extends Entity {
 								if (spriteNum == 1) image = swimLeft1;
 								else if (spriteNum == 2) image = swimLeft2;
 								break;		
+							case TOSSING:
+								image = throwLeft2;
+								break;
 							case THROWING:						
 								if (throwNum == 1) image = throwLeft1;
 								else if (throwNum == 2) image = throwLeft2;
@@ -2404,6 +2417,9 @@ public class Player extends Entity {
 								if (spriteNum == 1) image = swimRight1;
 								else if (spriteNum == 2) image = swimRight2;
 								break;		
+							case TOSSING:
+								image = throwRight2;
+								break;
 							case THROWING:
 								if (throwNum == 1) image = throwRight1;
 								else if (throwNum == 2) image = throwRight2;

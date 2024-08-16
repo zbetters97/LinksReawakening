@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 
 import data.Progress;
 import entity.Entity;
-import entity.enemy.BOS_Skeleton;
+import entity.enemy.BOS_Stalfos_Lord;
 import entity.npc.NPC_Traveler_2;
 import entity.npc.PlayerDummy;
 import entity.object.OBJ_BlueHeart;
@@ -44,28 +44,28 @@ public class SceneManager {
 		npc1 = null;
 		npc2 = null;
 		
-		credits = "DIRECTOR / PRODUCOR\n"
+		credits = "- DIRECTOR / PRODUCOR -\n"
 				+ "Zachary Betters"
 				
-				+ "\n\nPROGRAMMER / QA PROGRAMMER"
+				+ "\n\n- PROGRAMMER / QA PROGRAMMER -"
 				+ "\nZachary Betters"
 				
-				+ "\n\nWRITING / DIALOGUE"
+				+ "\n\n- WRITING / DIALOGUE -"
 				+ "\nZachary Betters"
 				
-				+ "\n\nSPRITE ARTISTS"
+				+ "\n\n- SPRITE ARTISTS -"
 				+ "\nBruce Juice\nDrshnaps\nEternalLight\nMister Mike\nRed Mage Moogle\nSpikey Vi\nXfixium"
 				
-				+ "\n\nSFX"
-				+ "\nDayjo\nHTW\nViviVGM"
+				+ "\n\n- SFX -"
+				+ "\nDayjo\nHTW\nViviVGM-"
 												
-				+ "\n\nPLAY TESTERS"
+				+ "\n\n- PLAY TESTERS -"
 				+ "\nJenna Betters\nJosh Betters\nZachary Betters\nNicholas Carey"		
 				
-				+ "\n\nMUSIC FROM"
+				+ "\n\n- MUSIC FROM -"
 				+ "\nA Link to the Past"
 				
-				+ "\n\nINSPIRED BY"
+				+ "\n\n- INSPIRED BY -"
 				+ "\nA Link to the Past\nLink's Awakening\nMinish Cap\nOracle of Ages"
 					+ "\nThe Legend of Zelda NES\nTwilight Princess"
 				
@@ -324,7 +324,7 @@ public class SceneManager {
 			// SEARCH FOR BOSS
 			for (int i = 0; i < gp.enemy[1].length; i++) {
 				if (gp.enemy[gp.currentMap][i] != null && 
-						gp.enemy[gp.currentMap][i].name.equals(BOS_Skeleton.emyName)) {
+						gp.enemy[gp.currentMap][i].name.equals(BOS_Stalfos_Lord.emyName)) {
 					
 					gp.enemy[gp.currentMap][i].sleep = false;
 					gp.ui.npc = gp.enemy[gp.currentMap][i];
@@ -491,7 +491,7 @@ public class SceneManager {
 			drawString(1f, 38f, y, credits, 40);
 			
 			// SCROLL CREDITS			
-			if (y >= -2025) {
+			if (y >= -2000) {
 				y--;
 			}	
 			else {

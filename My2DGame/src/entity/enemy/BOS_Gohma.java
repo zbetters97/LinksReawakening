@@ -26,6 +26,7 @@ public class BOS_Gohma extends Entity {
 		sleep = true;
 		lockon = true;
 		capturable = true;
+		canTarget = false;
 		
 		hitbox = new Rectangle(51, 8, 42, 33); 
 		hitboxDefaultX = hitbox.x;

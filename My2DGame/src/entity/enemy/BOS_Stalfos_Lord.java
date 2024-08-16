@@ -5,11 +5,11 @@ import java.awt.Rectangle;
 import application.GamePanel;
 import entity.Entity;
 
-public class BOS_Skeleton extends Entity {
+public class BOS_Stalfos_Lord extends Entity {
 
-	public static final String emyName = "Skeleton King";
+	public static final String emyName = "Stalfos Lord";
 	
-	public BOS_Skeleton(GamePanel gp, int worldX, int worldY) {
+	public BOS_Stalfos_Lord(GamePanel gp, int worldX, int worldY) {
 		super(gp);		
 		this.worldX = worldX * gp.tileSize;
 		this.worldY = worldY * gp.tileSize;	
@@ -20,6 +20,7 @@ public class BOS_Skeleton extends Entity {
 		name = emyName;
 		sleep = true;	
 		capturable = true;
+		canTarget = false;
 						
 		int hbScale = gp.tileSize * 5;
 		hitbox = new Rectangle(gp.tileSize, gp.tileSize, hbScale - (gp.tileSize * 2), hbScale - gp.tileSize); 
@@ -90,8 +91,9 @@ public class BOS_Skeleton extends Entity {
 	}
 	
 	public void setDialogue() {
-		dialogues[0][0] = "No one may enter the tressure room!";
-		dialogues[0][1] = "Taste the blade of my sword!";
+		dialogues[0][0] = "Who dares enter my treasure room?!";
+		dialogues[0][1] = "You mere mortal will never be able to\nwield the power of the Blue Heart!";
+		dialogues[0][2] = "I forbid you from completing your quest!";
 	}
 	
 	public void setAction() {

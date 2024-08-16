@@ -19,6 +19,7 @@ public class EMY_Octorok extends Entity {
 		type = type_enemy;
 		name = emyName;
 		canSwim = true;
+		capturable = true;
 		
 		maxLife = 6; life = maxLife;
 		speed = 1; defaultSpeed = speed;
@@ -45,6 +46,7 @@ public class EMY_Octorok extends Entity {
 		
 		if (sleep) return;		
 		if (knockback) { knockbackEntity(); manageValues();	return; }
+		if (captured) { isCaptured(); manageValues(); return; }
 		if (stunned) { manageValues(); return; }
 		if (attacking) { attacking(); }
 		
@@ -55,13 +57,16 @@ public class EMY_Octorok extends Entity {
 	}
 	
 	public void setAction() {
-		if (onPath) {			
-			isOffPath(gp.player, 8);
-			useProjectile(90);
-		}
-		else {	
-			isOnPath(gp.player, 5);
-		}
+		
+		if (!captured) {
+			if (onPath) {			
+				isOffPath(gp.player, 8);
+				useProjectile(90);
+			}
+			else {	
+				isOnPath(gp.player, 5);
+			}
+		}				
 	}
 	
 	public void move() {
@@ -96,6 +101,11 @@ public class EMY_Octorok extends Entity {
 					break;
 			}		
 		}
+	}
+	
+	public void attacking() {
+		attacking = false;
+		useProjectile(1);
 	}
 	
 	public void damageReaction() {

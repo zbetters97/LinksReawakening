@@ -9,6 +9,7 @@ public class Projectile extends Entity {
 	
 	public Projectile(GamePanel gp) {
 		super(gp);
+		canPickup = false;
 	}
 	
 	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {		

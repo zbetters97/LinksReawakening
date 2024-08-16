@@ -64,9 +64,15 @@ public class InteractiveTile extends Entity {
 				
 				checkDrop();
 				generateRectParticle(this);
+				
 				throwCounter = 0;
 				tTime = 0;
-				alive = false;					
+				alive = false;				
+				
+				gp.player.action = Action.IDLE;
+				gp.player.grabbedObject = null;			
+				gp.player.throwCounter = 0;
+				gp.player.throwNum = 1;
 			}				
 		}
 	}

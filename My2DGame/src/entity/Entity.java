@@ -25,14 +25,14 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, 
-		JUMPING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING;
+		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, JUMPING, PUSHING, 
+		ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING;
 	}
 	
-	protected List<Action> disabled_actions = Arrays.asList(
-			Action.AIMING, Action.CARRYING, Action.CHARGING,
-			Action.JUMPING, Action.PUSHING, Action.ROLLING, 
-			Action.SOARING, Action.SWIMMING, Action.THROWING
+	public List<Action> disabled_actions = Arrays.asList(
+			Action.AIMING, Action.CARRYING, Action.CHARGING, Action.JUMPING, 
+			Action.PUSHING, Action.ROLLING, Action.SOARING, Action.SWIMMING, 
+			Action.THROWING, Action.TOSSING
 	);
 	
 	protected GamePanel gp;
@@ -45,12 +45,11 @@ public class Entity {
 	protected int tempScreenX;
 	protected int tempScreenY;
 	public int bounds = 999;	
-	public String direction = "down";	
-	
+	public String direction = "down";		
 	public int type;
 	public String name;			
 	public int life, maxLife; // 1 life = 1/4 heart
-	public int speed, defaultSpeed, animationSpeed, runSpeed;	
+	public int speed, defaultSpeed, animationSpeed, defaultAnimationSpeed;	
 	public boolean drawing = true;
 	public boolean temp = false;
 	public boolean sleep = false;	
@@ -67,9 +66,9 @@ public class Entity {
 							attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3,							
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,							
-							grabUp1, grabDown1, grabLeft1, grabRight1,							
-							buzzUp1, buzzUp2,
-							lockedImage = setup("/enemy/lockon", 48 + 20, 48 + 20);
+							grabUp1, grabDown1, grabLeft1, grabRight1,						
+							buzzUp1, buzzUp2,							
+							zTargetLocked = setup("/enemy/lockon_locked", 48 + 20, 48 + 20);
 		
 	// CHARACTER ATTRIBUTES	
 	public Action action;	
@@ -88,6 +87,7 @@ public class Entity {
 	public boolean onPath = false;
 	public boolean pathCompleted = false;
 	public boolean guarded = false;
+	public boolean canTarget = true;
 	public boolean captured = false;
 	public boolean capturable = false;	
 	public boolean attacking = false;
@@ -129,15 +129,16 @@ public class Entity {
 	public int attackCounter = 0;
 	public int actionLockCounter = 0;	
 	public boolean attackCanceled = false;
+	public int charge = 0;
 	public int swingSpeed1;
 	public int swingSpeed2;	
 	public int swingSpeed3;
 	
 	// SPIN ATTACK
+	public int spinCharge = 0;
 	public boolean spinning = false;
 	public int spinNum = 0;
 	public int spinCounter = 0;
-	public int charge = 0;
 
 	// KNOCKBACK
 	public boolean knockback = false;
@@ -178,6 +179,7 @@ public class Entity {
 	public boolean opening = false;
 	public boolean closing = false;
 	public boolean turning = false;	
+	public boolean canPickup = true;
 	
 	// THROWING 
 	public boolean thrown = false;
@@ -194,7 +196,6 @@ public class Entity {
 	// PROJECTILE ATTRIBUTES
 	public Entity user;
 	public int shotAvailableCounter;
-	public boolean canPickup = false;
 	
 	// ITEM ATTRIBUTES
 	public String description = "";
@@ -205,7 +206,8 @@ public class Entity {
 	public int amount = 1;
 	public int useCost;		
 	public int lifeDuration = -1;
-	public boolean stackable = false;		
+	public boolean stackable = false;	
+	public boolean reviving = false;
 	
 	// INVENTORY
 	public ArrayList<Entity> inventory = new ArrayList<>();
@@ -286,7 +288,7 @@ public class Entity {
 			
 	public void move() {
 		
-		checkCollision();
+		if (!grabbed || thrown) checkCollision();
 		if (!collisionOn && withinBounds()) { 						
 			switch (direction) {
 				case "up": worldY -= speed; break;
@@ -849,7 +851,7 @@ public class Entity {
 			}
 		}		
 	}
-	protected void dropItem(Entity droppedItem) { 	
+	public void dropItem(Entity droppedItem) { 	
 		for (int i = 0; i < gp.obj[1].length; i++) {			
 			if (gp.obj[gp.currentMap][i] == null) {
 				gp.obj[gp.currentMap][i] = droppedItem;
@@ -1066,7 +1068,7 @@ public class Entity {
 				case "down": 
 				case "downleft":
 				case "downright":
-					if (throwCounter == 1) worldY += 64;
+					if (throwCounter == 1) worldY += 65;
 					else {								
 						checkThrownCollision();
 						if (!collisionOn) worldY += 4;							
@@ -1329,7 +1331,7 @@ public class Entity {
 					
 			// LOCKON IMAGE
 			if (locked) {						
-				g2.drawImage(lockedImage, getScreenX() - 10, getScreenY() - 10, null);
+				g2.drawImage(zTargetLocked, getScreenX() - 10, getScreenY() - 10, null);
 			}
 			
 			// DRAW HITBOX

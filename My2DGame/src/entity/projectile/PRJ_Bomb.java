@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import application.GamePanel;
-import entity.*;
+import entity.Entity;
 import tile.tile_interactive.IT_Switch;
 
 public class PRJ_Bomb extends Projectile {
@@ -49,7 +49,7 @@ public class PRJ_Bomb extends Projectile {
 	
 	public void update() {
 		super.update();
-		
+				
 		if (grabbed) grabbed();		
 		else if (thrown) thrown();
 	}
@@ -73,7 +73,9 @@ public class PRJ_Bomb extends Projectile {
 			collisionOn = false;
 
 			gp.player.action = Action.IDLE;
-			gp.player.grabbedObject = null;
+			gp.player.grabbedObject = null;			
+			gp.player.throwCounter = 0;
+			gp.player.throwNum = 1;
 			
 			if (alive) {	
 				Entity enemy = getEnemy(this);		

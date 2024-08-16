@@ -22,6 +22,7 @@ public class EMY_Blade extends Entity {
 		type = type_enemy;
 		name = emyName;
 		guarded = true;
+		canTarget = false;
 		
 		maxLife = 1; life = maxLife;
 		speed = 5; defaultSpeed = speed;

@@ -94,6 +94,7 @@ public class EventHandler {
 			else if (hit(1, 12, 13, true)) teleport(0, 10, 39, gp.outside, 2, "down"); // SHOP EXIT
 			else if (hit(0, 12, 12, true)) { 
 				gp.player.inventory_item.clear(); 
+				gp.player.currentItem = null;
 				teleport(2, 40, 93, gp.dungeon, 1, "up"); // DUNGEON ENTRANCE 
 			}
 			else if (hit(2, 40, 93, true)) teleport(0, 12, 12, gp.outside, 2, "down"); // DUNGEON EXIT

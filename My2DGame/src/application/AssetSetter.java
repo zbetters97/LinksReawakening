@@ -23,6 +23,8 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 						
+		gp.npc[mapNum][i] = new NPC_Cucco(gp, 23, 12); i++;
+		
 		gp.npc[mapNum][i] = new NPC_Traveler_1(gp, 20, 21); 
 		gp.npc[mapNum][i].direction = "left"; i++;		
 		gp.npc[mapNum][i] = new NPC_Traveler_2(gp, 20, 32); 
@@ -88,7 +90,7 @@ public class AssetSetter {
 		i = 0;
 		
 		if (!Progress.bossDefeated_1_2) {
-			gp.enemy[mapNum][i] = new BOS_Skeleton(gp, 23, 16);
+			gp.enemy[mapNum][i] = new BOS_Stalfos_Lord(gp, 23, 16);
 			i++;
 		}				
 	}

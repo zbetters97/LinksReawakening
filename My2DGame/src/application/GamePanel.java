@@ -173,7 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
 		map.loadWorldMap();
 		
 		setupMusic(false);
-		setupAreaNames();
+		setupMapNames();
 
 		eManager.setup();
 		
@@ -190,6 +190,8 @@ public class GamePanel extends JPanel implements Runnable {
 		g2 = (Graphics2D)tempScreen.getGraphics();
 		
 		if (fullScreenOn) setFullScreen();
+		
+		getMapTitle();
 	}
 		
 	private void setFullScreen() {
@@ -277,8 +279,13 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	private void updateNPC() {
 		for (int i = 0; i < npc[1].length; i++) {
-			if (npc[currentMap][i] != null)
-				npc[currentMap][i].update();
+			if (npc[currentMap][i] != null) {
+				if (npc[currentMap][i].alive) 
+					npc[currentMap][i].update();
+				if (!npc[currentMap][i].alive)
+					npc[currentMap][i] = null;
+			}
+				
 		}
 	}	
 	private void updateEnemies() {		
@@ -361,7 +368,7 @@ public class GamePanel extends JPanel implements Runnable {
 		if (nextArea != currentArea) {
 			stopMusic();			
 			setupMusic(false);
-			getAreaTitle();
+			getMapTitle();
 		}	
 		
 		currentArea = nextArea;
@@ -480,7 +487,7 @@ public class GamePanel extends JPanel implements Runnable {
 			else if (currentMap == 3) playMusic(4);
 		}
 	}	
-	public void setupAreaNames() {
+	public void setupMapNames() {
 		
 		// GIVE EACH MAP A NAME
 		mapNames = new HashMap<Integer, String>();		
@@ -490,7 +497,7 @@ public class GamePanel extends JPanel implements Runnable {
 		mapNames.put(3, "NULL");
 	}
 	
-	public void getAreaTitle() {
+	public void getMapTitle() {
 		
 		// MAP HAS NAME
 		if (!mapNames.get(currentMap).equals("NULL")) {
@@ -547,6 +554,11 @@ public class GamePanel extends JPanel implements Runnable {
 			// DRAW ENTITIES
 			for (Entity e : entityList) { e.draw(g2); }
 			
+			// DRAW GRABBED NPCs
+			for (Entity n : npc[currentMap]) {
+				if (n != null && n.grabbed) n.draw(g2);
+			}
+			
 			// DRAW GRABBED iTILES
 			for (InteractiveTile i : iTile[currentMap]) {
 				if (i != null && i.grabbed) i.draw(g2);
@@ -555,8 +567,8 @@ public class GamePanel extends JPanel implements Runnable {
 			// DRAW GRABBED OR THROWN PROJECTILES
 			for (Entity p : projectile[currentMap]) {
 				if (p != null && (p.grabbed || p.thrown)) p.draw(g2);				
-			}
-			
+			}			
+									
 			// EMPTY ENTITY LIST
 			entityList.clear();
 			

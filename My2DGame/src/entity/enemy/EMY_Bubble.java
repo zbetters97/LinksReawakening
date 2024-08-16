@@ -23,6 +23,7 @@ public class EMY_Bubble extends Entity {
 		type = type_enemy;
 		name = emyName;
 		onGround = false;
+		canTarget = false;
 		
 		speed = 4; defaultSpeed = speed;
 		animationSpeed = 5;
