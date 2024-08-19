@@ -132,10 +132,9 @@ public class Player extends Entity {
 		shotAvailableCounter = 30;
 		
 		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);
+		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 		
-/*
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Bomb(gp));
@@ -145,7 +144,6 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Feather(gp));
 		inventory_item.add(new ITM_Cape(gp));
 		inventory_item.add(new ITM_Rod(gp));	
-*/
 		
 		attack = getAttack();
 		
@@ -637,7 +635,7 @@ public class Player extends Entity {
 		gp.cChecker.checkEntity(this, gp.iTile);
 								
 		// DON'T CHECK PITS WHEN JUMPING
-		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkPit(this, true);
+		if (action != Action.JUMPING && action != Action.SOARING) gp.cChecker.checkHazard(this, true);
 		
 		if (diving) {
 			if (collisionOn) diving = false;			
@@ -650,8 +648,7 @@ public class Player extends Entity {
 		interactNPC(npcIndex);
 		
 		// CHECK ENEMY COLLISION
-		int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
-		contactEnemy(enemyIndex, gp.enemy);
+		contactEnemy(getEnemy(this));
 		
 		// CHECK INTERACTIVE OBJECTS COLLISION
 		int objTIndex = gp.cChecker.checkObject_I(this, true);
@@ -667,10 +664,13 @@ public class Player extends Entity {
 	}
 	public void interactNPC(int i) {		
 		if (i != -1) {
-			if (gp.keyH.actionPressed && action != Action.CHARGING) {
-				resetValues();
-				attackCanceled = true;
-				gp.npc[gp.currentMap][i].speak();				
+			if (gp.keyH.actionPressed && !disabled_actions.contains(action)) {
+				
+				if (!gp.npc[gp.currentMap][i].name.contains("Cucco")) {					
+					resetValues();
+					attackCanceled = true;
+					gp.npc[gp.currentMap][i].speak();		
+				}			
 			}			
 		}				
 	}	
@@ -1165,30 +1165,38 @@ public class Player extends Entity {
 	}
 	
 	// ENEMY DAMAGE
-	public void contactEnemy(int i, Entity enemyList[][]) {
+	public void contactEnemy(Entity enemy) {
 		
 		// PLAYER HURT BY ENEMY
-		if (i != -1 && !invincible &&
-				enemyList[gp.currentMap][i].collision &&
-				!enemyList[gp.currentMap][i].dying && 		
-				!enemyList[gp.currentMap][i].captured) {
-
-			Entity enemy = enemyList[gp.currentMap][i];
+		if (enemy != null && !invincible) {
 			
-			if (enemy.knockbackPower > 0) setKnockback(this, enemy, enemy.knockbackPower);			
-			
-			String guardDirection = getOppositeDirection(enemy.direction);
-			if (action == Action.GUARDING && direction.equals(guardDirection)) {
-				playBlockSE();
+			if (enemy.collision && !enemy.dying && !enemy.captured) {
 				
-				if (enemy.name.equals(EMY_Beetle.emyName)) {
-					enemy.attacking = true;
-					setKnockback(enemy, this, 1);
+				if (enemy.knockbackPower > 0) setKnockback(this, enemy, enemy.knockbackPower);			
+				
+				String guardDirection = getOppositeDirection(enemy.direction);
+				if (action == Action.GUARDING && direction.equals(guardDirection)) {
+					playBlockSE();
+					
+					if (enemy.name.equals(EMY_Beetle.emyName)) {
+						enemy.attacking = true;
+						setKnockback(enemy, this, 1);
+					}
+					
+					if (enemy.knockbackPower == 0) setKnockback(enemy, this, 1);
 				}
-				
-				if (enemy.knockbackPower == 0) setKnockback(enemy, this, 1);
+				else {					
+					playHurt();
+					
+					int damage = enemy.attack;								
+					if (damage < 0) damage = 0;				
+					this.life -= damage;
+					
+					invincible = true;
+					transparent = true;	
+				}
 			}
-			else {					
+			else if (enemy.aggressive) {
 				playHurt();
 				
 				int damage = enemy.attack;								

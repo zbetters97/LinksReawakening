@@ -228,6 +228,7 @@ public class KeyHandler implements KeyListener {
 				gp.gameState = gp.playState;
 				gp.resetGame();		
 				gp.setupMusic(true);
+				gp.getMapTitle();
 				gp.ui.titleScreenState = 0;
 			}
 			// LETTER SELECT				
@@ -281,7 +282,8 @@ public class KeyHandler implements KeyListener {
 					gp.fileSlot = 0;
 					gp.tileM.loadMap();
 					gp.gameState = gp.playState;
-					gp.setupMusic(true);						
+					gp.setupMusic(true);	
+					gp.getMapTitle();
 				}
 				else {
 					playErrorSE();
@@ -314,7 +316,8 @@ public class KeyHandler implements KeyListener {
 					gp.fileSlot = 2;
 					gp.tileM.loadMap();
 					gp.gameState = gp.playState;
-					gp.setupMusic(true);						
+					gp.setupMusic(true);	
+					gp.getMapTitle();
 				}
 				else {
 					playErrorSE();

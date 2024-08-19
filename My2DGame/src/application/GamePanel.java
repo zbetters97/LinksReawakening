@@ -160,7 +160,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {	
 						
- 		gameState = playState;	
+ 		gameState = titleState;	
 		currentArea = outside;
 		currentMap = 0;
 /*		
@@ -481,7 +481,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		if (gameState == titleState) playMusic(0);
 		else if (reset || nextArea != currentArea) {							
-			if (currentMap == 0) playMusic(1);
+			if (currentMap == 0) playMusic(2);
 			else if (currentMap == 1) playMusic(3);
 			else if (currentMap == 2) playMusic(4);
 			else if (currentMap == 3) playMusic(4);

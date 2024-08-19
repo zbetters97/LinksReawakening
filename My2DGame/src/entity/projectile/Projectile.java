@@ -203,12 +203,13 @@ public class Projectile extends Entity {
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
 		gp.cChecker.checkEntity(this, gp.iTile);
-		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkObject(this, false);	
 		gp.cChecker.checkObject_I(this, false);
 		
 		int objectIndex = gp.cChecker.checkObject(this, true);
+		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+		
 		Entity enemy = getEnemy(this);		
 		if (enemy != null) {
 			gp.player.damageEnemy(enemy, this, attack, knockbackPower);
@@ -228,7 +229,7 @@ public class Projectile extends Entity {
 		gp.player.damageInteractiveTile(iTileIndex, this);
 				
 		// MAX LENGTH REACHED OR OBJECT GRABBED
-		if (life <= 0 || objectIndex != -1 || collisionOn) {
+		if (life <= 0 || objectIndex != -1 || npcIndex != -1 || collisionOn) {
 			returning = true;
 		}
 		
@@ -331,7 +332,8 @@ public class Projectile extends Entity {
 		
 		int objectIndex = gp.cChecker.checkObject(this, true);
 		int objectiIndex = gp.cChecker.checkObject_I(this, true);		
-		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);		
+		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);	
+		int cuccoIndex = gp.cChecker.checkEntity(this, gp.npc);
 		gp.player.damageInteractiveTile(iTileIndex, this);
 						
 		// COLLISION DETECTED
@@ -424,27 +426,20 @@ public class Projectile extends Entity {
 					break;
 			}				
 		}
-		// MAX LENGTH REACHED OR OBJECT GRABBED
-		else if (life <= 0 || objectIndex != -1) {	
+		// MAX LENGTH REACHED OR ENTITY GRABBED
+		else if (life <= 0 || objectIndex != -1 || cuccoIndex != -1) {	
 			
 			// PULL OBJECT TOWARDS PLAYER
-			if (objectIndex != -1 && 
+			if ((objectIndex != -1 && 
 					gp.obj[gp.currentMap][objectIndex].type != type_obstacle &&
-					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i) {
-				
-				hookGrabbed = true;					
-				gp.obj[gp.currentMap][objectIndex].worldX = worldX;
-				gp.obj[gp.currentMap][objectIndex].worldY = worldY;
-				
-				// STOP COLLISION WITH PLAYER
-				int playerObjIndex = gp.cChecker.checkObject(gp.player, true);
-				if (playerObjIndex != -1) {
-					alive = false;			
-					hookGrabbed = false;
-					gp.gameState = gp.playState;	
-					return;
-				}
-			}			
+					gp.obj[gp.currentMap][objectIndex].type != type_obstacle_i)) {
+								
+				if (pullEntity(gp.obj[gp.currentMap][objectIndex])) return;
+			}	
+			// PULL CUCCO TOWARDS PLAYER
+			else if (cuccoIndex != -1 && gp.npc[gp.currentMap][cuccoIndex].name.contains("Cucco")) {								
+				if (pullEntity(gp.npc[gp.currentMap][cuccoIndex])) return;
+			}	
 						
 			switch (direction) {
 				case "up":
@@ -536,6 +531,25 @@ public class Projectile extends Entity {
 			// DRAW CHAIN
 			if (life % 3 == 0) generateRoundParticle(this);			
 		}
+	}	
+	private boolean pullEntity(Entity entity) {
+		
+		boolean returnedToPlayer = false;
+		
+		hookGrabbed = true;					
+		entity.worldX = worldX;
+		entity.worldY = worldY;
+		
+		// STOP COLLISION WITH PLAYER
+		int playerObjIndex = gp.cChecker.checkObject(gp.player, true);
+		if (playerObjIndex != -1) {
+			alive = false;			
+			hookGrabbed = false;
+			gp.gameState = gp.playState;	
+			returnedToPlayer = true;
+		}
+		
+		return returnedToPlayer;
 	}
 	
 	public void rod() {

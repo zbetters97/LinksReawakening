@@ -65,7 +65,7 @@ public class PRJ_Bomb extends Projectile {
 		speed = 0;
 		if (tossEntity()) {									
 			
-			gp.cChecker.checkPit(this, false);
+			gp.cChecker.checkHazard(this, false);
 			
 			thrown = false;
 			throwCounter = 0;
@@ -146,17 +146,18 @@ public class PRJ_Bomb extends Projectile {
 		explode();
 	}
 	
-	public void resetValues() {
-		spriteNum = 1;
-		speed = defaultSpeed;
-		animationSpeed = 30;
-		active = false;
+	public void resetValues() {		
 		alive = false;	
+		active = false;
+		captured = false;
 		grabbed = false;
 		thrown = false;
-		captured = false;
+		
+		speed = defaultSpeed;
+		animationSpeed = 30;
+		spriteNum = 1;
 		throwCounter = 0;
-		tTime = 0;
+		tTime = 0;		
 	}
 
 	public Color getParticleColor() {

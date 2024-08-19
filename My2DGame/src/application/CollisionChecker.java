@@ -171,7 +171,7 @@ public class CollisionChecker {
 			else if (entity.type == entity.type_boss) {
 				if (!entity.canSwim) {
 					entity.collisionOn = true;
-				}
+				} 
 			}			
 		}
 		// SPIKES
@@ -240,7 +240,7 @@ public class CollisionChecker {
 	}
 			
 	// DAMAGE PIT COLLISION
-	public void checkPit(Entity entity, boolean player) {
+	public void checkHazard(Entity entity, boolean player) {
 		
 		// COLLISION BOX
 		int entityWorldX = entity.worldX + entity.hitbox.x + (entity.hitbox.width / 2);
@@ -352,6 +352,7 @@ public class CollisionChecker {
 			default: 
 				return;
 		}		
+		
 		// PIT
 		if (gp.tileM.tile[tileNum1].pit || gp.tileM.tile[tileNum2].pit) {
 			
@@ -369,8 +370,12 @@ public class CollisionChecker {
 				}
 				// THROWN ENTITY
 				else if (entity.thrown) {
-					entity.alive = false;
-					entity.resetValues();						
+					entity.resetValues();	
+					
+					gp.player.action = Action.IDLE;
+					gp.player.grabbedObject = null;			
+					gp.player.throwNum = 1;
+					gp.player.throwCounter = 0;	
 				}
 				// ON GROUND ENTITY
 				else if (entity.onGround) {						
@@ -416,12 +421,17 @@ public class CollisionChecker {
 				// ENTITY CANNOT SWIM
 				if (!entity.canSwim) {
 					playDrownSE();
+					entity.generateWaterParticle(entity);
 					entity.alive = false;
 				}
 				// RESET THROWN ENTITY VALUES
-				if (entity.thrown) {					
-					entity.alive = false;
-					entity.resetValues();		
+				if (entity.thrown) {						
+					entity.resetValues();	
+					
+					gp.player.action = Action.IDLE;
+					gp.player.grabbedObject = null;			
+					gp.player.throwNum = 1;
+					gp.player.throwCounter = 0;					
 				}				
 			}
 		}		
@@ -814,7 +824,7 @@ public class CollisionChecker {
 						}
 						else {
 							index = i;	
-											
+							
 							if (target[gp.currentMap][i].collision) {
 								entity.collisionOn = true;								
 							}		

@@ -93,6 +93,7 @@ public class Entity {
 	public boolean attacking = false;
 	public boolean teleporting = false;
 	public boolean buzzing = false;		
+	public boolean aggressive = false;
 	public Entity capturedTarget;
 		
 	// DIALOGUE
@@ -290,7 +291,8 @@ public class Entity {
 		
 		if (!grabbed || thrown) checkCollision();
 		
-		if (!collisionOn && withinBounds() && !thrown) { 						
+		if (!collisionOn && withinBounds() && !thrown) { 	
+			
 			switch (direction) {
 				case "up": worldY -= speed; break;
 				case "upleft": worldY -= speed - 1; worldX -= speed - 1; break;
@@ -316,7 +318,7 @@ public class Entity {
 		
 		collisionOn = false;
 		gp.cChecker.checkTile(this);	
-		gp.cChecker.checkPit(this, false);	
+		gp.cChecker.checkHazard(this, false);	
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.enemy);
 		gp.cChecker.checkEntity(this, gp.obj);
@@ -327,7 +329,7 @@ public class Entity {
 		
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
-		if ((type == type_enemy || type == type_boss) && contactPlayer) 
+		if ((type == type_enemy || type == type_boss || aggressive) && contactPlayer) 
 			damagePlayer(attack);  	
 	}
 	private void checkThrownCollision() {
@@ -621,6 +623,14 @@ public class Entity {
 		int enemyIndex = gp.cChecker.checkEntity(entity, gp.enemy);
 		if (enemyIndex != -1) {
 			enemy = gp.enemy[gp.currentMap][enemyIndex];
+		}
+		else {
+			enemyIndex = gp.cChecker.checkEntity(entity, gp.npc);
+			
+			// NPC CAN BECOME AN ENEMY
+			if (enemyIndex != -1 && gp.npc[gp.currentMap][enemyIndex].name.contains("Cucco")) {
+				enemy = gp.npc[gp.currentMap][enemyIndex];
+			}
 		}
 		
 		return enemy;
@@ -1106,6 +1116,18 @@ public class Entity {
 		int size = generator.getParticleSize();
 		int speed = generator.getParticleSpeed();
 		int maxLife = generator.getParticleMaxLife();
+		
+		Particle_Rect p1 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle_Rect p2 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle_Rect p3 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle_Rect p4 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, 1);
+		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
+	}
+	public void generateWaterParticle(Entity generator) {
+		Color color = Color.BLUE;
+		int size = 6;
+		int speed = 1;
+		int maxLife = 15;
 		
 		Particle_Rect p1 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, -1);
 		Particle_Rect p2 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, 1);

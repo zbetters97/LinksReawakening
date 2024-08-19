@@ -48,7 +48,7 @@ public class InteractiveTile extends Entity {
 	private void thrown() { 
 		if (tossEntity()) {
 			
-			gp.cChecker.checkPit(this, false);			
+			gp.cChecker.checkHazard(this, false);			
 			
 			if (alive) {
 				playSE();				

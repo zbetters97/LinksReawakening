@@ -8,8 +8,13 @@ import entity.Entity;
 public class NPC_Cucco extends Entity {
 	
 	public static final String npcName = "Cucco";
+	private int animationPanicSpeed = 5;
+	private int panicSpeed = 2;
 	private int squakTimer = 0;
 	private int squakTimerMax = 120;
+	private int squakTimerPanicMax = 30;
+	private boolean hurt = false;
+	private int hurtTimer = 0;
 	
 	public NPC_Cucco(GamePanel gp, int worldX, int worldY) {		
 		super(gp);	
@@ -24,8 +29,9 @@ public class NPC_Cucco extends Entity {
 		type = type_npc;
 		name = npcName;
 		direction = "down";
-		speed = 1; defaultSpeed = speed;
-		animationSpeed = 10; defaultAnimationSpeed = animationSpeed;
+		maxLife = 99; life = maxLife;
+		defaultSpeed = 1; speed = defaultSpeed;
+		defaultAnimationSpeed = 10; animationSpeed = defaultAnimationSpeed;
 		
 		hitbox = new Rectangle(8, 20, 32, 28); 		
 		hitboxDefaultX = hitbox.x;
@@ -63,13 +69,13 @@ public class NPC_Cucco extends Entity {
 		speed = 0;
 		if (tossEntity()) {									
 			
-			gp.cChecker.checkPit(this, false);
-			
+			gp.cChecker.checkHazard(this, false);
+						
 			thrown = false;
+			hurt = true;
 			throwCounter = 0;
 			tTime = 0;
-			speed = defaultSpeed;
-
+			
 			gp.player.action = Action.IDLE;
 			gp.player.grabbedObject = null;			
 			gp.player.throwCounter = 0;
@@ -77,17 +83,53 @@ public class NPC_Cucco extends Entity {
 		}
 	}
 	
-	public void setAction() {				
-		
-		if (!thrown && !grabbed) {	
+	public void setAction() {		
+						
+		if (!thrown && !grabbed && !hurt && !aggressive) {	
+			speed = defaultSpeed;
 			animationSpeed = defaultAnimationSpeed;
-			getDirection(60);			
+			
+			getDirection(60);		
 		}		
-		// CUCCO PANICS WHEN GRABBED
 		else if (grabbed) {
-			animationSpeed = 5;
-			squakTimerMax = 30;
+			
+			animationSpeed = animationPanicSpeed;
+			squakTimerMax = squakTimerPanicMax;
+			actionLockCounter = 0;
+			hurt = false;
+			
 			direction = getPlayerDirection();
+		}
+		else if (hurt) {		
+			
+			speed = panicSpeed;
+			animationSpeed = animationPanicSpeed;
+			squakTimerMax = squakTimerPanicMax;
+			grabbable = false;		
+			
+			getDirection(15);
+			
+			hurtTimer++;
+			if (hurtTimer >= 120) {
+				grabbable = true;
+				hurt = false;
+				hurtTimer = 0;
+			}
+		}
+		else if (aggressive) {				
+			attack = 2;
+			
+			speed = panicSpeed;
+			animationSpeed = animationPanicSpeed;
+			squakTimerMax = squakTimerPanicMax;
+			grabbable = false;	
+			
+			attackPlayer();			
+			
+			hurtTimer++;
+			if (hurtTimer >= 999) {
+				resetValues();
+			}
 		}
 		
 		// PLAY SQUAK IF IN FRAME
@@ -99,6 +141,12 @@ public class NPC_Cucco extends Entity {
 				getSquakTimerMax();	
 			}
 		}		
+		
+		if (0 >= life) {
+			resetValues();	
+			aggressive = true;
+			grabbable = false;
+		}
 	}
 	
 	// RANDOM SQUAK INTERVALS (1, 2, 3, or 4 seconds)
@@ -110,21 +158,57 @@ public class NPC_Cucco extends Entity {
 		else if (squak == 4) squakTimerMax = 240;		
 	}
 	
+	private void attackPlayer() {
+		
+		isOffPath(gp.player, 6);
+		if (onPath && playerWithinBounds()) {	
+			searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
+		}
+		else {				
+			
+			// SEARCH FOR PLAYER IF WITHIN BOUNDS
+			if (playerWithinBounds()) {
+				isOnPath(gp.player, 10);
+			}
+			else {
+				onPath = false;
+			}
+		}		
+	}
+	
+	public void damageReaction() {
+		playSE();
+		grabbable = false;
+		hurt = true;
+		hurtTimer = 0;
+	}
+	
 	public void resetValues() {
 		
 		// CANNOT DIE, RESET TO STARTING POINT
-		alive = true;
-		worldX = worldXStart;
-		worldY = worldYStart;
+		if (thrown) {
+			worldX = worldXStart;
+			worldY = worldYStart;	
+		}
 		
-		thrown = false;		
-		gp.player.action = Action.IDLE;
-		gp.player.grabbedObject = null;			
-		gp.player.throwCounter = 0;
-		gp.player.throwNum = 1;
+		alive = true;		
+		dying = false;
+		thrown = false;
+		hurt = false;	
+		aggressive = false;
+		grabbable = true;
+		
+		life = maxLife;
+		speed = defaultSpeed;
+		attack = 0;
+		hurtTimer = 0;
+		actionLockCounter = 0;
 	}
 	
 	public void playSE() {
+		gp.playSE(8, 0);
+	}
+	public void playHurtSE() {
 		gp.playSE(8, 0);
 	}
 }
