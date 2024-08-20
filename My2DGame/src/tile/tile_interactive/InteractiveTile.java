@@ -86,6 +86,17 @@ public class InteractiveTile extends Entity {
 		gp.player.throwNum = 1;
 	}
 	
+	public void resetValues() {
+		throwCounter = 0;
+		tTime = 0;
+		alive = false;				
+		
+		gp.player.action = Action.IDLE;
+		gp.player.grabbedObject = null;			
+		gp.player.throwCounter = 0;
+		gp.player.throwNum = 1;
+	}
+	
 	public void playSE() {
 		
 	}

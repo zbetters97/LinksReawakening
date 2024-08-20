@@ -151,7 +151,7 @@ public class Sound {
 			checkVolume();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			return;
 		}
 	}
 	public void play() {		

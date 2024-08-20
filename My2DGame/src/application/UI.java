@@ -480,7 +480,7 @@ public class UI {
 	private void drawItemSlot() {
 		
 		// ITEM SLOT DISABLED
-		if (gp.player.disabled_actions.contains(gp.player.action)) {
+		if (gp.player.disabled_actions.contains(gp.player.action) || gp.gameState != gp.playState) {
 			changeAlpha(g2, 0.6f);
 		}
 		
@@ -2055,9 +2055,14 @@ public class UI {
 		return itemIndex;
 	}
 	public int getXforCenteredText(String text) {
-		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-		int x = (gp.screenWidth / 2) - (length / 2);
-		return x;
+		try {
+			int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+			int x = (gp.screenWidth / 2) - (length / 2);
+			return x;
+		}
+		catch (Exception e) {
+			return gp.screenWidth / 2;
+		}		
 	}
 	public int getXforRightAlignText(String text, int tailX) {
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();

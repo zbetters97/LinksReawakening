@@ -200,7 +200,7 @@ public class NPC_Cucco extends Entity {
 	public void resetValues() {
 		
 		// CANNOT DIE, RESET TO STARTING POINT
-		if (thrown) {
+		if (thrown || grabbed) {
 			worldX = worldXStart;
 			worldY = worldYStart;	
 		}
@@ -211,6 +211,7 @@ public class NPC_Cucco extends Entity {
 		hurt = false;	
 		aggressive = false;
 		grabbable = true;
+		grabbed = false;
 		
 		life = maxLife;
 		speed = defaultSpeed;

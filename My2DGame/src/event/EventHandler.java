@@ -1,4 +1,5 @@
 package event;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 
@@ -246,7 +247,7 @@ public class EventHandler {
 	
 	private void healingPool() {
 		
-		gp.ui.hint = "[Press " + gp.btn_A + " to interact]";
+		gp.ui.hint = "[Press " + KeyEvent.getKeyText(gp.btn_A) + " to interact]";
 		gp.ui.showHint = true;
 		
 		if (gp.keyH.aPressed) {

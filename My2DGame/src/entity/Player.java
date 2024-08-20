@@ -221,12 +221,7 @@ public class Player extends Entity {
 		rodNum = 1; rodCounter = 0;
 				
 		if (grabbedObject != null) {
-			if (grabbedObject.name.equals(PRJ_Bomb.prjName)) {
-				grabbedObject.resetValues();
-			}
-			else {
-				grabbedObject.alive = false;	
-			}									
+			grabbedObject.resetValues();										
 			grabbedObject = null;
 		}
 		

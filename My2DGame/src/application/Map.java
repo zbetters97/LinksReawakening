@@ -93,9 +93,11 @@ public class Map {
 		drawEnemies(g2, x, y, scale, false);
 		drawChests(g2, x, y, scale, false);
 		
-		// TEXT HINT (BOTTOM CENTER)
-		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
+		// TEXT HINT (BOTTOM CENTER)		
+		g2.setColor(new Color(0,0,0,200));
+		g2.fillRect(288, 543, gp.tileSize * 4, 30);		
 		g2.setColor(Color.WHITE);
+		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
 		String text = "[Press " + KeyEvent.getKeyText(gp.btn_DUP) + " to close]";
 		g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
 	}
@@ -184,7 +186,7 @@ public class Map {
 				cX = (int)(x + (gp.obj[gp.currentMap][i].worldX / scale));
 				cY = (int)(y + (gp.obj[gp.currentMap][i].worldY / scale));
 				
-				g2.setPaint(Color.GREEN);
+				g2.setPaint(Color.YELLOW);
 				if (minimap) g2.fillOval(cX + 1, cY, 3, 3);
 				else g2.fillOval(cX + 3, cY + 2, 4, 4);
 			}

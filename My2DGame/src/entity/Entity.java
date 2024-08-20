@@ -129,7 +129,6 @@ public class Entity {
 	public int attackNum = 1;
 	public int attackCounter = 0;
 	public int actionLockCounter = 0;	
-	public boolean attackCanceled = false;
 	public int charge = 0;
 	public int swingSpeed1;
 	public int swingSpeed2;	
@@ -758,7 +757,6 @@ public class Entity {
 			attackNum = 1;
 			attackCounter = 0;				
 			attacking = false;
-			attackCanceled = false;
 		}
 	}		
 	
