@@ -60,7 +60,7 @@ public class NPC_Dialogue_Exchange extends Entity {
 	
 	public void speak() {		
 		
-		gp.keyH.actionPressed = false;		
+		gp.keyH.aPressed = false;		
 		gp.ui.npc = this;
 		dialogueSet = 0;		
 		

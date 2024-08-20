@@ -28,8 +28,7 @@ public class ITM_Feather extends Entity {
 			user.safeWorldX = user.worldX;
 			user.safeWorldY = user.worldY;
 			user.onGround = false;			
-			user.action = Action.JUMPING;			
-			user.attackCanceled = true;			
+			user.action = Action.JUMPING;		
 		}
 		
 		return true;

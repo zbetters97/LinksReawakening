@@ -31,7 +31,7 @@ public class AssetSetter {
 		gp.npc[mapNum][i] = new NPC_OldMan(gp, 30, 30); i++;		
 		gp.npc[mapNum][i] = new NPC_Dialogue_Exchange(gp, 20, 10);
 		gp.npc[mapNum][i].direction = "up"; i++;
-		gp.npc[mapNum][i] = new NPC_Farmer(gp, 35, 17);
+		gp.npc[mapNum][i] = new NPC_Farmer(gp, 38, 20);
 		
 		mapNum = 1;
 		i = 0;
@@ -43,14 +43,14 @@ public class AssetSetter {
 		int mapNum = 0;
 		int i = 0;
 		
-		gp.enemy[mapNum][i] = new EMY_Beetle(gp, 23, 40); i++;
-		gp.enemy[mapNum][i] = new EMY_Bubble(gp, 21, 37); i++;
+		gp.enemy[mapNum][i] = new EMY_Keese(gp, 23, 40); i++;
+		gp.enemy[mapNum][i] = new EMY_Keese(gp, 21, 37); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 38, 40); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Green(gp, 37, 41); i++;
-		gp.enemy[mapNum][i] = new EMY_Zora(gp, 12, 46); i++;
-		gp.enemy[mapNum][i] = new EMY_Goblin_Combat_Shield(gp, 36, 27); i++;
-		gp.enemy[mapNum][i] = new EMY_Tektite(gp, 44, 21); i++;	
-		gp.enemy[mapNum][i] = new EMY_Bubble(gp, 12, 29); i++;
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 12, 46, "up"); i++;
+		gp.enemy[mapNum][i] = new EMY_Goblin_Archer(gp, 36, 27); i++;
+		gp.enemy[mapNum][i] = new EMY_Octorok(gp, 44, 21, "left"); i++;	
+		gp.enemy[mapNum][i] = new EMY_Goblin_Combat(gp, 12, 29); i++;
 		gp.enemy[mapNum][i] = new EMY_ChuChu_Red(gp, 12, 31); i++;
 		
 		mapNum = 2;

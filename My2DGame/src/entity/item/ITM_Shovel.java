@@ -24,7 +24,6 @@ public class ITM_Shovel extends Entity {
 		if (user.action != Action.DIGGING) {
 			playSE();
 			user.action = Action.DIGGING;
-			user.attackCanceled = true;
 		}
 		
 		return true;

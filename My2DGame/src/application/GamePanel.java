@@ -43,22 +43,27 @@ public class GamePanel extends JPanel implements Runnable {
 	public Sound se = new Sound();		
 	
 	// BUTTON MAPPING
-	public int button_dirUP = KeyEvent.VK_UP;
-	public int button_dirDOWN = KeyEvent.VK_DOWN;
-	public int button_dirLEFT = KeyEvent.VK_LEFT;
-	public int button_dirRIGHT = KeyEvent.VK_RIGHT;
-	public int button_action = KeyEvent.VK_SPACE;		
-	public int button_guard = KeyEvent.VK_Z;
-	public int button_target = KeyEvent.VK_F;
-	public int button_roll = KeyEvent.VK_R;
-	public int button_grab = KeyEvent.VK_G;	
-	public int button_item = KeyEvent.VK_Q;
-	public int button_tab = KeyEvent.VK_T;	
-	public int button_inventory = KeyEvent.VK_E;		
-	public int button_map = KeyEvent.VK_M;
-	public int button_minimap = KeyEvent.VK_N;
-	public int button_pause = KeyEvent.VK_ESCAPE;
-	public int button_debug = KeyEvent.VK_SHIFT;
+	public int btn_UP = KeyEvent.VK_UP;
+	public int btn_DOWN = KeyEvent.VK_DOWN;
+	public int btn_LEFT = KeyEvent.VK_LEFT;
+	public int btn_RIGHT = KeyEvent.VK_RIGHT;
+	
+	public int btn_DUP = KeyEvent.VK_1;
+	public int btn_DDOWN = KeyEvent.VK_2;
+	
+	public int btn_A = KeyEvent.VK_A;		
+	public int btn_B = KeyEvent.VK_S;
+	public int btn_X = KeyEvent.VK_D;
+	public int btn_Y = KeyEvent.VK_F;
+	
+	public int btn_L = KeyEvent.VK_W;	
+	public int btn_R = KeyEvent.VK_E;	
+	public int btn_Z = KeyEvent.VK_R;		
+	
+	public int btn_START = KeyEvent.VK_SPACE;
+	public int btn_SELECT = KeyEvent.VK_SHIFT;
+	
+	public int btn_DEBUG = KeyEvent.VK_ESCAPE;
 	
 	// SCREEN SETTINGS
 	private final int originalTileSize = 16; // 16x16 tile
@@ -160,9 +165,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {	
 						
- 		gameState = titleState;	
+ 		gameState = playState;	
 		currentArea = outside;
 		currentMap = 0;
+		
 /*		
 		gameState = playState;
 		currentArea = dungeon;

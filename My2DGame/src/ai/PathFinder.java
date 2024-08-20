@@ -119,6 +119,16 @@ public class PathFinder {
 				}
 			}
 			
+			// CHECK STATIONARY NPCs
+			for (int i = 0; i < gp.npc[1].length; i++) {
+				
+				if (gp.npc[gp.currentMap][i] != null && gp.npc[gp.currentMap][i].speed == 0) {
+					int iCol = gp.npc[gp.currentMap][i].worldX / gp.tileSize;
+					int iRow = gp.npc[gp.currentMap][i].worldY / gp.tileSize;
+					node[iCol][iRow].solid = true;
+				}
+			}
+			
 			// SET COST ON EACH NODE
 			setCost(node[col][row]);
 			

@@ -16,8 +16,8 @@ public class ITM_Bow extends Entity {
 		type = type_item;
 		name = itmName;		
 		description = "[" + name + "]\nEquip to fire an arrow!";
-		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.button_item) + 
-				" to charge its power!\nRelease " + KeyEvent.getKeyText(gp.button_item) + " to fire an arrow!";	
+		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.btn_X) + 
+				" to charge its power!\nRelease " + KeyEvent.getKeyText(gp.btn_X) + " to fire an arrow!";	
 	}
 	
 	public void getImage() {

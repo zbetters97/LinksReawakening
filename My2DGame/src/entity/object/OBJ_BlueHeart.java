@@ -34,7 +34,6 @@ public class OBJ_BlueHeart extends Entity {
 	}
 	
 	public boolean use(Entity entity) {
-		gp.player.attackCanceled = true;
 		gp.csManager.scene = gp.csManager.ending;
 		gp.gameState = gp.cutsceneState;
 				

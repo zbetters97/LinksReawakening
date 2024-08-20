@@ -61,9 +61,6 @@ public class OBJ_Chest extends Entity {
 			down1 = image2;
 			gp.player.getObject(loot);	
 		}
-		else {
-			gp.player.attackCanceled = false;
-		}
 	}
 	
 	public void playOpenSE() {

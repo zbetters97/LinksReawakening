@@ -16,8 +16,8 @@ public class ITM_Bomb extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to blow things up!";
-		getDescription = "When equipped, press " + KeyEvent.getKeyText(gp.button_grab) + 
-				" to throw a bomb\nor " + KeyEvent.getKeyText(gp.button_item) + " to set it down!";
+		getDescription = "When equipped, press " + KeyEvent.getKeyText(gp.btn_A) + 
+				" to throw a bomb\nor " + KeyEvent.getKeyText(gp.btn_X) + " to place it down!";
 	}	
 	
 	public void getImage() {

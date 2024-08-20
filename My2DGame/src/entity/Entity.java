@@ -255,6 +255,7 @@ public class Entity {
 	public void speak() { }	
 	public void explode() {	}
 	public void damageReaction() { }	
+	public void breakTile() { }
 	public void checkDrop() { checkEnemyRoom(); }
 	public void resetValues() { }	
 	public void playSE() { }
@@ -289,7 +290,7 @@ public class Entity {
 			
 	public void move() {
 		
-		if (!grabbed || thrown) checkCollision();
+		if (!grabbed && !thrown) checkCollision();
 		
 		if (!collisionOn && withinBounds() && !thrown) { 	
 			
@@ -314,8 +315,8 @@ public class Entity {
 	}	
 	
 	// COLLISION CHECKER
-	protected void checkCollision() {		
-		
+	protected void checkCollision() {	
+				
 		collisionOn = false;
 		gp.cChecker.checkTile(this);	
 		gp.cChecker.checkHazard(this, false);	
@@ -345,7 +346,7 @@ public class Entity {
 		worldXStart = worldX;
 		worldYStart = worldY;
 		
-		if (gp.keyH.actionPressed) { attacking = true; }
+		if (gp.keyH.bPressed) { attacking = true; }
 		if (attacking) { attacking(); return; }		
 		if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
 			walking();
@@ -498,6 +499,8 @@ public class Entity {
 	}	
 	public void searchPath(int goalCol, int goalRow) {
 		
+		if (attacking) return;
+		
 		int startCol = (worldX + hitbox.x) / gp.tileSize;
 		int startRow = (worldY + hitbox.y) / gp.tileSize;
 		
@@ -594,16 +597,19 @@ public class Entity {
 	}
 	public void getDirection(int rate) {
 		
-		actionLockCounter++;			
-		if (actionLockCounter >= rate) {		
-						
-			int dir = 1 + (int)(Math.random() * 4);
-			if (dir == 1) direction = "up";
-			else if (dir == 2) direction = "down";
-			else if (dir == 3) direction = "left";
-			else if (dir == 4) direction = "right";
-			
-			actionLockCounter = 0;
+		if (!attacking) {
+		
+			actionLockCounter++;			
+			if (actionLockCounter >= rate) {		
+							
+				int dir = 1 + (int)(Math.random() * 4);
+				if (dir == 1) direction = "up";
+				else if (dir == 2) direction = "down";
+				else if (dir == 3) direction = "left";
+				else if (dir == 4) direction = "right";
+				
+				actionLockCounter = 0;
+			}
 		}
 	}
 	public int getGoalCol(Entity target) {
@@ -1171,6 +1177,7 @@ public class Entity {
 		// STUNNED TIME (1 SECOND)
 		if (stunned) {
 			attacking = false;
+			attackCounter = 0;
 			stunnedCounter++;
 			if (stunnedCounter > 45) {				
 				if (critical) {

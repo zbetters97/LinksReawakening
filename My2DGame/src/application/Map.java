@@ -96,7 +96,7 @@ public class Map {
 		// TEXT HINT (BOTTOM CENTER)
 		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
 		g2.setColor(Color.WHITE);
-		String text = "[Press " + KeyEvent.getKeyText(gp.button_map) + " to close]";
+		String text = "[Press " + KeyEvent.getKeyText(gp.btn_DUP) + " to close]";
 		g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
 	}
 	

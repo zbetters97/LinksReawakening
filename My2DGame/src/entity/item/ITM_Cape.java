@@ -29,7 +29,6 @@ public class ITM_Cape extends Entity {
 			user.safeWorldY = user.worldY;
 			user.onGround = false;			
 			user.action = Action.SOARING;
-			user.attackCanceled = true;
 		}
 		
 		return true;

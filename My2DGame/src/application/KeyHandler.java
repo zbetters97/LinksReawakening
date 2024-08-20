@@ -11,9 +11,11 @@ public class KeyHandler implements KeyListener {
 
 	private GamePanel gp;
 	private boolean lock = true;
-	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	public boolean actionPressed, rollPressed, guardPressed, grabPressed, 
-					ztargetPressed, itemPressed, tabPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, 
+					dupPressed, ddownPressed, 
+					aPressed, bPressed, xPressed, yPressed, 
+					lPressed, rPressed, zPressed,
+					startPressed, selectPressed;
 	public boolean debug = false;
 	private String keyboardLetters;
 	public boolean capital = true;
@@ -89,7 +91,7 @@ public class KeyHandler implements KeyListener {
 	}
 	private void mainMenu(int code) {
 		
-		if (code == gp.button_dirUP) {
+		if (code == gp.btn_UP) {
 			if (gp.ui.commandNum > 0) {
 				playCursorSE();
 				gp.ui.commandNum--;
@@ -98,7 +100,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 			}
 		}
-		if (code == gp.button_dirDOWN) {
+		if (code == gp.btn_DOWN) {
 			if (gp.ui.commandNum < 2) {
 				playCursorSE();
 				gp.ui.commandNum++;
@@ -107,7 +109,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 2;
 			}
 		}
-		if (code == gp.button_action) { 
+		if (code == gp.btn_A) { 
 			
 			// NEW GAME OPTION
 			if (gp.ui.commandNum == 0) {
@@ -142,7 +144,7 @@ public class KeyHandler implements KeyListener {
 			keyboard.put(i, String.valueOf(keyboardLetters.charAt(i)));
 						
 		// NAVIGATE THROUGH ON-SCREEN KEYBOARD
-		if (code == gp.button_dirUP) {				
+		if (code == gp.btn_UP) {				
 			if (gp.ui.commandNum >= 10) {
 				playCursorSE();
 				if (gp.ui.commandNum >= 10 && gp.ui.commandNum <= 18) 
@@ -157,7 +159,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 19;
 			}
 		}				
-		if (code == gp.button_dirDOWN) {
+		if (code == gp.btn_DOWN) {
 			if (gp.ui.commandNum <= 27) {
 				playCursorSE();
 				if (gp.ui.commandNum >= 0 && gp.ui.commandNum <= 8) 
@@ -170,7 +172,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 28;		
 			}
 		}
-		if (code == gp.button_dirLEFT) {
+		if (code == gp.btn_LEFT) {
 			if (gp.ui.commandNum > 0) {
 				playCursorSE();
 				gp.ui.commandNum--;
@@ -179,7 +181,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 			}
 		}
-		if (code == gp.button_dirRIGHT) {		
+		if (code == gp.btn_RIGHT) {		
 			if (gp.ui.commandNum <= 28) {
 				gp.ui.commandNum++;
 				
@@ -195,7 +197,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 29;
 			}
 		}				
-		if (code == gp.button_action) {
+		if (code == gp.btn_A) {
 			
 			// DEL BUTTON
 			if (gp.ui.commandNum == 26) {
@@ -252,7 +254,7 @@ public class KeyHandler implements KeyListener {
 	}
 	private void loadGameMenu(int code) {
 		
-		if (code == gp.button_dirUP) {
+		if (code == gp.btn_UP) {
 			if (gp.ui.commandNum > 0) {
 				playCursorSE();
 				gp.ui.commandNum--;
@@ -261,7 +263,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 0;
 			}
 		}
-		if (code == gp.button_dirDOWN) {
+		if (code == gp.btn_DOWN) {
 			if (gp.ui.commandNum < 3) {
 				playCursorSE();
 				gp.ui.commandNum++;
@@ -270,7 +272,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum = 3;
 			}
 		}		
-		if (code == gp.button_action) { 
+		if (code == gp.btn_A) { 
 									
 			// LOAD GAME OPTION 1
 			if (gp.ui.commandNum == 0) {
@@ -335,59 +337,46 @@ public class KeyHandler implements KeyListener {
 	// PLAY
 	private void playState(int code) { 
 		
-		/* 
-		 * ARROWS: MOVEMENT
-		 * SPACE: ACTION
-		 * Z: GUARD
-		 * G: GRAB
-		 * R: ROLL
-		 * F: Z-TARGET
-		 * Q: ITEM
-		 * T: TAB ITEM
-		 * ESC: PAUSE MENU
-		 * E: INVENTORY
-		 * M: MAP
-		 * N: MINIMAP
-		 * SHIFT: DEBUG
-		 */		
+		/* DIR:  	MOVEMENT
+		 * A:		ACTION
+		 * B:		ATTACK
+		 * X:		ITEM
+		 * Y:		ITEM
+		 * L:		TARGET
+		 * R:		SHIELD
+		 * Z:		TAB
+		 * DUP:		MAP
+		 * DDOWN:	MINI MAP
+		 * START:	PAUSE
+		 * SELECT:	INVENTORY */		
 
-		if (code == gp.button_dirUP) upPressed = true;
-		if (code == gp.button_dirDOWN) downPressed = true;
-		if (code == gp.button_dirLEFT) leftPressed = true;
-		if (code == gp.button_dirRIGHT) rightPressed = true;
-		if (code == gp.button_action && lock) { actionPressed = true; lock = false; }
-		if (code == gp.button_grab && lock) { grabPressed = true; lock = false; }
-		if (code == gp.button_target && lock) { ztargetPressed = true; lock = false; }
-		if (code == gp.button_roll && lock) { rollPressed = true; lock = false; }
-		if (code == gp.button_item && lock) { itemPressed = true; lock = false; }
-		if (code == gp.button_tab && lock) { tabPressed = true; lock = false; }			
-		if (code == gp.button_guard && lock) { 
-			guardPressed = true; 
-			lock = false; 
-			gp.player.playGuardSE(); 
-		}
+		if (code == gp.btn_UP) upPressed = true;
+		if (code == gp.btn_DOWN) downPressed = true;
+		if (code == gp.btn_LEFT) leftPressed = true;
+		if (code == gp.btn_RIGHT) rightPressed = true;
+						
+		if (code == gp.btn_A && lock) { aPressed = true; lock = false; }
+		if (code == gp.btn_B && lock) { bPressed = true; lock = false; }
+		if (code == gp.btn_X && lock) { xPressed = true; lock = false; }
+		if (code == gp.btn_Y && lock) { yPressed = true; lock = false; }
 		
-		if (code == gp.button_pause) {
-			playMenuOpenSE();
-			gp.gameState = gp.pauseState;
-		}	
-		else if (code == gp.button_inventory) { 
-			playMenuOpenSE();
-			gp.gameState = gp.inventoryState;
-		}			
-		else if (code == gp.button_map) {
+		if (code == gp.btn_L && lock) { lPressed = true; lock = false; }
+		if (code == gp.btn_R && lock) { gp.player.playGuardSE(); rPressed = true; lock = false; }
+		if (code == gp.btn_Z && lock) { zPressed = true; lock = false; }
+
+		if (code == gp.btn_DUP) {
 			playMapOpenSE();
 			gp.gameState = gp.mapState;
 		}
-		else if (code == gp.button_minimap) {
-			
+		if (code == gp.btn_DDOWN) {			
 			if (!gp.map.miniMapOn) playMapOpenSE();
 			gp.map.miniMapOn = !gp.map.miniMapOn;
 		}
-		else if (code == gp.button_debug) {
-			if (debug) debug = false; 
-			else debug = true;
-		}
+		
+		if (code == gp.btn_START) { playMenuOpenSE(); gp.gameState = gp.pauseState; }	
+		if (code == gp.btn_SELECT) { playMenuOpenSE(); gp.gameState = gp.inventoryState; }			
+		
+		if (code == gp.btn_DEBUG) { if (debug) debug = false; else debug = true; }
 	}
 	
 	// PAUSE
@@ -402,19 +391,19 @@ public class KeyHandler implements KeyListener {
 			case 6: maxCommandNum = 1; break;
 		}
 		
-		if (code == gp.button_dirUP) { 
+		if (code == gp.btn_UP) { 
 			if (gp.ui.commandNum != 0) {
 				playCursorSE(); 
 				gp.ui.commandNum--; 
 			}
 		}
-		if (code == gp.button_dirDOWN) { 
+		if (code == gp.btn_DOWN) { 
 			if (gp.ui.commandNum != maxCommandNum) { 
 				playCursorSE(); 
 				gp.ui.commandNum++; 
 			}
 		}
-		if (code == gp.button_dirLEFT) {
+		if (code == gp.btn_LEFT) {
 			
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
@@ -428,7 +417,7 @@ public class KeyHandler implements KeyListener {
 				}
 			}
 		}
-		if (code == gp.button_dirRIGHT) {
+		if (code == gp.btn_RIGHT) {
 			if (gp.ui.subState == 0) {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
 					playCursorSE();
@@ -442,15 +431,15 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		
-		if (code == gp.button_pause) {
+		if (code == gp.btn_START) {
 			playMenuCloseSE();
 			gp.ui.commandNum = 0;
 			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
 		}
-		if (code == gp.button_action && lock) {
+		if (code == gp.btn_A && lock) {
 			playSelectSE();
-			actionPressed = true;
+			aPressed = true;
 			lock = false;
 		}
 	}
@@ -458,11 +447,11 @@ public class KeyHandler implements KeyListener {
 	// INVENTORY
 	private void inventoryState(int code) { 
 		
-		if (code == gp.button_inventory) {
+		if (code == gp.btn_SELECT) {
 			playMenuCloseSE();
 			gp.gameState = gp.playState;
 		}
-		if (code == gp.button_action) {	
+		if (code == gp.btn_A) {	
 			
 			if (gp.ui.inventoryScreen == 0) {
 				gp.player.selectInventory();
@@ -471,7 +460,7 @@ public class KeyHandler implements KeyListener {
 				gp.player.selectItem();	
 			}
 		}
-		if (code == gp.button_tab) {
+		if (code == gp.btn_Z) {
 			playCursorSE();
 			
 			if (gp.ui.inventoryScreen == 0)
@@ -484,25 +473,25 @@ public class KeyHandler implements KeyListener {
 	
 	// PLAYER INVENTORY	
 	private void playerInventory(int code) {
-		if (code == gp.button_dirUP) { 
+		if (code == gp.btn_UP) { 
 			if (gp.ui.playerSlotRow != 0) {
 				playCursorSE(); 
 				gp.ui.playerSlotRow--; 
 			}
 		}
-		if (code == gp.button_dirDOWN) { 
+		if (code == gp.btn_DOWN) { 
 			if (gp.ui.playerSlotRow != 3) { 
 				playCursorSE(); 
 				gp.ui.playerSlotRow++; 
 			}
 		}
-		if (code == gp.button_dirLEFT) { 
+		if (code == gp.btn_LEFT) { 
 			if (gp.ui.playerSlotCol != 0) { 
 				playCursorSE();
 				gp.ui.playerSlotCol--; 
 			}
 		}
-		if (code == gp.button_dirRIGHT) { 
+		if (code == gp.btn_RIGHT) { 
 			if (gp.ui.playerSlotCol != 4) {
 				playCursorSE(); 
 				gp.ui.playerSlotCol++; 
@@ -512,22 +501,22 @@ public class KeyHandler implements KeyListener {
 	
 	// MAP
 	private void mapState(int code) {
-		if (code == gp.button_map) {
+		if (code == gp.btn_DUP) {
 			gp.gameState = gp.playState;
 		}
 	}
 	
 	// DIALOGUE
 	private void dialogueState(int code) { 
-		if (code == gp.button_action && lock) {						
-			actionPressed = true;			
+		if (code == gp.btn_A && lock) {						
+			aPressed = true;			
 			lock = false;
 		}
 	}
 	
 	// ITEM GET	
 	private void itemGetState(int code) {
-		if (code == gp.button_action) {
+		if (code == gp.btn_A) {
 						
 			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
 				gp.ui.npc.inventory.remove(gp.ui.newItemIndex);				
@@ -543,23 +532,23 @@ public class KeyHandler implements KeyListener {
 	// TRADE
 	private void tradeState(int code) {
 						
-		if (code == gp.button_action && lock) {			
+		if (code == gp.btn_A && lock) {			
 			playSelectSE();
-			actionPressed = true;
+			aPressed = true;
 			lock = false;
 
 			gp.ui.dialogueIndex = 0;
 		}
 		
 		if (gp.ui.response) {
-			if (code == gp.button_dirUP) { 				
+			if (code == gp.btn_UP) { 				
 				gp.ui.commandNum--;
 				if (gp.ui.commandNum < 0)					
 					gp.ui.commandNum = 0;
 				else
 					playCursorSE(); 
 			}
-			if (code == gp.button_dirDOWN) { 
+			if (code == gp.btn_DOWN) { 
 				gp.ui.commandNum++;
 				if (gp.ui.commandNum > gp.ui.getLength(gp.ui.npc.responses, gp.ui.responseSet) - 1)					
 					gp.ui.commandNum = gp.ui.getLength(gp.ui.npc.responses, gp.ui.responseSet) - 1;
@@ -569,14 +558,14 @@ public class KeyHandler implements KeyListener {
 		}		
 		else {		
 			if (gp.ui.subState == 0) {
-				if (code == gp.button_dirUP) { 				
+				if (code == gp.btn_UP) { 				
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0)					
 						gp.ui.commandNum = 0;
 					else
 						playCursorSE(); 
 				}
-				if (code == gp.button_dirDOWN) { 
+				if (code == gp.btn_DOWN) { 
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 2)					
 						gp.ui.commandNum = 2;
@@ -586,12 +575,12 @@ public class KeyHandler implements KeyListener {
 			}
 			if (gp.ui.subState == 1) {
 				npcInventory(code);
-				if (code == gp.button_pause)
+				if (code == gp.btn_START)
 					gp.ui.subState = 0;						
 			}
 			if (gp.ui.subState == 2) {
 				playerInventory(code); 
-				if (code == gp.button_pause)
+				if (code == gp.btn_START)
 					gp.ui.subState = 0;			
 			}
 		}
@@ -599,25 +588,25 @@ public class KeyHandler implements KeyListener {
 	
 	// NPC INVENTORY
 	private void npcInventory(int code) {
-		if (code == gp.button_dirUP) { 
+		if (code == gp.btn_UP) { 
 			if (gp.ui.npcSlotRow != 0) {
 				playCursorSE(); 
 				gp.ui.npcSlotRow--; 
 			}
 		}
-		if (code == gp.button_dirDOWN) { 
+		if (code == gp.btn_DOWN) { 
 			if (gp.ui.npcSlotRow != 3) { 
 				playCursorSE(); 
 				gp.ui.npcSlotRow++; 
 			}
 		}
-		if (code == gp.button_dirLEFT) { 
+		if (code == gp.btn_LEFT) { 
 			if (gp.ui.npcSlotCol != 0) { 
 				playCursorSE();
 				gp.ui.npcSlotCol--; 
 			}
 		}
-		if (code == gp.button_dirRIGHT) { 
+		if (code == gp.btn_RIGHT) { 
 			if (gp.ui.npcSlotCol != 4) {
 				playCursorSE(); 
 				gp.ui.npcSlotCol++; 
@@ -628,21 +617,21 @@ public class KeyHandler implements KeyListener {
 	// GAME OVER
 	private void gameOverState(int code) {
 		
-		if (code == gp.button_dirUP) { 
+		if (code == gp.btn_UP) { 
 			if (gp.ui.commandNum != 0) {
 				playCursorSE(); 
 				gp.ui.commandNum = 0;
 			}
 		}
-		if (code == gp.button_dirDOWN) { 
+		if (code == gp.btn_DOWN) { 
 			if (gp.ui.commandNum != 1) {
 				playCursorSE(); 
 				gp.ui.commandNum = 1;
 			}
 		}
-		if (code == gp.button_action && lock) {			
+		if (code == gp.btn_A && lock) {			
 			playSelectSE();
-			actionPressed = true;
+			aPressed = true;
 			lock = false;
 		}
 	}
@@ -650,7 +639,7 @@ public class KeyHandler implements KeyListener {
 	// ENDING 
 	private void endingState(int code) {
 		
-		if (code == gp.button_pause) {
+		if (code == gp.btn_START) {
 			gp.gameState = gp.titleState;
 			gp.ui.commandNum = 0;
 			gp.resetGame();
@@ -662,33 +651,30 @@ public class KeyHandler implements KeyListener {
 	public void keyReleased(KeyEvent e) {	
 		int code = e.getKeyCode();
 		
-		if (code == gp.button_dirUP) upPressed = false; 
-		if (code == gp.button_dirDOWN) downPressed = false;
-		if (code == gp.button_dirLEFT) leftPressed = false;
-		if (code == gp.button_dirRIGHT) rightPressed = false;
+		if (code == gp.btn_UP) upPressed = false; 
+		if (code == gp.btn_DOWN) downPressed = false;
+		if (code == gp.btn_LEFT) leftPressed = false;
+		if (code == gp.btn_RIGHT) rightPressed = false;
 		
-		if (code == gp.button_action) { actionPressed = false; lock = true; }
-		if (code == gp.button_roll) { rollPressed = false; lock = true; }
-		if (code == gp.button_guard) { 
-			guardPressed = false; 
-			lock = true;
-			if (gp.player.action == Action.GUARDING)
-				gp.player.action = Action.IDLE;
-		}
-		if (code == gp.button_grab) { 
-			grabPressed = false; 
-			lock = true;
+		if (code == gp.btn_A) { 
+			aPressed = false; lock = true; 
 			if (gp.player.action == Action.GRABBING)
 				gp.player.action = Action.IDLE;
 		}
-		if (code == gp.button_target) { ztargetPressed = false; lock = true; }
-		if (code == gp.button_item) { 
-			itemPressed = false; 
-			lock = true; 
-			if (gp.player.action == Action.RUNNING) 
-				gp.player.action = Action.IDLE;			
-		}	
-		if (code == gp.button_tab) { tabPressed = false; lock = true; }
+		if (code == gp.btn_B) { bPressed = false; lock = true; }
+		if (code == gp.btn_X) { xPressed = false; lock = true; }
+		if (code == gp.btn_Y) { yPressed = false; lock = true; }
+		
+		if (code == gp.btn_L) { lPressed = false; lock = true; }
+		if (code == gp.btn_R) { 
+			rPressed = false; lock = true; 
+			if (gp.player.action == Action.GUARDING)
+				gp.player.action = Action.IDLE;
+		}
+		if (code == gp.btn_Z) { zPressed = false; lock = true; }
+		
+		if (code == gp.btn_START) { startPressed = false; lock = true; }	
+		if (code == gp.btn_SELECT) { selectPressed = false; lock = true; }			
 	}
 	
 	// SOUND EFFECTS

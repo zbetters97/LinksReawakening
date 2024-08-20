@@ -16,8 +16,8 @@ public class ITM_Rod extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to control enemies!";
-		getDescription = "Press " + KeyEvent.getKeyText(gp.button_item) + " to shoot a magical orb"
-				+ " at enemies!\nWhen an enemy is controlled, press " + KeyEvent.getKeyText(gp.button_item)
+		getDescription = "Press " + KeyEvent.getKeyText(gp.btn_X) + " to shoot a magical orb"
+				+ " at enemies!\nWhen an enemy is controlled, press " + KeyEvent.getKeyText(gp.btn_X)
 				+ " again to release control!";
 		
 		swingSpeed1 = 4;

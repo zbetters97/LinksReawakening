@@ -36,8 +36,8 @@ public class EMY_Goblin_Combat extends Entity {
 		hitboxDefaultWidth = hitbox.width;
 		hitboxDefaultHeight = hitbox.height;
 		
-		swingSpeed1 = 30;
-		swingSpeed2 = 60;		
+		swingSpeed1 = 15;
+		swingSpeed2 = 45;		
 		
 		attackbox.width = 48;
 		attackbox.height = 48;
@@ -73,11 +73,13 @@ public class EMY_Goblin_Combat extends Entity {
 				isOffPath(gp.player, 8);				
 				if (onPath && playerWithinBounds()) {					
 					searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
-					if (!attacking) {
-						if (isAttacking(60, gp.tileSize * 3, gp.tileSize)) {
-							attacking = true;
-						}
+					if (!attacking && isAttacking(60, gp.tileSize * 3, gp.tileSize)) {
+						attacking = true;
+						speed = 0;
 					}	
+					else if (!attacking) {
+						speed = defaultSpeed;
+					}
 				}
 			}
 			else {				

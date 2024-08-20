@@ -15,7 +15,7 @@ public class ITM_Boots extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to run fast!";
-		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.button_item) + 
+		getDescription = "Press and hold " + KeyEvent.getKeyText(gp.btn_X) + 
 				" to run!";
 	}	
 	

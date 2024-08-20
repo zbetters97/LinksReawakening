@@ -22,7 +22,6 @@ public class OBJ_Tent extends Entity {
 	}
 	
 	public void interact() {
-		gp.player.attackCanceled = true;
 		gp.player.life = gp.player.maxLife;
 		gp.gameState = gp.sleepState;
 	}

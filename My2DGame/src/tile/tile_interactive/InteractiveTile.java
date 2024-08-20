@@ -51,28 +51,7 @@ public class InteractiveTile extends Entity {
 			gp.cChecker.checkHazard(this, false);			
 			
 			if (alive) {
-				playSE();				
-				thrown = false;
-				
-				Entity enemy = getEnemy(this);		
-				if (enemy != null) {
-					gp.player.damageEnemy(enemy, this, 2, 2);					
-				}
-				
-				int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-				gp.player.damageInteractiveTile(iTileIndex, this);	
-				
-				checkDrop();
-				generateRectParticle(this);
-				
-				throwCounter = 0;
-				tTime = 0;
-				alive = false;				
-				
-				gp.player.action = Action.IDLE;
-				gp.player.grabbedObject = null;			
-				gp.player.throwCounter = 0;
-				gp.player.throwNum = 1;
+				breakTile();
 			}				
 		}
 	}
@@ -80,6 +59,31 @@ public class InteractiveTile extends Entity {
 	public boolean correctItem(Entity entity) {		
 		boolean correctItem = false;		
 		return correctItem;
+	}
+	
+	public void breakTile() {
+		playSE();				
+		thrown = false;
+		
+		Entity enemy = getEnemy(this);		
+		if (enemy != null) {
+			gp.player.damageEnemy(enemy, this, 2, 2);					
+		}
+		
+		int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+		gp.player.damageInteractiveTile(iTileIndex, this);	
+		
+		checkDrop();
+		generateRectParticle(this);
+		
+		throwCounter = 0;
+		tTime = 0;
+		alive = false;				
+		
+		gp.player.action = Action.IDLE;
+		gp.player.grabbedObject = null;			
+		gp.player.throwCounter = 0;
+		gp.player.throwNum = 1;
 	}
 	
 	public void playSE() {

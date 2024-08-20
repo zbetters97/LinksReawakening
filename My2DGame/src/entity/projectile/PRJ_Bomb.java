@@ -25,6 +25,7 @@ public class PRJ_Bomb extends Projectile {
 		animationSpeed = 30;
 		defaultSpeed = (int)(gp.tileSize / 2); speed = defaultSpeed; //COLLISION DETECTING 
 		attack = 6;
+		knockbackPower = 2;
 		useCost = 1;
 		maxLife = 240; life = maxLife;
 		alive = false;

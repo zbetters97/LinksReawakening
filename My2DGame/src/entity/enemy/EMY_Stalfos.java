@@ -63,7 +63,7 @@ public class EMY_Stalfos extends Entity {
 		if (!captured) {	
 			
 			// PLAYER SWINGS SWORD IN RANGE, NOT ALREADY JUMPING
-			if (gp.keyH.actionPressed && !attackCanceled && getTileDistance(gp.player) < 2 &&
+			if (gp.keyH.bPressed && !attackCanceled && getTileDistance(gp.player) < 2 &&
 					direction.equals(getOppositeDirection(gp.player.direction))) {
 				
 				action = Action.JUMPING;

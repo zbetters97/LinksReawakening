@@ -30,6 +30,7 @@ public class NPC_Cucco extends Entity {
 		name = npcName;
 		direction = "down";
 		maxLife = 99; life = maxLife;
+		knockbackPower = 1;
 		defaultSpeed = 1; speed = defaultSpeed;
 		defaultAnimationSpeed = 10; animationSpeed = defaultAnimationSpeed;
 		
@@ -40,15 +41,27 @@ public class NPC_Cucco extends Entity {
 		hitboxDefaultHeight = hitbox.height;
 	}
 	
-	public void getImage() {		
-		up1 = setup("/npc/cucco_up_1"); 
-		up2 = setup("/npc/cucco_up_2");
-		down1 = setup("/npc/cucco_down_1"); 
-		down2 = setup("/npc/cucco_down_2");
-		left1 = setup("/npc/cucco_left_1"); 
-		left2 = setup("/npc/cucco_left_2");
-		right1 = setup("/npc/cucco_right_1"); 
-		right2 = setup("/npc/cucco_right_2");
+	public void getImage() {	
+		if (aggressive) {
+			up1 = setup("/npc/cucco_up_1"); 
+			up2 = setup("/npc/cucco_up_2");
+			down1 = setup("/npc/cucco_attack_down_1"); 
+			down2 = setup("/npc/cucco_attack_down_2");
+			left1 = setup("/npc/cucco_attack_left_1"); 
+			left2 = setup("/npc/cucco_attack_left_2");
+			right1 = setup("/npc/cucco_attack_right_1"); 
+			right2 = setup("/npc/cucco_attack_right_2");
+		}
+		else {
+			up1 = setup("/npc/cucco_up_1"); 
+			up2 = setup("/npc/cucco_up_2");
+			down1 = setup("/npc/cucco_down_1"); 
+			down2 = setup("/npc/cucco_down_2");
+			left1 = setup("/npc/cucco_left_1"); 
+			left2 = setup("/npc/cucco_left_2");
+			right1 = setup("/npc/cucco_right_1"); 
+			right2 = setup("/npc/cucco_right_2");	
+		}		
 	}
 	
 	public void update() {
@@ -100,6 +113,21 @@ public class NPC_Cucco extends Entity {
 			
 			direction = getPlayerDirection();
 		}
+		else if (aggressive) {				
+			attack = 2;
+			
+			speed = panicSpeed;
+			animationSpeed = animationPanicSpeed;
+			squakTimerMax = squakTimerPanicMax;
+			grabbable = false;	
+			
+			attackPlayer();			
+			
+			hurtTimer++;
+			if (hurtTimer >= 9999) {
+				resetValues();
+			}
+		}
 		else if (hurt) {		
 			
 			speed = panicSpeed;
@@ -115,22 +143,7 @@ public class NPC_Cucco extends Entity {
 				hurt = false;
 				hurtTimer = 0;
 			}
-		}
-		else if (aggressive) {				
-			attack = 2;
-			
-			speed = panicSpeed;
-			animationSpeed = animationPanicSpeed;
-			squakTimerMax = squakTimerPanicMax;
-			grabbable = false;	
-			
-			attackPlayer();			
-			
-			hurtTimer++;
-			if (hurtTimer >= 999) {
-				resetValues();
-			}
-		}
+		}		
 		
 		// PLAY SQUAK IF IN FRAME
 		if (inFrame()) {
@@ -146,6 +159,7 @@ public class NPC_Cucco extends Entity {
 			resetValues();	
 			aggressive = true;
 			grabbable = false;
+			getImage();
 		}
 	}
 	
@@ -203,6 +217,10 @@ public class NPC_Cucco extends Entity {
 		attack = 0;
 		hurtTimer = 0;
 		actionLockCounter = 0;
+		throwCounter = 0;
+		tTime = 0;
+		
+		getImage();
 	}
 	
 	public void playSE() {

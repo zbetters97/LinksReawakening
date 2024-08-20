@@ -41,7 +41,5 @@ public class NPC_Traveler_2 extends NPC_Traveler_Template {
 			direction = getOppositeDirection(gp.player.direction);
 			startDialogue(this, dialogueSet);	
 		}	
-		else
-			gp.player.attackCanceled = false;
 	}
 }

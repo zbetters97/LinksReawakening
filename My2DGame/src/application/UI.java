@@ -498,7 +498,7 @@ public class UI {
 		// DRAW ITEM BUTTON
 		g2.setColor(Color.BLACK);
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 27F));
-		g2.drawString(KeyEvent.getKeyText(gp.button_item), x-2, y+13);
+		g2.drawString(KeyEvent.getKeyText(gp.btn_X), x-2, y+13);
 		
 		if (gp.player.currentItem != null) {	
 						
@@ -785,7 +785,7 @@ public class UI {
 		if (commandNum == 0) {
 			
 			g2.drawString(">", textX - 25, textY);		
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				if (gp.fullScreenOn) {
 					gp.fullScreenOn = false;
 				}
@@ -794,7 +794,7 @@ public class UI {
 				}
 				
 				subState = 1;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 		
@@ -813,10 +813,10 @@ public class UI {
 		g2.drawString("Text Speed", textX, textY);
 		if (commandNum == 3) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				textSpeed++;
 				if (textSpeed > 2) textSpeed = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 		
@@ -825,10 +825,10 @@ public class UI {
 		g2.drawString("Controls", textX, textY);
 		if (commandNum == 4) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				subState = 2;
 				commandNum = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 				
@@ -837,7 +837,7 @@ public class UI {
 		g2.drawString("Save Progress", textX, textY);
 		if (commandNum == 5) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				if (Progress.canSave && gp.player.action == Action.IDLE) {
 					subState = 3;
 					commandNum = 0;					
@@ -845,7 +845,7 @@ public class UI {
 				else {
 					gp.keyH.playErrorSE();
 				}
-				gp.keyH.actionPressed = false;						
+				gp.keyH.aPressed = false;						
 			}
 		}
 		
@@ -854,7 +854,7 @@ public class UI {
 		g2.drawString("Load Previous Save", textX, textY);
 		if (commandNum == 6) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				if (Progress.canSave && gp.player.action == Action.IDLE) {
 					subState = 5;
 					commandNum = 0;					
@@ -862,7 +862,7 @@ public class UI {
 				else {
 					gp.keyH.playErrorSE();
 				}
-				gp.keyH.actionPressed = false;						
+				gp.keyH.aPressed = false;						
 			}
 		}
 
@@ -871,10 +871,10 @@ public class UI {
 		g2.drawString("Quit to Title Screen", textX, textY);
 		if (commandNum == 7) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				subState = 6;
 				commandNum = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 				
@@ -925,10 +925,10 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				commandNum = 0;
 				subState = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 	}
@@ -947,27 +947,27 @@ public class UI {
 		textX = frameX + gp.tileSize;
 		textY += gp.tileSize;		
 		g2.drawString("ACTION", textX, textY); textY += 35;
-		g2.drawString("INVENTORY", textX, textY); textY += 35;
+		g2.drawString("ATTACK", textX, textY); textY += 35;
+		g2.drawString("ITEM", textX, textY); textY += 35;
+		g2.drawString("TARGET", textX, textY); textY += 35;
+		g2.drawString("SHIELD", textX, textY); textY += 35;
+		g2.drawString("CYCLE ITEMS", textX, textY); textY += 35;
+		g2.drawString("INVENTORY", textX, textY); textY += 35;	
 		g2.drawString("MAP", textX, textY); textY += 35;
-		g2.drawString("GUARD", textX, textY); textY += 35;
-		g2.drawString("ROLL", textX, textY); textY += 35;
-		g2.drawString("LOCK-ON", textX, textY); textY += 35;
-		g2.drawString("GRAB / THROW", textX, textY); textY += 35;
-		g2.drawString("USE ITEM", textX, textY); textY += 35;
-		g2.drawString("CYCLE ITEMS", textX, textY); textY += 35;	
+		g2.drawString("MINI-MAP", textX, textY); textY += 35;		
 		
 		// VALUES
 		textX = frameX + gp.tileSize * 6;
 		textY = frameY + gp.tileSize * 2;
-		g2.drawString(KeyEvent.getKeyText(gp.button_action), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_inventory), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_map), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_guard), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_roll), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_target), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_grab), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_item), textX, textY); textY += 35;
-		g2.drawString(KeyEvent.getKeyText(gp.button_tab), textX, textY); textY += 35;		
+		g2.drawString(KeyEvent.getKeyText(gp.btn_A), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_B), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_X), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_L), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_R), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_Z), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_SELECT), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_DUP), textX, textY); textY += 35;
+		g2.drawString(KeyEvent.getKeyText(gp.btn_DDOWN), textX, textY); textY += 35;		
 		
 		// BACK		
 		text = "BACK";
@@ -977,10 +977,10 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				commandNum = 4;
 				subState = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 	}
@@ -1002,12 +1002,12 @@ public class UI {
 			if (commandNum == i) {
 				g2.drawString(">", textX - 25, textY);
 				
-				if (gp.keyH.actionPressed) {
+				if (gp.keyH.aPressed) {
 					subState = 4;
 					commandNum = 0;
 					gp.saveLoad.save(i);
 					gp.fileSlot = i;
-					gp.keyH.actionPressed = false;
+					gp.keyH.aPressed = false;
 				}
 			}		
 		}
@@ -1019,10 +1019,10 @@ public class UI {
 		if (commandNum == 3) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				commandNum = 5;
 				subState = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 	}
@@ -1043,9 +1043,9 @@ public class UI {
 				g2.drawString(text, textX, textY);
 				if (commandNum == i) {
 					g2.drawString(">", textX - 25, textY);
-					if (gp.keyH.actionPressed) {
+					if (gp.keyH.aPressed) {
 						gp.keyH.playErrorSE();
-						gp.keyH.actionPressed = false;
+						gp.keyH.aPressed = false;
 					}
 				}		
 			}
@@ -1055,7 +1055,7 @@ public class UI {
 				if (commandNum == i) {
 					g2.drawString(">", textX - 25, textY);
 					
-					if (gp.keyH.actionPressed) {
+					if (gp.keyH.aPressed) {
 						gp.stopMusic();
 						gp.resetGame();
 						commandNum = 0;
@@ -1065,7 +1065,7 @@ public class UI {
 						gp.tileM.loadMap();
 						gp.gameState = gp.playState;
 						gp.setupMusic(true);	
-						gp.keyH.actionPressed = false;
+						gp.keyH.aPressed = false;
 					}
 				}		
 			}			
@@ -1078,10 +1078,10 @@ public class UI {
 		if (commandNum == 3) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				commandNum = 6;
 				subState = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 	}
@@ -1105,13 +1105,13 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				subState = 0;		
 				commandNum = 0;
 				inventoryScreen = 0;
 				titleScreenState = 0;
 				gp.gameState = gp.playState;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 		
@@ -1122,7 +1122,7 @@ public class UI {
 		if (commandNum == 1) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				gp.stopMusic();				
 				subState = 0;		
 				commandNum = 0;
@@ -1131,7 +1131,7 @@ public class UI {
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
 				gp.setupMusic(true);
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 	}
@@ -1151,7 +1151,7 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				gp.stopMusic();		
 				subState = 0;		
 				commandNum = 0;
@@ -1160,7 +1160,7 @@ public class UI {
 				gp.gameState = gp.titleState;		
 				gp.resetGame();				
 				gp.setupMusic(true);
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 		
@@ -1172,10 +1172,10 @@ public class UI {
 		if (commandNum == 1) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				commandNum = 7;
 				subState = 0;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}
 		}
 	}
@@ -1198,11 +1198,11 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 34F));	
 		String text = null;		
 		if (inventoryScreen == 0) {
-			g2.drawString(KeyEvent.getKeyText(gp.button_tab) + " >", x, y);
+			g2.drawString(KeyEvent.getKeyText(gp.btn_Z) + " >", x, y);
 			text = "COLLECTABLES";
 		}
 		else {
-			g2.drawString("< " + KeyEvent.getKeyText(gp.button_tab), x - 20, y);
+			g2.drawString("< " + KeyEvent.getKeyText(gp.btn_Z), x - 20, y);
 			text = "ITEMS";
 		}
 		
@@ -1557,14 +1557,14 @@ public class UI {
   		if (skip) skipDialogue();
 	}
 	private void skipDialogue() {
-		if (gp.keyH.actionPressed && canSkip) {
+		if (gp.keyH.aPressed && canSkip) {
 			canSkip = false;
 			charIndex = 0;
 			combinedText = "";
 			
 			if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
 				npc.dialogueIndex++;
-				gp.keyH.actionPressed = false;
+				gp.keyH.aPressed = false;
 			}	
 		}
 	}
@@ -1584,7 +1584,7 @@ public class UI {
 			}
 		}
 		
-		gp.keyH.actionPressed = false;
+		gp.keyH.aPressed = false;
 	}
 	private void dialogue_select() {
 	
@@ -1610,7 +1610,7 @@ public class UI {
 				// IF RESPONSE IS SELECTED, DRAW DIALOGUE ANSWER
 				if (commandNum == i) {
 					g2.drawString(">", x-24, y);
-					if (gp.keyH.actionPressed && canSkip) {
+					if (gp.keyH.aPressed && canSkip) {
 						commandNum = 0;
 						subState = 0;
 						responseSet = 0;
@@ -1648,7 +1648,7 @@ public class UI {
 		g2.drawString("Buy", x, y);
 		if (commandNum == 0) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.actionPressed) 
+			if (gp.keyH.aPressed) 
 				subState = 1;
 		}
 		
@@ -1656,7 +1656,7 @@ public class UI {
 		g2.drawString("Sell", x, y);
 		if (commandNum == 1) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.actionPressed)
+			if (gp.keyH.aPressed)
 				subState = 2;
 		}
 		
@@ -1664,7 +1664,7 @@ public class UI {
 		g2.drawString("Leave", x, y);
 		if (commandNum == 2) {
 			g2.drawString(">", x-24, y);
-			if (gp.keyH.actionPressed) {					
+			if (gp.keyH.aPressed) {					
 				subState = 0;
 				commandNum = 0;
 				canSkip = false;
@@ -1700,7 +1700,7 @@ public class UI {
 			g2.drawString(text, x+32, y+35);				
 			
 			// BUY AN ITEM
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 				
 				// NOT ENOUGH RUPEES
 				if (npc.inventory.get(itemIndex).price > gp.player.rupees) {
@@ -1764,7 +1764,7 @@ public class UI {
 			g2.drawString(text, x+32, y+35);	
 			
 			// SELL AN ITEM
-			if (gp.keyH.actionPressed) {
+			if (gp.keyH.aPressed) {
 												
 				// CAN SELL
 				if (npc.canObtainItem(gp.player.inventory.get(itemIndex)) &&
@@ -1923,7 +1923,7 @@ public class UI {
 			if (commandNum == 0) {
 				g2.drawString(">", x - 40, y);
 				
-				if (gp.keyH.actionPressed) {
+				if (gp.keyH.aPressed) {
 					gp.stopMusic();
 					
 					gp.resetGame();
@@ -1949,7 +1949,7 @@ public class UI {
 			if (commandNum == 1) {
 				g2.drawString(">", x - 40, y);
 				
-				if (gp.keyH.actionPressed) {
+				if (gp.keyH.aPressed) {
 					gp.stopMusic();		
 					
 					commandNum = 0;	

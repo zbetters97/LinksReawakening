@@ -246,15 +246,14 @@ public class EventHandler {
 	
 	private void healingPool() {
 		
-		gp.ui.hint = "[Press SPACE to interact]";
+		gp.ui.hint = "[Press " + gp.btn_A + " to interact]";
 		gp.ui.showHint = true;
 		
-		if (gp.keyH.actionPressed) {
+		if (gp.keyH.aPressed) {
 			playFairySE();	
 			
 			gp.ui.showHint = false;
-			gp.keyH.actionPressed = false;
-			gp.player.attackCanceled = true;	
+			gp.keyH.aPressed = false;
 			
 			gp.player.life = gp.player.maxLife;	
 			gp.player.arrows = gp.player.maxArrows;
@@ -265,9 +264,8 @@ public class EventHandler {
 	}
 	
 	private void speak(Entity npc) {		
-		if (gp.keyH.actionPressed) {
+		if (gp.keyH.aPressed) {
 			gp.gameState = gp.dialogueState;
-			gp.player.attackCanceled = true;
 			npc.speak();
 		}
 	}

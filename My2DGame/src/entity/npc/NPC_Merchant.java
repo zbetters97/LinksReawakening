@@ -50,7 +50,7 @@ public class NPC_Merchant extends Entity {
 	}	
 	
 	public void speak() {
-		gp.keyH.actionPressed = false;
+		gp.keyH.aPressed = false;
 		gp.ui.npc = this;
 		gp.gameState = gp.tradeState;
 	}
