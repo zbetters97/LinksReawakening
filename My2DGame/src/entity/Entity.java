@@ -42,8 +42,8 @@ public class Entity {
 	public int safeWorldX = 0, safeWorldY = 0;
 	protected int worldXStart;
 	protected int worldYStart;	
-	protected int tempScreenX;
-	protected int tempScreenY;
+	public int tempScreenX;
+	public int tempScreenY;
 	public int bounds = 999;	
 	public String direction = "down";		
 	public int type;
@@ -1359,7 +1359,7 @@ public class Entity {
 					
 			// LOCKON IMAGE
 			if (locked) {						
-				g2.drawImage(zTargetLocked, getScreenX() - 10, getScreenY() - 10, null);
+				g2.drawImage(zTargetLocked, tempScreenX - 10, tempScreenY - 10, null);
 			}
 			
 			// DRAW HITBOX
@@ -1404,9 +1404,9 @@ public class Entity {
 		}
 		else {
 			// WITHIN SCREEN BOUNDARY
-			if (worldX + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
+			if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
 					worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-					worldY + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
+					worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 					worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 				inFrame = true;
 			}	

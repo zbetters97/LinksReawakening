@@ -29,6 +29,8 @@ public class Player extends Entity {
 	// POSITIONING
 	public int screenX;
 	public int screenY;	
+	public int defaultWorldX;
+	public int defaultWorldY;
 	
 	// INVENTORY
 	public final int maxItemInventorySize = 10;
@@ -171,6 +173,11 @@ public class Player extends Entity {
 
 		worldX = gp.tileSize * 23;
 		worldY = gp.tileSize * 21;		
+		defaultWorldX = worldX;
+		defaultWorldY = worldY;
+		safeWorldX = defaultWorldX;
+		safeWorldY = defaultWorldY;
+		
 		gp.currentMap = 0;
 		gp.currentArea = gp.outside;
 /*
@@ -193,8 +200,9 @@ public class Player extends Entity {
 	}	
 	public void resetValues() {	
 				
-		gp.keyH.aPressed = false;
 		action = Action.IDLE;
+		gp.keyH.aPressed = false;
+		gp.keyH.bPressed = false;
 		onGround = true;
 		knockback = false;
 		invincible = false;
@@ -613,9 +621,10 @@ public class Player extends Entity {
 	}
 	
 	// ACTION
-	public void action() { 		
+	public void action() { 
 		switch (action) {
-			case IDLE:				
+			case IDLE:			
+				pullNum = 1; pullCounter = 0;	
 				if (moving) {
 					playGrunt();				
 					action = Action.ROLLING; 
@@ -629,10 +638,13 @@ public class Player extends Entity {
 					if (objIndex != -1) interactObject(objIndex);
 					
 					grabbing();						
-				}				
+				}						
 				break;
 			case CARRYING:
 				throwEntity();				
+				break;
+			case GRABBING:
+				pulling();
 				break;
 			case SWIMMING:
 				diving = true;
@@ -1014,7 +1026,7 @@ public class Player extends Entity {
 			// CHECK IF ATTACK LANDS ON ENEMY
 			Entity enemy = getEnemy(this);		
 			if (enemy != null) {			
-				int damage = attack++;
+				int damage = attack + 1;
 				gp.player.damageEnemy(enemy, this, damage, currentWeapon.knockbackPower);
 			}
 			
@@ -1189,7 +1201,7 @@ public class Player extends Entity {
 		// PLAYER HURT BY ENEMY
 		if (enemy != null && !invincible) {
 			
-			if (enemy.collision && !enemy.dying && !enemy.captured) {
+			if (enemy.collision && !enemy.dying && !enemy.captured || enemy.aggressive) {
 				
 				if (enemy.knockbackPower > 0) setKnockback(this, enemy, enemy.knockbackPower);			
 				
@@ -1214,16 +1226,6 @@ public class Player extends Entity {
 					invincible = true;
 					transparent = true;	
 				}
-			}
-			else if (enemy.aggressive) {
-				playHurt();
-				
-				int damage = enemy.attack;								
-				if (damage < 0) damage = 0;				
-				this.life -= damage;
-				
-				invincible = true;
-				transparent = true;	
 			}
 		}
 	}		
@@ -1263,6 +1265,25 @@ public class Player extends Entity {
 			speed = defaultSpeed;					
 		}		
 	}	
+	public void throwEntity() {		
+		playThrowSE();
+		playGruntSE_1();
+		
+		action = Action.TOSSING;
+		grabbedObject.thrown = true;
+		grabbedObject.grabbed = false;
+		grabbedObject.tWorldY = worldY;
+		
+		switch (direction) {
+			case "up":
+			case "upleft":
+			case "upright": grabbedObject.direction = "up"; break;
+			case "down":
+			case "downleft":
+			case "downright": grabbedObject.direction = "down"; break;
+			default: grabbedObject.direction = direction; break;
+		}		
+	}
 	
 	// ITEM HANDLING
 	public void selectInventory() {
@@ -1414,90 +1435,35 @@ public class Player extends Entity {
 			action = Action.IDLE;			
 		}
 	}
-	public void grabbing() {
+	public void grabbing() {	
+		
+		grabbedObject = null;
 		
 		int i = gp.cChecker.checkEntity(this, gp.iTile);
 		if (i != -1) {
 			if (gp.iTile[gp.currentMap][i].grabbable) {
-				grabEntity(gp.iTile[gp.currentMap][i]);
+				action = Action.GRABBING;		
+				grabbedObject = gp.iTile[gp.currentMap][i];
  				return;
 			}
 		}		
 		else {
 			i = gp.cChecker.checkEntity(this, gp.projectile);
 			if (i != -1 && gp.projectile[gp.currentMap][i].grabbable) {
-				grabEntity(gp.projectile[gp.currentMap][i]);	
+				action = Action.GRABBING;		
+				grabbedObject = gp.projectile[gp.currentMap][i];
 				return;
 			}
 			else {
 				i = gp.cChecker.checkNPC();
 				if (i != -1 && gp.npc[gp.currentMap][i].grabbable) {
-					grabEntity(gp.npc[gp.currentMap][i]);
+					action = Action.GRABBING;		
+					grabbedObject = gp.npc[gp.currentMap][i];
 					return;
 				}
 			}
 		}
-		
-		action = Action.IDLE;
 	}	
-	public void grabEntity(Entity entity) {
-				
-		action = Action.GRABBING;
-		
-		// PLAYER AUTOMATICALLY GRABS BOMB
-		if (entity.name.equals(PRJ_Bomb.prjName)) {
-			pulling(entity);
-			return;
-		}
-		
-		String pullDirection = getOppositeDirection(direction);
-		switch (pullDirection) {
-			case "up":
-			case "upleft":
-			case "upright":
-				if (gp.keyH.upPressed) {
-					pulling(entity);
-				}
-				else {
-					pullNum = 1;
-					pullCounter = 0;
-					action = Action.IDLE;
-				}
-				break;
-			case "down":
-			case "downleft":
-			case "downright":
-				if (gp.keyH.downPressed) {					
-					pulling(entity);
-				}
-				else {
-					pullNum = 1;
-					pullCounter = 0;
-					action = Action.IDLE;
-				}
-				break;
-			case "left":
-				if (gp.keyH.leftPressed) {
-					pulling(entity);
-				}
-				else {
-					pullNum = 1;
-					pullCounter = 0;
-					action = Action.IDLE;
-				}
-				break;
-			case "right":
-				if (gp.keyH.rightPressed) {
-					pulling(entity);
-				}
-				else {
-					pullNum = 1;
-					pullCounter = 0;
-					action = Action.IDLE;
-				}
-				break;
-		}
-	}
 	public void guarding() {
 		
 		if (guardCounter < 15) 
@@ -1531,20 +1497,28 @@ public class Player extends Entity {
 			}
 		}
 	}
-	public void pulling(Entity entity) {
+	public void pulling() {
 		pullCounter++;
 		
 		if (12 >= pullCounter) pullNum = 1; 
 		else if (18 >= pullCounter && pullCounter > 12) pullNum = 2;		
 		else if (27 >= pullCounter && pullCounter > 18) pullNum = 3;	
 		else if (pullCounter > 27) {	
-			playPullSE();
-			pullNum = 1;
-			pullCounter = 0;
-			action = Action.CARRYING;
-			grabbedObject = entity;
-			entity.grabbed = true;
-			gp.keyH.aPressed = false;	
+			
+			if (grabbedObject != null) {
+				playPullSE();
+				pullNum = 1;
+				pullCounter = 0;
+				action = Action.CARRYING;		
+				grabbedObject.grabbed = true;					
+			}
+			else {
+				pullNum = 1;
+				pullCounter = 0;
+				action = Action.IDLE;				
+			}
+			
+			gp.keyH.aPressed = false;
 		}
 	}
 	public void pushing() {
@@ -1584,37 +1558,6 @@ public class Player extends Entity {
 			action = Action.IDLE;
 			throwNum = 1;
 			throwCounter = 0;
-		}
-	}
-	public void throwEntity() {
-		
-		// THROW FORWARD
-		if (moving) {
-			playThrowSE();
-			playGruntSE_1();
-			
-			action = Action.TOSSING;
-			grabbedObject.thrown = true;
-			grabbedObject.grabbed = false;
-			grabbedObject.tWorldY = worldY;
-			
-			switch (direction) {
-				case "up":
-				case "upleft":
-				case "upright": grabbedObject.direction = "up"; break;
-				case "down":
-				case "downleft":
-				case "downright": grabbedObject.direction = "down"; break;
-				default: grabbedObject.direction = direction; break;
-			}
-		}
-		// PLACE ENTITY DOWN
-		else {
-			action = Action.TOSSING;			
-			grabbedObject.grabbed = false;
-			grabbedObject.worldX = worldX;
-			grabbedObject.worldY = worldY;
-			grabbedObject.breakTile();
 		}
 	}
 	public void soaring() {
@@ -1733,13 +1676,15 @@ public class Player extends Entity {
 			if (action == Action.CARRYING) {
 				grabbedObject.alive = false;				
 			}
+			
 			action = Action.IDLE;
 			
 			// MOVE PLAYER TO SAFE SPOT
 			worldX = safeWorldX;
 			worldY = safeWorldY;
-			safeWorldX = 0;
-			safeWorldY = 0;
+			
+			safeWorldX = defaultWorldX;
+			safeWorldY = defaultWorldY;
 			
 			gp.gameState = gp.playState;
 		}		

@@ -9,7 +9,7 @@ import entity.collectable.COL_Arrow;
 import entity.collectable.COL_Heart;
 import entity.collectable.COL_Rupee_Blue;
 import entity.item.ITM_Bow;
-import entity.projectile.PRJ_Spear;
+import entity.projectile.PRJ_Arrow;
 
 public class EMY_Goblin_Archer extends Entity {
 
@@ -32,7 +32,7 @@ public class EMY_Goblin_Archer extends Entity {
 		attack = 2;
 		knockbackPower = 0;		
 		
-		projectile = new PRJ_Spear(gp);
+		projectile = new PRJ_Arrow(gp);
 		
 		hitbox = new Rectangle(8, 16, 32, 32); 
 		hitboxDefaultX = hitbox.x;

@@ -138,9 +138,6 @@ public class EMY_Beamos extends Entity {
 		}
 	}
 	
-	public void damageReaction() {
-	}
-	
 	public void playHurtSE() {
 		gp.playSE(3, 0);
 	}

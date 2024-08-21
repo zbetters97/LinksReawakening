@@ -55,6 +55,7 @@ public class TileManager {
 	public void loadMap() {
 		
 		String currentMap = "res/maps/" + gp.mapFiles[gp.currentMap];
+		int mapLength = 0;
 		
 		try {			
 			
@@ -63,8 +64,9 @@ public class TileManager {
 			for (int row = 0; sc.hasNextLine(); row++) {
 				
 				String line = sc.nextLine();
-				String numbers[] = line.split(" ");	
-
+				String numbers[] = line.split(" ");
+				mapLength = numbers.length;
+				
 				for (int col = 0; col < numbers.length; col++) {										
 					int tileNum = Integer.parseInt(numbers[col]);					
 					mapTileNum[gp.currentMap][col][row] = tileNum;
@@ -72,6 +74,12 @@ public class TileManager {
 			}
 			
 			sc.close();
+			
+			// ASSIGN NEW WORLD DIMENSIONS
+			gp.maxWorldCol = mapLength;
+			gp.maxWorldRow = mapLength;
+			gp.worldWidth = gp.tileSize * mapLength;
+			gp.worldHeight = gp.tileSize * mapLength;
 		} 
 		catch(Exception e) {
 			e.printStackTrace();

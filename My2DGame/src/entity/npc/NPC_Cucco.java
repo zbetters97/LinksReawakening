@@ -34,7 +34,7 @@ public class NPC_Cucco extends Entity {
 		defaultSpeed = 1; speed = defaultSpeed;
 		defaultAnimationSpeed = 10; animationSpeed = defaultAnimationSpeed;
 		
-		hitbox = new Rectangle(8, 20, 32, 28); 		
+		hitbox = new Rectangle(8, 16, 32, 28); 		
 		hitboxDefaultX = hitbox.x;
 		hitboxDefaultY = hitbox.y;
 		hitboxDefaultWidth = hitbox.width;
@@ -104,8 +104,7 @@ public class NPC_Cucco extends Entity {
 			
 			getDirection(60);		
 		}		
-		else if (grabbed) {
-			
+		else if (grabbed) {			
 			animationSpeed = animationPanicSpeed;
 			squakTimerMax = squakTimerPanicMax;
 			actionLockCounter = 0;

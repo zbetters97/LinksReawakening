@@ -600,7 +600,7 @@ public class UI {
 			}
 			
 			if (target != null) {
-				g2.drawImage(zTargetLock, target.getScreenX() - 10, target.getScreenY() - 10, null);	
+				g2.drawImage(zTargetLock, target.tempScreenX - 10, target.tempScreenY - 10, null);	
 			}	
 		}
 	}
@@ -1850,8 +1850,12 @@ public class UI {
 			
 			gp.player.direction = transitionDirection;
 			gp.currentMap = gp.eHandler.tempMap;
+			
 			gp.player.worldX = gp.tileSize * gp.eHandler.tempCol;
 			gp.player.worldY = gp.tileSize * gp.eHandler.tempRow;
+			
+			gp.player.defaultWorldX = gp.player.worldX;
+			gp.player.defaultWorldY = gp.player.worldY;
 			
 			gp.eHandler.previousEventX = gp.player.worldX;
 			gp.eHandler.previousEventY = gp.player.worldY;

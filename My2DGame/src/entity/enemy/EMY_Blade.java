@@ -102,12 +102,12 @@ public class EMY_Blade extends Entity {
 					// PLAYER ABOVE
 					if (worldY - gp.player.worldY >= 0) {
 						direction = "up";
-						playerFound = true;
+						if (pathOpen(direction)) playerFound = true;
 					}	
 					// PLAYER BELOW
 					else if (worldY - gp.player.worldY < 0) {
 						direction = "down";
-						playerFound = true;
+						if (pathOpen(direction)) playerFound = true;
 					}
 				}
 				else if (Math.abs(worldY - gp.player.worldY) <= gp.tileSize) {
@@ -115,12 +115,12 @@ public class EMY_Blade extends Entity {
 					// PLAYER LEFT
 					if (worldX - gp.player.worldX >= 0) {
 						direction = "left";
-						playerFound = true;
+						if (pathOpen(direction)) playerFound = true;
 					}						
 					// PLAYER RIGHT
 					else if (worldX - gp.player.worldX < 0) {
 						direction = "right";
-						playerFound = true;
+						if (pathOpen(direction)) playerFound = true;
 					}
 				}		
 				// PLAYER NOT CLOSE TO BLADE
@@ -133,6 +133,62 @@ public class EMY_Blade extends Entity {
 				playerFound = false;
 			}
 		}
+	}
+	
+	// RETURN TRUE IF PATH TO PLAYER IS OPEN
+	private boolean pathOpen(String direction) {		
+		
+		switch(direction) {
+			case "up":
+				for (int i = 0; i <= getTileDistance(gp.player); i++) {					
+					int wX = worldX / gp.tileSize;
+					int wY = (worldY - gp.tileSize * i) / gp.tileSize;
+					if (tileHasCollision(wX, wY))
+						return false;
+				}
+				break;
+			case "down":
+				for (int i = 0; i <= getTileDistance(gp.player); i++) {					
+					int wX = worldX / gp.tileSize;
+					int wY = (worldY + gp.tileSize * i) / gp.tileSize;
+					if (tileHasCollision(wX, wY))
+						return false;
+				}
+				break;
+			case "left":				
+				for (int i = 0; i <= getTileDistance(gp.player); i++) {					
+					int wX = (worldX - gp.tileSize * i) / gp.tileSize;
+					int wY = worldY / gp.tileSize;
+					if (tileHasCollision(wX, wY))
+						return false;
+				}				
+				break;
+			case "right":
+				for (int i = 0; i <= getTileDistance(gp.player); i++) {					
+					int wX = (worldX + gp.tileSize * i) / gp.tileSize;
+					int wY = worldY / gp.tileSize;
+					if (tileHasCollision(wX, wY))
+						return false;
+				}
+				break;
+		}		
+		
+		return true;
+	}
+	
+	// RETURN TRUE IF GIVEN TILE HAS COLLISION
+	private boolean tileHasCollision(int wX, int wY) {
+		
+		boolean tileCollision = false;
+		
+		int tileNum = gp.tileM.mapTileNum[gp.currentMap][wX][wY];
+		if (gp.tileM.tile[tileNum].collision || 
+				gp.tileM.tile[tileNum].pit || 
+				gp.tileM.tile[tileNum].water) {
+			tileCollision = true;
+		}
+		
+		return tileCollision;
 	}
 	
 	public void playSE() {

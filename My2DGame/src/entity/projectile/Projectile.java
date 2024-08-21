@@ -674,7 +674,6 @@ public class Projectile extends Entity {
 				
 				Entity enemy = getEnemy(this);		
 				if (enemy != null) {
-					System.out.println("called");
 					if (enemy == user) {
 						collisionOn = false;
 						alive = true;

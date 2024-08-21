@@ -16,12 +16,11 @@ public class ITM_Bomb extends Entity {
 		type = type_item;
 		name = itmName;
 		description = "[" + name + "]\nEquip to blow things up!";
-		getDescription = "When equipped, press " + KeyEvent.getKeyText(gp.btn_A) + 
-				" to throw a bomb\nor " + KeyEvent.getKeyText(gp.btn_X) + " to place it down!";
+		getDescription = "Press + " + KeyEvent.getKeyText(gp.btn_X) + " to place it down and\n"
+				+ KeyEvent.getKeyText(gp.btn_A) + " to pick it up!";
 	}	
 	
-	public void getImage() {
-		
+	public void getImage() {		
 		image = down1 = setup("/items/bomb");
 	}
 	
@@ -34,7 +33,9 @@ public class ITM_Bomb extends Entity {
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);		
 			addProjectile(projectile);	
 			
-			if (user == gp.player) gp.player.grabEntity(projectile);			
+			if (user == gp.player) {
+				gp.player.grabbedObject = projectile;
+			}
 			
 			if (user.bombs != -1) user.bombs--;
 		}

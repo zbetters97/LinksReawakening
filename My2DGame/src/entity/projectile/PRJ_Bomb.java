@@ -96,6 +96,12 @@ public class PRJ_Bomb extends Projectile {
 			for (Entity e : enemyIndexes) 
 				gp.player.damageEnemy(e, this, attack, knockbackPower);						
 		}
+		// DAMAGE SURROUNDING NPCs
+		ArrayList<Entity> npcIndexes = gp.cChecker.checkExplosion(this, gp.npc);
+		if (npcIndexes.size() > 0) {
+			for (Entity n : npcIndexes) 
+				gp.player.damageEnemy(n, this, attack, knockbackPower);						
+		}
 		// DAMAGE SURROUNDING BOMBS
 		ArrayList<Entity> bombIndexes = gp.cChecker.checkExplosion(this, gp.projectile);
 		if (bombIndexes.size() > 0) {

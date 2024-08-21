@@ -49,4 +49,8 @@ public class PRJ_Arrow extends Projectile {
 		alive = false;
 		canPickup = false;	
 	}
+	
+	public void playSE() {
+		gp.playSE(5, 7);
+	}
 }

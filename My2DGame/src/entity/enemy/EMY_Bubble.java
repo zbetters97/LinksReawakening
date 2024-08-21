@@ -64,8 +64,6 @@ public class EMY_Bubble extends Entity {
 		}		
 	}
 	
-	public void damageReaction() {
-	}
 	public void playHurtSE() {
 		gp.playSE(3, 0);
 	}

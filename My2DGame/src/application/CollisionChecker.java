@@ -1052,8 +1052,15 @@ public class CollisionChecker {
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].hitbox.y;
 				
 				// IF ENTITY IS HIT BY BOMB
-				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) 			
-					impacted.add(target[gp.currentMap][i]);				
+				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
+					if (target[gp.currentMap][i].type == entity.type_npc) { 
+						if (target[gp.currentMap][i].name.contains("Cucco")) 
+							impacted.add(target[gp.currentMap][i]);							
+					}
+					else {
+						impacted.add(target[gp.currentMap][i]);
+					}									
+				}
 				
 				// reset bomb hitbox
 				entity.hitbox.x = entity.hitboxDefaultX;
