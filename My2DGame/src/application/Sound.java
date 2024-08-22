@@ -163,7 +163,7 @@ public class Sound {
 	public void stop() {
 		clip.stop();
 	}
-	protected void checkVolume() {
+	public void checkVolume() {
 		
 		switch(volumeScale) {
 			case 0: volume = -80f; break;

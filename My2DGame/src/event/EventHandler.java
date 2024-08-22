@@ -80,7 +80,6 @@ public class EventHandler {
 		if (canTouchEvent) {
 
 			// FAIRY POOL
-			if (hit(0, 23, 11, Arrays.asList("up"), false)) healingPool();
 			if (hit(3, 29, 40, Arrays.asList("right"), false)) healingPool();
 			
 			// SHOP KEEPER

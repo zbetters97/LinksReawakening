@@ -423,7 +423,7 @@ public class UI {
 		}
 		
 		if (gp.gameState == gp.playState || gp.gameState == gp.dialogueState || 
-				gp.gameState == gp.objectState) {
+				gp.gameState == gp.objectState || gp.gameState == gp.fallingState) {
 			
 			if (mapNameCounter > 0) {
 				drawMapName();
@@ -634,54 +634,6 @@ public class UI {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 	}
-	private void drawDebug() {
-		
-		int x = 10; 
-		int y = gp.tileSize * 6; 
-		int lineHeight = 20;
-		
-		String timeOfDay = "";
-		switch (gp.eManager.lighting.dayState) {
-			case 0: timeOfDay = "DAY"; break;
-			case 1: timeOfDay = "DUSK"; break;
-			case 2: timeOfDay = "NIGHT"; break;
-			case 3: timeOfDay = "DAWN"; break;
-		}
-		
-		g2.setColor(Color.WHITE);
-		g2.setFont(new Font("Arial", Font.BOLD, 50));
-		g2.drawString(timeOfDay, x, y - gp.tileSize);
-		
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20f));						
-		
-		g2.drawString("WorldX: " + gp.player.worldX, x , y); 
-		y += lineHeight;
-		g2.drawString("WorldY: " + gp.player.worldY, x , y); 
-		y += lineHeight;
-		g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
-		y += lineHeight;
-		g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
-		y += lineHeight;
-		g2.drawString("Time Counter: " + gp.eManager.lighting.dayCounter, x, y);
-		
-		g2.setColor(Color.RED);
-		g2.drawRect(gp.player.screenX + gp.player.hitbox.x, gp.player.screenY + gp.player.hitbox.y, 
-				gp.player.hitbox.width, gp.player.hitbox.height);
-			
-		g2.setColor(new Color(255,0,0,100));
-		for (int i = 0; i < gp.pFinder.pathList.size(); i++) {
-			
-			int worldX = gp.pFinder.pathList.get(i).col * gp.tileSize;
-			int worldY = gp.pFinder.pathList.get(i).row * gp.tileSize;
-			int screenX = worldX - gp.player.worldX + gp.player.screenX;
-			int screenY = worldY - gp.player.worldY + gp.player.screenY;
-			
-			g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);			
-		}
-		
-		g2.setColor(Color.WHITE);
-		g2.setFont(PK_DS);
-	}	
 	private void drawEnemyHPBar(Entity[][] enemies) {
 		
 		for (int i = 0; i < enemies[1].length; i++) {
@@ -742,6 +694,56 @@ public class UI {
 			}			
 		}				
 	}
+	private void drawDebug() {
+		
+		int x = 10; 
+		int y = gp.tileSize * 6; 
+		int lineHeight = 20;
+		
+		String timeOfDay = "";
+		switch (gp.eManager.lighting.dayState) {
+			case 0: timeOfDay = "DAY"; break;
+			case 1: timeOfDay = "DUSK"; break;
+			case 2: timeOfDay = "NIGHT"; break;
+			case 3: timeOfDay = "DAWN"; break;
+		}
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(new Font("Arial", Font.BOLD, 50));
+		g2.drawString(timeOfDay, x, y - gp.tileSize);
+		
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20f));						
+		
+		g2.drawString("WorldX: " + gp.player.worldX, x , y); 
+		y += lineHeight;
+		g2.drawString("WorldY: " + gp.player.worldY, x , y); 
+		y += lineHeight;
+		g2.drawString("Column: " + (gp.player.worldX + gp.player.hitbox.x) / gp.tileSize, x , y);
+		y += lineHeight;
+		g2.drawString("Row: " + (gp.player.worldY + gp.player.hitbox.y) / gp.tileSize, x , y);
+		y += lineHeight;
+		g2.drawString("Time Counter: " + gp.eManager.lighting.dayCounter, x, y);
+		y += lineHeight;
+		g2.drawString("Blood moon cycle: " + gp.eManager.lighting.bloodMoonCounter, x, y);
+		
+		g2.setColor(Color.RED);
+		g2.drawRect(gp.player.screenX + gp.player.hitbox.x, gp.player.screenY + gp.player.hitbox.y, 
+				gp.player.hitbox.width, gp.player.hitbox.height);
+			
+		g2.setColor(new Color(255,0,0,100));
+		for (int i = 0; i < gp.pFinder.pathList.size(); i++) {
+			
+			int worldX = gp.pFinder.pathList.get(i).col * gp.tileSize;
+			int worldY = gp.pFinder.pathList.get(i).row * gp.tileSize;
+			int screenX = worldX - gp.player.worldX + gp.player.screenX;
+			int screenY = worldY - gp.player.worldY + gp.player.screenY;
+			
+			g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);			
+		}
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(PK_DS);
+	}	
 	
 	// PAUSE
 	private void drawPauseScreen() {
@@ -2084,12 +2086,11 @@ public class UI {
 	}
 	private BufferedImage setup(String imagePath) {	
 		
-		UtilityTool utility = new UtilityTool();
 		BufferedImage image = null;
 		
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
-			image = utility.scaleImage(image, gp.tileSize, gp.tileSize);
+			image = GamePanel.utility.scaleImage(image, gp.tileSize, gp.tileSize);
 		}
 		catch (IOException e) {
 			e.printStackTrace();

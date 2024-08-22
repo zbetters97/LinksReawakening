@@ -17,11 +17,11 @@ public class Lighting {
 	
 	// DAY AND NIGHT CYCLE
 	public int dayCounter;
-	final int dayLength = 5400; // 90 SECONDS (1/60 * 5400)
+	private final int dayLength = 5400; // 90 SECONDS (1/60 * 5400)
 	public final int day = 0;
-	final int dusk = 1;
-	final int night = 2;
-	final int dawn = 3;
+	private final int dusk = 1;
+	private final int night = 2;
+	private final int dawn = 3;
 	public int dayState = day;
 	public int bloodMoonCounter = 0;
 	public int bloodMoonMax = 3;
@@ -54,9 +54,11 @@ public class Lighting {
 				}
 			}
 			// DUSK
-			else if (dayState == dusk) {
+			else if (dayState == dusk) {				
+									
 				filterAlpha += 0.001f; // 16 SEC ([1/0.001] / 60)
 				if (filterAlpha > 1f) { // NO OPACITY (DARK)
+					
 					dayState = night;
 					filterAlpha = 1f;		
 					
@@ -69,7 +71,7 @@ public class Lighting {
 				}
 			}
 			// NIGHT
-			else if (dayState == night) {				
+			else if (dayState == night) {	
 				dayCounter+=2;
 				if (dayCounter > dayLength) {
 					dayState = dawn;
@@ -77,7 +79,7 @@ public class Lighting {
 				}
 			}
 			// DAWN
-			else if (dayState == dawn) {
+			else if (dayState == dawn) {				
 				filterAlpha -= 0.001f;
 				if (filterAlpha < 0f) { // FULL OPACITY (LIGHT)
 					dayState = day;

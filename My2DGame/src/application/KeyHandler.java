@@ -337,7 +337,7 @@ public class KeyHandler implements KeyListener {
 	// PLAY
 	private void playState(int code) { 
 		
-		/* DIR:  	MOVEMENT
+		/* DIR: 	MOVEMENT
 		 * A:		ACTION
 		 * B:		ATTACK
 		 * X:		ITEM
@@ -361,7 +361,7 @@ public class KeyHandler implements KeyListener {
 		if (code == gp.btn_Y && lock) { yPressed = true; lock = false; }
 		
 		if (code == gp.btn_L && lock) { lPressed = true; lock = false; }
-		if (code == gp.btn_R && lock) { gp.player.playGuardSE(); rPressed = true; lock = false; }
+		if (code == gp.btn_R && lock) { rPressed = true; lock = false; }
 		if (code == gp.btn_Z && lock) { zPressed = true; lock = false; }
 
 		if (code == gp.btn_DUP) {
@@ -409,7 +409,6 @@ public class KeyHandler implements KeyListener {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
 					playCursorSE();
 					gp.music.volumeScale--;
-					gp.music.checkVolume();					
 				}
 				if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
 					playCursorSE();
@@ -656,11 +655,7 @@ public class KeyHandler implements KeyListener {
 		if (code == gp.btn_LEFT) leftPressed = false;
 		if (code == gp.btn_RIGHT) rightPressed = false;
 		
-		if (code == gp.btn_A) { 
-			aPressed = false; lock = true; 
-			if (gp.player.action == Action.GRABBING)
-				gp.player.action = Action.IDLE;
-		}
+		if (code == gp.btn_A) { aPressed = false; lock = true; }
 		if (code == gp.btn_B) { bPressed = false; lock = true; }
 		if (code == gp.btn_X) { xPressed = false; lock = true; }
 		if (code == gp.btn_Y) { yPressed = false; lock = true; }

@@ -12,7 +12,6 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 
 import application.GamePanel;
-import application.UtilityTool;
 
 public class TileManager {
 	
@@ -145,12 +144,10 @@ public class TileManager {
 	
 	public void setup(int index, String imageName, boolean collision, boolean water, boolean pit) {
 		
-		UtilityTool utility = new UtilityTool();
-		
 		try {
 			tile[index] = new Tile();
 			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imageName));
-			tile[index].image = utility.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+			tile[index].image = GamePanel.utility.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
 			tile[index].collision = collision;
 			tile[index].water = water;
 			tile[index].pit = pit;

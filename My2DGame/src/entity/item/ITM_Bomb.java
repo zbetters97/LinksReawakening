@@ -24,8 +24,7 @@ public class ITM_Bomb extends Entity {
 		image = down1 = setup("/items/bomb");
 	}
 	
-	public boolean use(Entity user) {
-				
+	public boolean use(Entity user) {				
 		if (user.bombs > 0) {			
 			playSE();
 			
@@ -35,6 +34,7 @@ public class ITM_Bomb extends Entity {
 			
 			if (user == gp.player) {
 				gp.player.grabbedObject = projectile;
+				gp.player.action = Action.GRABBING;
 			}
 			
 			if (user.bombs != -1) user.bombs--;

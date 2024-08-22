@@ -30,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// GENERAL CONFIG
 	private static final long serialVersionUID = 5792031433632402979L;
+	public static UtilityTool utility = new UtilityTool();
 	public ConfigManager config = new ConfigManager(this);
 	private Graphics2D g2;
 	private Thread gameThread;

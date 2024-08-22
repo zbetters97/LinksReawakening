@@ -42,7 +42,6 @@ public class Player extends Entity {
 	
 	// MISC
 	public String aimDirection;	
-	private boolean moving;
 	private int previousGrunt = 0;
 	private int previousHurt = 0;
 	private int previousSwing = 2;
@@ -122,7 +121,6 @@ public class Player extends Entity {
 		canSwim = false;		
 		grabbedObject = null;
 		capturedTarget = null;
-		moving = false;
 		
 		speed = 3; defaultSpeed = speed;
 		animationSpeed = 10;
@@ -515,7 +513,7 @@ public class Player extends Entity {
 		if (action == Action.AIMING) { aiming(); }	
 		else if (action == Action.CHARGING) { chargeSpin(); }
 		else if (action == Action.DIGGING) { digging(); stop = true; }
-		else if (action == Action.GRABBING) { grabbing(); }	
+		else if (action == Action.GRABBING) { pulling(); stop = true; }	
 		else if (action == Action.GUARDING) { guarding(); }
 		else if (action == Action.JUMPING) { jumping(); }	
 		else if (action == Action.PUSHING) { pushing(); }
@@ -536,7 +534,7 @@ public class Player extends Entity {
 	// MOVEMENT
 	public void walking() {
 		
-		if (gp.keyH.rPressed && action != Action.SWIMMING) {
+		if (action == Action.GUARDING) {
 			getDirection(); moving = false; return;
 		}
 		
@@ -624,7 +622,6 @@ public class Player extends Entity {
 	public void action() { 
 		switch (action) {
 			case IDLE:			
-				pullNum = 1; pullCounter = 0;	
 				if (moving) {
 					playGrunt();				
 					action = Action.ROLLING; 
@@ -642,9 +639,6 @@ public class Player extends Entity {
 				break;
 			case CARRYING:
 				throwEntity();				
-				break;
-			case GRABBING:
-				pulling();
 				break;
 			case SWIMMING:
 				diving = true;
@@ -1265,25 +1259,6 @@ public class Player extends Entity {
 			speed = defaultSpeed;					
 		}		
 	}	
-	public void throwEntity() {		
-		playThrowSE();
-		playGruntSE_1();
-		
-		action = Action.TOSSING;
-		grabbedObject.thrown = true;
-		grabbedObject.grabbed = false;
-		grabbedObject.tWorldY = worldY;
-		
-		switch (direction) {
-			case "up":
-			case "upleft":
-			case "upright": grabbedObject.direction = "up"; break;
-			case "down":
-			case "downleft":
-			case "downright": grabbedObject.direction = "down"; break;
-			default: grabbedObject.direction = direction; break;
-		}		
-	}
 	
 	// ITEM HANDLING
 	public void selectInventory() {
@@ -1466,10 +1441,12 @@ public class Player extends Entity {
 	}	
 	public void guarding() {
 		
-		if (guardCounter < 15) 
-			guardCounter++; 
+		if (guardCounter < 15) guardCounter++; 
 		
-		if (6 >= guardCounter) guardNum = 1;		
+		if (6 >= guardCounter) {
+			if (guardCounter == 1) playGuardSE();
+			guardNum = 1;		
+		}
 		else guardNum = 2;
 	}
 	public void jumping() {
@@ -1510,12 +1487,12 @@ public class Player extends Entity {
 				pullNum = 1;
 				pullCounter = 0;
 				action = Action.CARRYING;		
-				grabbedObject.grabbed = true;					
+				grabbedObject.grabbed = true;	
 			}
 			else {
 				pullNum = 1;
 				pullCounter = 0;
-				action = Action.IDLE;				
+				action = Action.IDLE;	
 			}
 			
 			gp.keyH.aPressed = false;
@@ -1558,6 +1535,37 @@ public class Player extends Entity {
 			action = Action.IDLE;
 			throwNum = 1;
 			throwCounter = 0;
+		}
+	}
+	public void throwEntity() {	
+		
+		// THROW FORWARD
+		if (moving) {
+			playThrowSE();
+			playGruntSE_1();
+
+			action = Action.TOSSING;
+			grabbedObject.thrown = true;
+			grabbedObject.grabbed = false;
+			grabbedObject.tWorldY = worldY;
+
+			switch (direction) {
+				case "up":
+				case "upleft":
+				case "upright": grabbedObject.direction = "up"; break;
+				case "down":
+				case "downleft":
+				case "downright": grabbedObject.direction = "down"; break;
+				default: grabbedObject.direction = direction; break;
+			}
+		}
+		// PLACE DOWN
+		else {
+			action = Action.TOSSING;			
+			grabbedObject.grabbed = false;
+			grabbedObject.worldX = worldX;
+			grabbedObject.worldY = worldY;
+			grabbedObject.breakTile();
 		}
 	}
 	public void soaring() {

@@ -14,7 +14,6 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import application.GamePanel;
-import application.UtilityTool;
 import data.Progress;
 import entity.enemy.EMY_Beetle;
 import entity.enemy.EMY_Stalfos;
@@ -1229,12 +1228,11 @@ public class Entity {
 	// IMAGE MANAGERS
 	public BufferedImage setup(String imagePath) {	
 		
-		UtilityTool utility = new UtilityTool();
 		BufferedImage image = null;
 		
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
-			image = utility.scaleImage(image, gp.tileSize, gp.tileSize);
+			image = GamePanel.utility.scaleImage(image, gp.tileSize, gp.tileSize);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -1244,12 +1242,11 @@ public class Entity {
 	}
 	public BufferedImage setup(String imagePath, int width, int height) {
 		
-		UtilityTool utility = new UtilityTool();
 		BufferedImage image = null;
 		
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
-			image = utility.scaleImage(image, width, height);
+			image = GamePanel.utility.scaleImage(image, width, height);
 		}
 		catch (IOException e) {
 			e.printStackTrace();

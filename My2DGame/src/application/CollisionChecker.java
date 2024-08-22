@@ -6,7 +6,6 @@ import entity.Entity;
 import entity.Entity.Action;
 import entity.enemy.EMY_Octorok;
 import entity.enemy.EMY_Tektite;
-import entity.projectile.PRJ_Bomb;
 
 public class CollisionChecker {
 	
@@ -397,12 +396,7 @@ public class CollisionChecker {
 						gp.player.speed = 2;
 						
 						if (gp.player.grabbedObject != null) {
-							if (gp.player.grabbedObject.name.equals(PRJ_Bomb.prjName)) {
-								gp.player.grabbedObject.resetValues();
-							}
-							else {
-								gp.player.grabbedObject.alive = false;	
-							}									
+							gp.player.grabbedObject.resetValues();																
 							gp.player.grabbedObject = null;
 						}
 					}		
