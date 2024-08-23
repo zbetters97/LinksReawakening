@@ -29,9 +29,8 @@ public class Entity {
 	}
 	
 	public List<Action> disabled_actions = Arrays.asList(
-			Action.AIMING, Action.CARRYING, Action.CHARGING, Action.JUMPING, 
-			Action.PUSHING, Action.ROLLING, Action.SOARING, Action.SWIMMING, 
-			Action.THROWING, Action.TOSSING
+			Action.AIMING, Action.CARRYING, Action.CHARGING, Action.JUMPING, Action.PUSHING, 
+			Action.ROLLING, Action.SOARING, Action.SWIMMING, Action.THROWING, Action.TOSSING
 	);
 	
 	protected GamePanel gp;
@@ -66,8 +65,7 @@ public class Entity {
 							guardUp1, guardUp2, guardDown1, guardDown2, 
 							guardLeft1, guardLeft2, guardRight1, guardRight2,							
 							grabUp1, grabDown1, grabLeft1, grabRight1,						
-							buzzUp1, buzzUp2,							
-							zTargetLocked = setup("/enemy/lockon_locked", 48 + 20, 48 + 20);
+							buzzUp1, buzzUp2;
 		
 	// CHARACTER ATTRIBUTES	
 	public Action action;	
@@ -1353,12 +1351,7 @@ public class Entity {
 			if (dying) dyingAnimation(g2);	
 
 			g2.drawImage(image, tempScreenX, tempScreenY, null);
-					
-			// LOCKON IMAGE
-			if (locked) {						
-				g2.drawImage(zTargetLocked, tempScreenX - 10, tempScreenY - 10, null);
-			}
-			
+								
 			// DRAW HITBOX
 			if (gp.keyH.debug) {
 				g2.setColor(Color.RED);
@@ -1399,19 +1392,32 @@ public class Entity {
 		if (offCenter()) {
 			inFrame = true;
 		}
-		else {
-			// WITHIN SCREEN BOUNDARY
-			if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-					worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-					worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-					worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-				inFrame = true;
-			}	
+		else {			
+			if (type == type_boss) {
+
+				// WITHIN SCREEN BOUNDARY
+				if (worldX + gp.tileSize + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
+						worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+						worldY + gp.tileSize + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
+						worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+					inFrame = true;
+				}		
+			}
+			else {
+
+				// WITHIN SCREEN BOUNDARY
+				if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+						worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+						worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+						worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+					inFrame = true;
+				}	
+			}			
 		}
 		
 		return inFrame;
 	}
-	private boolean offCenter() {
+	public boolean offCenter() {
 		
 		boolean offCenter = false;
 		

@@ -53,7 +53,7 @@ public class KeyHandler implements KeyListener {
 			inventoryState(code);
 		}
 		// DIALOGUE STATE
-		else if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
+		else if (gp.gameState == gp.dialogueState) {
 			dialogueState(code);
 		}		
 		// TRADE STATE
@@ -64,10 +64,15 @@ public class KeyHandler implements KeyListener {
 		else if (gp.gameState == gp.itemGetState) {
 			itemGetState(code);
 		}
+		// DIALOGUE STATE
+		else if (gp.gameState == gp.cutsceneState) {
+			sceneState(code);
+		}		
 		// GAME OVER STATE
 		else if (gp.gameState == gp.gameOverState) {
 			gameOverState(code);
 		}
+		// ENDING STATE
 		else if (gp.gameState == gp.endingState) {
 			endingState(code);
 		}
@@ -610,6 +615,17 @@ public class KeyHandler implements KeyListener {
 				playCursorSE(); 
 				gp.ui.npcSlotCol++; 
 			}
+		}
+	}
+	
+	// MAP
+	private void sceneState(int code) {
+		if (code == gp.btn_A && lock) {						
+			aPressed = true;			
+			lock = false;
+		}
+		if (code == gp.btn_START) {
+			gp.csManager.skipScene();
 		}
 	}
 	

@@ -16,9 +16,6 @@ import javax.imageio.ImageIO;
 import data.Progress;
 import entity.Entity;
 import entity.Entity.Action;
-import entity.collectable.COL_Key;
-import entity.collectable.COL_Key_Boss;
-import entity.collectable.COL_Rupee_Blue;
 import entity.equipment.EQP_Flippers;
 import entity.item.ITM_Bomb;
 import entity.item.ITM_Bow;
@@ -36,11 +33,13 @@ public class UI {
 	public int commandNum = 0;
 	
 	// HUD
-	private BufferedImage dialogue_next, dialogue_finish, zTargetLock;
+	private BufferedImage dialogue_next, dialogue_finish, zTargetLock, zTargetLocked;
 	private BufferedImage flippers, heart_4, heart_3, heart_2, heart_1, heart_0, rupee, key, boss_key;
 	private String rupee_count = "0";
 	public int rupeeCount = 0;
 	private int rCounter = 0;
+	private int zTargetCounter = 0;
+	private int zTargetDirection = 0;
 	
 	// AREA TITLE
 	public String mapName = "";
@@ -64,8 +63,8 @@ public class UI {
 	public int dialogueIndex = 0;
 	public int textSpeed = 0;
 	private int dialogueCounter = 0;	
-	private int charIndex = 0;
-	private String combinedText = "";
+	public int charIndex = 0;
+	public String combinedText = "";
 	private boolean canSkip = false;
 	
 	// PLAYER RESPONSE
@@ -105,21 +104,22 @@ public class UI {
 			e.printStackTrace();
 		}
 		
-		heart_0 = setup("/collectables/heart_0", gp.tileSize / 2, gp.tileSize / 2);
-		heart_1 = setup("/collectables/heart_1", gp.tileSize / 2, gp.tileSize / 2);
-		heart_2 = setup("/collectables/heart_2", gp.tileSize / 2, gp.tileSize / 2);
-		heart_3 = setup("/collectables/heart_3", gp.tileSize / 2, gp.tileSize / 2);
-		heart_4 = setup("/collectables/heart_4", gp.tileSize / 2, gp.tileSize / 2);
+		heart_0 = setup("/ui/heart_0", gp.tileSize / 2, gp.tileSize / 2);
+		heart_1 = setup("/ui/heart_1", gp.tileSize / 2, gp.tileSize / 2);
+		heart_2 = setup("/ui/heart_2", gp.tileSize / 2, gp.tileSize / 2);
+		heart_3 = setup("/ui/heart_3", gp.tileSize / 2, gp.tileSize / 2);
+		heart_4 = setup("/ui/heart_4", gp.tileSize / 2, gp.tileSize / 2);
 		
-		rupee = new COL_Rupee_Blue(gp).down1;			
-		key = new COL_Key(gp).down1;
-		boss_key = new COL_Key_Boss(gp).down1;
+		rupee = setup("/ui/rupee");
+		key = setup("/ui/key");
+		boss_key = setup("/ui/key_boss");
 		
 		flippers = new EQP_Flippers(gp).down1;
 		
-		dialogue_next = setup("/font/dialogue_next"); 
-		dialogue_finish = setup("/font/dialogue_finish"); 
-		zTargetLock = setup("/enemy/lockon_target", 48 + 20, 48 + 20);
+		dialogue_next = setup("/ui/dialogue_next"); 
+		dialogue_finish = setup("/ui/dialogue_finish"); 
+		zTargetLock = setup("/ui/lockon_target", 48 + 20, 48 + 20);
+		zTargetLocked = setup("/ui/lockon_locked", 48 + 20, 48 + 20);
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -154,6 +154,10 @@ public class UI {
 		else if (gp.gameState == gp.dialogueState) {
 			drawHUD();
 			drawDialogueScreen(true);
+		}
+		// SCENE STATE
+		else if (gp.gameState == gp.cutsceneState) {
+			drawScene();
 		}
 		// TRADE STATE
 		else if (gp.gameState == gp.tradeState) {
@@ -599,9 +603,40 @@ public class UI {
 				}
 			}
 			
+			// ANIMATE ICON UP AND DOWN
 			if (target != null) {
-				g2.drawImage(zTargetLock, target.tempScreenX - 10, target.tempScreenY - 10, null);	
+								
+				if (zTargetCounter < 20 && zTargetDirection == 0) {			
+					zTargetCounter++;
+				}
+				else if (zTargetCounter < 20 && zTargetDirection == 1) {	
+					zTargetCounter--;
+				}
+				if (zTargetCounter == 20) {
+					zTargetCounter--;
+					zTargetDirection = 1;
+				}
+				else if (zTargetCounter == 0) {
+					zTargetCounter++;
+					zTargetDirection = 0;
+				}
+				
+				target.offCenter();
+				
+				int x = target.tempScreenX - 10;
+				int y = target.tempScreenY - 30 + zTargetCounter;
+				
+				g2.drawImage(zTargetLock, x, y, null);	
 			}	
+		}
+		else {
+			// LOCKON IMAGE			
+			gp.player.lockedTarget.offCenter();
+			g2.drawImage(zTargetLocked, 
+					gp.player.lockedTarget.tempScreenX - 10, 
+					gp.player.lockedTarget.tempScreenY - 10, 
+					null);
+			
 		}
 	}
 	private void drawChargeBar() {
@@ -1548,12 +1583,12 @@ public class UI {
   		if (canSkip && npc.dialogues[npc.dialogueSet][nextIndex] != null) {  		
   			x = (gp.screenWidth / 2) - 24;
 			y = gp.tileSize * 10;
-	  		g2.drawImage(dialogue_next, x, y + 30, null);
+	  		g2.drawImage(dialogue_next, x, y + 25, null);
   		}
   		else if (canSkip && npc.dialogues[npc.dialogueSet][nextIndex] == null) {  		
 			x = (gp.screenWidth / 2) - 24;
 			y = gp.tileSize * 10;
-	  		g2.drawImage(dialogue_finish, x, y + 30, null);
+	  		g2.drawImage(dialogue_finish, x, y + 25, null);
   		}
   		
   		if (skip) skipDialogue();
@@ -1892,6 +1927,18 @@ public class UI {
 				gp.gameState = gp.playState;
 			}
 		}
+	}
+	
+	// CUT SCENE
+	private void drawScene() {
+		
+		g2.setColor(new Color(0,0,0,200));
+		g2.fillRect(263, 543, gp.tileSize * 5, 30);		
+		
+		g2.setColor(Color.WHITE);
+		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
+		String text = "[Press " + KeyEvent.getKeyText(gp.btn_START) + " to skip]";
+		g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
 	}
 	
 	// GAME OVER

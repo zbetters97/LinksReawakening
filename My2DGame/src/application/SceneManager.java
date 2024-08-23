@@ -91,6 +91,13 @@ public class SceneManager {
 		}
 	}
 	
+	public void skipScene() {
+		switch(scene) {
+			case npc: scene_npc_1_skip(); break;	
+			case boss_1: scene_boss_1_skip(); break;
+		}
+	}
+	
 	private void scene_npc_1() {
 		
 		if (phase == 0) {	
@@ -140,8 +147,9 @@ public class SceneManager {
 				}
 			}	
 			// FAILSAFE
-			else
-				gp.gameState = gp.playState;			
+			else {
+				gp.gameState = gp.playState;	
+			}
 		}
 		else if (phase == 3) {
 			
@@ -164,6 +172,43 @@ public class SceneManager {
 			
 			gp.gameState = gp.playState;
 		}
+	}
+	public void scene_npc_1_skip() {
+		
+		for (int i = 0; i < gp.npc[1].length; i++) {
+			if (gp.npc[gp.currentMap][i].name.equals(NPC_Traveler_2.npcName)) {
+				
+				gp.npc[gp.currentMap][i].worldX = 23 * gp.tileSize;					
+				gp.npc[gp.currentMap][i].drawing = true;
+				
+				npc2 = gp.npc[gp.currentMap][i];
+				
+				break;
+			}
+		}
+		
+		npc2.worldX = 23 * gp.tileSize;
+		npc2.worldY = 21 * gp.tileSize;
+		
+		npc1.setPath(19, 40);
+		npc2.setPath(21, 41);
+		
+		npc1.onPath = true;
+		npc2.onPath = true;
+		npc1.pathCompleted = false;
+		npc2.pathCompleted = false;
+		
+		npc1.hasCutscene = false;
+		npc1.dialogueSet = 1;
+		npc2.dialogueSet = 2;
+				
+		scene = NA;
+		phase = 0;
+		
+		gp.ui.npc = null;
+		gp.ui.charIndex = 0;
+		gp.ui.combinedText = "";
+		gp.gameState = gp.playState;
 	}
 	private void scene_enemy_spawn() {
 				
@@ -361,6 +406,57 @@ public class SceneManager {
 			gp.gameState = gp.playState;			
 		}
 	}	
+	private void scene_boss_1_skip() {
+		
+		// CLOSE DOOR
+		for (int i = 0; i < gp.obj[1].length; i++) {
+			if (gp.obj[gp.currentMap][i] == null) {
+									
+				gp.obj[gp.currentMap][i] = new OBJ_Door_Closed(gp, 25, 29);
+				gp.obj[gp.currentMap][i].direction = "up";
+				gp.obj[gp.currentMap][i].temp = true;
+				gp.obj[gp.currentMap][i].playCloseSE();
+				
+				break;
+			}
+		}
+		
+		// SEARCH FOR BOSS
+		for (int i = 0; i < gp.enemy[1].length; i++) {
+			if (gp.enemy[gp.currentMap][i] != null && 
+					gp.enemy[gp.currentMap][i].name.equals(BOS_Stalfos_Lord.emyName)) {
+				
+				gp.enemy[gp.currentMap][i].sleep = false;
+				
+				break;
+			}
+		}			
+		
+		// RETURN CAMERA TO PLAYER
+		for (int i = 0; i < gp.npc[1].length; i++) {
+			if (gp.npc[gp.currentMap][i] != null && 
+					gp.npc[gp.currentMap][i].name.equals(PlayerDummy.npcName)) {
+				
+				gp.player.worldX = gp.npc[gp.currentMap][i].worldX;
+				gp.player.worldY = gp.npc[gp.currentMap][i].worldY;
+				gp.npc[gp.currentMap][i] = null;
+				
+				break;
+			}
+		}
+		
+		gp.player.drawing = true;
+		
+		playBossMusic();	
+		
+		scene = NA;
+		phase = 0;
+		
+		gp.ui.npc = null;
+		gp.ui.charIndex = 0;
+		gp.ui.combinedText = "";
+		gp.gameState = gp.playState;	
+	}
 	private void scene_boss_1_defeat(int num) {
 		if (phase == 0) {			
 			gp.stopMusic();
@@ -380,7 +476,7 @@ public class SceneManager {
 		}
 		else if (phase == 2) {
 			gp.stopMusic();
-			gp.openDoor(25, 15, OBJ_Door_Closed.objName);		
+			gp.openDoor(25, 15, OBJ_Door_Closed.objName);	
 			
 			scene = NA;
 			phase = 0;

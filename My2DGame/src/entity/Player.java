@@ -29,6 +29,8 @@ public class Player extends Entity {
 	// POSITIONING
 	public int screenX;
 	public int screenY;	
+	private int tempScreenX;
+	private int tempScreenY;
 	public int defaultWorldX;
 	public int defaultWorldY;
 	
@@ -1881,7 +1883,7 @@ public class Player extends Entity {
 			lockon = false;
 			lockedTarget = null;
 			gp.gameState = gp.gameOverState;
-			gp.ui.commandNum = -1;							
+			gp.ui.commandNum = 1;							
 		}
 	}
   	
@@ -1992,13 +1994,9 @@ public class Player extends Entity {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 
-	// DRAW HANDLER
-	public void draw(Graphics2D g2) {
-		
-		if (!drawing) return;
-		
-		int tempScreenX = screenX;
-		int tempScreenY = screenY;
+	public boolean offCenter() {
+		tempScreenX = screenX;
+		tempScreenY = screenY;
 		
 		if (screenX > worldX) tempScreenX = worldX;		
 		if (screenY > worldY) tempScreenY = worldY;
@@ -2017,7 +2015,17 @@ public class Player extends Entity {
 		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
 		if (bottomOffSet > gp.worldHeight - worldY) {
 			tempScreenY = gp.screenHeight - (gp.worldHeight - worldY);
-		}
+		}	
+		
+		return true;
+	}
+	
+	// DRAW HANDLER
+	public void draw(Graphics2D g2) {
+		
+		if (!drawing) return;
+		
+		offCenter();
 		
 		if (alive) {					
 			switch (direction) {
@@ -2429,13 +2437,8 @@ public class Player extends Entity {
 			tempScreenY = screenY;
 		}	
 		else if (gp.gameState == gp.drowningState || diving) {
-			image = drown;	
-			
-			tempScreenX = screenX;
-			tempScreenY = screenY;
-			
-			if (screenX > worldX) tempScreenX = worldX;		
-			if (screenY > worldY) tempScreenY = worldY;
+			image = drown;				
+			offCenter();
 		}				
 		
 		g2.drawImage(image, tempScreenX, tempScreenY, null);
