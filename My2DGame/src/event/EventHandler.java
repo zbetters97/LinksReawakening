@@ -83,11 +83,7 @@ public class EventHandler {
 			if (hit(3, 29, 40, Arrays.asList("right"), false)) healingPool();
 			
 			// SHOP KEEPER
-			else if (hit(1, 10, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
-			else if (hit(1, 11, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
-			else if (hit(1, 12, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
-			else if (hit(1, 13, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
-			else if (hit(1, 14, 9, Arrays.asList("up","upleft","upright"), true)) speak(gp.npc[1][0]);	
+			else if (hit(1, 10, 9, "right", 5, Arrays.asList("up","upleft","upright"))) speak(gp.npc[1][0]);	
 			
 			// TELEPORT SPOTS
 			else if (hit(0, 10, 39, true)) teleport(1, 12, 13, gp.shop, 1, "up"); // SHOP ENTRANCE
@@ -103,7 +99,7 @@ public class EventHandler {
 						
 			// ENEMY ROOMS
 			if (!Progress.enemy_room_1_1) {
-				if (hit(2, 33, 80, true)) {
+				if (hit(2, 33, 79, "down", 3)) {
 					Progress.enemy_room_1_1 = true;
 					spawnEnemies(
 							Arrays.asList(new EMY_ChuChu_Red(gp,29,81), new EMY_ChuChu_Green(gp,29,78)),
@@ -113,7 +109,7 @@ public class EventHandler {
 				}
 			}
 			if (!Progress.enemy_room_1_2) {
-				if (hit(2, 23, 64, true)) {
+				if (hit(2, 23, 63, "down", 3)) {
 					Progress.enemy_room_1_2 = true;
 					spawnEnemies(
 							Arrays.asList(new EMY_ChuChu_Red(gp,16,64), new EMY_ChuChu_Red(gp,18,64)),
@@ -123,7 +119,7 @@ public class EventHandler {
 				}
 			}
 			if (!Progress.enemy_room_1_3) {
-				if (hit(2, 59, 65, true)) {
+				if (hit(2, 58, 65, "right", 3)) {
 					Progress.enemy_room_1_3 = true;
 					spawnEnemies(							
 							Arrays.asList(new EMY_Wizzrobe(gp,57,62), new EMY_Buzzblob(gp,62,62)),
@@ -135,7 +131,7 @@ public class EventHandler {
 			// BOSS CUTSCENES
 			// QUEEN GOMA
 			if (!Progress.bossDefeated_1_1) { 
-				if (hit(2, 61, 89, true)) {		
+				if (hit(2, 61, 88, "down", 3)) {
 					Progress.bossDefeated_1_1 = true;
 					miniBoss(
 							BOS_Gohma.emyName, 
@@ -145,14 +141,14 @@ public class EventHandler {
 			}
 			// SKELETON KING
 			if (!Progress.bossDefeated_1_2) { 
-				if (hit(3, 25, 27, false)) {
+				if (hit(3, 24, 27, "right", 3)) {
 					Progress.bossDefeated_1_2 = true;
 					boss(1); 
 				}
 			}
 		}
 	}
-			
+		
 	private boolean hit(int map, int col, int row, List<String> reqDirection, boolean fullTile) {
 		
 		boolean hit = false;
@@ -166,38 +162,8 @@ public class EventHandler {
 				eventRect[map][col][row].height = 16;
 			}
 			
-			// PLAYER hitbox
-			gp.player.hitbox.x += gp.player.worldX;		
-			gp.player.hitbox.y += gp.player.worldY;
-			
-			// EVENT hitbox
-			eventRect[map][col][row].x += col * gp.tileSize;
-			eventRect[map][col][row].y += row * gp.tileSize;
-			
-			// PLAYER INTERACTS WITH EVENT AND EVENT CAN HAPPEN
-			if (gp.player.hitbox.intersects(eventRect[map][col][row]) && 
-					!eventRect[map][col][row].eventDone) {
-				
-				for (String dir : reqDirection) {
-					if (gp.player.direction.equals(dir)) {
-						hit = true;
-						
-						// RECORD PLAYER X/Y
-						previousEventX = gp.player.worldX;
-						previousEventY = gp.player.worldY;
-						
-						break;
-					}
-				}
-			}
-			
-			// RESET hitbox
-			gp.player.hitbox.x = gp.player.hitboxDefaultX;
-			gp.player.hitbox.y = gp.player.hitboxDefaultY;
-			eventRect[map][col][row].x = eventRect[map][col][row].eventRectDefaultX;
-			eventRect[map][col][row].y = eventRect[map][col][row].eventRectDefaultY;	
-			eventRect[map][col][row].width = eventRect[map][col][row].eventRectDefaultWidth;
-			eventRect[map][col][row].height = eventRect[map][col][row].eventRectDefaultHeight;
+			if (getHit(map, col, row, reqDirection))
+				hit = true;
 		}		
 		
 		return hit;		
@@ -215,33 +181,121 @@ public class EventHandler {
 				eventRect[map][col][row].height = 16;
 			}
 			
-			// PLAYER hitbox
-			gp.player.hitbox.x += gp.player.worldX;		
-			gp.player.hitbox.y += gp.player.worldY;
-			
-			// EVENT hitbox
-			eventRect[map][col][row].x += col * gp.tileSize;
-			eventRect[map][col][row].y += row * gp.tileSize;
-			
-			// PLAYER INTERACTS WITH EVENT AND EVENT CAN HAPPEN
-			if (gp.player.hitbox.intersects(eventRect[map][col][row]) && 
-					!eventRect[map][col][row].eventDone) {
-				
+			if (getHit(map, col, row, null))
 				hit = true;
-				
-				// RECORD PLAYER X/Y
-				previousEventX = gp.player.worldX;
-				previousEventY = gp.player.worldY;
-			}
-			
-			// RESET hitbox
-			gp.player.hitbox.x = gp.player.hitboxDefaultX;
-			gp.player.hitbox.y = gp.player.hitboxDefaultY;
-			eventRect[map][col][row].x = eventRect[map][col][row].eventRectDefaultX;
-			eventRect[map][col][row].y = eventRect[map][col][row].eventRectDefaultY;	
 		}		
 		
 		return hit;		
+	}
+	private boolean hit(int map, int col, int row, String spanDirection, int tiles, List<String> reqDirection) {
+		
+		boolean hit = false;
+		
+		if (map == gp.currentMap) {
+									
+			eventRect[map][col][row].x = 0;
+			eventRect[map][col][row].y = 0;
+			eventRect[map][col][row].width = 48;
+			eventRect[map][col][row].height = 48;	
+			
+			// EXTEND HEIGHT/WIDTH X NUMBER OF TILES
+			switch (spanDirection) {
+				case "down":
+					eventRect[map][col][row].height = 48 * tiles;										
+					break;
+				case "right":
+					eventRect[map][col][row].width = 48 * tiles;							
+					break;
+				case "downright":
+					eventRect[map][col][row].height = 48 * tiles;	
+					eventRect[map][col][row].width = 48 * tiles;					
+					break;
+			}		
+						
+			if (getHit(map, col, row, reqDirection))
+				hit = true;
+		}		
+		
+		return hit;		
+	}
+	private boolean hit(int map, int col, int row, String spanDirection, int tiles) {
+		
+		boolean hit = false;
+		
+		if (map == gp.currentMap) {
+									
+			eventRect[map][col][row].x = 0;
+			eventRect[map][col][row].y = 0;
+			eventRect[map][col][row].width = 48;
+			eventRect[map][col][row].height = 48;	
+			
+			switch (spanDirection) {
+				case "down":
+					eventRect[map][col][row].height = 48 * tiles;										
+					break;
+				case "right":
+					eventRect[map][col][row].width = 48 * tiles;							
+					break;
+				case "downright":
+					eventRect[map][col][row].height = 48 * tiles;	
+					eventRect[map][col][row].width = 48 * tiles;					
+					break;					
+			}		
+						
+			if (getHit(map, col, row, null))
+				hit = true;
+		}		
+		
+		return hit;		
+	}
+		
+	private boolean getHit(int map, int col, int row, List<String> reqDirection) {
+		
+		boolean hit = false;
+		
+		// EVENT hitbox
+		eventRect[map][col][row].x += col * gp.tileSize;
+		eventRect[map][col][row].y += row * gp.tileSize;
+		
+		// PLAYER hitbox
+		gp.player.hitbox.x += gp.player.worldX;		
+		gp.player.hitbox.y += gp.player.worldY;
+		
+		// PLAYER INTERACTS WITH EVENT AND EVENT CAN HAPPEN
+		if (gp.player.hitbox.intersects(eventRect[map][col][row]) && 
+				!eventRect[map][col][row].eventDone) {
+			
+			if (reqDirection != null) {
+				for (String dir : reqDirection) {
+					if (gp.player.direction.equals(dir)) {
+						hit = true;
+						
+						previousEventX = gp.player.worldX;
+						previousEventY = gp.player.worldY;
+						
+						break;
+					}
+				}
+			}
+			else {				
+				hit = true;
+					
+				previousEventX = gp.player.worldX;
+				previousEventY = gp.player.worldY;
+			}			
+		}
+		
+		// RESET PLAYER hitbox
+		gp.player.hitbox.x = gp.player.hitboxDefaultX;
+		gp.player.hitbox.y = gp.player.hitboxDefaultY;
+		
+		// RESET EVENT hitbox
+		eventRect[map][col][row].x = eventRect[map][col][row].eventRectDefaultX;
+		eventRect[map][col][row].y = eventRect[map][col][row].eventRectDefaultY;	
+		eventRect[map][col][row].width = eventRect[map][col][row].eventRectDefaultWidth;
+		eventRect[map][col][row].height = eventRect[map][col][row].eventRectDefaultHeight;
+		
+		return hit;
 	}
 	
 	private void healingPool() {

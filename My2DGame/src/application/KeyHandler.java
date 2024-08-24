@@ -414,10 +414,12 @@ public class KeyHandler implements KeyListener {
 				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
 					playCursorSE();
 					gp.music.volumeScale--;
+					gp.music.checkVolume();		
 				}
 				if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
 					playCursorSE();
-					gp.se.volumeScale--;					
+					gp.se.volumeScale--;	
+					gp.music.checkVolume();		
 				}
 			}
 		}
@@ -430,7 +432,8 @@ public class KeyHandler implements KeyListener {
 				}
 				if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {					
 					playCursorSE();
-					gp.se.volumeScale++;					
+					gp.se.volumeScale++;	
+					gp.music.checkVolume();		
 				}
 			}
 		}

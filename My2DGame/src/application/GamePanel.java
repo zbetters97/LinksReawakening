@@ -461,6 +461,7 @@ public class GamePanel extends JPanel implements Runnable {
 		bossBattleOn = false;
 		csManager.scene = csManager.NA;
 		csManager.phase = 0;
+		csManager.canSkip = false;
 		
 		player.alive = true;	
 		player.inventory.clear();
@@ -474,6 +475,7 @@ public class GamePanel extends JPanel implements Runnable {
 		ui.mapName = "";
 		ui.mapNameAlpha = 0;
 		ui.mapNameCounter = 0;
+		ui.resetDialogue();
 		
 		aSetter.setNPC();
 		aSetter.setEnemy();		

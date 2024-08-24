@@ -851,8 +851,8 @@ public class UI {
 		if (commandNum == 3) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.aPressed) {
-				textSpeed++;
-				if (textSpeed > 2) textSpeed = 0;
+				textSpeed--;
+				if (textSpeed < 0) textSpeed = 2;
 				gp.keyH.aPressed = false;
 			}
 		}
@@ -1605,6 +1605,14 @@ public class UI {
 			}	
 		}
 	}
+	public void resetDialogue() {	
+		dialogueCounter = 0;
+		charIndex = 0;		
+		combinedText = "";
+		currentDialogue = "";
+		npc = null;		
+		canSkip = false;		
+	}
 			
 	// TRADE
 	private void drawTradeScreen() {
@@ -1872,7 +1880,7 @@ public class UI {
 		}			
 	}
 	
-	// TRANSITION
+	// TRANSITION	
 	private void drawTransition() {
 		
 		// DARKEN SCREEN
@@ -1932,13 +1940,15 @@ public class UI {
 	// CUT SCENE
 	private void drawScene() {
 		
-		g2.setColor(new Color(0,0,0,200));
-		g2.fillRect(263, 543, gp.tileSize * 5, 30);		
-		
-		g2.setColor(Color.WHITE);
-		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
-		String text = "[Press " + KeyEvent.getKeyText(gp.btn_START) + " to skip]";
-		g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
+		if (gp.csManager.canSkip) {		
+			g2.setColor(new Color(0,0,0,200));
+			g2.fillRect(263, 543, gp.tileSize * 5, 30);		
+			
+			g2.setColor(Color.WHITE);
+			g2.setFont(gp.ui.PK_DS.deriveFont(30f));
+			String text = "[Press " + KeyEvent.getKeyText(gp.btn_START) + " to skip]";
+			g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
+		}
 	}
 	
 	// GAME OVER

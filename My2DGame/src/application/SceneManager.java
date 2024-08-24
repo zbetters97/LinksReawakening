@@ -20,10 +20,12 @@ public class SceneManager {
 	public int scene = 0;
 	public int phase = 0;	
 	private int counter = 0;
+	public boolean canSkip;
 	private String lookDirection = "";
 	private float alpha = 0f;
 	private int y = 0;
 	private String credits = "";	
+	
 	
 	public int worldX = 0;
 	public int worldY = 0;
@@ -101,6 +103,7 @@ public class SceneManager {
 	private void scene_npc_1() {
 		
 		if (phase == 0) {	
+			canSkip = true;
 			gp.ui.drawDialogueScreen(true);				
 			npc1 = gp.ui.npc;
 		}
@@ -169,6 +172,7 @@ public class SceneManager {
 			
 			scene = NA;
 			phase = 0;
+			canSkip = false;
 			
 			gp.gameState = gp.playState;
 		}
@@ -204,10 +208,9 @@ public class SceneManager {
 				
 		scene = NA;
 		phase = 0;
+		canSkip = false;
 		
-		gp.ui.npc = null;
-		gp.ui.charIndex = 0;
-		gp.ui.combinedText = "";
+		gp.ui.resetDialogue();
 		gp.gameState = gp.playState;
 	}
 	private void scene_enemy_spawn() {
@@ -324,6 +327,8 @@ public class SceneManager {
 		if (phase == 0) {			
 			gp.stopMusic();	
 			
+			canSkip = true;
+			
 			gp.player.resetValues();
 			
 			gp.bossBattleOn = true;
@@ -402,6 +407,7 @@ public class SceneManager {
 			
 			scene = NA;
 			phase = 0;
+			canSkip = false;
 			
 			gp.gameState = gp.playState;			
 		}
@@ -451,10 +457,9 @@ public class SceneManager {
 		
 		scene = NA;
 		phase = 0;
+		canSkip = false;
 		
-		gp.ui.npc = null;
-		gp.ui.charIndex = 0;
-		gp.ui.combinedText = "";
+		gp.ui.resetDialogue();
 		gp.gameState = gp.playState;	
 	}
 	private void scene_boss_1_defeat(int num) {
