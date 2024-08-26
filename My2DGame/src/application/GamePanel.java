@@ -109,14 +109,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int dialogueState = 5;		
 	public final int tradeState = 6;
 	public final int itemGetState = 7;
-	public final int objectState = 8;	
-	public final int fallingState = 9;
-	public final int drowningState = 10;
-	public final int transitionState = 11;	
-	public final int cutsceneState = 12;
-	public final int sleepState = 13;
-	public final int gameOverState = 14;
-	public final int endingState = 15;
+	public final int waitState = 8;	
+	public final int transitionState = 9;	
+	public final int cutsceneState = 10;
+	public final int sleepState = 11;
+	public final int gameOverState = 12;
+	public final int endingState = 13;
 	
 	// AREA STATES
 	public int currentArea;
@@ -253,7 +251,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private void update() {
 		
 		// GAME PLAYING
-		if (gameState == playState || gameState == objectState) {
+		if (gameState == playState || gameState == waitState) {
 			
 			eManager.update();
 			
@@ -275,10 +273,6 @@ public class GamePanel extends JPanel implements Runnable {
 			updateParticles();	
 			updateFairies();
 		}		
-		// DISABLE KEY INPUTS WHEN FALLING/DROWNING
-		else if (gameState == fallingState || gameState == drowningState) { 
-			player.takingDamage(); 
-		}
 		
 		// GAME PAUSED
 		if (gameState == pauseState) { }
@@ -569,8 +563,8 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			
 			// DRAW GRABBED iTILES
-			for (InteractiveTile i : iTile[currentMap]) {
-				if (i != null && i.grabbed) i.draw(g2);
+			for (InteractiveTile t : iTile[currentMap]) {
+				if (t != null && (t.grabbed || t.thrown)) t.draw(g2);
 			}
 			
 			// DRAW GRABBED OR THROWN PROJECTILES

@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +42,7 @@ public class UI {
 	private int rCounter = 0;
 	private int zTargetCounter = 0;
 	private int zTargetDirection = 0;
+	private int zTargetRotation = 0;
 	
 	// AREA TITLE
 	public String mapName = "";
@@ -133,9 +136,8 @@ public class UI {
 		if (gp.gameState == gp.titleState) {
 			drawTitleScreen();
 		}		
-		// PLAY STATE
-		else if (gp.gameState == gp.playState || gp.gameState == gp.objectState ||
-				gp.gameState == gp.fallingState || gp.gameState == gp.drowningState) {
+		// PLAY STATE / FROZEN STATE
+		else if (gp.gameState == gp.playState || gp.gameState == gp.waitState) {
 			drawHUD();
 			drawEnemyHPBar(gp.enemy);
 		}		
@@ -384,8 +386,44 @@ public class UI {
 			g2.drawString(">", x - gp.tileSize / 2, y);
 	}
 	
-	// HUD
+	// HUD	
 	private void drawHUD() {
+						
+		if (gp.gameState == gp.playState || gp.gameState == gp.dialogueState || 
+				gp.gameState == gp.waitState) {
+			
+			if (mapNameCounter > 0) {
+				drawMapName();
+				mapNameCounter--;
+			}
+			
+			drawHealth();
+			drawItemSlot();			
+			if (gp.currentArea == gp.dungeon) drawKeys();
+			drawRupees();								
+			
+			drawZTarget();
+			drawChargeBar();
+		}		
+		else if (gp.gameState == gp.inventoryState) {
+			drawRupees();
+		}
+						
+		// DRAW HINT 
+		if (showHint && hint.length() > 0) {
+			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));			
+			int x = getXforCenteredText(hint);
+			int y = gp.tileSize * 11;						
+			g2.drawString(hint, x, y);
+		}
+						
+		// DEBUG HUD
+		if (gp.keyH.debug) {				
+			drawDebug();
+		}
+	}
+	private void drawHealth() {
 		
 		int x = gp.tileSize / 2;
 		int y = gp.tileSize / 2;
@@ -424,39 +462,6 @@ public class UI {
 				x += gp.tileSize / 1.6;
 				i += c;				
 			}
-		}
-		
-		if (gp.gameState == gp.playState || gp.gameState == gp.dialogueState || 
-				gp.gameState == gp.objectState || gp.gameState == gp.fallingState) {
-			
-			if (mapNameCounter > 0) {
-				drawMapName();
-				mapNameCounter--;
-			}
-			
-			drawItemSlot();			
-			if (gp.currentArea == gp.dungeon) drawKeys();
-			drawRupees();								
-			
-			drawZTarget();
-			drawChargeBar();
-		}		
-		else if (gp.gameState == gp.inventoryState) {
-			drawRupees();
-		}
-						
-		// DRAW HINT 
-		if (showHint && hint.length() > 0) {
-			g2.setColor(Color.WHITE);
-			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));			
-			x = getXforCenteredText(hint);
-			y = gp.tileSize * 11;						
-			g2.drawString(hint, x, y);
-		}
-						
-		// DEBUG HUD
-		if (gp.keyH.debug) {				
-			drawDebug();
 		}
 	}
 	private void drawMapName() {		
@@ -630,15 +635,35 @@ public class UI {
 			}	
 		}
 		else {
-			// LOCKON IMAGE			
-			gp.player.lockedTarget.offCenter();
-			g2.drawImage(zTargetLocked, 
-					gp.player.lockedTarget.tempScreenX - 10, 
-					gp.player.lockedTarget.tempScreenY - 10, 
-					null);
 			
+			// GET X/Y
+			gp.player.lockedTarget.offCenter();
+			
+			// EVALUATE DEGREES TO ROTATE
+			zTargetRotation += 3;
+			if (zTargetRotation >= 180)
+				zTargetRotation = 0;
+			
+			// GET ROTATED LOCKED-ON IMAGE
+			BufferedImage img = rotateImage(zTargetLocked, zTargetRotation);
+					
+			// DRAW
+			g2.drawImage(img, 
+					gp.player.lockedTarget.tempScreenX - 10, 
+					gp.player.lockedTarget.tempScreenY - 10, null);
 		}
 	}
+	
+	private BufferedImage rotateImage(BufferedImage in, int degrees) {
+		 
+		AffineTransform rotation = AffineTransform.getRotateInstance(
+			Math.toRadians(degrees), in.getWidth() / 2, in.getHeight() / 2);
+		 
+		AffineTransformOp op = new AffineTransformOp(rotation, AffineTransformOp.TYPE_BICUBIC);
+		 
+		return op.filter(in, null);
+	}
+	
 	private void drawChargeBar() {
 		
 		if (gp.player.charge > 0) {

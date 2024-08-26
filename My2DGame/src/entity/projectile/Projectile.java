@@ -198,7 +198,7 @@ public class Projectile extends Entity {
 	public void boomerang() {
 		
 		// PAUSE PLAYER INPUT
-		gp.gameState = gp.objectState;
+		gp.gameState = gp.waitState;
 		
 		collisionOn = false;		
 		gp.cChecker.checkTile(this);		
@@ -317,7 +317,7 @@ public class Projectile extends Entity {
 	public void hookshot() {
 		
 		// PAUSE PLAYER INPUT
-		gp.gameState = gp.objectState;
+		gp.gameState = gp.waitState;
 						
 		// CHECK TILE/iTILE/NPC/ENEMY/OBJECT/iOBJECT
 		collisionOn = false;		

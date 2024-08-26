@@ -28,7 +28,7 @@ public class AssetSetter {
 		gp.npc[mapNum][i].direction = "left"; i++;		
 		gp.npc[mapNum][i] = new NPC_Traveler_2(gp, 20, 32); 
 		gp.npc[mapNum][i].drawing = false; i++;		
-		gp.npc[mapNum][i] = new NPC_OldMan(gp, 30, 30); i++;		
+		gp.npc[mapNum][i] = new NPC_OldMan(gp, 30, 26); i++;		
 		gp.npc[mapNum][i] = new NPC_Dialogue_Exchange(gp, 20, 10);
 		gp.npc[mapNum][i].direction = "up"; i++;
 		gp.npc[mapNum][i] = new NPC_Farmer(gp, 38, 20);
@@ -103,10 +103,9 @@ public class AssetSetter {
 		
 		gp.obj[mapNum][i] = new ITM_Bomb(gp); 
 		gp.obj[mapNum][i].worldX = gp.tileSize * 15;
-		gp.obj[mapNum][i].worldY = gp.tileSize * 21;	
+		gp.obj[mapNum][i].worldY = gp.tileSize * 21;
 		i++;
 		
-		gp.obj[mapNum][i] = new OBJ_Chest(gp, 17, 15, new ITM_Boots(gp)); i++;	
 		gp.obj[mapNum][i] = new OBJ_Tent(gp, 40, 11); i++;
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, 38, 7, new EQP_Flippers(gp)); i++;
 		gp.obj[mapNum][i] = new OBJ_Chest(gp, 12, 32, new ITM_Feather(gp)); i++;	
@@ -155,11 +154,9 @@ public class AssetSetter {
 		
 		if (reset) {		
 			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 30, 36, new COL_Rupee_Red(gp)); i++;
-			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 27, 16, new COL_Rupee_Red(gp)); i++;
+			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 16, 16, new COL_Rupee_Red(gp)); i++;
 			gp.iTile[mapNum][i] = new IT_DigSpot(gp, 8, 24, new EQP_Sword_Master(gp)); i++;
-			
-			gp.iTile[mapNum][i] = new IT_Wall(gp, 20, 16); i++;
-			
+						
 			gp.iTile[mapNum][i] = new IT_Wall(gp, 35, 30); i++;
 			gp.iTile[mapNum][i] = new IT_Wall(gp, 36, 30); i++;
 			gp.iTile[mapNum][i] = new IT_Wall(gp, 37, 30); i++;

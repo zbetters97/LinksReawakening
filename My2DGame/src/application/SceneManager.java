@@ -194,8 +194,8 @@ public class SceneManager {
 		npc2.worldX = 23 * gp.tileSize;
 		npc2.worldY = 21 * gp.tileSize;
 		
-		npc1.setPath(19, 40);
-		npc2.setPath(21, 41);
+		npc1.setPath(19, 42);
+		npc2.setPath(21, 43);
 		
 		npc1.onPath = true;
 		npc2.onPath = true;
@@ -352,7 +352,7 @@ public class SceneManager {
 					gp.npc[gp.currentMap][i] = new PlayerDummy(gp);
 					gp.npc[gp.currentMap][i].worldX = gp.player.worldX;
 					gp.npc[gp.currentMap][i].worldY = gp.player.worldY;
-					gp.npc[gp.currentMap][i].direction = gp.player.direction;
+					gp.npc[gp.currentMap][i].direction = "up";
 					
 					break;
 				}

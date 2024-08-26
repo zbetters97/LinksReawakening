@@ -24,8 +24,8 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, CHARGING, DIGGING, GRABBING, GUARDING, JUMPING, PUSHING, 
-		ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING;
+		IDLE, AIMING, CARRYING, CHARGING, DIGGING, DROWNING, FALLING, GRABBING, GUARDING, 
+		JUMPING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING;
 	}
 	
 	public List<Action> disabled_actions = Arrays.asList(
@@ -1388,50 +1388,39 @@ public class Entity {
 		
 		boolean inFrame = false;
 		
-		// PLAYER AWAY FROM CENTER OF CAMERA
-		if (offCenter()) {
-			inFrame = true;
-		}
-		else {			
-			if (type == type_boss) {
+		// AWAY FROM CENTER OF CAMERA
+		offCenter();
+		
+		if (type == type_boss) {
 
-				// WITHIN SCREEN BOUNDARY
-				if (worldX + gp.tileSize + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
-						worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-						worldY + gp.tileSize + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
-						worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-					inFrame = true;
-				}		
-			}
-			else {
-
-				// WITHIN SCREEN BOUNDARY
-				if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-						worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-						worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-						worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-					inFrame = true;
-				}	
-			}			
+			// WITHIN SCREEN BOUNDARY
+			if (worldX + gp.tileSize + gp.tileSize * 5 > gp.player.worldX - gp.player.screenX &&
+					worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+					worldY + gp.tileSize + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
+					worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+				inFrame = true;
+			}		
 		}
+		else {
+
+			// WITHIN SCREEN BOUNDARY
+			if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+					worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+					worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+					worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+				inFrame = true;
+			}	
+		}				
 		
 		return inFrame;
 	}
-	public boolean offCenter() {
-		
-		boolean offCenter = false;
+	public void offCenter() {
 		
 		tempScreenX = getScreenX();
-		tempScreenY = getScreenY();
+		tempScreenY = getScreenY();		
 		
-		if (gp.player.worldX < gp.player.screenX) {
-			tempScreenX = worldX;
-			offCenter = true;
-		}
-		if (gp.player.worldY < gp.player.screenY) {
-			tempScreenY = worldY;
-			offCenter = true;
-		}
+		if (gp.player.worldX < gp.player.screenX) tempScreenX = worldX;
+		if (gp.player.worldY < gp.player.screenY) tempScreenY = worldY;		
 		
 		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
 		int rightOffset = gp.screenWidth - gp.player.screenX;		
@@ -1439,7 +1428,6 @@ public class Entity {
 		// FROM PLAYER TO RIGHT-EDGE OF WORLD
 		if (rightOffset > gp.worldWidth - gp.player.worldX) {
 			tempScreenX = gp.screenWidth - (gp.worldWidth - worldX);
-			offCenter = true;
 		}			
 		
 		// FROM PLAYER TO BOTTOM-EDGE OF SCREEN
@@ -1448,10 +1436,7 @@ public class Entity {
 		// FROM PLAYER TO BOTTOM-EDGE OF WORLD
 		if (bottomOffSet > gp.worldHeight - gp.player.worldY) {			
 			tempScreenY = gp.screenHeight - (gp.worldHeight - worldY);
-			offCenter = true;
 		}
-		
-		return offCenter;
 	}
 	
 	// GET X,Y

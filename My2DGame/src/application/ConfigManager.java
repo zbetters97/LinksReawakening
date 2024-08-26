@@ -40,7 +40,7 @@ public class ConfigManager {
 			bw.close();			
 		} 
 		catch (IOException e) {			
-			e.printStackTrace();
+			
 		}
 	}
 	public void loadConfig() {
@@ -73,7 +73,18 @@ public class ConfigManager {
 			br.close();			
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
+			
+			// FULL SCREEN
+			gp.fullScreenOn = false;
+			
+			// MUSIC VOLUME
+			gp.music.volumeScale = 3;
+			
+			// SOUND EFFECTS VOLUME
+			gp.se.volumeScale = 3;
+			
+			// TEXT SPEED
+			gp.ui.textSpeed = 0;
 		}
 	}
 }

@@ -365,7 +365,8 @@ public class CollisionChecker {
 					gp.player.playFallSE();		
 					gp.player.resetValues();
 					gp.player.invincible = true;	
-					gp.gameState = gp.fallingState;
+					gp.player.action = Action.FALLING;
+					gp.gameState = gp.waitState;
 				}
 				// THROWN ENTITY
 				else if (entity.thrown) {
@@ -406,7 +407,8 @@ public class CollisionChecker {
 						gp.player.playHurt();	
 						gp.player.resetValues();
 						gp.player.invincible = true;
-						gp.gameState = gp.drowningState;
+						gp.player.action = Action.DROWNING;
+						gp.gameState = gp.waitState;
 					}
 				}
 			}

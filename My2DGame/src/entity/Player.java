@@ -136,9 +136,9 @@ public class Player extends Entity {
 		shotAvailableCounter = 30;
 		
 		currentWeapon = null;
-		currentWeapon = new EQP_Sword_Old(gp);
+//		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
-		
+/*		
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Bomb(gp));
@@ -148,7 +148,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Feather(gp));
 		inventory_item.add(new ITM_Cape(gp));
 		inventory_item.add(new ITM_Rod(gp));	
-		
+*/
 		attack = getAttack();
 		
 		setDefaultPosition();
@@ -470,13 +470,22 @@ public class Player extends Entity {
 
 	public void update() {
 		
+		if (action == Action.DROWNING) {
+			takingDamage();
+			return;
+		}
+		else if (action == Action.FALLING) {
+			takingDamage();
+			return;
+		}
+		
 		checkCollision();
 				
 		if (action == Action.IDLE) { onGround = true; }
 		
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 
-		if (gp.keyH.aPressed) { action(); }	
+		if (gp.keyH.aPressed && !attacking) { action(); }	
 		
 		if (gp.keyH.lPressed) { zTarget(); gp.keyH.lPressed = false; }	
 		if (lockon) { lockedOn(); }
@@ -1980,7 +1989,7 @@ public class Player extends Entity {
 		gp.playSE(2, 17);
 	}
 	public void playBlockSE() {
-		gp.playSE(4, 8);
+		gp.playSE(4, 4);
 	}
 	public void playThrowSE() {
 		gp.playSE(4, 7);
@@ -1994,12 +2003,13 @@ public class Player extends Entity {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 
-	public boolean offCenter() {
+	public void offCenter() {
+
 		tempScreenX = screenX;
 		tempScreenY = screenY;
 		
-		if (screenX > worldX) tempScreenX = worldX;		
-		if (screenY > worldY) tempScreenY = worldY;
+		if (worldX < screenX) tempScreenX = worldX;		
+		if (worldY < screenY) tempScreenY = worldY;
 		
 		// FROM PLAYER TO RIGHT-EDGE OF SCREEN
 		int rightOffset = gp.screenWidth - screenX;		
@@ -2016,8 +2026,6 @@ public class Player extends Entity {
 		if (bottomOffSet > gp.worldHeight - worldY) {
 			tempScreenY = gp.screenHeight - (gp.worldHeight - worldY);
 		}	
-		
-		return true;
 	}
 	
 	// DRAW HANDLER
@@ -2427,7 +2435,11 @@ public class Player extends Entity {
 			}				
 		}	
 				
-		if (gp.gameState == gp.fallingState) {
+		if (action == Action.DROWNING || diving) {
+			image = drown;				
+			offCenter();
+		}	
+		else if (action == Action.FALLING) {
 			if (damageNum == 1) image = fall1;
 			else if (damageNum == 2) image = fall2;
 			else if (damageNum == 3) image = fall3;
@@ -2436,10 +2448,7 @@ public class Player extends Entity {
 			tempScreenX = screenX;
 			tempScreenY = screenY;
 		}	
-		else if (gp.gameState == gp.drowningState || diving) {
-			image = drown;				
-			offCenter();
-		}				
+					
 		
 		g2.drawImage(image, tempScreenX, tempScreenY, null);
 		
