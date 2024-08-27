@@ -369,17 +369,27 @@ public class KeyHandler implements KeyListener {
 		if (code == gp.btn_R && lock) { rPressed = true; lock = false; }
 		if (code == gp.btn_Z && lock) { zPressed = true; lock = false; }
 
-		if (code == gp.btn_DUP) {
+		if (code == gp.btn_DUP && lock) {
 			playMapOpenSE();
 			gp.gameState = gp.mapState;
+			lock = false;
 		}
-		if (code == gp.btn_DDOWN) {			
+		if (code == gp.btn_DDOWN && lock) {			
 			if (!gp.map.miniMapOn) playMapOpenSE();
 			gp.map.miniMapOn = !gp.map.miniMapOn;
+			lock = false;
 		}
 		
-		if (code == gp.btn_START) { playMenuOpenSE(); gp.gameState = gp.pauseState; }	
-		if (code == gp.btn_SELECT) { playMenuOpenSE(); gp.gameState = gp.inventoryState; }			
+		if (code == gp.btn_START && lock) { 
+			playMenuOpenSE(); 
+			gp.gameState = gp.pauseState; 
+			lock = false;
+		}	
+		if (code == gp.btn_SELECT && lock) { 
+			playMenuOpenSE(); 
+			gp.gameState = gp.inventoryState; 
+			lock = false;
+		}			
 		
 		if (code == gp.btn_DEBUG) { if (debug) debug = false; else debug = true; }
 	}
@@ -438,11 +448,12 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		
-		if (code == gp.btn_START) {
+		if (code == gp.btn_START && lock) {
 			playMenuCloseSE();
 			gp.ui.commandNum = 0;
 			gp.ui.subState = 0;
 			gp.gameState = gp.playState;
+			lock = false;
 		}
 		if (code == gp.btn_A && lock) {
 			playSelectSE();
@@ -454,26 +465,29 @@ public class KeyHandler implements KeyListener {
 	// INVENTORY
 	private void inventoryState(int code) { 
 		
-		if (code == gp.btn_SELECT) {
+		if (code == gp.btn_SELECT && lock) {
 			playMenuCloseSE();
 			gp.gameState = gp.playState;
+			lock = false;
 		}
-		if (code == gp.btn_A) {	
+		if (code == gp.btn_A && lock) {	
 			
-			if (gp.ui.inventoryScreen == 0) {
-				gp.player.selectInventory();
-			}
-			else {
-				gp.player.selectItem();	
-			}
+			if (gp.ui.inventoryScreen == 0) 
+				gp.player.selectInventory();			
+			else 
+				gp.player.selectItem();				
+			
+			lock = false;
 		}
-		if (code == gp.btn_Z) {
+		if (code == gp.btn_Z && lock) {
 			playCursorSE();
 			
 			if (gp.ui.inventoryScreen == 0)
 				gp.ui.inventoryScreen = 1;
 			else
 				gp.ui.inventoryScreen = 0;
+			
+			lock = false;
 		}
 		playerInventory(code);
 	}
@@ -508,8 +522,9 @@ public class KeyHandler implements KeyListener {
 	
 	// MAP
 	private void mapState(int code) {
-		if (code == gp.btn_DUP) {
+		if (code == gp.btn_DUP && lock) {
 			gp.gameState = gp.playState;
+			lock = false;
 		}
 	}
 	
@@ -627,8 +642,9 @@ public class KeyHandler implements KeyListener {
 			aPressed = true;			
 			lock = false;
 		}
-		if (code == gp.btn_START) {
-			gp.csManager.skipScene();
+		if (code == gp.btn_START && lock) {
+			startPressed = true;
+			lock = false;
 		}
 	}
 	
@@ -686,6 +702,9 @@ public class KeyHandler implements KeyListener {
 				gp.player.action = Action.IDLE;
 		}
 		if (code == gp.btn_Z) { zPressed = false; lock = true; }
+		
+		if (code == gp.btn_DUP) { lock = true; }
+		if (code == gp.btn_DDOWN) { lock = true; }
 		
 		if (code == gp.btn_START) { startPressed = false; lock = true; }	
 		if (code == gp.btn_SELECT) { selectPressed = false; lock = true; }			

@@ -24,7 +24,7 @@ public class EntityGenerator {
 			case COL_Fairy.colName: obj = new COL_Fairy(gp); break;
 			case COL_Heart.colName: obj = new COL_Heart(gp); break;
 			case COL_Key.keyName: obj = new COL_Key(gp); break;
-			case COL_Key_Boss.keyName: obj = new COL_Key(gp); break;
+			case COL_Key_Boss.keyName: obj = new COL_Key_Boss(gp); break;
 			case COL_Potion_Red.colName: obj = new COL_Potion_Red(gp); break;
 			case COL_Rupee_Blue.colName: obj = new COL_Rupee_Blue(gp); break;
 			case COL_Rupee_Green.colName: obj = new COL_Rupee_Green(gp); break;

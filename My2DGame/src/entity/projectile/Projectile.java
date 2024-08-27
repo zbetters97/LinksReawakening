@@ -38,7 +38,7 @@ public class Projectile extends Entity {
 		}
 		else if (name.equals(PRJ_Boomerang.prjName)) boomerang();
 		else if (name.equals(PRJ_Hookshot.prjName)) hookshot();
-		else if (name.equals(PRJ_Orb.prjName)) rod();
+		else if (name.equals(PRJ_Orb.prjName)) orb();
 		else projectile();		
 	}	
 	
@@ -552,7 +552,7 @@ public class Projectile extends Entity {
 		return returnedToPlayer;
 	}
 	
-	public void rod() {
+	public void orb() {
 		
 		// CHECK TILE COLLISION
 		collisionOn = false;		
@@ -579,6 +579,12 @@ public class Projectile extends Entity {
 				enemy.captured = true;
 				gp.player.capturedTarget = enemy;
 				enemy.speed = 2;
+				
+				if (gp.player.capturedTarget != null && gp.player.capturedTarget == enemy) {
+					enemy.locked = false;
+					gp.player.lockedTarget = null;
+					gp.player.lockon = false;
+				}
 			}
 			playSE();
 			alive = false;

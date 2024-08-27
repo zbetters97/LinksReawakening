@@ -12,7 +12,6 @@ public class EMY_Buzzblob extends Entity {
 
 	public static final String emyName = "Buzz Blob";
 	private int cycle = 0;
-	private int buzzCounter = 0;
 	
 	public EMY_Buzzblob(GamePanel gp, int worldX, int worldY) {
 		super(gp);		
@@ -47,18 +46,19 @@ public class EMY_Buzzblob extends Entity {
 		
 	}
 	public void getBuzzImage() {		
-		buzzUp1 = setup("/enemy/buzzblob_attack_down_1"); 
-		buzzUp2 = setup("/enemy/buzzblob_attack_down_2");	
+		attackUp1 = attackDown1 = attackLeft1 = attackRight1 = setup("/enemy/buzzblob_attack_down_1"); 
+		attackUp2 = attackDown2 = attackLeft2 = attackRight2 = setup("/enemy/buzzblob_attack_down_2");	
 	}
 	
 	public void cycleSprites() {
+		
 		spriteCounter++;
 		if (spriteCounter > animationSpeed && animationSpeed != 0) {
 			
 			// 1 -> 2
-			if (buzzing) {
-				if (spriteNum == 1) spriteNum = 2;
-				else if (spriteNum == 2) spriteNum = 1;
+			if (attacking) {
+				if (attackNum == 1) attackNum = 2;
+				else if (attackNum == 2) attackNum = 1;
 			}
 			// 1 -> 2 -> 3 -> 2 -> 1
 			else {
@@ -78,26 +78,21 @@ public class EMY_Buzzblob extends Entity {
 			
 			spriteCounter = 0;
 		}		
-		
-		buzz();
-	}
-	
-	public void buzz() {
-		
-		// BUZZ FOR 2 SECONDS
-		if (buzzing) {
-			buzzCounter++;
-			if (buzzCounter > 120) {
-				buzzing = false;				
-				buzzCounter = 0;
-				attack = 2;
-			}
-		}
 	}
 	
 	public void attacking() {
-		buzzing = true;
-		attacking = false;
+		
+		// BUZZ FOR 2 SECONDS
+		attackCounter++;
+		if (attackCounter > 120) {
+			attacking = false;
+			buzzing = false;
+			attackCounter = 0;
+			attack = 2;
+		}		
+		else {
+			buzzing = true;
+		}
 	}
 	
 	public void setAction() {
@@ -109,7 +104,7 @@ public class EMY_Buzzblob extends Entity {
 				if (!buzzing) {
 					if (isAttacking(180, gp.tileSize * 3, gp.tileSize * 3)) {
 						playShockSE();
-						buzzing = true;					
+						attacking = true;					
 						attack *= 2;
 					}
 				}
@@ -125,7 +120,6 @@ public class EMY_Buzzblob extends Entity {
 					onPath = false;
 				}
 				
-				buzzing = false;
 				attack = 2;			
 			}
 		}

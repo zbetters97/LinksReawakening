@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import application.GamePanel;
 import data.Progress;
 import entity.enemy.EMY_Beetle;
+import entity.enemy.EMY_Buzzblob;
 import entity.enemy.EMY_Stalfos;
 import entity.enemy.EMY_Zora;
 import entity.projectile.PRJ_Seed;
@@ -343,7 +344,7 @@ public class Entity {
 		worldYStart = worldY;
 		
 		if (gp.keyH.bPressed) { attacking = true; }
-		if (attacking) { attacking(); return; }		
+		if (attacking) { attacking(); cycleSprites(); return; }		
 		if (gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) {
 			walking();
 		}	
@@ -1272,10 +1273,6 @@ public class Entity {
 					case "right": image = grabRight1; break;				
 				}
 			}
-			else if (buzzing) {
-				if (spriteNum == 1) image = buzzUp1;
-				else if (spriteNum == 2) image = buzzUp2;
-			}
 			else {							
 				switch (direction) {
 					case "up":
@@ -1338,7 +1335,7 @@ public class Entity {
 			
 			// AVOIDS BUG WITH ATTACKING SPRITE
 			if (name.equals(EMY_Beetle.emyName) || name.equals(EMY_Stalfos.emyName) ||
-					name.equals(EMY_Zora.emyName)) {
+					name.equals(EMY_Zora.emyName) || name.equals(EMY_Buzzblob.emyName)) {
 				offCenter();
 			}
 						

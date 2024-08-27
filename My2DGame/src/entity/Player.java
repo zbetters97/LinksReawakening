@@ -136,9 +136,9 @@ public class Player extends Entity {
 		shotAvailableCounter = 30;
 		
 		currentWeapon = null;
-//		currentWeapon = new EQP_Sword_Old(gp);
+		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
-/*		
+	
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Bomb(gp));
@@ -148,7 +148,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Feather(gp));
 		inventory_item.add(new ITM_Cape(gp));
 		inventory_item.add(new ITM_Rod(gp));	
-*/
+
 		attack = getAttack();
 		
 		setDefaultPosition();
@@ -1096,8 +1096,8 @@ public class Player extends Entity {
 				lockon = true;			
 			}
 			// TARGET ALREADY LOCKED
-			else {				
-				
+			else {
+			
 				// MOVING BACKWARDS, TURN OFF LOCKON
 				if (direction == getOppositeDirection(lockonDirection)) {
 					lockedTarget.locked = false;
@@ -1128,7 +1128,7 @@ public class Player extends Entity {
 				
 		for (Entity e : gp.enemy[gp.currentMap]) {
 			
-			if (e != null && e != lockedTarget && e.canTarget && !e.dying) {
+			if (e != null && e != lockedTarget && e.canTarget && !e.dying && !e.captured) {
 				
 				// ENEMY WITHIN 6 TILES
 				int enemyDistance = getTileDistance(e);

@@ -154,6 +154,10 @@ public class CollisionChecker {
 			else if (entity.type == entity.type_projectile) {
 				entity.collisionOn = false;
 			}
+			// EVERYTHING ELSE
+			else if (entity != gp.player) {
+				entity.collisionOn = true;
+			}
 		}
 		// WATER
 		else if (gp.tileM.tile[tileNum1].water || gp.tileM.tile[tileNum2].water) {
@@ -171,7 +175,15 @@ public class CollisionChecker {
 				if (!entity.canSwim) {
 					entity.collisionOn = true;
 				} 
-			}			
+			}		
+			// PROJECTILES
+			else if (entity.type == entity.type_projectile) {
+				entity.collisionOn = false;
+			}
+			// EVERYTHING ELSE
+			else if (entity != gp.player) {
+				entity.collisionOn = true;
+			}
 		}
 		// SPIKES
 		else if (tileNum1 == gp.tileM.spikeTile || tileNum2 == gp.tileM.spikeTile) {	

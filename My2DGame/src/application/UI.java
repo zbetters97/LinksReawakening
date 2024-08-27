@@ -609,7 +609,7 @@ public class UI {
 			}
 			
 			// ANIMATE ICON UP AND DOWN
-			if (target != null) {
+			if (target != null && !target.captured) {
 								
 				if (zTargetCounter < 20 && zTargetDirection == 0) {			
 					zTargetCounter++;
@@ -1973,6 +1973,10 @@ public class UI {
 			g2.setFont(gp.ui.PK_DS.deriveFont(30f));
 			String text = "[Press " + KeyEvent.getKeyText(gp.btn_START) + " to skip]";
 			g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
+		}
+		
+		if (gp.keyH.startPressed) {
+			gp.csManager.skipScene();
 		}
 	}
 	

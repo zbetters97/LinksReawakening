@@ -46,22 +46,26 @@ public class OI_Block_Pushable extends Entity {
 			direction = dir;
 			speed = gp.tileSize;			
 			
-			collisionOn = false;
-			gp.cChecker.checkPlayer(this);
-			gp.cChecker.checkTile(this);		
-			gp.cChecker.checkEntity(this, gp.iTile);
-			gp.cChecker.checkEntity(this, gp.obj);			
-			gp.cChecker.checkEntity(this, gp.npc);
-			gp.cChecker.checkEntity(this, gp.enemy);			
+			checkCollision();
 							
 			if (isCorrectTile() && !collisionOn) {
 				playSE();
-//				gp.player.playPushSE();
 				gp.player.action = Action.PUSHING;
 				moving = true;
 				speed = 1;
 			}
 		}
+	}
+	
+	public void checkCollision() {
+		collisionOn = false;
+		gp.cChecker.checkPlayer(this);
+		gp.cChecker.checkTile(this);		
+		gp.cChecker.checkEntity(this, gp.iTile);
+		gp.cChecker.checkEntity(this, gp.obj);	
+		gp.cChecker.checkEntity(this, gp.obj_i);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.enemy);		
 	}
 	
 	public void update() { 

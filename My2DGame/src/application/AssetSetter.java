@@ -138,9 +138,12 @@ public class AssetSetter {
 		gp.obj[mapNum][i] = new OBJ_BlueHeart(gp, 25, 8); i++;	
 	}	
 	protected void setInteractiveObjects() {
-		
-		int mapNum = 2;
+				
+		int mapNum = 0;
 		int i = 0;
+		
+		mapNum = 2;
+		i = 0;
 				
 		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp, 39, 69); i++;		
 		gp.obj_i[mapNum][i] = new OI_Block_Pushable(gp, 41, 61); i++;			

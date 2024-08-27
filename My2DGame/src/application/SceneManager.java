@@ -508,8 +508,8 @@ public class SceneManager {
 		}
 		else if (phase == 3) {
 			
-			// PAUSE FOR 3 SECONDS
-			if (counterReached(180)) {
+			// PAUSE FOR 5 SECONDS
+			if (counterReached(300)) {
 				phase++;
 			}
 		}
