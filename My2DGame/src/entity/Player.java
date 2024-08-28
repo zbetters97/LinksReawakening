@@ -47,6 +47,7 @@ public class Player extends Entity {
 	private int previousGrunt = 0;
 	private int previousHurt = 0;
 	private int previousSwing = 2;
+	public ArrayList<String> music_notes = new ArrayList<>();
 	
 	// COUNTERS
 	public int damageNum = 1, guardNum = 1, aimNum = 1, rollNum = 1, pullNum = 1, pushNum = 1, 
@@ -80,9 +81,9 @@ public class Player extends Entity {
 		
 		rodUp1, rodUp2, rodUp3, rodDown1, rodDown2, rodDown3, 
 		rodLeft1, rodLeft2, rodLeft3, rodRight1, rodRight2, rodRight3,
-								
-		titleScreen, sit, sing, itemGet_1, itemGet_2, drown, 
-		fall1, fall2, fall3, die1, die2, die3, die4, die5;
+						
+		titleScreen, sit, sing, itemGet_1, itemGet_2, play1, play2,
+		drown, fall1, fall2, fall3, die1, die2, die3, die4, die5;
 	
 /** END PLAYER VARIABLES **/		
 	
@@ -147,7 +148,8 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Bow(gp));
 		inventory_item.add(new ITM_Feather(gp));
 		inventory_item.add(new ITM_Cape(gp));
-		inventory_item.add(new ITM_Rod(gp));	
+		inventory_item.add(new ITM_Rod(gp));
+		inventory_item.add(new ITM_Harp(gp));
 
 		attack = getAttack();
 		
@@ -451,6 +453,8 @@ public class Player extends Entity {
 	public void getMiscImage() {		
 		sit = setup("/player/boy_sit"); 
 		sing = setup("/npc/girl_sing_1");		
+		play1 = setup("/player/boy_play_1"); 
+		play2 = setup("/player/boy_play_2"); 
 		itemGet_1 = setup("/player/boy_item_get_1");
 		itemGet_2 = setup("/player/boy_item_get_2");
 		drown = setup("/player/boy_drown");
@@ -470,7 +474,11 @@ public class Player extends Entity {
 
 	public void update() {
 		
-		if (action == Action.DROWNING) {
+		if (action == Action.MUSIC) {
+			manageValues();		
+			return;
+		}
+		else if (action == Action.DROWNING) {
 			takingDamage();
 			return;
 		}
@@ -1328,6 +1336,7 @@ public class Player extends Entity {
 				case ITM_Boots.itmName:
 				case ITM_Cape.itmName:
 				case ITM_Feather.itmName:
+				case ITM_Harp.itmName:
 				case ITM_Rod.itmName:
 				case ITM_Shovel.itmName:				
 					gp.keyH.xPressed = false;
@@ -2434,8 +2443,12 @@ public class Player extends Entity {
 					changeAlpha(g2, 0.2f);
 			}				
 		}	
-				
-		if (action == Action.DROWNING || diving) {
+			
+		if (action == Action.MUSIC) {
+			image = play1;
+			offCenter();
+		}
+		else if (action == Action.DROWNING || diving) {
 			image = drown;				
 			offCenter();
 		}	

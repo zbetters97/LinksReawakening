@@ -11,7 +11,7 @@ public class Sound {
 	
 	// CLIP HOLDERS
 	public Clip clip;
-	private URL sounds[][] = new URL[9][];
+	private URL sounds[][] = new URL[10][];
 	public URL music[] = new URL[20];
 	public URL menu[] = new URL[20];
 	private URL player[] = new URL[20];
@@ -21,6 +21,7 @@ public class Sound {
 	private URL misc[] = new URL[20];
 	private URL voice[] = new URL[20];
 	private URL npc[] = new URL[20];
+	private URL instrument[] = new URL[10];
 	
 	// VOLUME SLIDER
 	private FloatControl fc;
@@ -129,6 +130,13 @@ public class Sound {
 		// 8
 		npc[0] = getClass().getResource("/sound/NPC_CUCCO.wav");
 		
+		// 9
+		instrument[0] = getClass().getResource("/sound/NOTES_A.wav");
+		instrument[1] = getClass().getResource("/sound/NOTES_D.wav");
+		instrument[2] = getClass().getResource("/sound/NOTES_R.wav");
+		instrument[3] = getClass().getResource("/sound/NOTES_L.wav");
+		instrument[4] = getClass().getResource("/sound/NOTES_U.wav");
+		
 		sounds[0] = music; 
 		sounds[1] = menu; 
 		sounds[2] = player; 
@@ -138,6 +146,7 @@ public class Sound {
 		sounds[6] = misc;
 		sounds[7] = voice;
 		sounds[8] = npc;
+		sounds[9] = instrument;
 	}	
 	
 	public void setFile(int category, int record) {		

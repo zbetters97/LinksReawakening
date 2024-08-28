@@ -642,7 +642,7 @@ public class SceneManager {
 	private void playDoorCloseSE() {
 		gp.playSE(4, 12);
 	}
-	private void playSolveSE() {
+	public void playSolveSE() {
 		gp.playSE(6, 6);
 	}
 	private void playBossMusic() {

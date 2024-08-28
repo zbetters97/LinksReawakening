@@ -26,12 +26,13 @@ public class Entity {
 	
 	public enum Action {
 		IDLE, AIMING, CARRYING, CHARGING, DIGGING, DROWNING, FALLING, GRABBING, GUARDING, 
-		JUMPING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING;
+		JUMPING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING, MUSIC;
 	}
 	
 	public List<Action> disabled_actions = Arrays.asList(
 			Action.AIMING, Action.CARRYING, Action.CHARGING, Action.JUMPING, Action.PUSHING, 
-			Action.ROLLING, Action.SOARING, Action.SWIMMING, Action.THROWING, Action.TOSSING
+			Action.ROLLING, Action.SOARING, Action.SWIMMING, Action.THROWING, Action.TOSSING,
+			Action.MUSIC
 	);
 	
 	protected GamePanel gp;

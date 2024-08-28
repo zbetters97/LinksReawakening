@@ -64,6 +64,10 @@ public class KeyHandler implements KeyListener {
 		else if (gp.gameState == gp.itemGetState) {
 			itemGetState(code);
 		}
+		// MUSIC STATE
+		else if (gp.gameState == gp.musicState) {
+			musicState(code);
+		}
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.cutsceneState) {
 			sceneState(code);
@@ -530,10 +534,7 @@ public class KeyHandler implements KeyListener {
 	
 	// DIALOGUE
 	private void dialogueState(int code) { 
-		if (code == gp.btn_A && lock) {						
-			aPressed = true;			
-			lock = false;
-		}
+		if (code == gp.btn_A && lock) {	aPressed = true; lock = false; }
 	}
 	
 	// ITEM GET	
@@ -550,6 +551,16 @@ public class KeyHandler implements KeyListener {
 			gp.gameState = gp.playState;
 		}
 	}
+	
+	// MUSIC
+	private void musicState(int code) { 
+		if (code == gp.btn_UP && lock) { upPressed = true; lock = false; }
+		if (code == gp.btn_DOWN && lock) { downPressed = true; lock = false; }
+		if (code == gp.btn_LEFT && lock) { leftPressed = true; lock = false; }
+		if (code == gp.btn_RIGHT && lock) { rightPressed = true; lock = false; }					
+		if (code == gp.btn_A && lock) { aPressed = true; lock = false; }
+		if (code == gp.btn_X && lock) { xPressed = true; lock = false; }
+	}	
 	
 	// TRADE
 	private void tradeState(int code) {
@@ -683,13 +694,20 @@ public class KeyHandler implements KeyListener {
 	
 	@Override
 	public void keyReleased(KeyEvent e) {	
-		int code = e.getKeyCode();
+		int code = e.getKeyCode();		
 		
-		if (code == gp.btn_UP) upPressed = false; 
-		if (code == gp.btn_DOWN) downPressed = false;
-		if (code == gp.btn_LEFT) leftPressed = false;
-		if (code == gp.btn_RIGHT) rightPressed = false;
-		
+		if (gp.gameState == gp.musicState) {
+			if (code == gp.btn_UP) { upPressed = false; lock = true; }
+			if (code == gp.btn_DOWN) { downPressed = false; lock = true; }
+			if (code == gp.btn_LEFT) { leftPressed = false; lock = true; }
+			if (code == gp.btn_RIGHT) { rightPressed = false; lock = true; }		
+		}
+		else {
+			if (code == gp.btn_UP) upPressed = false; 
+			if (code == gp.btn_DOWN) downPressed = false;
+			if (code == gp.btn_LEFT) leftPressed = false;
+			if (code == gp.btn_RIGHT) rightPressed = false;
+		}
 		if (code == gp.btn_A) { aPressed = false; lock = true; }
 		if (code == gp.btn_B) { bPressed = false; lock = true; }
 		if (code == gp.btn_X) { xPressed = false; lock = true; }

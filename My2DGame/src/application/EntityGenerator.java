@@ -36,6 +36,7 @@ public class EntityGenerator {
 			case ITM_Bow.itmName: obj = new ITM_Bow(gp); break;
 			case ITM_Cape.itmName: obj = new ITM_Cape(gp); break;
 			case ITM_Feather.itmName: obj = new ITM_Feather(gp); break;
+			case ITM_Harp.itmName: obj = new ITM_Harp(gp); break;	
 			case ITM_Hookshot.itmName: obj = new ITM_Hookshot(gp); break;
 			case ITM_Rod.itmName: obj = new ITM_Rod(gp); break;
 			case ITM_Shovel.itmName: obj = new ITM_Shovel(gp); break;					

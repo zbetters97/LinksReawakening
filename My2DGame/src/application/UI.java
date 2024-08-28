@@ -12,6 +12,9 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -57,8 +60,12 @@ public class UI {
 	public int playerSlotRow = 0;	
 	public int npcSlotCol = 0;
 	public int npcSlotRow = 0;
-	
 	public int inventoryScreen = 0;
+	
+	// MUSIC
+	private BufferedImage music_sheet;
+	private BufferedImage note_a, note_d, note_r, note_l, note_u;
+	private HashMap<String, String> music_learned;
 	
 	// DIALOGUE HANDLER	
 	public boolean messageOn = false;
@@ -123,6 +130,20 @@ public class UI {
 		dialogue_finish = setup("/ui/dialogue_finish"); 
 		zTargetLock = setup("/ui/lockon_target", 48 + 20, 48 + 20);
 		zTargetLocked = setup("/ui/lockon_locked", 48 + 20, 48 + 20);
+		
+		music_learned = new HashMap<String, String>();
+		music_learned.put("LURLUR", "The Song of Zelda");
+		music_learned.put("RADRAD", "The Song of Time");
+		music_learned.put("DRLDRL", "The Song of Saria");
+		music_learned.put("ADUADU", "The Song of Storms");
+		music_learned.put("ULRULR", "The Song of Epona");
+		
+		music_sheet = setup("/music/music_sheet", gp.tileSize * 10, gp.tileSize * 3); 
+		note_a = setup("/music/btn_a", gp.tileSize - 7, gp.tileSize - 7); 
+		note_d = setup("/music/btn_d", gp.tileSize - 7, gp.tileSize - 7); 
+		note_l = setup("/music/btn_l", gp.tileSize - 7, gp.tileSize - 7); 
+		note_r = setup("/music/btn_r", gp.tileSize - 7, gp.tileSize - 7); 
+		note_u = setup("/music/btn_u", gp.tileSize - 7, gp.tileSize - 7); 
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -170,6 +191,11 @@ public class UI {
 		else if (gp.gameState == gp.itemGetState) {
 			drawHUD();
 			drawItemGetScreen();
+		}
+		// MUSIC STATE
+		else if (gp.gameState == gp.musicState) {
+			drawHUD();
+			drawMusic();
 		}
 		// TRANSITION STATE
 		else if (gp.gameState == gp.transitionState) {
@@ -390,7 +416,7 @@ public class UI {
 	private void drawHUD() {
 						
 		if (gp.gameState == gp.playState || gp.gameState == gp.dialogueState || 
-				gp.gameState == gp.waitState) {
+				gp.gameState == gp.waitState || gp.gameState == gp.musicState) {
 			
 			if (mapNameCounter > 0) {
 				drawMapName();
@@ -440,14 +466,16 @@ public class UI {
 		y = gp.tileSize / 2;
 		
 		// PLAYER LIFE ALL FULL HEARTS
-		if (gp.player.life % 4 == 0) {			
-			for (i = 0; i < gp.player.life; i += 4) {
+		if (gp.player.life % 4 == 0) {	
+									
+			for (i = 0; i < gp.player.life; i += 4) {				
 				g2.drawImage(heart_4, x, y, null);	
 				x += gp.tileSize / 1.6;
 			}			
 		}
 		// QUARTER HEARTS
 		else {			
+			
 			BufferedImage heart = heart_4;
 			i = 0; int c = 0; 
 			while (i < gp.player.life) {
@@ -653,7 +681,6 @@ public class UI {
 					gp.player.lockedTarget.tempScreenY - 10, null);
 		}
 	}
-	
 	private BufferedImage rotateImage(BufferedImage in, int degrees) {
 		 
 		AffineTransform rotation = AffineTransform.getRotateInstance(
@@ -1905,6 +1932,111 @@ public class UI {
 		}			
 	}
 	
+	// MUSIC
+	private void drawMusic() {
+		
+		int x = gp.tileSize * 2 + 20;
+		int y = gp.tileSize * 8;	
+		drawSubWindow(x, y, gp.tileSize * 11, gp.tileSize * 3 + 20);
+		
+		x += 25;
+		y += 8;		
+		g2.drawImage(music_sheet, x, y, null);
+		
+		if (gp.keyH.xPressed) {
+			gp.keyH.xPressed = false;		
+			gp.player.music_notes.clear();
+			gp.player.action = Action.IDLE;
+			gp.gameState = gp.playState;				
+		}
+				
+		if (gp.player.music_notes.size() > 0) {
+									
+			x += gp.tileSize * 2;	
+			
+			for (int i = 0; i < gp.player.music_notes.size(); i++) {	
+				
+				y = gp.tileSize * 8 + 8;
+											
+				switch (gp.player.music_notes.get(i)) {
+					case "A": 
+						y += gp.tileSize * 2 - 6; 
+						g2.drawImage(note_a, x, y, null); 
+						break;
+					case "D":
+						y += gp.tileSize + 22;
+						g2.drawImage(note_d, x, y, null);
+						break;
+					case "R":
+						y += gp.tileSize + 2;
+						g2.drawImage(note_r, x, y, null);
+						break;
+					case "L":
+						y += 28;
+						g2.drawImage(note_l, x, y, null);
+						break;
+					case "U":
+						y += 8;
+						g2.drawImage(note_u, x, y, null);
+						break;
+				}	
+				
+				x += gp.tileSize + 12;
+			}
+		}
+		
+		if (gp.keyH.aPressed) {
+			playNote("A");
+			playNoteA();
+			gp.keyH.aPressed = false;
+		}
+		else if (gp.keyH.downPressed) {
+			playNote("D");
+			playNoteD();
+			gp.keyH.downPressed = false;
+		}
+		else if (gp.keyH.rightPressed) {							
+			playNote("R");
+			playNoteR();			
+			gp.keyH.rightPressed = false;
+		}
+		else if (gp.keyH.leftPressed) {			
+			playNote("L");
+			playNoteL();
+			gp.keyH.leftPressed = false;
+		}		
+		else if (gp.keyH.upPressed) {	
+			playNote("U");
+			playNoteU();
+			gp.keyH.upPressed = false;			
+		}
+		
+		checkSong();
+	}
+	private void playNote(String note) {
+		if (gp.player.music_notes.size() == 6) {
+			gp.player.music_notes.clear();
+		}
+		
+		gp.player.music_notes.add(note);
+	}
+	private void checkSong() {
+		
+		String song_played = gp.player.music_notes.stream().collect(Collectors.joining());
+		
+		for (Entry<String, String> song : music_learned.entrySet()) {
+			if (song_played.equals(song.getKey())) {
+				gp.ui.currentDialogue = "You played " + song.getValue() + "!";
+				
+				gp.csManager.playSolveSE();
+				gp.player.music_notes.clear();
+				
+				gp.player.action = Action.IDLE;		
+				gp.gameState = gp.itemGetState;
+			}
+		}
+	}
+	
 	// TRANSITION	
 	private void drawTransition() {
 		
@@ -2117,6 +2249,12 @@ public class UI {
 		g2.drawRoundRect(x+5, y+5, width-10, height-10, 15, 15);
 		g2.setColor(Color.WHITE);
 	}	
+		
+	private void playNoteA() { gp.playSE(9, 0); }
+	private void playNoteD() { gp.playSE(9, 1); }
+	private void playNoteR() { gp.playSE(9, 2); }	
+	private void playNoteL() { gp.playSE(9, 3); }	
+	private void playNoteU() { gp.playSE(9, 4); }
 	
 	// MISC
 	private void drawItemCount(int item, int x, int y, Color color, float fontSize) {

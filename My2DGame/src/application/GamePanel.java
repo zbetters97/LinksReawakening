@@ -108,13 +108,14 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int inventoryState = 4;
 	public final int dialogueState = 5;		
 	public final int tradeState = 6;
-	public final int itemGetState = 7;
-	public final int waitState = 8;	
-	public final int transitionState = 9;	
-	public final int cutsceneState = 10;
-	public final int sleepState = 11;
-	public final int gameOverState = 12;
-	public final int endingState = 13;
+	public final int musicState = 7;
+	public final int itemGetState = 8;
+	public final int waitState = 9;	
+	public final int transitionState = 10;	
+	public final int cutsceneState = 11;
+	public final int sleepState = 12;
+	public final int gameOverState = 13;
+	public final int endingState = 14;
 	
 	// AREA STATES
 	public int currentArea;
@@ -263,6 +264,11 @@ public class GamePanel extends JPanel implements Runnable {
 			updateProjectiles();
 			updateParticles();
 			updateFairies();
+		}
+		// MUSIC
+		else if (gameState == musicState) {
+			player.update();
+			updateParticles();
 		}
 		// CUTSCENE
 		else if (gameState == cutsceneState) {			
