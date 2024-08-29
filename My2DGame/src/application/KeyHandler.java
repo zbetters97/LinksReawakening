@@ -400,34 +400,79 @@ public class KeyHandler implements KeyListener {
 		}
 		
 		if (gp.ui.pauseState == 1) {
-			if (code == gp.btn_UP) { 
-				if (gp.ui.playerSlotRow != 0) {
-					playCursorSE(); 
-					gp.ui.playerSlotRow--; 
+			
+			if (gp.ui.inventoryScreen == 0) {		
+				if (code == gp.btn_UP) { 
+					if (gp.ui.playerSlotRow != 0) {
+						playCursorSE(); 
+						gp.ui.playerSlotRow--; 
+					}
+				}
+				if (code == gp.btn_DOWN) { 
+					if (gp.ui.playerSlotRow != 4) { 
+						playCursorSE(); 
+						gp.ui.playerSlotRow++; 
+					}
+				}
+				if (code == gp.btn_LEFT) { 
+					if (gp.ui.playerSlotCol != 0) { 
+						playCursorSE();
+						gp.ui.playerSlotCol--; 
+					}
+				}
+				if (code == gp.btn_RIGHT) { 
+					if (gp.ui.playerSlotCol != 4) {
+						playCursorSE(); 
+						gp.ui.playerSlotCol++; 
+					}
+					else {
+						playCursorSE(); 
+						gp.ui.playerSlotCol = 0;
+						gp.ui.playerSlotRow = 0;
+						gp.ui.inventoryScreen = 1;						
+					}
+				}
+				if (code == gp.btn_A && lock) {					
+					gp.player.selectCollectable();		
+					lock = false;
 				}
 			}
-			if (code == gp.btn_DOWN) { 
-				if (gp.ui.playerSlotRow != 2) { 
-					playCursorSE(); 
-					gp.ui.playerSlotRow++; 
+			else if (gp.ui.inventoryScreen == 1) {				
+				if (code == gp.btn_UP) { 
+					if (gp.ui.playerSlotRow != 0) {
+						playCursorSE(); 
+						gp.ui.playerSlotRow--; 
+					}					
 				}
-			}
-			if (code == gp.btn_LEFT) { 
-				if (gp.ui.playerSlotCol != 0) { 
-					playCursorSE();
-					gp.ui.playerSlotCol--; 
+				if (code == gp.btn_DOWN) { 
+					if (gp.ui.playerSlotRow != 2) { 
+						playCursorSE(); 
+						gp.ui.playerSlotRow++; 
+					}
 				}
-			}
-			if (code == gp.btn_RIGHT) { 
-				if (gp.ui.playerSlotCol != 2) {
-					playCursorSE(); 
-					gp.ui.playerSlotCol++; 
+				if (code == gp.btn_LEFT) { 
+					if (gp.ui.playerSlotCol != 0) { 
+						playCursorSE();
+						gp.ui.playerSlotCol--; 
+					}
+					else {
+						playCursorSE(); 
+						gp.ui.playerSlotCol = 4;
+						gp.ui.playerSlotRow = 0;
+						gp.ui.inventoryScreen = 0;
+					}
 				}
-			}
-			if (code == gp.btn_A && lock) {					
-				gp.player.selectItem();		
-				lock = false;
-			}
+				if (code == gp.btn_RIGHT) { 
+					if (gp.ui.playerSlotCol != 2) {
+						playCursorSE(); 
+						gp.ui.playerSlotCol++; 
+					}
+				}
+				if (code == gp.btn_A && lock) {					
+					gp.player.selectItem();		
+					lock = false;
+				}
+			}			
 		}
 		else if (gp.ui.pauseState == 2) {
 			if (code == gp.btn_UP) { 

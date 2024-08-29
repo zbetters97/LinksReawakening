@@ -28,9 +28,21 @@ import entity.item.ITM_Bow;
 
 public class UI {
 	
+	// UI FONTS
 	private GamePanel gp;
 	private Graphics2D g2;	
 	public Font PK_DS;
+	
+	// UI COLORS
+	private Color itm_brown_1 = new Color(168,127,89);
+	private Color itm_brown_2 = new Color(217,180,122);
+	private Color itm_green = new Color(95,190,80);
+	private Color pause_brown_1 = new Color(76,50,13,245);
+	private Color pause_brown_2 = new Color(73,83,36,105);
+	private Color pause_brown_3 = new Color(247,219,167);
+	private Color pause_text = new Color(76,50,13,245);
+	private Color pause_yellow = new Color(248,242,135);
+	private Color pause_equipment = new Color(102,87,53,115);
 	
 	// TITLE SCREEN STATE
 	public int titleScreenState = 0;
@@ -48,15 +60,6 @@ public class UI {
 	private int zTargetDirection = 0;
 	private int zTargetRotation = 0;
 	
-	private Color itm_brown_1 = new Color(168,127,89);
-	private Color itm_brown_2 = new Color(217,180,122);
-	private Color itm_green = new Color(95,190,80);
-	private Color pause_brown_1 = new Color(76,50,13,245);
-	private Color pause_brown_2 = new Color(73,83,36,105);
-	private Color pause_text = new Color(76,50,13,245);
-	private Color pause_yellow = new Color(248,242,135);
-	private Color pause_equipment = new Color(102,87,53,115);
-	
 	// AREA TITLE
 	public String mapName = "";
 	public int mapNameAlpha = 0;
@@ -66,12 +69,12 @@ public class UI {
 	public int pauseState = 1;
 	public int subState = 0;
 		
-	// ITEM MENU
+	// INVENTORY MENU
 	public int playerSlotCol = 0;
 	public int playerSlotRow = 0;	
 	public int npcSlotCol = 0;
 	public int npcSlotRow = 0;
-	public int inventoryScreen = 0;
+	public int inventoryScreen = 1;
 	
 	// MUSIC
 	private BufferedImage music_sheet;
@@ -924,8 +927,70 @@ public class UI {
 		drawHealth();
 		drawItemSlot();		
 		
+		pause_inventory_collectables();
 		pause_inventory_equipment();
 		pause_inventory_items();
+	}
+	private void pause_inventory_collectables() {
+		
+		int x = gp.tileSize;
+		int y = gp.tileSize * 3;
+		int width = gp.tileSize * 7;
+		int height = gp.tileSize * 7;	
+		
+		// DRAW WINDOW
+		g2.setColor(pause_equipment);
+		g2.fillRect(x, y, width, height);	
+		
+		int slotXStart = gp.tileSize + 8;
+		int slotX = slotXStart;
+		int slotYStart = y + 8;
+		int slotY = slotYStart;
+		int slotCol = playerSlotCol;
+		int slotRow = playerSlotRow;
+		int slotSize = gp.tileSize;
+		
+		// DRAW ITEMS
+		for (int i = 0; i < gp.player.inventory.size(); i++) {
+						
+			g2.drawImage(gp.player.inventory.get(i).image, slotX, slotY, null);
+			
+			// STACKABLE ITEMS
+			if (gp.player.inventory.get(i).amount > 1) {
+				
+				x = slotX + 32;
+				y = slotY + 32;
+				width = 25;
+				height = 25;				
+				g2.setColor(pause_brown_3);
+				g2.fillOval(x, y, width, height);	
+				
+				g2.setColor(Color.BLACK);
+				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 26F));				
+				String text = Integer.toString(gp.player.inventory.get(i).amount);
+				x = getXForCenteredTextOnWidth(text, width, x);		
+				y += 20;					
+				g2.drawString(text, x, y);
+			}
+			
+			slotX += gp.tileSize + 20;			
+			if (i == 4 || i == 9 || i == 14) {
+				slotX = slotXStart;
+				slotY += gp.tileSize + 20;
+			}
+		}
+			
+		// DRAW CURSOR
+		if (inventoryScreen == 0) {	
+			slotSize += 20;
+			x = slotXStart + (slotSize * slotCol) - 8;
+			y = slotYStart + (slotSize * slotRow) - 8;		
+			slotSize -= 5;
+			
+			g2.setColor(pause_yellow);
+			g2.setStroke(new BasicStroke(3));		
+			g2.drawRect(x, y, slotSize, slotSize);		
+		}		
 	}
 	private void pause_inventory_equipment() {
 		
@@ -1004,7 +1069,7 @@ public class UI {
 				y = slotY + gp.tileSize + 8;
 				width = 28;
 				height = 28;				
-				g2.setColor(pause_yellow);
+				g2.setColor(pause_brown_3);
 				g2.fillOval(x, y, width, height);	
 				
 				g2.setColor(Color.BLACK);
@@ -1021,7 +1086,7 @@ public class UI {
 				y = slotY + gp.tileSize + 8;
 				width = 28;
 				height = 28;				
-				g2.setColor(pause_yellow);
+				g2.setColor(pause_brown_3);
 				g2.fillOval(x, y, width, height);	
 				
 				g2.setColor(Color.BLACK);
@@ -1041,16 +1106,18 @@ public class UI {
 		}				
 		
 		// DRAW CURSOR
-		slotXStart -= 8;
-		slotYStart -= 8;
-		size += 26;
-		x = slotXStart + (size * slotCol);
-		y = slotYStart + (size * slotRow);		
-		size -= 11;
-		
-		g2.setColor(pause_yellow);
-		g2.setStroke(new BasicStroke(3));		
-		g2.drawRect(x, y, size, size);	
+		if (inventoryScreen == 1) {			
+			slotXStart -= 8;
+			slotYStart -= 8;
+			size += 26;
+			x = slotXStart + (size * slotCol);
+			y = slotYStart + (size * slotRow);		
+			size -= 11;
+			
+			g2.setColor(pause_yellow);
+			g2.setStroke(new BasicStroke(3));		
+			g2.drawRect(x, y, size, size);		
+		}
 	}
 	private void pause_settings() {
 		

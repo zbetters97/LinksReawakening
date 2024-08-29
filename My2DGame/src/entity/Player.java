@@ -149,7 +149,7 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Cape(gp));
 		inventory_item.add(new ITM_Rod(gp));
 		inventory_item.add(new ITM_Harp(gp));
-
+				
 		attack = getAttack();
 		
 		setDefaultPosition();
@@ -1279,7 +1279,7 @@ public class Player extends Entity {
 	}	
 	
 	// ITEM HANDLING
-	public void selectInventory() {
+	public void selectCollectable() {
 		
 		int inventoryIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
 		if (inventoryIndex < inventory.size()) {			
