@@ -15,6 +15,6 @@ public class COL_Key_Boss extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/collectables/key_boss");
+		image = down1 = setup("/collectables/key_boss");
 	}
 }

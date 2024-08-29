@@ -19,7 +19,7 @@ public class COL_Arrow extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/arrow", 35, 35);
+		image = down1 = setup("/collectables/arrow", 35, 35);
 	}
 	
 	public boolean use(Entity user) {

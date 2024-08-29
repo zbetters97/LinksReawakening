@@ -19,7 +19,7 @@ public class COL_Rupee_Green extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/rupee_green");
+		image = down1 = setup("/collectables/rupee_green");
 	}
 	
 	public boolean use(Entity user) {		

@@ -27,7 +27,7 @@ public class COL_Heart extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/heart");
+		image = down1 = setup("/collectables/heart");
 	}
 	
 	public boolean use(Entity user) {

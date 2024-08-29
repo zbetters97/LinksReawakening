@@ -19,7 +19,7 @@ public class COL_Bomb extends Entity {
 	}
 	
 	public void getImage() {
-		down1 = setup("/collectables/bomb");
+		image = down1 = setup("/collectables/bomb");
 	}
 	
 	public boolean use(Entity user) {

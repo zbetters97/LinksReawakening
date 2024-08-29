@@ -143,7 +143,6 @@ public class Player extends Entity {
 		inventory_item.add(new ITM_Shovel(gp));
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Bomb(gp));
-		inventory_item.add(new ITM_Boots(gp));
 		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Bow(gp));
 		inventory_item.add(new ITM_Feather(gp));

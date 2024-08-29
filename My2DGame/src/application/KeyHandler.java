@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import data.Progress;
 import entity.Entity.Action;
 
 public class KeyHandler implements KeyListener {
@@ -43,14 +44,6 @@ public class KeyHandler implements KeyListener {
 		// PAUSE STATE
 		else if (gp.gameState == gp.pauseState) {
 			pauseState(code);
-		}
-		// MAP STATE
-		else if (gp.gameState == gp.mapState) {
-			mapState(code);
-		}
-		// INVENTORY STATE
-		else if (gp.gameState == gp.inventoryState) {
-			inventoryState(code);
 		}
 		// DIALOGUE STATE
 		else if (gp.gameState == gp.dialogueState) {
@@ -373,11 +366,6 @@ public class KeyHandler implements KeyListener {
 		if (code == gp.btn_R && lock) { rPressed = true; lock = false; }
 		if (code == gp.btn_Z && lock) { zPressed = true; lock = false; }
 
-		if (code == gp.btn_DUP && lock) {
-			playMapOpenSE();
-			gp.gameState = gp.mapState;
-			lock = false;
-		}
 		if (code == gp.btn_DDOWN && lock) {			
 			if (!gp.map.miniMapOn) playMapOpenSE();
 			gp.map.miniMapOn = !gp.map.miniMapOn;
@@ -385,15 +373,16 @@ public class KeyHandler implements KeyListener {
 		}
 		
 		if (code == gp.btn_START && lock) { 
-			playMenuOpenSE(); 
-			gp.gameState = gp.pauseState; 
-			lock = false;
-		}	
-		if (code == gp.btn_SELECT && lock) { 
-			playMenuOpenSE(); 
-			gp.gameState = gp.inventoryState; 
-			lock = false;
-		}			
+			if (Progress.canSave && gp.player.action == Action.IDLE) {
+				playMenuOpenSE(); 
+				gp.gameState = gp.pauseState; 
+				lock = false;
+			}
+			else {
+				gp.keyH.playErrorSE();
+				lock = false;
+			}
+		}		
 		
 		if (code == gp.btn_DEBUG) { if (debug) debug = false; else debug = true; }
 	}
@@ -410,45 +399,92 @@ public class KeyHandler implements KeyListener {
 			case 6: maxCommandNum = 1; break;
 		}
 		
-		if (code == gp.btn_UP) { 
-			if (gp.ui.commandNum != 0) {
-				playCursorSE(); 
-				gp.ui.commandNum--; 
-			}
-		}
-		if (code == gp.btn_DOWN) { 
-			if (gp.ui.commandNum != maxCommandNum) { 
-				playCursorSE(); 
-				gp.ui.commandNum++; 
-			}
-		}
-		if (code == gp.btn_LEFT) {
-			
-			if (gp.ui.subState == 0) {
-				if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
-					playCursorSE();
-					gp.music.volumeScale--;
-					gp.music.checkVolume();		
-				}
-				if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
-					playCursorSE();
-					gp.se.volumeScale--;	
-					gp.music.checkVolume();		
+		if (gp.ui.pauseState == 1) {
+			if (code == gp.btn_UP) { 
+				if (gp.ui.playerSlotRow != 0) {
+					playCursorSE(); 
+					gp.ui.playerSlotRow--; 
 				}
 			}
+			if (code == gp.btn_DOWN) { 
+				if (gp.ui.playerSlotRow != 2) { 
+					playCursorSE(); 
+					gp.ui.playerSlotRow++; 
+				}
+			}
+			if (code == gp.btn_LEFT) { 
+				if (gp.ui.playerSlotCol != 0) { 
+					playCursorSE();
+					gp.ui.playerSlotCol--; 
+				}
+			}
+			if (code == gp.btn_RIGHT) { 
+				if (gp.ui.playerSlotCol != 2) {
+					playCursorSE(); 
+					gp.ui.playerSlotCol++; 
+				}
+			}
+			if (code == gp.btn_A && lock) {					
+				gp.player.selectItem();		
+				lock = false;
+			}
 		}
-		if (code == gp.btn_RIGHT) {
-			if (gp.ui.subState == 0) {
-				if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
-					playCursorSE();
-					gp.music.volumeScale++;
-					gp.music.checkVolume();					
+		else if (gp.ui.pauseState == 2) {
+			if (code == gp.btn_UP) { 
+				if (gp.ui.commandNum != 0) {
+					playCursorSE(); 
+					gp.ui.commandNum--; 
 				}
-				if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {					
-					playCursorSE();
-					gp.se.volumeScale++;	
-					gp.music.checkVolume();		
+			}
+			if (code == gp.btn_DOWN) { 
+				if (gp.ui.commandNum != maxCommandNum) { 
+					playCursorSE(); 
+					gp.ui.commandNum++; 
 				}
+			}
+			if (code == gp.btn_LEFT) {
+				
+				if (gp.ui.subState == 0) {
+					if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
+						playCursorSE();
+						gp.music.volumeScale--;
+						gp.music.checkVolume();		
+					}
+					if (gp.ui.commandNum == 2 && gp.se.volumeScale > 0) {
+						playCursorSE();
+						gp.se.volumeScale--;	
+						gp.music.checkVolume();		
+					}
+				}
+			}
+			if (code == gp.btn_RIGHT) {
+				if (gp.ui.subState == 0) {
+					if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5) {
+						playCursorSE();
+						gp.music.volumeScale++;
+						gp.music.checkVolume();					
+					}
+					if (gp.ui.commandNum == 2 && gp.se.volumeScale < 5) {					
+						playCursorSE();
+						gp.se.volumeScale++;	
+						gp.music.checkVolume();		
+					}
+				}
+			}
+		}
+		
+		if (code == gp.btn_L && lock) {			
+			if (gp.ui.pauseState > 0) {
+				playCursorSE();
+				gp.ui.pauseState--;
+				lock = false;
+			}
+		}
+		if (code == gp.btn_R && lock) {
+			if (gp.ui.pauseState < 2) {
+				playCursorSE();
+				gp.ui.pauseState++;
+				lock = false;
 			}
 		}
 		
@@ -465,37 +501,7 @@ public class KeyHandler implements KeyListener {
 			lock = false;
 		}
 	}
-	
-	// INVENTORY
-	private void inventoryState(int code) { 
-		
-		if (code == gp.btn_SELECT && lock) {
-			playMenuCloseSE();
-			gp.gameState = gp.playState;
-			lock = false;
-		}
-		if (code == gp.btn_A && lock) {	
 			
-			if (gp.ui.inventoryScreen == 0) 
-				gp.player.selectInventory();			
-			else 
-				gp.player.selectItem();				
-			
-			lock = false;
-		}
-		if (code == gp.btn_Z && lock) {
-			playCursorSE();
-			
-			if (gp.ui.inventoryScreen == 0)
-				gp.ui.inventoryScreen = 1;
-			else
-				gp.ui.inventoryScreen = 0;
-			
-			lock = false;
-		}
-		playerInventory(code);
-	}
-	
 	// PLAYER INVENTORY	
 	private void playerInventory(int code) {
 		if (code == gp.btn_UP) { 
@@ -523,15 +529,7 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 	}
-	
-	// MAP
-	private void mapState(int code) {
-		if (code == gp.btn_DUP && lock) {
-			gp.gameState = gp.playState;
-			lock = false;
-		}
-	}
-	
+		
 	// DIALOGUE
 	private void dialogueState(int code) { 
 		if (code == gp.btn_A && lock) {	aPressed = true; lock = false; }

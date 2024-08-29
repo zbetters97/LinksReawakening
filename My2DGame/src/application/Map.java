@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -69,17 +68,16 @@ public class Map {
 	}
 	
 	public void drawFullMapScreen(Graphics2D g2) {
-			
-		// BACKGROUND COLOR
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-		
+					
 		// DRAW MAP
-		int width = 600;
-		int height = 600;
+		int width = 404;
+		int height = 404;
 		int x = (gp.screenWidth / 2) - (width / 2);
-		int y = (gp.screenHeight / 2) - (height / 2);
-		g2.drawImage(worldMap[gp.currentMap], x, y, width, height, null);
+		int y = (gp.screenHeight / 2) - (height / 2) + 25;
+		
+		g2.drawImage(worldMap[gp.currentMap], x,y, width, height, null);
+		
+		
 		
 		// DRAW PLAYER
 		double scale = (double)(gp.tileSize * maxWorld[gp.currentMap]) / width;
@@ -92,14 +90,6 @@ public class Map {
 		drawNPCs(g2, x, y, scale, false);
 		drawEnemies(g2, x, y, scale, false);
 		drawChests(g2, x, y, scale, false);
-		
-		// TEXT HINT (BOTTOM CENTER)		
-		g2.setColor(new Color(0,0,0,200));
-		g2.fillRect(288, 543, gp.tileSize * 4, 30);		
-		g2.setColor(Color.WHITE);
-		g2.setFont(gp.ui.PK_DS.deriveFont(30f));
-		String text = "[Press " + KeyEvent.getKeyText(gp.btn_DUP) + " to close]";
-		g2.drawString(text, gp.ui.getXforCenteredText(text), 565);
 	}
 	
 	public void drawMiniMap(Graphics2D g2) {

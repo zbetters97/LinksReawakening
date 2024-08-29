@@ -15,6 +15,6 @@ public class COL_Key extends Entity {
 	}	
 	
 	public void getImage() {
-		down1 = setup("/collectables/key");
+		image = down1 = setup("/collectables/key");
 	}
 }
