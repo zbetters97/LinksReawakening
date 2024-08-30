@@ -21,7 +21,7 @@ public class ITM_Harp extends Entity {
 	}
 	
 	public boolean use(Entity user) {
-		user.action = Action.MUSIC;
+		user.action = Action.PLAYING;
 		gp.gameState = gp.musicState;
 		return true;
 	}

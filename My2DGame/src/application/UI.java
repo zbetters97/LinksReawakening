@@ -80,6 +80,7 @@ public class UI {
 	private BufferedImage music_sheet;
 	private BufferedImage note_a, note_d, note_r, note_l, note_u;
 	private HashMap<String, String> music_learned;
+	public String songPlayed;
 	
 	// DIALOGUE HANDLER	
 	public boolean messageOn = false;
@@ -174,7 +175,6 @@ public class UI {
 		// PLAY STATE / FROZEN STATE
 		else if (gp.gameState == gp.playState || gp.gameState == gp.waitState) {
 			drawHUD();
-			drawEnemyHPBar(gp.enemy);
 		}		
 		// PAUSE STATE
 		else if (gp.gameState == gp.pauseState) {
@@ -187,6 +187,7 @@ public class UI {
 		}
 		// SCENE STATE
 		else if (gp.gameState == gp.cutsceneState) {
+			drawHUD();
 			drawScene();
 		}
 		// TRADE STATE
@@ -194,10 +195,10 @@ public class UI {
 			drawHUD();
 			drawTradeScreen();
 		}
-		// ITEM GET STATE
-		else if (gp.gameState == gp.itemGetState) {
+		// ACHIEVEMENT STATE
+		else if (gp.gameState == gp.achievmentState) {
 			drawHUD();
-			drawItemGetScreen();
+			drawAchievement();
 		}
 		// MUSIC STATE
 		else if (gp.gameState == gp.musicState) {
@@ -421,24 +422,21 @@ public class UI {
 	
 	// HUD	
 	private void drawHUD() {
-						
-		if (gp.gameState == gp.playState || gp.gameState == gp.dialogueState || 
-				gp.gameState == gp.waitState || gp.gameState == gp.musicState) {
-			
-			if (mapNameCounter > 0) {
-				drawMapName();
-				mapNameCounter--;
-			}
-			
-			drawHealth();
-			drawItemSlot();			
-			if (gp.currentArea == gp.dungeon) drawKeys();
-			drawRupees();								
-			
-			drawZTarget();
-			drawChargeBar();
-		}		
-						
+		
+		if (mapNameCounter > 0) {
+			drawMapName();
+			mapNameCounter--;
+		}
+		
+		drawHealth();
+		drawItemSlot();			
+		if (gp.currentArea == gp.dungeon) drawKeys();
+		drawRupees();					
+		
+		drawChargeBar();		
+		drawZTarget();
+		drawEnemyHPBar();
+		
 		// DRAW HINT 
 		if (showHint && hint.length() > 0) {
 			g2.setColor(Color.WHITE);
@@ -556,13 +554,21 @@ public class UI {
 			x += 35;
 			// DRAW ARROW COUNT
 			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {					
-	
-				y += gp.tileSize - 2;
-				text = Integer.toString(gp.player.arrows);
-				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 29F));
 				
-				g2.setColor(Color.WHITE);
-				g2.drawString(text, x, y);			
+				x += 10;
+				y += 33;
+				width = 28;
+				height = 28;				
+				g2.setColor(pause_brown_3);
+				g2.fillOval(x, y, width, height);	
+				
+				g2.setColor(Color.BLACK);
+				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));				
+				text = Integer.toString(gp.player.arrows);	
+				x = getXForCenteredTextOnWidth(text, width, x);		
+				y += 24;					
+				g2.drawString(text, x, y);
+				
 			}
 			// DRAW BOMB COUNT
 			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {		
@@ -751,11 +757,11 @@ public class UI {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 		}
 	}
-	private void drawEnemyHPBar(Entity[][] enemies) {
+	private void drawEnemyHPBar() {
 		
-		for (int i = 0; i < enemies[1].length; i++) {
+		for (int i = 0; i < gp.enemy[1].length; i++) {
 		
-			Entity enemy = enemies[gp.currentMap][i];
+			Entity enemy = gp.enemy[gp.currentMap][i];
 			
 			if (enemy != null && enemy.inFrame() && !enemy.sleep) {
 				
@@ -888,7 +894,7 @@ public class UI {
 		int textY;
 		int lX = 254;
 		int rX = 494;
-		
+				
 		// HEADER
 		g2.setColor(Color.WHITE);
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 45F));		
@@ -923,18 +929,64 @@ public class UI {
 	private void pause_map() {		
 		gp.map.drawFullMapScreen(g2);		
 	}
-	private void pause_inventory() {			
+	private void pause_inventory() {	
+		
 		drawHealth();
-		drawItemSlot();		
+		drawItemSlot();	
 		
 		pause_inventory_collectables();
+		pause_inventory_rupees();
+		pause_inventory_keys();
 		pause_inventory_equipment();
 		pause_inventory_items();
+	}
+	private void pause_inventory_rupees() {
+						
+		// DRAW RUPEE IMAGE
+		int x = gp.tileSize - 16;
+		int y = gp.tileSize * 9 + 30;
+		g2.drawImage(rupee, x, y, null);	
+						
+		// DRAW RUPEE COUNT			
+		x += gp.tileSize - 4;
+		y += gp.tileSize - 10;			
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 50F));
+		
+		if (gp.player.walletSize == 99) rupee_count = String.format("%02d", gp.player.rupees);
+		else if (gp.player.walletSize == 999) rupee_count = String.format("%03d", gp.player.rupees);
+		else if (gp.player.walletSize == 9999) rupee_count = String.format("%04d", gp.player.rupees);
+		
+		g2.drawString(rupee_count, x, y);	
+	}
+	private void pause_inventory_keys() {
+		
+		if (gp.currentArea == gp.dungeon) {
+			
+			// DRAW DUNGEON KEY IMAGE			
+			int x = gp.tileSize * 5 + 30;
+			int y = gp.tileSize * 9 + 30;	
+			g2.drawImage(key, x, y, null);	
+			
+			// DRAW DUNGEON KEY COUNT
+			x += gp.tileSize - 4;
+			y += gp.tileSize - 10;		
+			g2.setColor(Color.WHITE);
+			g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 50F));
+			g2.drawString(Integer.toString(gp.player.keys), x, y);	
+			
+			// DRAW BOSS KEY IMAGE
+			if (gp.player.boss_key > 0) {				
+				x += 30;	
+				y = gp.tileSize * 9 + 30;
+				g2.drawImage(boss_key, x, y, null);	
+			}			
+		}
 	}
 	private void pause_inventory_collectables() {
 		
 		int x = gp.tileSize;
-		int y = gp.tileSize * 3;
+		int y = gp.tileSize * 2 + 24;
 		int width = gp.tileSize * 7;
 		int height = gp.tileSize * 7;	
 		
@@ -1040,12 +1092,12 @@ public class UI {
 		int y = gp.tileSize * 2 + 24;
 		int width = gp.tileSize * 6 + 12;
 		int height = gp.tileSize + 26;
-		
-		// DRAW ITEMS
-		for (int i = 0; i < gp.player.inventory_item.size(); i++) {
+				
+		// DRAW ITEM SLOTS
+		for (int i = 0; i < 9; i++) {
 			
 			// EQUIPPED CURSOR
-			if (gp.player.currentItem != null && 
+			if (gp.player.currentItem != null && gp.player.inventory_item.size() > i &&
 					gp.player.inventory_item.get(i).name.equals(gp.player.currentItem.name)) {				
 				g2.setColor(itm_green);
 				g2.setStroke(new BasicStroke(10));
@@ -1057,13 +1109,20 @@ public class UI {
 				g2.drawOval(slotX, slotY, size, size);		
 			}
 			
-			// DRAW ITEM CIRCLE			
+			// DRAW ITEM SLOT			
 			g2.setColor(itm_brown_1);
-			g2.fillOval(slotX, slotY, size, size);				
-			g2.drawImage(gp.player.inventory_item.get(i).image, slotX, slotY, gp.tileSize + 28, gp.tileSize + 28, null);
+			g2.fillOval(slotX, slotY, size, size);	
+			
+			// DRAW ITEM IMAGE
+			if (gp.player.inventory_item.size() > i)
+				g2.drawImage(
+						gp.player.inventory_item.get(i).image, slotX, slotY, 
+						gp.tileSize + 28, gp.tileSize + 28, null
+				);
 			
 			// DRAW ARROW COUNT
-			if (gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {						
+			if (gp.player.inventory_item.size() > i &&
+					gp.player.inventory_item.get(i).name.equals(ITM_Bow.itmName)) {						
 
 				x = slotX + gp.tileSize + 8;
 				y = slotY + gp.tileSize + 8;
@@ -1080,7 +1139,8 @@ public class UI {
 				g2.drawString(text, x, y);
 			}
 			// DRAW BOMB COUNT
-			else if (gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {		
+			else if (gp.player.inventory_item.size() > i &&
+					gp.player.inventory_item.get(i).name.equals(ITM_Bomb.itmName)) {		
 				
 				x = slotX + gp.tileSize + 8;
 				y = slotY + gp.tileSize + 8;
@@ -1099,6 +1159,7 @@ public class UI {
 			
 			slotX += gp.tileSize * 2 + 8;		
 			
+			// NEW LINE
 			if (i == 2 || i == 5) {
 				slotX = gp.screenWidth / 2 + gp.tileSize + 8;
 				slotY += gp.tileSize * 2 + 8;
@@ -1964,8 +2025,8 @@ public class UI {
 		}			
 	}
 		
-	// ITEM GET 
-	private void drawItemGetScreen() {
+	// ACHIEVEMENT 
+	private void drawAchievement() {
 	
 		int x = gp.tileSize * 2;
 		int y = (gp.screenWidth / 2 ) - gp.tileSize;
@@ -1986,7 +2047,7 @@ public class UI {
 		y = gp.tileSize * 10;
 	  	g2.drawImage(dialogue_finish, x, y + 30, null);
   		
-		// DISPLAY ITEM ABOVE PLAYER
+		// ITEM ACQUIRED
 		if (newItem != null) {			
 									
 			BufferedImage playerGet = null;
@@ -1998,10 +2059,16 @@ public class UI {
 				playerGet = gp.player.itemGet_1;
 			}
 			
+			// DISPLAY ITEM ABOVE PLAYER
 			gp.player.drawing = false;
 			g2.drawImage(newItem.image, gp.player.screenX, gp.player.screenY - gp.tileSize, null);
 			g2.drawImage(playerGet, gp.player.screenX, gp.player.screenY, null);	
-		}			
+		}		
+		// SONG PLAYED
+		else if (songPlayed != null) {
+			gp.player.drawing = false;
+			g2.drawImage(gp.player.play4, gp.player.screenX, gp.player.screenY, null);	
+		}
 	}
 	
 	// MUSIC
@@ -2019,6 +2086,8 @@ public class UI {
 			gp.keyH.xPressed = false;		
 			gp.player.music_notes.clear();
 			gp.player.action = Action.IDLE;
+			gp.player.playNum = 1;
+			gp.player.playCounter = 0;
 			gp.gameState = gp.playState;				
 		}
 				
@@ -2098,13 +2167,13 @@ public class UI {
 		
 		for (Entry<String, String> song : music_learned.entrySet()) {
 			if (song_played.equals(song.getKey())) {
-				gp.ui.currentDialogue = "You played " + song.getValue() + "!";
-				
+				currentDialogue = "You played " + song.getValue() + "!";
+				songPlayed = song.getValue();
 				gp.csManager.playSolveSE();
 				gp.player.music_notes.clear();
 				
 				gp.player.action = Action.IDLE;		
-				gp.gameState = gp.itemGetState;
+				gp.gameState = gp.achievmentState;
 			}
 		}
 	}

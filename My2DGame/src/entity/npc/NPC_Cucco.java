@@ -23,6 +23,7 @@ public class NPC_Cucco extends Entity {
 		worldXStart = this.worldX;
 		worldYStart = this.worldY;
 		
+		capturable = true;
 		collision = false;
 		grabbable = true;
 		
@@ -196,21 +197,26 @@ public class NPC_Cucco extends Entity {
 		hurtTimer = 0;
 	}
 	
+	public void attacking() {
+		attacking = false;
+	}
+	
 	public void resetValues() {
 		
 		// CANNOT DIE, RESET TO STARTING POINT
-		if (thrown || grabbed) {
+		if (thrown || grabbed || captured) {
 			worldX = worldXStart;
 			worldY = worldYStart;	
 		}
 		
-		alive = true;		
+		alive = true;
 		dying = false;
 		thrown = false;
 		hurt = false;	
 		aggressive = false;
 		grabbable = true;
 		grabbed = false;
+		captured = false;
 		
 		life = maxLife;
 		speed = defaultSpeed;

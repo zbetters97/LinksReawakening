@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import application.GamePanel;
 
-public class Particle_Round extends Entity {
+public class Particle extends Entity {
 
 	Entity generator;
 	Color color;
@@ -13,7 +13,7 @@ public class Particle_Round extends Entity {
 	int xd;
 	int yd;
 	
-	public Particle_Round(GamePanel gp, Entity generator, Color color, 
+	public Particle(GamePanel gp, Entity generator, Color color, 
 			int size, int speed, int maxLife, int xd, int yd) {		
 		super(gp);
 		
@@ -52,8 +52,8 @@ public class Particle_Round extends Entity {
 		
 		int screenX = worldX - gp.player.worldX + gp.player.screenX;
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
-
+		
 		g2.setColor(color);		
-		g2.fillOval(screenX, screenY, size, size);
+		g2.fillRect(screenX, screenY, size, size);
 	}
 }

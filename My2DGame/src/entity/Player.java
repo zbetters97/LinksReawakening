@@ -47,15 +47,16 @@ public class Player extends Entity {
 	private int previousGrunt = 0;
 	private int previousHurt = 0;
 	private int previousSwing = 2;
+	private boolean playing = false;
 	public ArrayList<String> music_notes = new ArrayList<>();
 	
 	// COUNTERS
 	public int damageNum = 1, guardNum = 1, aimNum = 1, rollNum = 1, pullNum = 1, pushNum = 1, 
-			throwNum = 1, digNum = 1, jumpNum = 1, soarNum = 1, rodNum = 1;
+			throwNum = 1, digNum = 1, jumpNum = 1, playNum = 1, soarNum = 1, rodNum = 1;
 	
 	public int damageCounter = 0, lowHPCounter = 0, guardCounter = 0, rollCounter = 0, 
-			pullCounter = 0, pushCounter = 0, throwCounter = 0, digCounter = 0, jumpCounter = 0, 
-			soarCounter = 0, rodCounter = 0, diveCounter = 0;
+			playCounter = 0, pullCounter = 0, pushCounter = 0, throwCounter = 0, digCounter = 0, 
+			jumpCounter = 0, soarCounter = 0, rodCounter = 0, diveCounter = 0;
 	
 	// IMAGES
 	public BufferedImage 	
@@ -75,6 +76,8 @@ public class Player extends Entity {
 		
 		digUp1, digUp2, digDown1, digDown2, digLeft1, digLeft2, digRight1, digRight2,
 		
+		hookUp1, hookDown1, hookLeft1, hookRight1,
+		
 		jumpUp1, jumpUp2, jumpUp3, jumpDown1, jumpDown2, jumpDown3,
 		jumpLeft1, jumpLeft2, jumpLeft3, jumpRight1, jumpRight2, jumpRight3,
 		soarUp1, soarDown1, soarLeft1, soarRight1,
@@ -82,7 +85,7 @@ public class Player extends Entity {
 		rodUp1, rodUp2, rodUp3, rodDown1, rodDown2, rodDown3, 
 		rodLeft1, rodLeft2, rodLeft3, rodRight1, rodRight2, rodRight3,
 						
-		titleScreen, sit, sing, itemGet_1, itemGet_2, play1, play2,
+		titleScreen, sit, sing, itemGet_1, itemGet_2, play1, play2, play3, play4,
 		drown, fall1, fall2, fall3, die1, die2, die3, die4, die5;
 	
 /** END PLAYER VARIABLES **/		
@@ -140,17 +143,17 @@ public class Player extends Entity {
 		currentWeapon = new EQP_Sword_Old(gp);
 		currentShield = new EQP_Shield(gp);
 	
-		inventory_item.add(new ITM_Shovel(gp));
+		attack = getAttack();
+		
+		inventory_item.add(new ITM_Harp(gp));
+		inventory_item.add(new ITM_Shovel(gp));		
 		inventory_item.add(new ITM_Boomerang(gp));
 		inventory_item.add(new ITM_Bomb(gp));
-		inventory_item.add(new ITM_Hookshot(gp));
-		inventory_item.add(new ITM_Bow(gp));
 		inventory_item.add(new ITM_Feather(gp));
+		inventory_item.add(new ITM_Bow(gp));
+		inventory_item.add(new ITM_Hookshot(gp));
 		inventory_item.add(new ITM_Cape(gp));
 		inventory_item.add(new ITM_Rod(gp));
-		inventory_item.add(new ITM_Harp(gp));
-				
-		attack = getAttack();
 		
 		setDefaultPosition();
 		setDialogue();
@@ -165,6 +168,7 @@ public class Player extends Entity {
 		getCarryImage();		
 		getThrowImage();		
 		getDigImage();
+		getHookImage();
 		getJumpImage();
 		getSoarImage();
 		getRodImage();
@@ -211,6 +215,7 @@ public class Player extends Entity {
 		attacking = false;
 		spinning = false;
 		lockon = false;
+		playing = false;
 		
 		attackNum = 1; attackCounter = 0; 
 		actionLockCounter = 0;	
@@ -221,6 +226,7 @@ public class Player extends Entity {
 		guardNum = 1; guardCounter = 0; 
 		aimNum = 1; 
 		rollNum = 1; rollCounter = 0;		
+		playNum = 1; playCounter = 0;
 		pullNum = 1; pullCounter = 0;	
 		pushNum = 1; pushCounter = 0;
 		throwNum = 1; throwCounter = 0;		
@@ -415,6 +421,12 @@ public class Player extends Entity {
 		digRight1 = setup("/player/boy_dig_right_1"); 
 		digRight2 = setup("/player/boy_dig_right_2");		
 	}
+	public void getHookImage() {
+		hookUp1 = setup("/player/boy_hook_up_1", gp.tileSize, gp.tileSize + 8); 	
+		hookDown1 = setup("/player/boy_hook_down_1", gp.tileSize, gp.tileSize + 8); 	
+		hookLeft1 = setup("/player/boy_hook_left_1", gp.tileSize + 8, gp.tileSize); 		
+		hookRight1 = setup("/player/boy_hook_right_1", gp.tileSize + 8, gp.tileSize); 		
+	}
 	public void getJumpImage() {
 		jumpUp1 = setup("/player/boy_jump_up_1");
 		jumpUp2 = setup("/player/boy_jump_up_2");
@@ -454,6 +466,8 @@ public class Player extends Entity {
 		sing = setup("/npc/girl_sing_1");		
 		play1 = setup("/player/boy_play_1"); 
 		play2 = setup("/player/boy_play_2"); 
+		play3 = setup("/player/boy_play_3"); 
+		play4 = setup("/player/boy_play_4"); 
 		itemGet_1 = setup("/player/boy_item_get_1");
 		itemGet_2 = setup("/player/boy_item_get_2");
 		drown = setup("/player/boy_drown");
@@ -473,11 +487,7 @@ public class Player extends Entity {
 
 	public void update() {
 		
-		if (action == Action.MUSIC) {
-			manageValues();		
-			return;
-		}
-		else if (action == Action.DROWNING) {
+		if (action == Action.DROWNING) {
 			takingDamage();
 			return;
 		}
@@ -489,7 +499,7 @@ public class Player extends Entity {
 		checkCollision();
 				
 		if (action == Action.IDLE) { onGround = true; }
-		
+				
 		if (knockback) { knockbackPlayer(); manageValues(); checkDeath(); return; }
 
 		if (gp.keyH.aPressed && !attacking) { action(); }	
@@ -501,8 +511,6 @@ public class Player extends Entity {
 			lockedTarget = null;
 		}		
 		
-		if (getAction()) { manageValues(); checkDeath(); return; }
-
 		// DISABLED BUTTONS DURING SPECIFIC ACTIONS
 		if (!disabled_actions.contains(action)) {			
 			if (gp.keyH.bPressed) { attack(); }	
@@ -512,6 +520,8 @@ public class Player extends Entity {
 			if (gp.keyH.rPressed) { action = Action.GUARDING; }	
 			if (gp.keyH.zPressed) { cycleItems(); }			
 		}	
+		
+		if (getAction()) { manageValues(); checkDeath(); return; }
 		
 		if ((gp.keyH.upPressed || gp.keyH.downPressed || gp.keyH.leftPressed || gp.keyH.rightPressed) && 
 				action != Action.AIMING && action != Action.GRABBING) { 
@@ -527,19 +537,32 @@ public class Player extends Entity {
 	public boolean getAction() {
 				
 		boolean stop = false;
-
 		if (action == Action.AIMING) { aiming(); }	
 		else if (action == Action.CHARGING) { chargeSpin(); }
 		else if (action == Action.DIGGING) { digging(); stop = true; }
 		else if (action == Action.GRABBING) { pulling(); stop = true; }	
 		else if (action == Action.GUARDING) { guarding(); }
 		else if (action == Action.JUMPING) { jumping(); }	
+		else if (action == Action.PLAYING) { 
+			if (gp.keyH.aPressed || 
+					gp.keyH.upPressed || 
+					gp.keyH.downPressed || 
+					gp.keyH.leftPressed || 
+					gp.keyH.rightPressed) {
+				playNum = 1;
+				playCounter = 0;
+				playing = true;		
+			}
+			stop = true; 
+		}
 		else if (action == Action.PUSHING) { pushing(); }
 		else if (action == Action.ROLLING) { rolling(); }
 		else if (action == Action.SOARING) { jumping(); }
 		else if (action == Action.SWIMMING) { swimming(); }
 		else if (action == Action.SWINGING) { swinging(); stop = true; }	
-		else if (action == Action.THROWING || action == Action.TOSSING) { throwing(); stop = true; }		
+		else if (action == Action.THROWING || action == Action.TOSSING || action == Action.HOOKSHOT) { throwing(); stop = true; }		
+		
+		if (playing) { playing(); }
 		
 		return stop;
 	}
@@ -811,7 +834,7 @@ public class Player extends Entity {
 		
 		playGetItemSE();		
 		gp.ui.subState = 0;
-		gp.gameState = gp.itemGetState;
+		gp.gameState = gp.achievmentState;
 	}
 		
 	// SWORD
@@ -1381,8 +1404,8 @@ public class Player extends Entity {
 
 	// ANIMATIONS	
 	public void aiming() {
-		
-		if (5 >= charge) aimNum = 1;
+						
+		if (6 >= charge) aimNum = 1;
 		else aimNum = 2;
 		
 		switch (direction) {			
@@ -1443,14 +1466,18 @@ public class Player extends Entity {
 		}		
 		else {
 			i = gp.cChecker.checkEntity(this, gp.projectile);
-			if (i != -1 && gp.projectile[gp.currentMap][i].grabbable) {
+			if (i != -1 && 
+					gp.projectile[gp.currentMap][i].grabbable &&
+					!gp.projectile[gp.currentMap][i].captured) {
 				action = Action.GRABBING;		
 				grabbedObject = gp.projectile[gp.currentMap][i];
 				return;
 			}
 			else {
 				i = gp.cChecker.checkNPC();
-				if (i != -1 && gp.npc[gp.currentMap][i].grabbable) {
+				if (i != -1 && 
+						gp.npc[gp.currentMap][i].grabbable && 
+						!gp.npc[gp.currentMap][i].captured) {
 					action = Action.GRABBING;		
 					grabbedObject = gp.npc[gp.currentMap][i];
 					return;
@@ -1491,6 +1518,17 @@ public class Player extends Entity {
 				jumpCounter = 0;
 				action = Action.IDLE;	
 			}
+		}
+	}
+	public void playing() {
+		playCounter++;
+		if (6 > playCounter) playNum = 1;
+		else if (12 > playCounter && playCounter >= 6) playNum = 2;
+		else if (18 > playCounter && playCounter >= 12) playNum = 3;
+		else {
+			playNum = 1;
+			playCounter = 0;
+			playing = false;
 		}
 	}
 	public void pulling() {
@@ -1794,7 +1832,7 @@ public class Player extends Entity {
 			else {
 				gp.projectile[gp.currentMap][i].playSE();
 				projectile.alive = false;
-				generateRectParticle(projectile);
+				generateParticle(projectile);
 			}
 		}
 	}		
@@ -1815,7 +1853,7 @@ public class Player extends Entity {
 				gp.iTile[gp.currentMap][i].life--;
 				gp.iTile[gp.currentMap][i].invincible = true;
 						
-				generateRectParticle(gp.iTile[gp.currentMap][i]);
+				generateParticle(gp.iTile[gp.currentMap][i]);
 				
 				if (gp.iTile[gp.currentMap][i].life == 0) {				
 					gp.iTile[gp.currentMap][i].checkDrop();
@@ -2089,6 +2127,10 @@ public class Player extends Entity {
 								if (digNum == 1) image = digUp1;
 								else if (digNum == 2) image = digUp2;
 								break;
+							case HOOKSHOT:
+								tempScreenY -= 8;
+								image = hookUp1;
+								break;
 							case JUMPING:
 							case SOARING:
 								tempScreenY -= 30;
@@ -2186,6 +2228,9 @@ public class Player extends Entity {
 							case DIGGING:
 								if (digNum == 1) image = digDown1;
 								else if (digNum == 2) image = digDown2;
+								break;
+							case HOOKSHOT:
+								image = hookDown1;
 								break;
 							case JUMPING:
 							case SOARING:
@@ -2286,6 +2331,10 @@ public class Player extends Entity {
 								if (digNum == 1) image = digLeft1;
 								else if (digNum == 2) image = digLeft2;
 								break;
+							case HOOKSHOT:
+								tempScreenX -= 8;
+								image = hookLeft1;
+								break;
 							case JUMPING:
 							case SOARING:
 								tempScreenY -= 30;
@@ -2381,6 +2430,9 @@ public class Player extends Entity {
 								if (digNum == 1) image = digRight1;
 								else if (digNum == 2) image = digRight2;
 								break;
+							case HOOKSHOT:
+								image = hookRight1;
+								break;
 							case JUMPING:	
 							case SOARING:
 								tempScreenY -= 30;
@@ -2442,9 +2494,12 @@ public class Player extends Entity {
 					changeAlpha(g2, 0.2f);
 			}				
 		}	
+		if (action == Action.PLAYING) {
 			
-		if (action == Action.MUSIC) {
-			image = play1;
+			if (playNum == 1) image = play1;
+			else if (playNum == 2) image = play2;
+			else if (playNum == 3) image = play3;
+			
 			offCenter();
 		}
 		else if (action == Action.DROWNING || diving) {

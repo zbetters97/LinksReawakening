@@ -390,10 +390,10 @@ public class CollisionChecker {
 					gp.player.throwCounter = 0;	
 				}
 				// ON GROUND ENTITY
-				else if (entity.onGround) {						
+				else if (entity.onGround) {															
 					if (entity.captured) gp.player.capturedTarget = null;
-					entity.alive = false;					
-				}				
+					entity.alive = false;	
+				}			
 			}
 		}
 		// WATER

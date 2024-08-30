@@ -53,9 +53,9 @@ public class KeyHandler implements KeyListener {
 		else if (gp.gameState == gp.tradeState) {
 			tradeState(code);
 		}
-		// ITEM GET STATE
-		else if (gp.gameState == gp.itemGetState) {
-			itemGetState(code);
+		// ACHIEVEMENT STATE
+		else if (gp.gameState == gp.achievmentState) {
+			achievmentState(code);
 		}
 		// MUSIC STATE
 		else if (gp.gameState == gp.musicState) {
@@ -580,8 +580,8 @@ public class KeyHandler implements KeyListener {
 		if (code == gp.btn_A && lock) {	aPressed = true; lock = false; }
 	}
 	
-	// ITEM GET	
-	private void itemGetState(int code) {
+	// Achievement	
+	private void achievmentState(int code) {
 		if (code == gp.btn_A) {
 						
 			if (gp.ui.npc != null && gp.ui.npc.hasItemToGive) {		
@@ -590,6 +590,7 @@ public class KeyHandler implements KeyListener {
 			}			
 			
 			gp.ui.newItem = null;
+			gp.ui.songPlayed = null;
 			gp.player.drawing = true;
 			gp.gameState = gp.playState;
 		}

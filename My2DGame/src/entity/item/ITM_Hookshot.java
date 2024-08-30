@@ -29,7 +29,7 @@ public class ITM_Hookshot extends Entity {
 			projectile.set(user.worldX, user.worldY, user.direction, true, user);			
 			addProjectile(projectile);
 									
-			user.action = Action.TOSSING;
+			user.action = Action.HOOKSHOT;
 		}		
 		return true;
 	}

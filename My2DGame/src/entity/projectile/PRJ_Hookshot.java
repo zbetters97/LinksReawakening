@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 
 import application.GamePanel;
 import entity.Entity;
-import entity.Particle_Round;
+import entity.Particle;
 
 public class PRJ_Hookshot extends Projectile {
 
@@ -45,14 +45,14 @@ public class PRJ_Hookshot extends Projectile {
 		grabRight1 = setup("/projectiles/hookshot_grab_right_1");
 	}
 	
-	public void generateRoundParticle(Entity generator) {
+	public void generateParticle(Entity generator) {
 		
 		// BLACK CHAIN
 		Color color = new Color(0,0,0); 
 		int size = 9; // 9px
 		
 		// CHAIN (does not move)
-		Particle_Round p1 = new Particle_Round(gp, generator, color, size, 0, 90, 0, 0);
+		Particle p1 = new Particle(gp, generator, color, size, 0, 90, 0, 0);
 		gp.particleList.add(p1);
 	}
 	

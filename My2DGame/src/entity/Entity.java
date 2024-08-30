@@ -25,14 +25,13 @@ import entity.projectile.Projectile;
 public class Entity {
 	
 	public enum Action {
-		IDLE, AIMING, CARRYING, CHARGING, DIGGING, DROWNING, FALLING, GRABBING, GUARDING, 
-		JUMPING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING, MUSIC;
+		IDLE, AIMING, CARRYING, CHARGING, DIGGING, DROWNING, FALLING, GRABBING, GUARDING, HOOKSHOT,
+		JUMPING, PLAYING, PUSHING, ROLLING, RUNNING, SOARING, SWIMMING, SWINGING, THROWING, TOSSING
 	}
 	
 	public List<Action> disabled_actions = Arrays.asList(
-			Action.AIMING, Action.CARRYING, Action.CHARGING, Action.JUMPING, Action.PUSHING, 
-			Action.ROLLING, Action.SOARING, Action.SWIMMING, Action.THROWING, Action.TOSSING,
-			Action.MUSIC
+			Action.AIMING, Action.CARRYING, Action.CHARGING, Action.HOOKSHOT, Action.JUMPING, Action.PLAYING,
+			Action.PUSHING, Action.ROLLING, Action.SOARING, Action.SWIMMING, Action.THROWING, Action.TOSSING			
 	);
 	
 	protected GamePanel gp;
@@ -1113,17 +1112,17 @@ public class Entity {
 	}
 	
 	// PARTICLES
-	public void generateRectParticle(Entity generator) {
+	public void generateParticle(Entity generator) {
 
 		Color color = generator.getParticleColor();
 		int size = generator.getParticleSize();
 		int speed = generator.getParticleSpeed();
 		int maxLife = generator.getParticleMaxLife();
 		
-		Particle_Rect p1 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, -1);
-		Particle_Rect p2 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, 1);
-		Particle_Rect p3 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, -1);
-		Particle_Rect p4 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, 1);
+		Particle p1 = new Particle(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle p2 = new Particle(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle p3 = new Particle(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle p4 = new Particle(gp, generator, color, size, speed, maxLife, 2, 1);
 		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
 	}
 	public void generateWaterParticle(Entity generator) {
@@ -1132,23 +1131,10 @@ public class Entity {
 		int speed = 1;
 		int maxLife = 15;
 		
-		Particle_Rect p1 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, -1);
-		Particle_Rect p2 = new Particle_Rect(gp, generator, color, size, speed, maxLife, -2, 1);
-		Particle_Rect p3 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, -1);
-		Particle_Rect p4 = new Particle_Rect(gp, generator, color, size, speed, maxLife, 2, 1);
-		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
-	}
-	public void generateRoundParticle(Entity generator) {
-
-		Color color = generator.getParticleColor();
-		int size = generator.getParticleSize();
-		int speed = generator.getParticleSpeed();
-		int maxLife = generator.getParticleMaxLife();
-		
-		Particle_Round p1 = new Particle_Round(gp, generator, color, size, speed, maxLife, -2, -1);
-		Particle_Round p2 = new Particle_Round(gp, generator, color, size, speed, maxLife, -2, 1);
-		Particle_Round p3 = new Particle_Round(gp, generator, color, size, speed, maxLife, 2, -1);
-		Particle_Round p4 = new Particle_Round(gp, generator, color, size, speed, maxLife, 2, 1);
+		Particle p1 = new Particle(gp, generator, color, size, speed, maxLife, -2, -1);
+		Particle p2 = new Particle(gp, generator, color, size, speed, maxLife, -2, 1);
+		Particle p3 = new Particle(gp, generator, color, size, speed, maxLife, 2, -1);
+		Particle p4 = new Particle(gp, generator, color, size, speed, maxLife, 2, 1);
 		gp.particleList.addAll(Arrays.asList(p1, p2, p3, p4));
 	}
 	public Color getParticleColor() {

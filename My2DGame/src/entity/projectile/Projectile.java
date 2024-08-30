@@ -24,7 +24,7 @@ public class Projectile extends Entity {
 	public void update() {
 		
 		// PREVENT GLITCH
-		if (gp.gameState == gp.itemGetState || 
+		if (gp.gameState == gp.achievmentState || 
 				gp.gameState == gp.cutsceneState || 
 				gp.gameState == gp.gameOverState) {
 			alive = false;
@@ -529,7 +529,7 @@ public class Projectile extends Entity {
 			if (life % 10 == 0) playSE();
 			
 			// DRAW CHAIN
-			if (life % 3 == 0) generateRoundParticle(this);			
+			if (life % 3 == 0) generateParticle(this);			
 		}
 	}	
 	private boolean pullEntity(Entity entity) {
