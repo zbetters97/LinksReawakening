@@ -6,6 +6,7 @@ import entity.Entity;
 import entity.Entity.Action;
 import entity.enemy.EMY_Octorok;
 import entity.enemy.EMY_Tektite;
+import entity.npc.NPC_Cucco;
 
 public class CollisionChecker {
 	
@@ -1062,7 +1063,7 @@ public class CollisionChecker {
 				// IF ENTITY IS HIT BY BOMB
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
 					if (target[gp.currentMap][i].type == entity.type_npc) { 
-						if (target[gp.currentMap][i].name.contains("Cucco")) 
+						if (target[gp.currentMap][i].name.equals(NPC_Cucco.npcName)) 
 							impacted.add(target[gp.currentMap][i]);							
 					}
 					else {

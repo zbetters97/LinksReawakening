@@ -145,13 +145,9 @@ public class UI {
 		dialogue_finish = setup("/ui/dialogue_finish"); 
 		zTargetLock = setup("/ui/lockon_target", 48 + 20, 48 + 20);
 		zTargetLocked = setup("/ui/lockon_locked", 48 + 20, 48 + 20);
-		
+			
 		music_learned = new HashMap<String, String>();
-		music_learned.put("LURLUR", "The Song of Zelda");
-		music_learned.put("RADRAD", "The Song of Time");
-		music_learned.put("DRLDRL", "The Song of Saria");
-		music_learned.put("ADUADU", "The Song of Storms");
-		music_learned.put("ULRULR", "The Song of Epona");
+		getMusic();
 		
 		music_sheet = setup("/music/music_sheet", gp.tileSize * 10, gp.tileSize * 3); 
 		note_a = setup("/music/btn_a", gp.tileSize - 7, gp.tileSize - 7); 
@@ -159,6 +155,16 @@ public class UI {
 		note_l = setup("/music/btn_l", gp.tileSize - 7, gp.tileSize - 7); 
 		note_r = setup("/music/btn_r", gp.tileSize - 7, gp.tileSize - 7); 
 		note_u = setup("/music/btn_u", gp.tileSize - 7, gp.tileSize - 7); 
+	}
+	public void getMusic() {		
+		music_learned.put("LURLUR", "The Song of Zelda");
+		music_learned.put("RADRAD", "The Song of Time");
+		music_learned.put("DRLDRL", "The Song of Saria");
+		music_learned.put("ADUADU", "The Song of Storms");
+		music_learned.put("RDURDU", "The Song of Suns");
+		music_learned.put("ULRULR", "The Song of Epona");
+		music_learned.put("LRDLRD", "The Song of Healing");
+		music_learned.put("DLUDLU", "The Song of Soaring");
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -525,7 +531,7 @@ public class UI {
 		int height;
 		
 		// ITEM SLOT DISABLED
-		if (gp.player.disabled_actions.contains(gp.player.action) || 
+		if (gp.player.disabled_actions.contains(gp.player.action) && !gp.player.isHoldingBomb() || 
 				gp.gameState != gp.playState &&
 				gp.gameState != gp.pauseState) {
 			changeAlpha(g2, 0.6f);
@@ -550,35 +556,15 @@ public class UI {
 			y += 10;			
 			g2.drawImage(gp.player.currentItem.image, x, y, gp.tileSize + 10, gp.tileSize + 10, null);
 			
-			y += 10;
-			x += 35;
 			// DRAW ARROW COUNT
+			x += 45;
+			y += 43;			
 			if (gp.player.currentItem.name.equals(ITM_Bow.itmName)) {					
-				
-				x += 10;
-				y += 33;
-				width = 28;
-				height = 28;				
-				g2.setColor(pause_brown_3);
-				g2.fillOval(x, y, width, height);	
-				
-				g2.setColor(Color.BLACK);
-				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));				
-				text = Integer.toString(gp.player.arrows);	
-				x = getXForCenteredTextOnWidth(text, width, x);		
-				y += 24;					
-				g2.drawString(text, x, y);
-				
+				drawItemCount(x, y, Integer.toString(gp.player.arrows));				
 			}
 			// DRAW BOMB COUNT
 			else if (gp.player.currentItem.name.equals(ITM_Bomb.itmName)) {		
-
-				y += gp.tileSize - 2;
-				text = Integer.toString(gp.player.bombs);		
-				g2.setFont(g2.getFont().deriveFont(Font.BOLD, 29F));
-				
-				g2.setColor(Color.WHITE);
-				g2.drawString(text, x, y);
+				drawItemCount(x, y, Integer.toString(gp.player.bombs));
 			}
 		}	
 		
@@ -598,6 +584,18 @@ public class UI {
 		g2.drawString(text, x, y);
 		
 		changeAlpha(g2, 1f);
+	}
+	private void drawItemCount(int x, int y, String text) {
+		int width = 28;
+		int height = 28;				
+		g2.setColor(pause_brown_3);
+		g2.fillOval(x, y, width, height);	
+		
+		g2.setColor(Color.BLACK);
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));	
+		x = getXForCenteredTextOnWidth(text, width, x);		
+		y += 24;					
+		g2.drawString(text, x, y);
 	}
 	private void drawKeys() {
 		
@@ -2066,8 +2064,11 @@ public class UI {
 		}		
 		// SONG PLAYED
 		else if (songPlayed != null) {
+			gp.player.playNum = 1;
+			gp.player.playCounter = 0;
+			gp.player.action = Action.IDLE;
 			gp.player.drawing = false;
-			g2.drawImage(gp.player.play4, gp.player.screenX, gp.player.screenY, null);	
+			g2.drawImage(gp.player.play1, gp.player.screenX, gp.player.screenY, null);				
 		}
 	}
 	
@@ -2085,9 +2086,12 @@ public class UI {
 		if (gp.keyH.xPressed) {
 			gp.keyH.xPressed = false;		
 			gp.player.music_notes.clear();
-			gp.player.action = Action.IDLE;
+			
 			gp.player.playNum = 1;
 			gp.player.playCounter = 0;
+			gp.player.playing = false;
+			gp.player.action = Action.IDLE;
+			
 			gp.gameState = gp.playState;				
 		}
 				
@@ -2126,33 +2130,46 @@ public class UI {
 			}
 		}
 		
-		if (gp.keyH.aPressed) {
-			playNote("A");
-			playNoteA();
-			gp.keyH.aPressed = false;
+		if (songPlayed != null) {
+			if (gp.csManager.counterReached(90)) {
+				currentDialogue = "You played " + songPlayed + "!";
+				
+				gp.player.music_notes.clear();				
+				
+				gp.player.playNum = 1;
+				gp.player.playing = false;
+				gp.gameState = gp.achievmentState;
+			}
 		}
-		else if (gp.keyH.downPressed) {
-			playNote("D");
-			playNoteD();
-			gp.keyH.downPressed = false;
+		else {		
+			if (gp.keyH.aPressed) {
+				playNote("A");
+				playNoteA();
+				gp.keyH.aPressed = false;
+			}
+			else if (gp.keyH.downPressed) {
+				playNote("D");
+				playNoteD();
+				gp.keyH.downPressed = false;
+			}
+			else if (gp.keyH.rightPressed) {							
+				playNote("R");
+				playNoteR();			
+				gp.keyH.rightPressed = false;
+			}
+			else if (gp.keyH.leftPressed) {			
+				playNote("L");
+				playNoteL();
+				gp.keyH.leftPressed = false;
+			}		
+			else if (gp.keyH.upPressed) {	
+				playNote("U");
+				playNoteU();
+				gp.keyH.upPressed = false;			
+			}
+			
+			checkSong();
 		}
-		else if (gp.keyH.rightPressed) {							
-			playNote("R");
-			playNoteR();			
-			gp.keyH.rightPressed = false;
-		}
-		else if (gp.keyH.leftPressed) {			
-			playNote("L");
-			playNoteL();
-			gp.keyH.leftPressed = false;
-		}		
-		else if (gp.keyH.upPressed) {	
-			playNote("U");
-			playNoteU();
-			gp.keyH.upPressed = false;			
-		}
-		
-		checkSong();
 	}
 	private void playNote(String note) {
 		if (gp.player.music_notes.size() == 6) {
@@ -2160,6 +2177,10 @@ public class UI {
 		}
 		
 		gp.player.music_notes.add(note);
+		
+		gp.player.playNum = 1;
+		gp.player.playCounter = 0;
+		gp.player.playing = true;
 	}
 	private void checkSong() {
 		
@@ -2167,13 +2188,10 @@ public class UI {
 		
 		for (Entry<String, String> song : music_learned.entrySet()) {
 			if (song_played.equals(song.getKey())) {
-				currentDialogue = "You played " + song.getValue() + "!";
-				songPlayed = song.getValue();
 				gp.csManager.playSolveSE();
-				gp.player.music_notes.clear();
-				
-				gp.player.action = Action.IDLE;		
-				gp.gameState = gp.achievmentState;
+				gp.player.playNum = 1;
+				gp.player.playCounter = 0;
+				songPlayed = song.getValue();
 			}
 		}
 	}

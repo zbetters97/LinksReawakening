@@ -15,6 +15,7 @@ import entity.enemy.EMY_Beetle;
 import entity.enemy.EMY_Goblin_Combat_Shield;
 import entity.equipment.*;
 import entity.item.*;
+import entity.npc.NPC_Cucco;
 import entity.projectile.PRJ_Bomb;
 import entity.projectile.PRJ_Boomerang;
 import entity.projectile.PRJ_Sword;
@@ -47,7 +48,7 @@ public class Player extends Entity {
 	private int previousGrunt = 0;
 	private int previousHurt = 0;
 	private int previousSwing = 2;
-	private boolean playing = false;
+	public boolean playing = false;
 	public ArrayList<String> music_notes = new ArrayList<>();
 	
 	// COUNTERS
@@ -520,6 +521,14 @@ public class Player extends Entity {
 			if (gp.keyH.rPressed) { action = Action.GUARDING; }	
 			if (gp.keyH.zPressed) { cycleItems(); }			
 		}	
+		// CAN THROW BOMB WITH ITEM BUTTON
+		else if (isHoldingBomb() && gp.keyH.xPressed) {
+			throwEntity();
+			manageValues();		
+			checkDeath();
+			gp.keyH.xPressed = false;
+			return;			
+		}
 		
 		if (getAction()) { manageValues(); checkDeath(); return; }
 		
@@ -535,34 +544,22 @@ public class Player extends Entity {
 		checkDeath();
 	}
 	public boolean getAction() {
-				
+		
 		boolean stop = false;
+		
 		if (action == Action.AIMING) { aiming(); }	
 		else if (action == Action.CHARGING) { chargeSpin(); }
 		else if (action == Action.DIGGING) { digging(); stop = true; }
 		else if (action == Action.GRABBING) { pulling(); stop = true; }	
 		else if (action == Action.GUARDING) { guarding(); }
 		else if (action == Action.JUMPING) { jumping(); }	
-		else if (action == Action.PLAYING) { 
-			if (gp.keyH.aPressed || 
-					gp.keyH.upPressed || 
-					gp.keyH.downPressed || 
-					gp.keyH.leftPressed || 
-					gp.keyH.rightPressed) {
-				playNum = 1;
-				playCounter = 0;
-				playing = true;		
-			}
-			stop = true; 
-		}
+		else if (action == Action.PLAYING) { if (playing) { playing(); } stop = true; }
 		else if (action == Action.PUSHING) { pushing(); }
 		else if (action == Action.ROLLING) { rolling(); }
 		else if (action == Action.SOARING) { jumping(); }
 		else if (action == Action.SWIMMING) { swimming(); }
 		else if (action == Action.SWINGING) { swinging(); stop = true; }	
 		else if (action == Action.THROWING || action == Action.TOSSING || action == Action.HOOKSHOT) { throwing(); stop = true; }		
-		
-		if (playing) { playing(); }
 		
 		return stop;
 	}
@@ -670,12 +667,11 @@ public class Player extends Entity {
 				}
 				else {
 					int npcIndex = gp.cChecker.checkNPC();
-					if (npcIndex != -1) interactNPC(npcIndex);
-					
 					int objIndex = gp.cChecker.checkObject(this, true);
-					if (objIndex != -1) interactObject(objIndex);
 					
-					grabbing();						
+					if (npcIndex != -1) interactNPC(npcIndex);
+					else if (objIndex != -1) interactObject(objIndex);
+					else grabbing();						
 				}						
 				break;
 			case CARRYING:
@@ -691,10 +687,14 @@ public class Player extends Entity {
 	}
 	public void interactNPC(int i) {		
 		if (i != -1 && !disabled_actions.contains(action)) {				
-			if (!gp.npc[gp.currentMap][i].name.contains("Cucco")) {					
+			if (gp.npc[gp.currentMap][i].name.equals(NPC_Cucco.npcName)) {					
+				grabbing();
+			}			
+			else {
 				resetValues();
 				gp.npc[gp.currentMap][i].speak();		
-			}							
+			}
+			
 		}	
 	}	
 	public void interactObject(int i) {
@@ -1461,6 +1461,7 @@ public class Player extends Entity {
 			if (gp.iTile[gp.currentMap][i].grabbable) {
 				action = Action.GRABBING;		
 				grabbedObject = gp.iTile[gp.currentMap][i];
+				
  				return;
 			}
 		}		
@@ -1623,6 +1624,15 @@ public class Player extends Entity {
 			grabbedObject.worldX = worldX;
 			grabbedObject.worldY = worldY;
 			grabbedObject.breakTile();
+		}
+	}
+	public boolean isHoldingBomb() {
+		if (grabbedObject != null && grabbedObject.grabbed && 
+				grabbedObject.name.equals(PRJ_Bomb.prjName)) {
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 	public void soaring() {

@@ -19,6 +19,7 @@ import entity.enemy.EMY_Beetle;
 import entity.enemy.EMY_Buzzblob;
 import entity.enemy.EMY_Stalfos;
 import entity.enemy.EMY_Zora;
+import entity.npc.NPC_Cucco;
 import entity.projectile.PRJ_Seed;
 import entity.projectile.Projectile;
 
@@ -631,7 +632,7 @@ public class Entity {
 			enemyIndex = gp.cChecker.checkEntity(entity, gp.npc);
 			
 			// NPC CAN BECOME AN ENEMY
-			if (enemyIndex != -1 && gp.npc[gp.currentMap][enemyIndex].name.contains("Cucco")) {
+			if (enemyIndex != -1 && gp.npc[gp.currentMap][enemyIndex].name.equals(NPC_Cucco.npcName)) {
 				enemy = gp.npc[gp.currentMap][enemyIndex];
 			}
 		}

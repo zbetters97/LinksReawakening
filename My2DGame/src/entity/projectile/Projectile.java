@@ -2,6 +2,7 @@ package entity.projectile;
 
 import application.GamePanel;
 import entity.Entity;
+import entity.npc.NPC_Cucco;
 
 public class Projectile extends Entity {
 
@@ -437,7 +438,7 @@ public class Projectile extends Entity {
 				if (pullEntity(gp.obj[gp.currentMap][objectIndex])) return;
 			}	
 			// PULL CUCCO TOWARDS PLAYER
-			else if (cuccoIndex != -1 && gp.npc[gp.currentMap][cuccoIndex].name.contains("Cucco")) {								
+			else if (cuccoIndex != -1 && gp.npc[gp.currentMap][cuccoIndex].name.equals(NPC_Cucco.npcName)) {								
 				if (pullEntity(gp.npc[gp.currentMap][cuccoIndex])) return;
 			}	
 						
