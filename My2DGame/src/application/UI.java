@@ -632,8 +632,9 @@ public class UI {
 		x += gp.tileSize - 8;
 		y += gp.tileSize - 12;	
 		
-		if (rupeeCount >= gp.player.walletSize)
+		if (rupeeCount >= gp.player.walletSize) {
 			rupeeCount = gp.player.walletSize;
+		}
 		
 		if (gp.player.rupees < rupeeCount) {
 			if (rCounter == 2) { 
@@ -867,7 +868,8 @@ public class UI {
 	}	
 	
 	// PAUSE
-	private void drawPauseScreen() {		
+	private void drawPauseScreen() {	
+		
 		g2.setColor(pause_brown_1);  
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 		
@@ -1236,11 +1238,6 @@ public class UI {
 		g2.drawString("Text Speed", textX, textY);
 		if (commandNum == 3) {
 			g2.drawString(">", textX - 25, textY);
-			if (gp.keyH.aPressed) {
-				textSpeed--;
-				if (textSpeed < 0) textSpeed = 2;
-				gp.keyH.aPressed = false;
-			}
 		}
 		
 		// CONTROLS
@@ -1794,6 +1791,15 @@ public class UI {
 				combinedText = "";
 				npc.startDialogue(npc, 4);
 			}	
+		}
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			subState = 0;
+			commandNum = 0;
+			canSkip = false;
+			charIndex = 0;
+			combinedText = "";
+			npc.startDialogue(npc, 4);
 		}
 	}
 	private void trade_buy() {

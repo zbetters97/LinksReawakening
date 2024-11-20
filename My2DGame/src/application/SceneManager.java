@@ -601,7 +601,7 @@ public class SceneManager {
 		}
 	}
 	
-	private boolean counterReached(int target) {
+	public boolean counterReached(int target) {
 		
 		boolean counterReached = false;
 		

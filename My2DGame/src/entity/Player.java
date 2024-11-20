@@ -205,10 +205,11 @@ public class Player extends Entity {
 		resetValues();
 	}	
 	public void resetValues() {	
-				
+		
 		action = Action.IDLE;
 		gp.keyH.aPressed = false;
 		gp.keyH.bPressed = false;
+		gp.keyH.rPressed = false;
 		onGround = true;
 		knockback = false;
 		invincible = false;
@@ -1365,7 +1366,9 @@ public class Player extends Entity {
 					currentItem.use(this);
 					break;
 				case ITM_Bow.itmName:
+					
 					if (currentItem.setCharge(this)) {
+						currentItem.playChargeSE();
 						lockon = true;
 						lockonDirection = direction;	
 					}					
@@ -2524,8 +2527,7 @@ public class Player extends Entity {
 			
 			tempScreenX = screenX;
 			tempScreenY = screenY;
-		}	
-					
+		}						
 		
 		g2.drawImage(image, tempScreenX, tempScreenY, null);
 		

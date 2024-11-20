@@ -487,8 +487,7 @@ public class KeyHandler implements KeyListener {
 					gp.ui.commandNum++; 
 				}
 			}
-			if (code == gp.btn_LEFT) {
-				
+			if (code == gp.btn_LEFT) {				
 				if (gp.ui.subState == 0) {
 					if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0) {
 						playCursorSE();
@@ -499,6 +498,13 @@ public class KeyHandler implements KeyListener {
 						playCursorSE();
 						gp.se.volumeScale--;	
 						gp.music.checkVolume();		
+					}
+					if (gp.ui.commandNum == 3) {
+						playCursorSE();
+						gp.ui.textSpeed++;	
+						if (gp.ui.textSpeed > 2) {
+							gp.ui.textSpeed = 0;
+						}
 					}
 				}
 			}
@@ -513,6 +519,13 @@ public class KeyHandler implements KeyListener {
 						playCursorSE();
 						gp.se.volumeScale++;	
 						gp.music.checkVolume();		
+					}
+					if (gp.ui.commandNum == 3) {
+						playCursorSE();
+						gp.ui.textSpeed--;	
+						if (gp.ui.textSpeed < 0) {
+							gp.ui.textSpeed = 2;
+						}
 					}
 				}
 			}
@@ -533,10 +546,14 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		
-		if (code == gp.btn_START && lock) {
+		if ((code == gp.btn_START || code == gp.btn_B) && lock) {
 			playMenuCloseSE();
+			gp.ui.playerSlotRow = 0;
+			gp.ui.playerSlotCol = 0;
 			gp.ui.commandNum = 0;
 			gp.ui.subState = 0;
+			gp.ui.inventoryScreen = 1;
+			gp.ui.pauseState = 1;
 			gp.gameState = gp.playState;
 			lock = false;
 		}
@@ -616,6 +633,10 @@ public class KeyHandler implements KeyListener {
 
 			gp.ui.dialogueIndex = 0;
 		}
+		if (code == gp.btn_B && lock) {						
+			bPressed = true;
+			lock = false;
+		}
 		
 		if (gp.ui.response) {
 			if (code == gp.btn_UP) { 				
@@ -652,13 +673,17 @@ public class KeyHandler implements KeyListener {
 			}
 			if (gp.ui.subState == 1) {
 				npcInventory(code);
-				if (code == gp.btn_START)
+				if (code == gp.btn_START || code == gp.btn_B) {
 					gp.ui.subState = 0;						
+					bPressed = false;
+				}
 			}
 			if (gp.ui.subState == 2) {
 				playerInventory(code); 
-				if (code == gp.btn_START)
+				if (code == gp.btn_START || code == gp.btn_B) {
 					gp.ui.subState = 0;			
+					bPressed = false;
+				}
 			}
 		}
 	}

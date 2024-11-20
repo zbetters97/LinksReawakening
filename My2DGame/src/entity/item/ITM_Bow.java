@@ -71,6 +71,9 @@ public class ITM_Bow extends Entity {
 		return true;
 	}	
 	
+	public void playChargeSE() {
+		gp.playSE(4, 1);
+	}	
 	public void playSE() {
 		gp.playSE(5, 7);
 	}
