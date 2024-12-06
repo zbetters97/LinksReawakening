@@ -535,6 +535,10 @@ public class KeyHandler implements KeyListener {
 			if (gp.ui.pauseState > 0) {
 				playCursorSE();
 				gp.ui.pauseState--;
+				gp.ui.playerSlotRow = 0;
+				gp.ui.playerSlotCol = 0;
+				gp.ui.commandNum = 0;
+				gp.ui.inventoryScreen = 1;
 				lock = false;
 			}
 		}
@@ -542,6 +546,10 @@ public class KeyHandler implements KeyListener {
 			if (gp.ui.pauseState < 2) {
 				playCursorSE();
 				gp.ui.pauseState++;
+				gp.ui.playerSlotRow = 0;
+				gp.ui.playerSlotCol = 0;
+				gp.ui.commandNum = 0;
+				gp.ui.inventoryScreen = 1;
 				lock = false;
 			}
 		}
@@ -563,35 +571,7 @@ public class KeyHandler implements KeyListener {
 			lock = false;
 		}
 	}
-			
-	// PLAYER INVENTORY	
-	private void playerInventory(int code) {
-		if (code == gp.btn_UP) { 
-			if (gp.ui.playerSlotRow != 0) {
-				playCursorSE(); 
-				gp.ui.playerSlotRow--; 
-			}
-		}
-		if (code == gp.btn_DOWN) { 
-			if (gp.ui.playerSlotRow != 3) { 
-				playCursorSE(); 
-				gp.ui.playerSlotRow++; 
-			}
-		}
-		if (code == gp.btn_LEFT) { 
-			if (gp.ui.playerSlotCol != 0) { 
-				playCursorSE();
-				gp.ui.playerSlotCol--; 
-			}
-		}
-		if (code == gp.btn_RIGHT) { 
-			if (gp.ui.playerSlotCol != 4) {
-				playCursorSE(); 
-				gp.ui.playerSlotCol++; 
-			}
-		}
-	}
-		
+						
 	// DIALOGUE
 	private void dialogueState(int code) { 
 		if (code == gp.btn_A && lock) {	aPressed = true; lock = false; }
@@ -638,6 +618,11 @@ public class KeyHandler implements KeyListener {
 			lock = false;
 		}
 		
+		if (code == gp.btn_START || code == gp.btn_B) {
+			bPressed = true;
+			startPressed = true;
+		}
+		
 		if (gp.ui.response) {
 			if (code == gp.btn_UP) { 				
 				gp.ui.commandNum--;
@@ -654,37 +639,8 @@ public class KeyHandler implements KeyListener {
 					playCursorSE(); 
 			}
 		}		
-		else {		
-			if (gp.ui.subState == 0) {
-				if (code == gp.btn_UP) { 				
-					gp.ui.commandNum--;
-					if (gp.ui.commandNum < 0)					
-						gp.ui.commandNum = 0;
-					else
-						playCursorSE(); 
-				}
-				if (code == gp.btn_DOWN) { 
-					gp.ui.commandNum++;
-					if (gp.ui.commandNum > 2)					
-						gp.ui.commandNum = 2;
-					else
-						playCursorSE(); 
-				}
-			}
-			if (gp.ui.subState == 1) {
-				npcInventory(code);
-				if (code == gp.btn_START || code == gp.btn_B) {
-					gp.ui.subState = 0;						
-					bPressed = false;
-				}
-			}
-			if (gp.ui.subState == 2) {
-				playerInventory(code); 
-				if (code == gp.btn_START || code == gp.btn_B) {
-					gp.ui.subState = 0;			
-					bPressed = false;
-				}
-			}
+		else {	
+			npcInventory(code);			
 		}
 	}
 	

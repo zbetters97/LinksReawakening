@@ -23,7 +23,8 @@ public class COL_Rupee_Red extends Entity {
 	}
 	
 	public boolean use(Entity user) {		
-		gp.ui.rupeeCount = user.rupees + value;
+		gp.ui.rupeeCount += value;
+		gp.ui.rupeeTimer = 90;
 		return true;
 	}
 }

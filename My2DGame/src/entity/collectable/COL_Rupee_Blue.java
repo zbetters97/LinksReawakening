@@ -22,8 +22,9 @@ public class COL_Rupee_Blue extends Entity {
 		image = down1 = setup("/collectables/rupee_blue");
 	}
 	
-	public boolean use(Entity user) {	
-		gp.ui.rupeeCount = user.rupees + value;
+	public boolean use(Entity user) {
+		gp.ui.rupeeCount += value;
+		gp.ui.rupeeTimer = 90;
 		return true;
 	}
 }
