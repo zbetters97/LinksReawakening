@@ -15,7 +15,7 @@ import entity.Entity;
 
 public class SaveLoad {
 
-	public String[] saveFiles = { "save_1.dat", "save_2.dat", "save_3.dat" };
+	public String[] saveFiles = { "save_1.dat", "save_2.dat", "save_3.dat", "save_auto.dat"};
 	public boolean ready = true;
 	private GamePanel gp;	
 	
@@ -224,6 +224,8 @@ public class SaveLoad {
 			// LOAD DATA FROM DS
 			DataStorage ds = (DataStorage)ois.readObject();
 						
+			gp.eHandler.canTouchEvent = false;
+			
 			// FILE DATA
 			Progress.gameCompleted = ds.gameCompleted;
 			
@@ -407,6 +409,20 @@ public class SaveLoad {
 			}
 			
 			ois.close();
+		}
+		catch(Exception e) { 
+			e.printStackTrace();
+		}
+	}
+	
+	public void delete(int saveSlot) {
+		
+		try {			
+			File f = new File(saveFiles[saveSlot]);
+			
+			if (f.exists()) { 				
+				f.delete();					
+			}
 		}
 		catch(Exception e) { 
 			e.printStackTrace();

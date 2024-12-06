@@ -380,6 +380,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		aSetter.setInteractiveObjects();
 		aSetter.setInteractiveTiles(false);
+		
+		saveLoad.save(3);
 	}
 	
 	private void removeCollectables() {		

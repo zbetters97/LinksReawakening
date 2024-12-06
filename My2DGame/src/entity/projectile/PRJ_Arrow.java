@@ -37,6 +37,7 @@ public class PRJ_Arrow extends Projectile {
 	// PICKUP ARROW IF NOT MOVING
 	public void interact() {
 		if (canPickup) {
+			gp.playSE(6, 2);
 			gp.player.arrows++;
 			alive = false;
 			canPickup = false;

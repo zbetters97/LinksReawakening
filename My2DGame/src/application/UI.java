@@ -376,7 +376,7 @@ public class UI {
 		
 		x += gp.tileSize * 4;		
 		g2.drawString("ENTER", x, y);
-		if (commandNum == 29 && gp.player.name.length() > 0) 
+		if (commandNum == 29) 
 			g2.drawString(">", x - gp.tileSize / 2, y);	
 	}
 	private void menu_loadGame() {
@@ -389,41 +389,50 @@ public class UI {
 		int x = 66 + gp.tileSize;
 		int y = gp.tileSize * 3;			
 		int width = gp.tileSize * 10;
-		int height = gp.tileSize * 2;	
+		int height = (int) (gp.tileSize * 1.7);	
 						
 		if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);		
 		else drawSubWindow(x+40, y, width, height);	
 		
-		y += gp.tileSize * 2;	
+		y += gp.tileSize * 1.7;	
 		if (commandNum == 1) drawSubWindow(x+40, y, width, height, Color.GREEN);				
 		else drawSubWindow(x+40, y, width, height);	
 		
-		y += gp.tileSize * 2;	
+		y += gp.tileSize * 1.7;	
 		if (commandNum == 2) drawSubWindow(x+40, y, width, height, Color.GREEN);			
+		else drawSubWindow(x+40, y, width, height);		
+		
+		y += gp.tileSize * 1.7;	
+		if (commandNum == 3) drawSubWindow(x+40, y, width, height, Color.GREEN);			
 		else drawSubWindow(x+40, y, width, height);		
 		
 		if (gp.saveLoad.loadFileData(0) == null) text = "1)";			
 		else text = "1) " + gp.saveLoad.loadFileData(0);
 		x = gp.tileSize * 4;
-		y = (gp.tileSize * 4) + 15;	
+		y = (int) (gp.tileSize * 4.15);	
 		g2.drawString(text, x, y);		
 		
 		if (gp.saveLoad.loadFileData(1) == null) text = "2)";			
 		else text = "2) " + gp.saveLoad.loadFileData(1);
-		y += gp.tileSize * 2;	
+		y += gp.tileSize * 1.7;	
 		g2.drawString(text, x, y);	
 		
 		if (gp.saveLoad.loadFileData(2) == null) text = "3)";			
 		else text = "3) " + gp.saveLoad.loadFileData(2);
-		y += gp.tileSize * 2;	
-		g2.drawString(text, x, y);				
+		y += gp.tileSize * 1.7;	
+		g2.drawString(text, x, y);	
+		
+		if (gp.saveLoad.loadFileData(3) == null) text = "AUTO)";			
+		else text = "AUTO) " + gp.saveLoad.loadFileData(3);
+		y += gp.tileSize * 1.7;	
+		g2.drawString(text, x, y);	
 		
 		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 52F));
 		text = "GO BACK";
 		x = getXforCenteredText(text);
-		y += (gp.tileSize * 2) + 25;
+		y += (gp.tileSize * 2);
 		g2.drawString(text, x, y);
-		if (commandNum == 3) 
+		if (commandNum == 4) 
 			g2.drawString(">", x - gp.tileSize / 2, y);
 	}
 	
@@ -1226,6 +1235,7 @@ public class UI {
 				
 				subState = 1;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 		
@@ -1255,6 +1265,7 @@ public class UI {
 				subState = 2;
 				commandNum = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 				
@@ -1266,7 +1277,8 @@ public class UI {
 			if (gp.keyH.aPressed) {
 				subState = 3;
 				commandNum = 0;					
-				gp.keyH.aPressed = false;						
+				gp.keyH.aPressed = false;	
+				gp.keyH.playSelectSE();
 			}
 		}
 		
@@ -1278,7 +1290,8 @@ public class UI {
 			if (gp.keyH.aPressed) {
 				subState = 5;
 				commandNum = 0;	
-				gp.keyH.aPressed = false;						
+				gp.keyH.aPressed = false;	
+				gp.keyH.playSelectSE();
 			}
 		}
 
@@ -1291,6 +1304,7 @@ public class UI {
 				subState = 6;
 				commandNum = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 				
@@ -1345,6 +1359,7 @@ public class UI {
 				commandNum = 0;
 				subState = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 	}
@@ -1391,6 +1406,7 @@ public class UI {
 				commandNum = 4;
 				subState = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 	}
@@ -1419,6 +1435,7 @@ public class UI {
 					gp.saveLoad.save(i);
 					gp.fileSlot = i;
 					gp.keyH.aPressed = false;
+					gp.keyH.playSelectSE();
 				}
 			}		
 		}
@@ -1434,6 +1451,7 @@ public class UI {
 				commandNum = 5;
 				subState = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 	}
@@ -1445,6 +1463,7 @@ public class UI {
 		int textY = frameX + gp.tileSize * 2;		
 		g2.drawString(text, textX, textY);		
 		
+		// SAVE FILES
 		textX = gp.tileSize * 4;
 		for (int i = 0; i < 3; i++) {
 			
@@ -1467,6 +1486,7 @@ public class UI {
 					g2.drawString(">", textX - 25, textY);
 					
 					if (gp.keyH.aPressed) {
+						gp.keyH.playSelectSE();
 						gp.stopMusic();
 						gp.resetGame();
 						commandNum = 0;
@@ -1486,17 +1506,56 @@ public class UI {
 			}			
 		}
 		
+		// AUTO SAVE FILE
+		textY += gp.tileSize;
+		if (gp.saveLoad.loadFileData(3) == null) {
+			text = "AUTO)  [EMPTY]";		
+			g2.drawString(text, textX, textY);
+			if (commandNum == 3) {
+				g2.drawString(">", textX - 25, textY);
+				if (gp.keyH.aPressed) {
+					gp.keyH.playErrorSE();
+					gp.keyH.aPressed = false;
+				}
+			}		
+		}
+		else {
+			text = "AUTO)  " + gp.saveLoad.loadFileData(3);
+			g2.drawString(text, textX, textY);
+			if (commandNum == 3) {
+				g2.drawString(">", textX - 25, textY);
+				
+				if (gp.keyH.aPressed) {
+					gp.keyH.playSelectSE();
+					gp.stopMusic();
+					gp.resetGame();
+					commandNum = 0;
+					subState = 0;
+					playerSlotRow = 0;
+					playerSlotCol = 0;
+					inventoryScreen = 1;
+					pauseState = 1;
+					gp.saveLoad.load(3);
+					gp.tileM.loadMap();
+					gp.gameState = gp.playState;
+					gp.setupMusic(true);	
+					gp.keyH.aPressed = false;
+				}
+			}		
+		}			
+		
 		text = "BACK";
 		textX = getXforCenteredText(text);
 		textY += gp.tileSize * 2;
 		g2.drawString(text, textX, textY);
-		if (commandNum == 3) {
+		if (commandNum == 4) {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.aPressed) {
 				commandNum = 6;
 				subState = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 	}
@@ -1527,6 +1586,7 @@ public class UI {
 				titleScreenState = 0;
 				gp.gameState = gp.playState;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 		
@@ -1591,6 +1651,7 @@ public class UI {
 				commandNum = 7;
 				subState = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 			}
 		}
 	}
@@ -1842,7 +1903,6 @@ public class UI {
 		if (gp.keyH.bPressed || gp.keyH.startPressed) {
 			gp.keyH.bPressed = false;
 			gp.keyH.startPressed = false;
-			gp.keyH.playSelectSE();
 			subState = 0;
 			commandNum = 0;
 			npcSlotRow = 0;
@@ -2006,19 +2066,7 @@ public class UI {
 		x += 25;
 		y += 8;		
 		g2.drawImage(music_sheet, x, y, null);
-		
-		if (gp.keyH.xPressed) {
-			gp.keyH.xPressed = false;		
-			gp.player.music_notes.clear();
-			
-			gp.player.playNum = 1;
-			gp.player.playCounter = 0;
-			gp.player.playing = false;
-			gp.player.action = Action.IDLE;
-			
-			gp.gameState = gp.playState;				
-		}
-				
+								
 		if (gp.player.music_notes.size() > 0) {
 									
 			x += gp.tileSize * 2;	
@@ -2065,8 +2113,23 @@ public class UI {
 				gp.gameState = gp.achievmentState;
 			}
 		}
-		else {		
-			if (gp.keyH.aPressed) {
+		else {					
+			if (gp.keyH.xPressed) {
+				gp.keyH.xPressed = false;	
+				gp.player.music_notes.clear();
+				
+				gp.player.playNum = 1;
+				gp.player.playCounter = 0;
+				gp.player.playing = false;
+				gp.player.action = Action.IDLE;
+				
+				gp.gameState = gp.playState;				
+			}
+			else if (gp.keyH.bPressed) {
+				gp.keyH.bPressed = false;
+				gp.player.music_notes.clear();
+			}
+			else if (gp.keyH.aPressed) {
 				playNote("A");
 				playNoteA();
 				gp.keyH.aPressed = false;
