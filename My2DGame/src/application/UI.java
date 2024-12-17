@@ -69,6 +69,7 @@ public class UI {
 	// OPTIONS MEU
 	public int pauseState = 1;
 	public int subState = 0;
+	public String[] files = new String[4];
 		
 	// INVENTORY MENU
 	public int playerSlotCol = 0;
@@ -406,24 +407,24 @@ public class UI {
 		if (commandNum == 3) drawSubWindow(x+40, y, width, height, Color.GREEN);			
 		else drawSubWindow(x+40, y, width, height);		
 		
-		if (gp.saveLoad.loadFileData(0) == null) text = "1)";			
-		else text = "1) " + gp.saveLoad.loadFileData(0);
+		if (files[0] == null) text = "1)";			
+		else text = "1) " + files[0];
 		x = gp.tileSize * 4;
 		y = (int) (gp.tileSize * 4.15);	
 		g2.drawString(text, x, y);		
 		
-		if (gp.saveLoad.loadFileData(1) == null) text = "2)";			
-		else text = "2) " + gp.saveLoad.loadFileData(1);
+		if (files[1] == null) text = "2)";			
+		else text = "2) " + files[1];
 		y += gp.tileSize * 1.7;	
 		g2.drawString(text, x, y);	
 		
-		if (gp.saveLoad.loadFileData(2) == null) text = "3)";			
-		else text = "3) " + gp.saveLoad.loadFileData(2);
+		if (files[2] == null) text = "3)";			
+		else text = "3) " + files[2];
 		y += gp.tileSize * 1.7;	
 		g2.drawString(text, x, y);	
 		
-		if (gp.saveLoad.loadFileData(3) == null) text = "AUTO)";			
-		else text = "AUTO) " + gp.saveLoad.loadFileData(3);
+		if (files[3] == null) text = "AUTO)";			
+		else text = "AUTO) " + files[3];
 		y += gp.tileSize * 1.7;	
 		g2.drawString(text, x, y);	
 		
@@ -1275,10 +1276,16 @@ public class UI {
 		if (commandNum == 5) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.aPressed) {
-				subState = 3;
-				commandNum = 0;					
 				gp.keyH.aPressed = false;	
 				gp.keyH.playSelectSE();
+				
+				subState = 3;
+				commandNum = 0;		
+				
+				files[0] = gp.saveLoad.loadFileData(0);
+				files[1] = gp.saveLoad.loadFileData(1);
+				files[2] = gp.saveLoad.loadFileData(2);
+				files[3] = gp.saveLoad.loadFileData(3);
 			}
 		}
 		
@@ -1288,10 +1295,16 @@ public class UI {
 		if (commandNum == 6) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.aPressed) {
-				subState = 5;
-				commandNum = 0;	
 				gp.keyH.aPressed = false;	
 				gp.keyH.playSelectSE();
+				
+				subState = 5;
+				commandNum = 0;	
+				
+				files[0] = gp.saveLoad.loadFileData(0);
+				files[1] = gp.saveLoad.loadFileData(1);
+				files[2] = gp.saveLoad.loadFileData(2);
+				files[3] = gp.saveLoad.loadFileData(3);
 			}
 		}
 
@@ -1430,12 +1443,15 @@ public class UI {
 				g2.drawString(">", textX - 25, textY);
 				
 				if (gp.keyH.aPressed) {
-					subState = 4;
-					commandNum = 0;
-					gp.saveLoad.save(i);
-					gp.fileSlot = i;
 					gp.keyH.aPressed = false;
 					gp.keyH.playSelectSE();
+					
+					subState = 4;
+					commandNum = 0;
+					
+					gp.saveLoad.save(i);
+					files[i] = gp.saveLoad.loadFileData(i);
+					gp.fileSlot = i;
 				}
 			}		
 		}
@@ -1448,114 +1464,10 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.aPressed) {
+				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
 				commandNum = 5;
-				subState = 0;
-				gp.keyH.aPressed = false;
-				gp.keyH.playSelectSE();
-			}
-		}
-	}
-	private void pause_settings_loadGameSlot(int frameX, int frameY) {
-
-		// TITLE
-		String text = "LOAD GAME SLOT";
-		int textX = getXforCenteredText(text);
-		int textY = frameX + gp.tileSize * 2;		
-		g2.drawString(text, textX, textY);		
-		
-		// SAVE FILES
-		textX = gp.tileSize * 4;
-		for (int i = 0; i < 3; i++) {
-			
-			textY += gp.tileSize;
-			if (gp.saveLoad.loadFileData(i) == null) {
-				text = i + 1 + ")  [EMPTY]";		
-				g2.drawString(text, textX, textY);
-				if (commandNum == i) {
-					g2.drawString(">", textX - 25, textY);
-					if (gp.keyH.aPressed) {
-						gp.keyH.playErrorSE();
-						gp.keyH.aPressed = false;
-					}
-				}		
-			}
-			else {
-				text = i + 1 + ")  " + gp.saveLoad.loadFileData(i);
-				g2.drawString(text, textX, textY);
-				if (commandNum == i) {
-					g2.drawString(">", textX - 25, textY);
-					
-					if (gp.keyH.aPressed) {
-						gp.keyH.playSelectSE();
-						gp.stopMusic();
-						gp.resetGame();
-						commandNum = 0;
-						subState = 0;
-						playerSlotRow = 0;
-						playerSlotCol = 0;
-						inventoryScreen = 1;
-						pauseState = 1;
-						gp.fileSlot = i;
-						gp.saveLoad.load(i);
-						gp.tileM.loadMap();
-						gp.gameState = gp.playState;
-						gp.setupMusic(true);	
-						gp.keyH.aPressed = false;
-					}
-				}		
-			}			
-		}
-		
-		// AUTO SAVE FILE
-		textY += gp.tileSize;
-		if (gp.saveLoad.loadFileData(3) == null) {
-			text = "AUTO)  [EMPTY]";		
-			g2.drawString(text, textX, textY);
-			if (commandNum == 3) {
-				g2.drawString(">", textX - 25, textY);
-				if (gp.keyH.aPressed) {
-					gp.keyH.playErrorSE();
-					gp.keyH.aPressed = false;
-				}
-			}		
-		}
-		else {
-			text = "AUTO)  " + gp.saveLoad.loadFileData(3);
-			g2.drawString(text, textX, textY);
-			if (commandNum == 3) {
-				g2.drawString(">", textX - 25, textY);
-				
-				if (gp.keyH.aPressed) {
-					gp.keyH.playSelectSE();
-					gp.stopMusic();
-					gp.resetGame();
-					commandNum = 0;
-					subState = 0;
-					playerSlotRow = 0;
-					playerSlotCol = 0;
-					inventoryScreen = 1;
-					pauseState = 1;
-					gp.saveLoad.load(3);
-					gp.tileM.loadMap();
-					gp.gameState = gp.playState;
-					gp.setupMusic(true);	
-					gp.keyH.aPressed = false;
-				}
-			}		
-		}			
-		
-		text = "BACK";
-		textX = getXforCenteredText(text);
-		textY += gp.tileSize * 2;
-		g2.drawString(text, textX, textY);
-		if (commandNum == 4) {
-			g2.drawString(">", textX - 25, textY);
-			
-			if (gp.keyH.aPressed) {
-				commandNum = 6;
-				subState = 0;
-				gp.keyH.aPressed = false;
-				gp.keyH.playSelectSE();
+				subState = 0;				
 			}
 		}
 	}
@@ -1580,13 +1492,18 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.aPressed) {
-				subState = 0;		
-				commandNum = 0;
-				inventoryScreen = 0;
-				titleScreenState = 0;
-				gp.gameState = gp.playState;
 				gp.keyH.aPressed = false;
 				gp.keyH.playSelectSE();
+				
+				subState = 0;		
+				commandNum = 0;				
+				playerSlotRow = 0;
+				playerSlotCol = 0;
+				inventoryScreen = 1;
+				titleScreenState = 0;
+				pauseState = 1;
+				
+				gp.gameState = gp.playState;
 			}
 		}
 		
@@ -1598,15 +1515,20 @@ public class UI {
 			g2.drawString(">", textX - 25, textY);
 			
 			if (gp.keyH.aPressed) {
+				gp.keyH.aPressed = false;
+				
 				gp.stopMusic();				
 				subState = 0;		
 				commandNum = 0;
-				inventoryScreen = 0;
+				playerSlotRow = 0;
+				playerSlotCol = 0;
+				inventoryScreen = 1;
 				titleScreenState = 0;
+				pauseState = 1;
+				
 				gp.gameState = gp.titleState;				
 				gp.resetGame();
-				gp.setupMusic(true);
-				gp.keyH.aPressed = false;
+				gp.setupMusic(true);				
 			}
 		}
 	}
@@ -1649,6 +1571,121 @@ public class UI {
 			
 			if (gp.keyH.aPressed) {
 				commandNum = 7;
+				subState = 0;
+				gp.keyH.aPressed = false;
+				gp.keyH.playSelectSE();
+			}
+		}
+	}
+	private void pause_settings_loadGameSlot(int frameX, int frameY) {
+
+		// TITLE
+		String text = "LOAD GAME SLOT";
+		int textX = getXforCenteredText(text);
+		int textY = frameX + gp.tileSize * 2;		
+		g2.drawString(text, textX, textY);		
+		
+		// SAVE FILES
+		textX = gp.tileSize * 4;
+		for (int i = 0; i < 3; i++) {
+			
+			textY += gp.tileSize;
+			if (files[i] == null) {
+				text = i + 1 + ")  [EMPTY]";		
+				g2.drawString(text, textX, textY);
+				if (commandNum == i) {
+					g2.drawString(">", textX - 25, textY);
+					if (gp.keyH.aPressed) {
+						gp.keyH.playErrorSE();
+						gp.keyH.aPressed = false;
+					}
+				}		
+			}
+			else {
+				text = i + 1 + ")  " + files[i];
+				g2.drawString(text, textX, textY);
+				if (commandNum == i) {
+					g2.drawString(">", textX - 25, textY);
+					
+					if (gp.keyH.aPressed) {
+						gp.keyH.aPressed = false;
+						gp.keyH.playSelectSE();
+												
+						gp.stopMusic();
+						gp.resetGame();
+												
+						commandNum = 0;
+						subState = 0;
+						playerSlotRow = 0;
+						playerSlotCol = 0;
+						inventoryScreen = 1;
+						pauseState = 1;
+												
+						gp.saveLoad.load(i);
+						gp.tileM.loadMap();		
+						gp.getMapTitle();
+						gp.fileSlot = i;
+						
+						gp.setupMusic(true);	
+						gp.gameState = gp.playState;						
+					}
+				}		
+			}			
+		}
+		
+		// AUTO SAVE FILE
+		textY += gp.tileSize;
+		if (files[3] == null) {
+			text = "AUTO)  [EMPTY]";		
+			g2.drawString(text, textX, textY);
+			if (commandNum == 3) {
+				g2.drawString(">", textX - 25, textY);
+				if (gp.keyH.aPressed) {
+					gp.keyH.playErrorSE();
+					gp.keyH.aPressed = false;
+				}
+			}		
+		}
+		else {
+			text = "AUTO)  " + files[3];
+			g2.drawString(text, textX, textY);
+			if (commandNum == 3) {
+				g2.drawString(">", textX - 25, textY);
+				
+				if (gp.keyH.aPressed) {
+					gp.keyH.aPressed = false;
+					gp.keyH.playSelectSE();
+											
+					gp.stopMusic();
+					gp.resetGame();
+											
+					commandNum = 0;
+					subState = 0;
+					playerSlotRow = 0;
+					playerSlotCol = 0;
+					inventoryScreen = 1;
+					pauseState = 1;
+											
+					gp.saveLoad.load(3);
+					gp.tileM.loadMap();		
+					gp.getMapTitle();
+					gp.fileSlot = 3;
+					
+					gp.setupMusic(true);	
+					gp.gameState = gp.playState;
+				}
+			}		
+		}			
+		
+		text = "BACK";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize * 2;
+		g2.drawString(text, textX, textY);
+		if (commandNum == 4) {
+			g2.drawString(">", textX - 25, textY);
+			
+			if (gp.keyH.aPressed) {
+				commandNum = 6;
 				subState = 0;
 				gp.keyH.aPressed = false;
 				gp.keyH.playSelectSE();

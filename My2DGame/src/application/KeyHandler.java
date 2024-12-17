@@ -124,6 +124,12 @@ public class KeyHandler implements KeyListener {
 			// LOAD GAME OPTION
 			else if (gp.ui.commandNum == 1) {
 				playSelectSE();		
+				
+				gp.ui.files[0] = gp.saveLoad.loadFileData(0);
+				gp.ui.files[1] = gp.saveLoad.loadFileData(1);
+				gp.ui.files[2] = gp.saveLoad.loadFileData(2);
+				gp.ui.files[3] = gp.saveLoad.loadFileData(3);
+				
 				gp.ui.commandNum = 0;
 				gp.ui.titleScreenState = 2;
 			}
@@ -226,19 +232,23 @@ public class KeyHandler implements KeyListener {
 			}
 			// ENTER BUTTON
 			else if (gp.ui.commandNum == 29) {
-				
-				// STOP PLAYER FROM STARTING IF NO LETTERS
+								
 				if (gp.player.name.length() > 0) {
 					playSelectSE();
-					gp.ui.commandNum = 0;			
-					gp.fileSlot = 0;						
-					gp.gameState = gp.playState;
+					
 					gp.resetGame();		
-					gp.setupMusic(true);
 					gp.getMapTitle();
+					
+					gp.fileSlot = 0;	
+					gp.saveLoad.save(3);					
+					
+					gp.ui.commandNum = 0;		
 					gp.ui.titleScreenState = 0;
-					gp.saveLoad.save(3);	
+					gp.gameState = gp.playState;					
+					
+					gp.setupMusic(true);
 				}
+				// STOP PLAYER FROM STARTING IF NO LETTERS
 				else {
 					playErrorSE();
 				}								
@@ -277,81 +287,46 @@ public class KeyHandler implements KeyListener {
 			}
 		}		
 		if (code == gp.btn_A) { 
-									
-			// LOAD GAME OPTION 1
-			if (gp.ui.commandNum == 0) {
-				if (gp.saveLoad.loadFileData(0) != null) {
-					playSelectSE();		
-
-					gp.stopMusic();
-					gp.saveLoad.load(0);	
-					gp.fileSlot = 0;
-					gp.tileM.loadMap();
-					gp.gameState = gp.playState;
-					gp.setupMusic(true);	
-					gp.getMapTitle();
-				}
-				else {
-					playErrorSE();
-				}
-			}
-			// LOAD GAME OPTION 2
-			else if (gp.ui.commandNum == 1) {
+			
+			for (int i = 0; i <= 3; i++) {
 				
-				if (gp.saveLoad.loadFileData(1) != null) {
-					playSelectSE();		
+				// LOAD GAME OPTION
+				if (gp.ui.commandNum == i) {
+					if (gp.ui.files[i] != null) {																	
+						playSelectSE();		
 
-					gp.stopMusic();
-					gp.saveLoad.load(1);	
-					gp.fileSlot = 1;
-					gp.tileM.loadMap();
-					gp.gameState = gp.playState;
-					gp.setupMusic(true);						
-				}
-				else {
-					playErrorSE();
+						gp.stopMusic();						
+						
+						gp.saveLoad.load(i);	
+						gp.fileSlot = i;
+						gp.tileM.loadMap();
+						gp.getMapTitle();
+						
+						gp.ui.commandNum = 0;		
+						gp.ui.titleScreenState = 0;
+						gp.gameState = gp.playState;
+						
+						gp.setupMusic(true);	
+						
+					}
+					else {
+						playErrorSE();
+					}
 				}
 			}
-			// LOAD GAME OPTION 3
-			else if (gp.ui.commandNum == 2) {
-				if (gp.saveLoad.loadFileData(2) != null) {
-					playSelectSE();		
-
-					gp.stopMusic();
-					gp.saveLoad.load(2);
-					gp.fileSlot = 2;
-					gp.tileM.loadMap();
-					gp.gameState = gp.playState;
-					gp.setupMusic(true);	
-					gp.getMapTitle();
-				}
-				else {
-					playErrorSE();
-				}
-			}
-			// LOAD GAME OPTION 4
-			else if (gp.ui.commandNum == 3) {
-				if (gp.saveLoad.loadFileData(3) != null) {
-					playSelectSE();		
-
-					gp.stopMusic();
-					gp.saveLoad.load(3);
-					gp.fileSlot = 3;
-					gp.tileM.loadMap();
-					gp.gameState = gp.playState;
-					gp.setupMusic(true);	
-					gp.getMapTitle();
-				}
-				else {
-					playErrorSE();
-				}
-			}
+						
 			// BACK OPTION
-			else if (gp.ui.commandNum == 4) {
+			if (gp.ui.commandNum == 4) {
 				playSelectSE();
 				gp.ui.commandNum = 1;
 				gp.ui.titleScreenState = 0;
 			}
+		}
+		
+		if (code == gp.btn_B) {
+			playSelectSE();
+			gp.ui.commandNum = 1;
+			gp.ui.titleScreenState = 0;
 		}
 	}
 	

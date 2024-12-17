@@ -149,13 +149,13 @@ public class Sound {
 		sounds[9] = instrument;
 	}	
 	
-	public void setFile(int category, int record) {		
+	public void setFile(int category, int record) {	
+		
 		try {			
 			AudioInputStream ais = AudioSystem.getAudioInputStream(sounds[category][record]);
 			clip = AudioSystem.getClip();
 			clip.open(ais);
 			
-			// VOLUME
 			fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
 			checkVolume();
 		}

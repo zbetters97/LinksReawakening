@@ -8,6 +8,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -81,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public int worldWidth;
 	public int worldHeight;
 	
-	// AMOUNT OF TOTAL MAPS	
+	// MAPS
 	public String[] mapFiles = { "worldmap.txt", "indoor01.txt", "dungeon_01_01.txt", "dungeon_01_02.txt" };
 	public final int maxMap = mapFiles.length;
 	public int currentMap = 0;
@@ -149,6 +150,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// SAVE LOAD MANAGER
 	public SaveLoad saveLoad = new SaveLoad(this);
+	public File saveDir = new File(System.getProperty("user.home") + "/zelda-conf/");	    
 	
 /** CONSTRUCTOR **/
 	
@@ -163,10 +165,12 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	protected void setupGame() {	
 						
- 		gameState = playState;	
+ 		gameState = titleState;	
 		currentArea = outside;
 		currentMap = 0;
-		
+			   
+	    if (!saveDir.exists()) saveDir.mkdir();	   
+	    
 /*		
 		gameState = playState;
 		currentArea = dungeon;
@@ -194,8 +198,6 @@ public class GamePanel extends JPanel implements Runnable {
 		g2 = (Graphics2D)tempScreen.getGraphics();
 		
 		if (fullScreenOn) setFullScreen();
-		
-		getMapTitle();
 	}
 		
 	private void setFullScreen() {

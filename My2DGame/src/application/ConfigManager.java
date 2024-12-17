@@ -2,6 +2,7 @@ package application;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class ConfigManager {
 		
 		try {
 			// IMPORT FILE
-			BufferedWriter bw = new BufferedWriter(new FileWriter("config.txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(gp.saveDir + File.separator + "config.txt"));
 			
 			// FULLSCREEN
 			bw.write("FULLSCREEN\n" + gp.fullScreenOn);
@@ -46,8 +47,8 @@ public class ConfigManager {
 	public void loadConfig() {
 		
 		try {
-			// IMPORT FILE
-			BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+			// IMPORT FILE		
+			BufferedReader br = new BufferedReader(new FileReader(gp.saveDir + File.separator + "config.txt"));
 			
 			br.readLine(); 
 			
