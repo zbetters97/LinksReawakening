@@ -390,7 +390,7 @@ public class KeyHandler implements KeyListener {
 			case 3:
 			case 4: maxCommandNum = 3; break;
 			case 5: maxCommandNum = 4; break;
-			case 6: maxCommandNum = 1; break;
+			case 7: maxCommandNum = 1; break;
 		}
 		
 		if (gp.ui.pauseState == 1) {
@@ -548,7 +548,7 @@ public class KeyHandler implements KeyListener {
 			}
 		}
 		
-		if ((code == gp.btn_START || code == gp.btn_B) && lock) {
+		if ((code == gp.btn_START) && lock) {
 			playMenuCloseSE();
 			gp.ui.playerSlotRow = 0;
 			gp.ui.playerSlotCol = 0;
@@ -561,6 +561,10 @@ public class KeyHandler implements KeyListener {
 		}
 		if (code == gp.btn_A && lock) {
 			aPressed = true;
+			lock = false;
+		}
+		if (code == gp.btn_B && lock) {
+			bPressed = true;
 			lock = false;
 		}
 	}

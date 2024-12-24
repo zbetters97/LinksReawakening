@@ -1750,6 +1750,7 @@ public class Player extends Entity {
 			damageNum = 1;
 			damageCounter = 0;			
 			transparent = true;
+			canMove = true;
 			
 			if (action == Action.CARRYING) {
 				grabbedObject.alive = false;				

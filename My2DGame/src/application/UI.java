@@ -387,9 +387,9 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(35F));
 		
 		String text = "";
-		int x = 66 + gp.tileSize;
+		int x = (int) (gp.tileSize * 1.3);
 		int y = gp.tileSize * 3;			
-		int width = gp.tileSize * 10;
+		int width = gp.tileSize * 12;
 		int height = (int) (gp.tileSize * 1.7);	
 						
 		if (commandNum == 0) drawSubWindow(x+40, y, width, height, Color.GREEN);		
@@ -409,7 +409,7 @@ public class UI {
 		
 		if (files[0] == null) text = "1)";			
 		else text = "1) " + files[0];
-		x = gp.tileSize * 4;
+		x += (gp.tileSize * 1.3);
 		y = (int) (gp.tileSize * 4.15);	
 		g2.drawString(text, x, y);		
 		
@@ -698,7 +698,7 @@ public class UI {
 			}
 			
 			// ANIMATE ICON UP AND DOWN
-			if (target != null && !target.captured) {
+			if (target != null && !target.captured && gp.player.canMove) {
 								
 				if (zTargetCounter < 20 && zTargetDirection == 0) {			
 					zTargetCounter++;
@@ -719,7 +719,7 @@ public class UI {
 				
 				int x = target.tempScreenX - 10;
 				int y = target.tempScreenY - 30 + zTargetCounter;
-				
+												
 				g2.drawImage(zTargetLock, x, y, null);	
 			}	
 		}
@@ -943,7 +943,19 @@ public class UI {
 		changeAlpha(g2, 1f);
 	}
 	private void pause_map() {		
-		gp.map.drawFullMapScreen(g2);		
+		gp.map.drawFullMapScreen(g2);	
+		
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			gp.keyH.playMenuCloseSE();
+			playerSlotRow = 0;
+			playerSlotCol = 0;
+			commandNum = 0;
+			subState = 0;
+			inventoryScreen = 1;
+			pauseState = 1;
+			gp.gameState = gp.playState;
+		}
 	}
 	private void pause_inventory() {	
 		
@@ -955,6 +967,18 @@ public class UI {
 		pause_inventory_keys();
 		pause_inventory_equipment();
 		pause_inventory_items();
+		
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			gp.keyH.playMenuCloseSE();
+			playerSlotRow = 0;
+			playerSlotCol = 0;
+			commandNum = 0;
+			subState = 0;
+			inventoryScreen = 1;
+			pauseState = 1;
+			gp.gameState = gp.playState;
+		}
 	}
 	private void pause_inventory_rupees() {
 						
@@ -1211,7 +1235,8 @@ public class UI {
 			case 3: pause_settings_saveGameSlot(frameX, frameY); break;
 			case 4: pause_settings_saveGameConfirm(frameX, frameY); break;
 			case 5: pause_settings_loadGameSlot(frameX, frameY); break;
-			case 6: pause_settings_quitGameConfirm(frameX, frameY); break;
+			case 6: pause_settings_loadGameConfirm(frameX, frameY); break;
+			case 7: pause_settings_quitGameConfirm(frameX, frameY); break;
 		}		
 	}
 	private void pause_settings_top(int frameX, int frameY) {
@@ -1314,7 +1339,7 @@ public class UI {
 		if (commandNum == 7) {
 			g2.drawString(">", textX - 25, textY);
 			if (gp.keyH.aPressed) {
-				subState = 6;
+				subState = 7;
 				commandNum = 0;
 				gp.keyH.aPressed = false;
 				gp.keyH.playSelectSE();
@@ -1347,6 +1372,18 @@ public class UI {
 		else if (textSpeed == 1) g2.drawString("MEDIUM", textX, textY);
 		else if (textSpeed == 2) g2.drawString("SLOW", textX, textY);
 		
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			gp.keyH.playMenuCloseSE();
+			playerSlotRow = 0;
+			playerSlotCol = 0;
+			commandNum = 0;
+			subState = 0;
+			inventoryScreen = 1;
+			pauseState = 1;
+			gp.gameState = gp.playState;
+		}
+		
 		gp.config.saveConfig();
 	}
 	private void pause_settings_fullscreenNotif(int frameX, int frameY) {
@@ -1368,10 +1405,11 @@ public class UI {
 		if (commandNum == 0) {
 			g2.drawString(">", textX - 25, textY);
 			
-			if (gp.keyH.aPressed) {
+			if (gp.keyH.aPressed || gp.keyH.bPressed) {
 				commandNum = 0;
 				subState = 0;
 				gp.keyH.aPressed = false;
+				gp.keyH.bPressed = false;
 				gp.keyH.playSelectSE();
 			}
 		}
@@ -1410,18 +1448,17 @@ public class UI {
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));	
 		text = "BACK";
 		textX = getXforCenteredText(text);
+		
 		textY += 15;
 		g2.drawString(text, textX, textY);
-		if (commandNum == 0) {
-			g2.drawString(">", textX - 25, textY);
-			
-			if (gp.keyH.aPressed) {
-				commandNum = 4;
-				subState = 0;
-				gp.keyH.aPressed = false;
-				gp.keyH.playSelectSE();
-			}
-		}
+		g2.drawString(">", textX - 25, textY);			
+		if (gp.keyH.aPressed || gp.keyH.bPressed) {
+			commandNum = 4;
+			subState = 0;
+			gp.keyH.aPressed = false;
+			gp.keyH.bPressed = false;
+			gp.keyH.playSelectSE();
+		}		
 	}
 	private void pause_settings_saveGameSlot(int frameX, int frameY) {
 		
@@ -1469,6 +1506,13 @@ public class UI {
 				commandNum = 5;
 				subState = 0;				
 			}
+		}
+		
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			gp.keyH.playSelectSE();
+			commandNum = 5;
+			subState = 0;
 		}
 	}
 	private void pause_settings_saveGameConfirm(int frameX, int frameY) {
@@ -1576,6 +1620,13 @@ public class UI {
 				gp.keyH.playSelectSE();
 			}
 		}
+		
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			gp.keyH.playSelectSE();
+			commandNum = 7;
+			subState = 0;
+		}
 	}
 	private void pause_settings_loadGameSlot(int frameX, int frameY) {
 
@@ -1609,25 +1660,11 @@ public class UI {
 					
 					if (gp.keyH.aPressed) {
 						gp.keyH.aPressed = false;
-						gp.keyH.playSelectSE();
-												
+						gp.keyH.playSelectSE();												
 						gp.stopMusic();
-						gp.resetGame();
-												
 						commandNum = 0;
-						subState = 0;
-						playerSlotRow = 0;
-						playerSlotCol = 0;
-						inventoryScreen = 1;
-						pauseState = 1;
-												
-						gp.saveLoad.load(i);
-						gp.tileM.loadMap();		
-						gp.getMapTitle();
-						gp.fileSlot = i;
-						
-						gp.setupMusic(true);	
-						gp.gameState = gp.playState;						
+						subState = 6;
+						gp.fileSlot = i;					
 					}
 				}		
 			}			
@@ -1654,25 +1691,11 @@ public class UI {
 				
 				if (gp.keyH.aPressed) {
 					gp.keyH.aPressed = false;
-					gp.keyH.playSelectSE();
-											
+					gp.keyH.playSelectSE();												
 					gp.stopMusic();
-					gp.resetGame();
-											
 					commandNum = 0;
-					subState = 0;
-					playerSlotRow = 0;
-					playerSlotCol = 0;
-					inventoryScreen = 1;
-					pauseState = 1;
-											
-					gp.saveLoad.load(3);
-					gp.tileM.loadMap();		
-					gp.getMapTitle();
+					subState = 6;
 					gp.fileSlot = 3;
-					
-					gp.setupMusic(true);	
-					gp.gameState = gp.playState;
 				}
 			}		
 		}			
@@ -1691,6 +1714,48 @@ public class UI {
 				gp.keyH.playSelectSE();
 			}
 		}
+		
+		if (gp.keyH.bPressed) {
+			gp.keyH.bPressed = false;
+			gp.keyH.playSelectSE();
+			commandNum = 6;
+			subState = 0;
+		}
+	}
+	private void pause_settings_loadGameConfirm(int frameX, int frameY) {
+
+		// TITLE
+		String text = "LOAD GAME SLOT";
+		int textX = getXforCenteredText(text);
+		int textY = frameX + gp.tileSize * 2;		
+		g2.drawString(text, textX, textY);	
+		
+		// SKIP FIRST FRAME TO DRAW TO SCREEN
+		if (commandNum == -1) {
+			gp.resetGame();
+									
+			commandNum = 0;
+			subState = 0;
+			playerSlotRow = 0;
+			playerSlotCol = 0;
+			inventoryScreen = 1;
+			pauseState = 1;
+									
+			gp.saveLoad.load(gp.fileSlot);
+			gp.tileM.loadMap();		
+			gp.getMapTitle();
+			
+			gp.setupMusic(true);	
+			gp.gameState = gp.playState;
+		}
+		else {
+			commandNum = -1;			
+		}		
+						
+		text = "LOADING GAME SLOT " + (gp.fileSlot + 1) + "...";
+		textX = getXforCenteredText(text);
+		textY += gp.tileSize * 3;
+		g2.drawString(text, textX, textY);
 	}
 	
 	// DIALOGUE	

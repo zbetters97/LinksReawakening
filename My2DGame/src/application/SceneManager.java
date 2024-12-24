@@ -218,6 +218,7 @@ public class SceneManager {
 		if (phase == 0) {
 			playDoorCloseSE();
 			gp.player.resetValues();
+			gp.player.canMove = false;
 			
 			lookDirection = gp.player.direction;			
 			switch (lookDirection) {
@@ -249,6 +250,7 @@ public class SceneManager {
 		else if (phase == 2) {
 			
 			gp.player.direction = lookDirection;
+			gp.player.canMove = true;
 			
 			scene = NA;
 			phase = 0;
