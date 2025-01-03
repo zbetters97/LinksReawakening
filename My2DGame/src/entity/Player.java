@@ -1363,6 +1363,7 @@ public class Player extends Entity {
 				case ITM_Rod.itmName:
 				case ITM_Shovel.itmName:				
 					gp.keyH.xPressed = false;
+					gp.keyH.bPressed = false;
 					currentItem.use(this);
 					break;
 				case ITM_Bow.itmName:

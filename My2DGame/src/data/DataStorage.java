@@ -38,37 +38,23 @@ public class DataStorage implements Serializable {
 	
 	// NPCs
 	String npcNames[][];
-	int npcWorldX[][];
-	int npcWorldY[][];
-	int npcDialogueSet[][];
-	boolean npcHasCutscene[][];
-	boolean npcHasItem[][];
-	boolean npcDrawing[][];
+	int npcWorldX[][], npcWorldY[][], npcDialogueSet[][], npcGoalCol[][], npcGoalRow[][];
+	boolean npcHasCutscene[][], npcOnPath[][], npcHasItem[][], npcDrawing[][];
 	Map<String, List<String>> npcInventory = new HashMap<>();
 	
 	// ENEMIES
-	int enemyWorldX[][];
-	int enemyWorldY[][];
-	int enemyLife[][];
-	boolean enemyAlive[][];
-	boolean enemyAsleep[][];
+	int enemyWorldX[][], enemyWorldY[][], enemyLife[][], enemyGoalCol[][], enemyGoalRow[][];
+	boolean enemyAlive[][], enemyOnPath[][], enemyAsleep[][];
 	
 	// MAP OBJECTS
-	String mapObjectNames[][];
-	int mapObjectWorldX[][];
-	int mapObjectWorldY[][];
-	String mapObjectDirections[][];
-	boolean mapObjectSwitchedOn[][];
-	String mapObjectLootNames[][];
-	boolean mapObjectOpened[][];
+	String mapObjectNames[][], mapObjectDirections[][], mapObjectLootNames[][];
+	int mapObjectWorldX[][], mapObjectWorldY[][];
+	boolean mapObjectSwitchedOn[][], mapObjectOpened[][];
 	
 	// iTILES
-	String iTileNames[][];
-	int iTileWorldX[][];
-	int iTileWorldY[][];
-	String iTileDirections[][];
+	String iTileNames[][], iTileDirections[][], iTileLootNames[][];
+	int iTileWorldX[][], iTileWorldY[][];
 	boolean iTileSwitchedOn[][];
-	String iTileLootNames[][];
 	
 	public String toString() {
 		return "[" + name + "]  " + file_date;

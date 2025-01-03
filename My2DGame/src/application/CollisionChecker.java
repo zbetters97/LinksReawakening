@@ -392,9 +392,15 @@ public class CollisionChecker {
 					gp.player.throwCounter = 0;	
 				}
 				// ON GROUND ENTITY
-				else if (entity.onGround) {															
-					if (entity.captured) gp.player.capturedTarget = null;
-					entity.alive = false;	
+				else if (entity.onGround) {						
+					if (entity.type == entity.type_npc) {
+						entity.thrown = true;
+						entity.resetValues();
+					}
+					else {
+						if (entity.captured) gp.player.capturedTarget = null;
+						entity.alive = false;	
+					}					
 				}			
 			}
 		}
@@ -429,6 +435,7 @@ public class CollisionChecker {
 			}
 			// NON-PLAYER
 			else {
+				
 				// ENTITY CANNOT SWIM
 				if (!entity.canSwim) {
 					playDrownSE();
@@ -605,28 +612,20 @@ public class CollisionChecker {
 				
 				switch(direction) {
 					case "up": 
-						switch(entity.direction) {
-							case "upleft": entity.direction = "downleft";
-							case "upright": entity.direction = "downright";
-						}
+						if (entity.direction.equals("upleft")) entity.direction = "downleft";
+						else if (entity.direction.equals("upright")) entity.direction = "downright";
 						break;
 					case "down":
-						switch(entity.direction) {
-							case "downleft": entity.direction = "upleft";
-							case "downright": entity.direction = "upright";
-						}
+						if (entity.direction.equals("downleft")) entity.direction = "upleft";
+						else if (entity.direction.equals("downright")) entity.direction = "upright";
 						break;
 					case "left": 
-						switch(entity.direction) {
-							case "upleft": entity.direction = "upright";
-							case "downleft": entity.direction = "downright";
-						}
+						if (entity.direction.equals("upleft")) entity.direction = "upright";
+						else if (entity.direction.equals("downleft")) entity.direction = "downright";
 						break;
 					case "right":
-						switch(entity.direction) {
-							case "upright": entity.direction = "upleft";
-							case "downright": entity.direction = "downleft";
-						}
+						if (entity.direction.equals("upright")) entity.direction = "upleft";
+						else if (entity.direction.equals("downright")) entity.direction = "downleft";
 						break;
 				}
 			}	
@@ -1029,8 +1028,9 @@ public class CollisionChecker {
 		gp.player.hitbox.y = gp.player.worldY + gp.player.hitbox.y;
 		
 		// IF iTile IS HIT BY PLAYER (1 TILE OVER)
-		if (entity.hitbox.intersects(gp.player.hitbox))					
+		if (entity.hitbox.intersects(gp.player.hitbox))	{			
 			contactPlayer = true;
+		}
 		
 		// reset bomb solid area
 		entity.hitbox.x = entity.hitboxDefaultX;
@@ -1065,8 +1065,9 @@ public class CollisionChecker {
 				// IF ENTITY IS HIT BY BOMB
 				if (entity.hitbox.intersects(target[gp.currentMap][i].hitbox)) {	
 					if (target[gp.currentMap][i].type == entity.type_npc) { 
-						if (target[gp.currentMap][i].name.equals(NPC_Cucco.npcName)) 
-							impacted.add(target[gp.currentMap][i]);							
+						if (target[gp.currentMap][i].name.equals(NPC_Cucco.npcName)) {
+							impacted.add(target[gp.currentMap][i]);						
+						}
 					}
 					else {
 						impacted.add(target[gp.currentMap][i]);
@@ -1084,6 +1085,7 @@ public class CollisionChecker {
 				target[gp.currentMap][i].hitbox.y = target[gp.currentMap][i].hitboxDefaultY;
 			}
 		}		
+		
 		return impacted;
 	}
 	public ArrayList<Integer> checkiTileExplosion(Entity entity) {

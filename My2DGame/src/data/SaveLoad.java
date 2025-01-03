@@ -93,16 +93,22 @@ public class SaveLoad {
 			ds.npcNames = new String[gp.maxMap][gp.npc[1].length];
 			ds.npcWorldX = new int[gp.maxMap][gp.npc[1].length];
 			ds.npcWorldY = new int[gp.maxMap][gp.npc[1].length];
+			ds.npcGoalCol = new int[gp.maxMap][gp.npc[1].length];
+			ds.npcGoalRow = new int[gp.maxMap][gp.npc[1].length];
 			ds.npcDialogueSet = new int[gp.maxMap][gp.npc[1].length];
 			ds.npcHasCutscene = new boolean[gp.maxMap][gp.npc[1].length];
+			ds.npcOnPath = new boolean[gp.maxMap][gp.npc[1].length];
 			ds.npcHasItem = new boolean[gp.maxMap][gp.npc[1].length];
 			ds.npcDrawing = new boolean[gp.maxMap][gp.npc[1].length];
 			
 			// ENEMIES
 			ds.enemyWorldX = new int[gp.maxMap][gp.enemy[1].length];
 			ds.enemyWorldY = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyGoalCol = new int[gp.maxMap][gp.enemy[1].length];
+			ds.enemyGoalRow = new int[gp.maxMap][gp.enemy[1].length];
 			ds.enemyLife = new int[gp.maxMap][gp.enemy[1].length];
 			ds.enemyAlive = new boolean[gp.maxMap][gp.enemy[1].length];
+			ds.enemyOnPath = new boolean[gp.maxMap][gp.enemy[1].length];
 			ds.enemyAsleep = new boolean[gp.maxMap][gp.enemy[1].length];
 			
 			// MAP OBJECTS
@@ -134,8 +140,11 @@ public class SaveLoad {
 						ds.npcNames[mapNum][i] = gp.npc[mapNum][i].name;
 						ds.npcWorldX[mapNum][i] = gp.npc[mapNum][i].worldX;
 						ds.npcWorldY[mapNum][i] = gp.npc[mapNum][i].worldY;
+						ds.npcGoalCol[mapNum][i] = gp.npc[mapNum][i].goalCol;
+						ds.npcGoalRow[mapNum][i] = gp.npc[mapNum][i].goalRow;
 						ds.npcDialogueSet[mapNum][i] = gp.npc[mapNum][i].dialogueSet;
 						ds.npcHasCutscene[mapNum][i] = gp.npc[mapNum][i].hasCutscene;
+						ds.npcOnPath[mapNum][i] = gp.npc[mapNum][i].onPath;
 						ds.npcHasItem[mapNum][i] = gp.npc[mapNum][i].hasItemToGive;
 						ds.npcDrawing[mapNum][i] = gp.npc[mapNum][i].drawing;
 						
@@ -165,8 +174,11 @@ public class SaveLoad {
 					else {
 						ds.enemyWorldX[mapNum][i] = gp.enemy[mapNum][i].worldX;
 						ds.enemyWorldY[mapNum][i] = gp.enemy[mapNum][i].worldY;
+						ds.enemyGoalCol[mapNum][i] = gp.enemy[mapNum][i].goalCol;
+						ds.enemyGoalRow[mapNum][i] = gp.enemy[mapNum][i].goalRow;
 						ds.enemyLife[mapNum][i] = gp.enemy[mapNum][i].life;
 						ds.enemyAlive[mapNum][i] = true;
+						ds.enemyOnPath[mapNum][i] = gp.enemy[mapNum][i].onPath;
 						ds.enemyAsleep[mapNum][i] = gp.enemy[mapNum][i].sleep;
 					}
 				}
@@ -310,8 +322,11 @@ public class SaveLoad {
 					else if (gp.npc[mapNum][i] != null) {						
 						gp.npc[mapNum][i].worldX = ds.npcWorldX[mapNum][i];
 						gp.npc[mapNum][i].worldY = ds.npcWorldY[mapNum][i];		
+						gp.npc[mapNum][i].goalCol = ds.npcGoalCol[mapNum][i];		
+						gp.npc[mapNum][i].goalRow = ds.npcGoalRow[mapNum][i];		
 						gp.npc[mapNum][i].dialogueSet = ds.npcDialogueSet[mapNum][i];
 						gp.npc[mapNum][i].hasCutscene = ds.npcHasCutscene[mapNum][i];
+						gp.npc[mapNum][i].onPath = ds.npcOnPath[mapNum][i];
 						gp.npc[mapNum][i].hasItemToGive = ds.npcHasItem[mapNum][i];
 						gp.npc[mapNum][i].drawing = ds.npcDrawing[mapNum][i];
 						
@@ -342,8 +357,11 @@ public class SaveLoad {
 					else if (gp.enemy[mapNum][i] != null){
 						gp.enemy[mapNum][i].worldX = ds.enemyWorldX[mapNum][i];
 						gp.enemy[mapNum][i].worldY = ds.enemyWorldY[mapNum][i];
+						gp.enemy[mapNum][i].goalCol = ds.enemyGoalCol[mapNum][i];		
+						gp.enemy[mapNum][i].goalRow = ds.enemyGoalRow[mapNum][i];	
 						gp.enemy[mapNum][i].life = ds.enemyLife[mapNum][i];
 						gp.enemy[mapNum][i].sleep = ds.enemyAsleep[mapNum][i];
+						gp.enemy[mapNum][i].onPath = ds.enemyOnPath[mapNum][i];
 						gp.enemy[mapNum][i].attacking = false;
 						
 						if (gp.enemy[mapNum][i].type == gp.enemy[mapNum][i].type_boss) {

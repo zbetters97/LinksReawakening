@@ -94,6 +94,7 @@ public class Entity {
 	public boolean buzzing = false;		
 	public boolean aggressive = false;
 	public Entity capturedTarget;
+	public int goalCol = 0, goalRow = 0;
 		
 	// DIALOGUE
 	public String dialogues[][] = new String[20][20];
